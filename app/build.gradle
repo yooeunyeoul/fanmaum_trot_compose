@@ -23,10 +23,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "trot"
+    productFlavors {
+        create("dev") {
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "_dev"
+            manifestPlaceholders = [appLabel: "Trot_dev"]
+        }
+        create("qa") {
+            applicationIdSuffix = ".qa"
+            versionNameSuffix = "_qa"
+            manifestPlaceholders = [appLabel: "Trot_qa"]
+        }
+        create("product") {
+            manifestPlaceholders = [appLabel: "Trot_product"]
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
