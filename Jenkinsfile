@@ -29,7 +29,7 @@ pipeline {
                         }
                         stage('AppDistribution') {
                             steps {
-                                build job : 'Firebase_App_Distribution', parameters: [ string( name: 'nodeLabelName', value: 'master'), string ( name: 'appFilePath', value: "${WORKSPACE}/app/build/outputs/apk/dev/release/app-dev-release-unsigned.apk" ) ,string( name : "appDistributionId", value : "1:900609572656:android:9a720b847a64cdbd3a12f5" ) , string( name : "testGroup", value :"Android_Tester_Dev" ), string ( name : "des_notes", value : appDistributionReleaseNoteString ) ]
+                                build job : 'Firebase_App_Distribution', parameters: [ string( name: 'nodeLabelName', value: 'master'), string ( name: 'appFilePath', value: "${WORKSPACE}/app/build/outputs/apk/dev/release/app-dev-release-unsigned.apk" ) ,string( name : "appDistributionId", value : "1:27320645027:android:5e066abb025ae1bf439616" ) , string( name : "testGroup", value :"Android_Tester_Dev" ), string ( name : "des_notes", value : appDistributionReleaseNoteString ) ]
                             }
                         }
                     }
@@ -48,7 +48,7 @@ pipeline {
                         }
                         stage('AppDistribution') {
                             steps {
-                                build job : 'Firebase_App_Distribution', parameters: [ string( name: 'nodeLabelName', value: 'master'), string ( name: 'appFilePath', value: "${WORKSPACE}/app/build/outputs/apk/qa/release/app-qa-release.apk" ) ,string( name : "appDistributionId", value : "1:900609572656:android:9c857672d201ab4a3a12f5" ) , string( name : "testGroup", value :"Android_Tester_QA" ), string ( name : "des_notes", value : appDistributionReleaseNoteString ) ]
+                                build job : 'Firebase_App_Distribution', parameters: [ string( name: 'nodeLabelName', value: 'master'), string ( name: 'appFilePath', value: "${WORKSPACE}/app/build/outputs/apk/qa/release/app-qa-release.apk" ) ,string( name : "appDistributionId", value : "1:27320645027:android:82fad52fd848902f439616" ) , string( name : "testGroup", value :"Android_Tester_QA" ), string ( name : "des_notes", value : appDistributionReleaseNoteString ) ]
                             }
                         }
                     }
