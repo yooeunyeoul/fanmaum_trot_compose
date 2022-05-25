@@ -29,6 +29,85 @@
             {
               "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "27320645027-idan8iuvuqs8q9ahvak4r9mpl5v13l46.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trotfan.trot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27320645027:android:5e066abb025ae1bf439616",
+        "android_client_info": {
+          "package_name": "com.trotfan.trot.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUlQHHRGC9cS9o0Hrct5MplwOSd62mM6c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "27320645027-idan8iuvuqs8q9ahvak4r9mpl5v13l46.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trotfan.trot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27320645027:android:82fad52fd848902f439616",
+        "android_client_info": {
+          "package_name": "com.trotfan.trot.qa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUlQHHRGC9cS9o0Hrct5MplwOSd62mM6c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "27320645027-idan8iuvuqs8q9ahvak4r9mpl5v13l46.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trotfan.trot"
+              }
             }
           ]
         }
