@@ -9,5 +9,14 @@
         android:id="@+id/introFragment"
         android:name="com.trotfan.trot.ui.IntroFragment"
         android:label="fragment_intro"
-        tools:layout="@layout/fragment_intro" />
+        tools:layout="@layout/fragment_intro" >
+        <action
+            android:id="@+id/action_introFragment_to_loginFrament"
+            app:destination="@id/loginFrament" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFrament"
+        android:name="com.trotfan.trot.LoginFrament"
+        android:label="fragment_login_frament"
+        tools:layout="@layout/fragment_login_frament" />
 </navigation>
