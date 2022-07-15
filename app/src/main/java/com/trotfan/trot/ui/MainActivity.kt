@@ -1,6 +1,7 @@
 package com.trotfan.trot.ui
 
 import android.os.Bundle
+import android.window.SplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.ui.theme.TrotTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,11 +27,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     Column {
-                        Text(
-                            text = "asdfasdfdasf",
-                            color = Color.Blue,
-                            style = MaterialTheme.typography.h6
-                        )
+
+
                     }
                 }
             }
