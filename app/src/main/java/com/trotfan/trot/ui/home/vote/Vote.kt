@@ -12,11 +12,14 @@ import androidx.compose.ui.text.font.FontWeight
 fun VoteHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier
+
 ) {
+
     Surface(
         color = Color.White,
         modifier = Modifier.fillMaxSize()
     ) {
+
         Text(text = "This is VoteHome", fontWeight = FontWeight.Bold)
     }
 }

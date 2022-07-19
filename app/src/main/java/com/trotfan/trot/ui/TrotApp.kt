@@ -7,6 +7,8 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +19,7 @@ import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.theme.TrotTheme
+import com.trotfan.trot.viewmodel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 
 object Destinations{
@@ -33,11 +36,17 @@ private val NavGraph.startDestination: NavDestination?
     get() = findNode(startDestinationId)
 
 @Composable
-fun TrotApp() {
+fun TrotApp(
+    viewModel: MainViewModel = viewModel()
+) {
     TrotTheme {
         val scaffoldState: ScaffoldState = rememberScaffoldState()
         val navController: NavHostController = rememberNavController()
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
+
+
+
+
         Scaffold(
             bottomBar = {
                 TrotBottomBar(
@@ -63,7 +72,7 @@ fun TrotApp() {
             ) {
                 navigation(
                     route = HOME_ROUTE,
-                    startDestination = HomeSections.CHARGE.route
+                    startDestination = HomeSections.VOTE.route
                 ) {
                     addHomeGraph(
                         onItemSelected = { id, entry ->

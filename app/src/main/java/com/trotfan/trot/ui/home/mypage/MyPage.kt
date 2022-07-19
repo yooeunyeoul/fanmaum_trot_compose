@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.home.ranking
+package com.trotfan.trot.ui.home.mypage
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
@@ -7,9 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.trotfan.trot.viewmodel.MainViewModel
 
 @Composable
-fun RankHome(
+fun MyPageHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -17,6 +20,6 @@ fun RankHome(
         color = Color.White,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "This is RankHome", fontWeight = FontWeight.Bold)
+        Text(text = "This is MypageHome", fontWeight = FontWeight.Bold)
     }
 }
