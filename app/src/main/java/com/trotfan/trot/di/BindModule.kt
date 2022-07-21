@@ -1,9 +1,9 @@
 package com.trotfan.trot.di
 
 import com.trotfan.trot.network.ApiServiceOne
-import com.trotfan.trot.network.ApiServiceOneImpl
+import com.trotfan.trot.network.impl.ApiServiceOneImpl
 import com.trotfan.trot.network.ApiServiceTwo
-import com.trotfan.trot.network.ApiServiceTwoImpl
+import com.trotfan.trot.network.impl.ApiServiceTwoImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

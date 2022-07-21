@@ -1,7 +1,8 @@
-package com.trotfan.trot.network
+package com.trotfan.trot.network.impl
 
 import com.trotfan.trot.model.ApiResult
 import com.trotfan.trot.model.UserInfo
+import com.trotfan.trot.network.ApiServiceOne
 import io.ktor.client.*
 import io.ktor.client.request.*
 import javax.inject.Inject

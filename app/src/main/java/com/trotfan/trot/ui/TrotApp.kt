@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -28,12 +29,6 @@ object Destinations{
     const val DETAIL_ID_KEY = "detailId"
 }
 
-fun findStartDestination(graph: NavDestination): NavDestination {
-    return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
-}
-
-private val NavGraph.startDestination: NavDestination?
-    get() = findNode(startDestinationId)
 
 @Composable
 fun TrotApp(
@@ -56,7 +51,7 @@ fun TrotApp(
                         navController.navigate(route) {
                             launchSingleTop = true
                             restoreState = true
-                            popUpTo(findStartDestination(navController.graph).id) {
+                            popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
                             }
                         }

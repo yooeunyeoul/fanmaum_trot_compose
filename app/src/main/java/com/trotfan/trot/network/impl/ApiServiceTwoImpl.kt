@@ -1,5 +1,6 @@
-package com.trotfan.trot.network
+package com.trotfan.trot.network.impl
 
+import com.trotfan.trot.network.ApiServiceTwo
 import io.ktor.client.*
 import javax.inject.Inject
 
