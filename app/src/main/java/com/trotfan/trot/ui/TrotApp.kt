@@ -5,6 +5,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewModelScope
@@ -38,6 +40,7 @@ fun TrotApp(
         val scaffoldState: ScaffoldState = rememberScaffoldState()
         val navController: NavHostController = rememberNavController()
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
+        val testData by viewModel.testData.collectAsState()
 
 
 

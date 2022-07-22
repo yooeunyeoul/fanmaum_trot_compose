@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
+//            TrotApp()
             KotlinWorldFont(itemClicked = {
 
             }, fontSize = 50.sp)
