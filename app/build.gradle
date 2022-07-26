@@ -111,8 +111,8 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.5.0'
     implementation "androidx.compose.compiler:compiler:1.2.0"
 
-
-
+    //카카오톡 로그인
+    implementation "com.kakao.sdk:v2-user:2.11.0"
 
     //coil
     implementation 'io.coil-kt:coil-compose:2.0.0'
