@@ -24,7 +24,7 @@ import com.trotfan.trot.ui.home.charge.ChargeHome
 import com.trotfan.trot.ui.home.mypage.MyPageHome
 import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.vote.VoteHome
-import com.trotfan.trot.ui.theme.TrotTheme
+import com.trotfan.trot.ui.theme.FanwooriTheme
 
 enum class HomeSections(
     @StringRes val title: Int,
@@ -42,7 +42,7 @@ private val TextIconSpacing = 2.dp
 @Preview
 @Composable
 fun PreviewTrotBottomBar() {
-    TrotTheme {
+    FanwooriTheme {
         TrotBottomBar(
             tabs = HomeSections.values(),
             currentRoute = HomeSections.VOTE.route,
