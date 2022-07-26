@@ -9,7 +9,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -21,7 +20,7 @@ import com.trotfan.trot.ui.Destinations.HOME_ROUTE
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
-import com.trotfan.trot.ui.theme.TrotTheme
+import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.viewmodel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 
@@ -36,7 +35,7 @@ object Destinations{
 fun TrotApp(
     viewModel: MainViewModel = viewModel()
 ) {
-    TrotTheme {
+    FanwooriTheme {
         val scaffoldState: ScaffoldState = rememberScaffoldState()
         val navController: NavHostController = rememberNavController()
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
