@@ -4,19 +4,19 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/compose-model-1657866060792.xml" value="0.31290092658588736" />
-        <entry key="../../../../layout/compose-model-1658797380362.xml" value="0.42863175675675674" />
-        <entry key="../../../../layout/compose-model-1658799510342.xml" value="0.1" />
-        <entry key="../../../../layout/compose-model-1658802446931.xml" value="0.5657407407407408" />
-        <entry key="../../../../layout/compose-model-1658804515540.xml" value="0.4404560810810811" />
-        <entry key="../../../../layout/compose-model-1658804843425.xml" value="0.8018518518518518" />
-        <entry key="../../../../layout/compose-model-1658813396448.xml" value="0.5025337837837838" />
-        <entry key="../../../../layout/compose-model-1658813984985.xml" value="0.45" />
-        <entry key="../../../../layout/compose-model-1658814478557.xml" value="0.42863175675675674" />
-        <entry key="../../../../layout/compose-model-1658814496460.xml" value="0.8018518518518518" />
-        <entry key="../../../../layout/compose-model-1658816473503.xml" value="0.5025337837837838" />
-        <entry key="../../../../layout/compose-model-1658823300888.xml" value="0.42567567567567566" />
+        <entry key="../../../../layout/compose-model-1658197422968.xml" value="0.34010840108401086" />
+        <entry key="../../../../layout/compose-model-1658217025503.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1658221099562.xml" value="0.21944444444444444" />
+        <entry key="../../../../layout/compose-model-1658295272523.xml" value="0.21944444444444444" />
+        <entry key="../../../../layout/compose-model-1658300887885.xml" value="0.45" />
+        <entry key="../../../../layout/compose-model-1658302196314.xml" value="1.0" />
+        <entry key="../../../../layout/compose-model-1658302851211.xml" value="0.25" />
+        <entry key="../../.gradle/caches/transforms-3/1b77068ed14cd846b77ce4ce2d6c0488/transformed/appcompat-1.4.2/res/drawable/btn_radio_on_to_off_mtrl_animation.xml" value="0.1" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/Home.kt" value="0.33240740740740743" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/login/Login.kt" value="0.33" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/login/components/GoogleSiginButton.kt" value="1.0" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/theme/Type.kt" value="0.23375527426160336" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.15" />
-        <entry key="app/src/main/res/drawable/google_symbol.xml" value="0.433" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.15" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33202614379084966" />
         <entry key="app/src/main/res/layout/fragment_intro.xml" value="0.33202614379084966" />
@@ -24,7 +24,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

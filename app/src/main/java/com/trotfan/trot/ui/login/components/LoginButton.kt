@@ -32,7 +32,6 @@ fun LoginButton(
     backgroundColor: Color = Color.Transparent,
     onClick: () -> Unit
 ) {
-
     Row(
         modifier = Modifier
             .height(48.dp)

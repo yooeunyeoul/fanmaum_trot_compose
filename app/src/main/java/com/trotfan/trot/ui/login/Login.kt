@@ -12,16 +12,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.login.components.LoginButton
-import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.theme.FanwooriTypography
+import com.trotfan.trot.ui.theme.Gray600
+import com.trotfan.trot.ui.theme.Gray800
+import com.trotfan.trot.ui.theme.Primary600
 import com.trotfan.trot.ui.utils.clickable
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onKakaoSignInOnClick: () -> Unit,
+    onAppleSignInOnClick: () -> Unit,
+    onGoogleSignInOnClick: () -> Unit
+) {
     val context = LocalContext.current
 
     Surface(
@@ -38,27 +46,21 @@ fun LoginScreen() {
                 textColor = Gray800,
                 backgroundColor = Color(0XFFFEE500)
             ) {
-                UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-                    if (error != null) {
-                        Log.e("Kakao Login", error.toString())
-                    } else if (token != null) {
-                        Log.e("Kakao Login", "로그인 성공 ${token.accessToken}")
-                    }
-                }
+                onKakaoSignInOnClick()
             }
             Spacer(modifier = Modifier.height(8.dp))
             LoginButton(
                 text = "Apple 계정으로 로그인",
                 icon = painterResource(id = R.drawable.apple_symbol)
             ) {
-
+                onAppleSignInOnClick()
             }
             Spacer(modifier = Modifier.height(8.dp))
             LoginButton(
                 text = "Google 계정으로 로그인",
                 icon = painterResource(id = R.drawable.google_symbol)
             ) {
-
+                onGoogleSignInOnClick()
             }
 
             Text(
@@ -99,13 +101,5 @@ fun LoginScreen() {
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun LoginScreenPreview() {
-    FanwooriTheme {
-        LoginScreen()
     }
 }
