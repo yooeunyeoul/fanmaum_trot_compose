@@ -1,6 +1,8 @@
 package com.trotfan.trot.ui.login
 
 import android.util.Log
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
@@ -13,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.kakao.sdk.user.UserApiClient
@@ -30,7 +33,6 @@ fun LoginScreen(
     onAppleSignInOnClick: () -> Unit,
     onGoogleSignInOnClick: () -> Unit
 ) {
-    val context = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize()
