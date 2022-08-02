@@ -2,6 +2,7 @@ package com.trotfan.trot.ui.invitation
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,11 +15,13 @@ import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
 import java.util.regex.Pattern
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun InvitationScreen() {
+fun InvitationScreen(
+    linkText: String = "",
+    dynamicClick: () -> Unit
+) {
     var errorState by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf(linkText) }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -61,6 +64,14 @@ fun InvitationScreen() {
             },
             errorMessage = errorMessage
         )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(onClick = {
+            dynamicClick()
+        }) {
+            Text(text = "다이나믹 링크 생성")
+        }
     }
 }
 
@@ -68,6 +79,6 @@ fun InvitationScreen() {
 @Composable
 fun InvitationPreview() {
     FanwooriTheme {
-        InvitationScreen()
+        InvitationScreen {}
     }
 }

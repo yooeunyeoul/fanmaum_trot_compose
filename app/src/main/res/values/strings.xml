@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">TrotApplication</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Fabwoori</string>
+    <string name="dynamic_link_url">https://fanwoori.page.link</string>
     <string name="home_vote">VOTE</string>
     <string name="home_mypage">MYPAGE</string>
     <string name="home_ranking">RANKING</string>

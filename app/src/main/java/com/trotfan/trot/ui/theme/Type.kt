@@ -25,7 +25,7 @@ val FanwooriTypography = Typography(
     h1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 28.sp,
-        letterSpacing = 0.7.sp
+        letterSpacing = (-0.7).sp
     ),
     subtitle1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
