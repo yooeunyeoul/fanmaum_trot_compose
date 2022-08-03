@@ -1,24 +1,29 @@
 package com.trotfan.trot.ui.invitation
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.trotfan.trot.ui.components.ContainedButton
 import com.trotfan.trot.ui.components.InputTextField
+import com.trotfan.trot.ui.components.Outline1Button
+import com.trotfan.trot.ui.components.Outline2Button
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
 import java.util.regex.Pattern
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun InvitationScreen() {
+fun InvitationScreen(
+    linkText: String = "",
+    dynamicClick: () -> Unit
+) {
     var errorState by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf(linkText) }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -61,6 +66,26 @@ fun InvitationScreen() {
             },
             errorMessage = errorMessage
         )
+
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+
+            Outline1Button(text = "건너뛰기", modifier = Modifier.weight(1f)) {
+
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            ContainedButton(text = "완료", enabled = false, modifier = Modifier.weight(1f)) {
+
+            }
+        }
     }
 }
 
@@ -68,6 +93,6 @@ fun InvitationScreen() {
 @Composable
 fun InvitationPreview() {
     FanwooriTheme {
-        InvitationScreen()
+        InvitationScreen {}
     }
 }
