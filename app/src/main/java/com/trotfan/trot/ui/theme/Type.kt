@@ -25,43 +25,36 @@ val FanwooriTypography = Typography(
     h1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 28.sp,
-        letterSpacing = (-0.7).sp
     ),
     subtitle1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         letterSpacing = (-0.15).sp,
-        lineHeight = 1.sp
     ),
     subtitle2 = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
         letterSpacing = (-0.3).sp,
-        lineHeight = 1.5.sp
     ),
     body1 = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
         letterSpacing = (-0.3).sp,
-        lineHeight = 2.5.sp
     ),
     body2 = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 15.sp,
         letterSpacing = (-0.25).sp,
-        lineHeight = 1.5.sp
     ),
     body3 = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
         letterSpacing = (-0.25).sp,
-        lineHeight = 1.5.sp
     ),
     body4 = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
         letterSpacing = (-0.3).sp,
-        lineHeight = 2.sp
     ),
     button1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
