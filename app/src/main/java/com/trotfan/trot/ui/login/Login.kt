@@ -1,24 +1,17 @@
 package com.trotfan.trot.ui.login
 
-import android.util.Log
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.login.components.LoginButton
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -29,10 +22,11 @@ import com.trotfan.trot.ui.utils.clickable
 
 @Composable
 fun LoginScreen(
-    onKakaoSignInOnClick: () -> Unit,
+    viewModel: AuthViewModel,
     onAppleSignInOnClick: () -> Unit,
     onGoogleSignInOnClick: () -> Unit
 ) {
+    val kakaoToken = viewModel.kakaoToken.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -48,7 +42,7 @@ fun LoginScreen(
                 textColor = Gray800,
                 backgroundColor = Color(0XFFFEE500)
             ) {
-                onKakaoSignInOnClick()
+                viewModel.kakaoLogin()
             }
             Spacer(modifier = Modifier.height(8.dp))
             LoginButton(

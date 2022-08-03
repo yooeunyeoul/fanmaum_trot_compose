@@ -8,12 +8,13 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -35,12 +36,10 @@ object Module {
                     host = baseUrl
                 }
             }
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(json = kotlinx.serialization.json.Json {
-                    ignoreUnknownKeys = true //모델에 없고, json 에 있는경우 해당 key 무시
+            install(ContentNegotiation) {
+                json(Json {
                     prettyPrint = true
-                    isLenient = true // "" 따옴표 잘못된건 무시하고 처리
-                    encodeDefaults = false // null 인 값도 json 에 포함 시킨다.
+                    isLenient = true
                 })
             }
             install(Logging) {
