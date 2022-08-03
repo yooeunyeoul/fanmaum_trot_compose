@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.components
+package com.trotfan.trot.ui.components.navigation
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
