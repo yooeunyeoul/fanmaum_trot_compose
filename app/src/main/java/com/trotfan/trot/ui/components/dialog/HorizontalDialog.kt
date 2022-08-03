@@ -30,8 +30,11 @@ fun HorizontalDialog(
     positiveText: String,
     negativeText: String,
     onPositive: () -> Unit = { },
+    onPositiveWithInputText: (String) -> Unit = { },
     onDismiss: () -> Unit
 ) {
+
+    var inputText = ""
     Dialog(
         onDismissRequest = {
             onDismiss()
@@ -75,7 +78,7 @@ fun HorizontalDialog(
                 inputPlaceHolderText?.let {
                     InputTextField(
                         placeHolder = inputPlaceHolderText, onValueChange = {
-
+                            inputText = it
                         }, maxLength = maxLength,
                         modifier = Modifier.padding(top = 12.dp)
                     )
@@ -99,7 +102,12 @@ fun HorizontalDialog(
                         text = positiveText,
                         modifier = Modifier.weight(1f)
                     ) {
-                        onPositive()
+                        if (inputText.isEmpty()) {
+                            onPositive()
+                        } else {
+                            onPositiveWithInputText.invoke(inputText)
+                        }
+
                         onDismiss()
                     }
                 }

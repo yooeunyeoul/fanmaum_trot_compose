@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.model.UserInfo
 import com.trotfan.trot.repository.SampleRepository
-import com.trotfan.trot.ui.components.SearchStatus
+import com.trotfan.trot.ui.components.input.SearchStatus
 import com.trotfan.trot.ui.signup.Sample
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +24,10 @@ class SignUpViewModel @Inject constructor(
     private val _searchState = MutableStateFlow(SearchStatus.TrySearch)
     val searchStatus: StateFlow<SearchStatus>
         get() = _searchState
+
+    private val _requestComplete = MutableStateFlow(false)
+    val requestComplete: StateFlow<Boolean>
+        get() = _requestComplete
 
 
     init {
@@ -58,7 +62,7 @@ class SignUpViewModel @Inject constructor(
                     _testData.emit(listOf())
                     _searchState.emit(SearchStatus.NoResult)
                 }
-                else->{
+                else -> {
                     for (i in 0..10) {
                         sampleList.add(Sample(id = i))
                     }
@@ -67,6 +71,19 @@ class SignUpViewModel @Inject constructor(
                 }
 
             }
+        }
+
+    }
+
+    fun requestStar(starName: String) {
+        viewModelScope.launch {
+            _requestComplete.emit(true)
+        }
+    }
+
+    fun dismissCompleteDialog() {
+        viewModelScope.launch {
+            _requestComplete.emit(false)
         }
 
     }

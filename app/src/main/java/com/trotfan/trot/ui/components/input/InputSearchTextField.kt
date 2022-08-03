@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.components
+package com.trotfan.trot.ui.components.input
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +33,8 @@ fun SearchTextField(
     onclick: () -> Unit = {},
     inputText: (String) -> Unit,
     isEnabled: Boolean = true,
-    onClickSearch: (String) -> Unit = {}
+    onClickSearch: (String) -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
     var text by remember {
         mutableStateOf("")
@@ -51,7 +52,7 @@ fun SearchTextField(
 
     TextField(
 
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .clickable {

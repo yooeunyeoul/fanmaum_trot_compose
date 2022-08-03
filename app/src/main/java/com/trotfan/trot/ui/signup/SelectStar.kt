@@ -3,37 +3,32 @@ package com.trotfan.trot.ui.signup
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.R
-import com.trotfan.trot.ui.components.CustomTopAppBar
-import com.trotfan.trot.ui.components.SearchStatus
-import com.trotfan.trot.ui.components.SearchTextField
+import com.trotfan.trot.ui.components.BackIcon
+import com.trotfan.trot.ui.components.button.OutlineIconButton
+import com.trotfan.trot.ui.components.dialog.HorizontalDialog
+import com.trotfan.trot.ui.components.dialog.VerticalDialog
+import com.trotfan.trot.ui.components.input.SearchStatus
+import com.trotfan.trot.ui.components.input.SearchTextField
+import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.signup.components.ListItemButton
 import com.trotfan.trot.ui.signup.viewmodel.SignUpViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
-import com.trotfan.trot.ui.theme.Primary100
-import com.trotfan.trot.ui.utils.clickable
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.trotfan.trot.ui.components.BackIcon
 
 data class Sample(
     var id: Int = 0,
@@ -45,10 +40,7 @@ data class Sample(
 fun SelectStarScreen(viewModel: SignUpViewModel = viewModel()) {
 
     val listState = rememberLazyListState()
-    val sampleList = mutableListOf<Sample>()
-    for (i in 0..10) {
-        sampleList.add(Sample(id = i))
-    }
+    val testData by viewModel.testData.collectAsState()
 
     var selectedItem by remember {
         mutableStateOf(-1)
@@ -91,7 +83,7 @@ fun SelectStarScreen(viewModel: SignUpViewModel = viewModel()) {
                 )
             }
 
-            itemsIndexed(sampleList) { index, item ->
+            itemsIndexed(testData) { index, item ->
                 if (index == 0) {
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
@@ -137,18 +129,59 @@ fun SearchStarScreen(viewModel: SignUpViewModel = viewModel()) {
 
     val testData by viewModel.testData.collectAsState()
     val searchState by viewModel.searchStatus.collectAsState()
+    val requestComplete by viewModel.requestComplete.collectAsState()
 
     var selectedItem by remember {
         mutableStateOf(-1)
     }
 
-    Column(Modifier.fillMaxSize()) {
-        Row(Modifier.fillMaxWidth().height(48.dp)) {
-            BackIcon(onCLick = {
+    var requestDialog by remember {
+        mutableStateOf(false)
+    }
 
+
+    if (requestDialog) {
+        HorizontalDialog(
+            titleText = "스타 추가 요청",
+            positiveText = "요청",
+            negativeText = "취소",
+            onPositiveWithInputText = {starName->
+                viewModel.requestStar(starName)
+            },
+            inputPlaceHolderText = "스타 이름 입력",
+            onDismiss = {
+                requestDialog = false
             })
+    }
+    if (requestComplete) {
+        VerticalDialog(
+            contentText = "스타 추가요청이 접수되었어요.\n" +
+                    "검토 후 등록까지\n" +
+                    "시간이 걸릴 수 있어요.",
+            buttonOneText = "확인",
+            modifier = Modifier,
+            onDismiss = {
+                viewModel.dismissCompleteDialog()
+            }
+        )
+    }
+
+    Column(Modifier.fillMaxSize()) {
+
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(58.dp)
+        ) {
+            BackIcon(
+                onCLick = {
+
+                }, modifier = Modifier.align(CenterVertically)
+            )
             Spacer(modifier = Modifier.width(4.dp))
             SearchTextField(
+                modifier = Modifier,
                 onclick = {
                     Log.e("Text ", "Text")
                 }, inputText = {
@@ -184,13 +217,13 @@ fun SearchStarScreen(viewModel: SignUpViewModel = viewModel()) {
 
                     itemsIndexed(testData) { index, item ->
                         if (index == 0) {
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
                             Text(
                                 text = "검색 결과",
                                 color = Gray600,
                                 style = FanwooriTypography.caption2
                             )
-                            Spacer(modifier = Modifier.height(6.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                         }
                         ListItemButton(
                             text = "팡야팡야",
@@ -241,12 +274,22 @@ fun SearchStarScreen(viewModel: SignUpViewModel = viewModel()) {
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
+                OutlineIconButton(
+                    text = "스타 추가 요청",
+                    icon = R.drawable.icon_heart,
+                    enabled = true,
+                    modifier = Modifier.padding(start = 103.dp, end = 103.dp),
+                    onClick = {
+                        requestDialog = true
+                    }
+                )
 
 
             }
         }
     }
 }
+
 
 @Composable
 fun PreviewSearchStarScreen() {
