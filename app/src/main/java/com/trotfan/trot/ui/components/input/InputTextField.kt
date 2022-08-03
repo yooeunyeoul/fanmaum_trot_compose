@@ -1,10 +1,7 @@
 package com.trotfan.trot.ui.components.input
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Icon
@@ -24,14 +21,14 @@ import com.trotfan.trot.ui.theme.*
 
 @Composable
 fun InputTextField(
+    modifier: Modifier = Modifier,
     placeHolder: String,
     onValueChange: (String) -> Unit,
     maxLength: Int,
     errorStatus: Boolean = false,
     positiveStatus: Boolean = false,
     errorMessage: String? = null,
-    successMessage: String? = null,
-    modifier: Modifier
+    successMessage: String? = null
 ) {
     var value by remember { mutableStateOf("") }
     val focusBorderColor = if (positiveStatus) SemanticPositive300 else Primary300
@@ -50,7 +47,8 @@ fun InputTextField(
                 if (it.length <= maxLength) value = it
                 onValueChange(value)
             },
-            placeholder = { Text(text = placeHolder) },
+            label = { Text(text = placeHolder) },
+            placeholder = { Text(text = placeHolder, style = FanwooriTypography.body3) },
             shape = RoundedCornerShape(12.dp),
             keyboardActions = KeyboardActions {
                 focusManager.clearFocus()
@@ -78,7 +76,7 @@ fun InputTextField(
             )
         )
 
-        if (errorMessage.isNullOrEmpty().not() && successMessage.isNullOrEmpty().not()){
+        if (errorMessage.isNullOrEmpty().not() || successMessage.isNullOrEmpty().not()) {
             Text(
                 modifier = Modifier
                     .padding(top = 4.dp, start = 6.dp)
