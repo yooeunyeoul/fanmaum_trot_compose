@@ -1,14 +1,16 @@
 package com.trotfan.trot.ui.invitation
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.trotfan.trot.ui.components.ContainedButton
 import com.trotfan.trot.ui.components.InputTextField
+import com.trotfan.trot.ui.components.Outline1Button
+import com.trotfan.trot.ui.components.Outline2Button
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
@@ -65,12 +67,24 @@ fun InvitationScreen(
             errorMessage = errorMessage
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
 
-        Button(onClick = {
-            dynamicClick()
-        }) {
-            Text(text = "다이나믹 링크 생성")
+            Outline1Button(text = "건너뛰기", modifier = Modifier.weight(1f)) {
+
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            ContainedButton(text = "완료", enabled = false, modifier = Modifier.weight(1f)) {
+
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun dynamicLinkTest() {
+    private fun dynamicLinkTest() {
         val dynamicLink = Firebase.dynamicLinks.shortLinkAsync {
             link = Uri.parse("https://www.fanwoori.com/?test=123123&name=Jone")
             domainUriPrefix = getString(R.string.dynamic_link_url)
@@ -43,17 +43,9 @@ class MainActivity : ComponentActivity() {
         }.addOnSuccessListener {
             Log.d("dynamicLinkTest", it.shortLink.toString())
         }
-//        val dynamicLink = Firebase.dynamicLinks.dynamicLink {
-//            link = Uri.parse("https://www.fanwoori.com/" + "test?" + "test123")
-//            domainUriPrefix = getString(R.string.dynamic_link_url)
-//            androidParameters(packageName) { }
-//        }
-
-//        val dynamicLinkUri = dynamicLink.uri
-//        Log.d("dynamicLinkTest", dynamicLinkUri.toString())
     }
 
-    fun getDynamicLinkTest() {
+    private fun getDynamicLinkTest() {
         Firebase.dynamicLinks.getDynamicLink(intent)
             .addOnSuccessListener {
                 var deepLink: Uri? = null
