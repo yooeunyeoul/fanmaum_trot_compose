@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.components
+package com.trotfan.trot.ui.components.input
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -11,9 +11,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -21,7 +18,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
@@ -33,8 +29,9 @@ fun InputTextField(
     maxLength: Int,
     errorStatus: Boolean = false,
     positiveStatus: Boolean = false,
-    errorMessage: String = "",
-    successMessage: String = ""
+    errorMessage: String? = null,
+    successMessage: String? = null,
+    modifier: Modifier
 ) {
     var value by remember { mutableStateOf("") }
     val focusBorderColor = if (positiveStatus) SemanticPositive300 else Primary300
@@ -43,13 +40,12 @@ fun InputTextField(
 
     Column {
         OutlinedTextField(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
             value = value,
             singleLine = true,
             isError = errorStatus,
-            label = { Text(text = placeHolder) },
             onValueChange = {
                 if (it.length <= maxLength) value = it
                 onValueChange(value)
@@ -82,13 +78,15 @@ fun InputTextField(
             )
         )
 
-        Text(
-            modifier = Modifier
-                .padding(top = 4.dp, start = 6.dp)
-                .width(236.dp),
-            text = if (errorStatus) errorMessage else successMessage,
-            color = if (errorStatus) SemanticNegative500 else SemanticPositive500,
-            style = FanwooriTypography.caption1
-        )
+        if (errorMessage.isNullOrEmpty().not() && successMessage.isNullOrEmpty().not()){
+            Text(
+                modifier = Modifier
+                    .padding(top = 4.dp, start = 6.dp)
+                    .width(236.dp),
+                text = if (errorStatus) errorMessage ?: "" else successMessage ?: "",
+                color = if (errorStatus) SemanticNegative500 else SemanticPositive500,
+                style = FanwooriTypography.caption1
+            )
+        }
     }
 }
