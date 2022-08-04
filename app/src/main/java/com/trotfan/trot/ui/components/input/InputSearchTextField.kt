@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray100
@@ -34,7 +35,8 @@ fun SearchTextField(
     inputText: (String) -> Unit,
     isEnabled: Boolean = true,
     onClickSearch: (String) -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    placeHolder: Int,
 ) {
     var text by remember {
         mutableStateOf("")
@@ -90,9 +92,12 @@ fun SearchTextField(
         textStyle = FanwooriTypography.body3,
         placeholder = {
             Text(
-                text = stringResource(id = R.string.hint_search_star),
-                style = FanwooriTypography.body3,
-                color = Gray400
+                text = stringResource(id = placeHolder),
+                style = FanwooriTypography.body1,
+                color = Gray400,
+                maxLines = 1,
+                fontSize = 17.sp
+
             )
         },
         colors = TextFieldDefaults.textFieldColors(
@@ -112,5 +117,5 @@ fun SearchTextField(
 @Preview
 @Composable
 fun PreviewSearchTextField() {
-    SearchTextField(inputText = {})
+    SearchTextField(inputText = {}, placeHolder = R.string.hint_search_star)
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.signup.Sample
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
@@ -35,8 +36,8 @@ fun ListItemButton(
     checked: Boolean = false,
     checkedIconTint: Color = Primary500,
     unCheckedIconTint: Color = Gray600,
-    index: Int,
-    onClick: (Int) -> Unit,
+    item: Any?,
+    onClick: (Any?) -> Unit,
 ) {
     val animatedColor by animateColorAsState(
         targetValue = if (checked) Primary100 else Gray100,
@@ -47,7 +48,7 @@ fun ListItemButton(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onClick.invoke(index)
+                onClick.invoke(item)
             },
         shape = RoundedCornerShape(16.dp),
         backgroundColor = animatedColor,
@@ -113,7 +114,7 @@ fun PreviewListItemButtonNotSub() {
         checkedTrailingIcon = R.drawable.icon_heartfilled,
         unCheckedTrailingIcon = R.drawable.icon_heart,
         onClick = {},
-        index = 0
+        item = Sample()
     )
 }
 

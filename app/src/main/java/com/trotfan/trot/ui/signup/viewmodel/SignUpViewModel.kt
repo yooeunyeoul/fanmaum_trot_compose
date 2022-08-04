@@ -19,8 +19,11 @@ class SignUpViewModel @Inject constructor(
     private val repository: SampleRepository
 ) : ViewModel() {
     private val _testData = MutableStateFlow<List<Sample>>(emptyList())
+
+    //    private val _testData = MutableStateFlow<List<Sample>>(emptyList())
     val testData: StateFlow<List<Sample>>
         get() = _testData
+
     private val _searchState = MutableStateFlow(SearchStatus.TrySearch)
     val searchStatus: StateFlow<SearchStatus>
         get() = _searchState
@@ -32,7 +35,18 @@ class SignUpViewModel @Inject constructor(
 
     init {
 //        getRestApiTest()
+        initSampleData()
         Log.d("Initializing", "MainViewModel")
+    }
+
+    private fun initSampleData() {
+        viewModelScope.launch {
+            val sampleList = mutableListOf<Sample>()
+            repeat(30) {
+                sampleList.add(Sample(id = it))
+            }
+            _testData.emit(sampleList)
+        }
     }
 
     private fun getRestApiTest() {
@@ -86,5 +100,11 @@ class SignUpViewModel @Inject constructor(
             _requestComplete.emit(false)
         }
 
+    }
+
+    fun selectStar(selectedItem: Sample?) {
+        viewModelScope.launch {
+
+        }
     }
 }
