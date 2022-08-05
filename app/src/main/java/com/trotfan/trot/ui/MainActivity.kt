@@ -14,6 +14,7 @@ import com.trotfan.trot.R
 import com.trotfan.trot.ui.invitation.InvitationScreen
 import com.trotfan.trot.ui.signup.SearchStarScreen
 import com.trotfan.trot.ui.signup.SelectStarScreen
+import com.trotfan.trot.ui.signup.SettingNicknameScreen
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import dagger.hilt.android.AndroidEntryPoint
 import io.ktor.network.selector.*
@@ -25,7 +26,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FanwooriTheme {
-                SearchStarScreen()
+//                SearchStarScreen()
+                SettingNicknameScreen()
 //                InvitationScreen {
 //                    dynamicLinkTest()
 //                }
