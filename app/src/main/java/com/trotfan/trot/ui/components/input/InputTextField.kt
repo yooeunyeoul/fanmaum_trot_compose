@@ -29,16 +29,14 @@ fun InputTextField(
     maxLength: Int,
     errorStatus: Boolean = false,
     positiveStatus: Boolean = false,
-    successStatus: Boolean = false,
     errorMessage: String? = null,
     successMessage: String? = null,
     modifier: Modifier
 ) {
     var value by remember { mutableStateOf("") }
     val focusBorderColor =
-        if (successStatus) Pos300 else {
-            if (positiveStatus) SemanticPositive300 else Primary300
-        }
+        if (positiveStatus) SemanticPositive300 else Primary300
+
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
 

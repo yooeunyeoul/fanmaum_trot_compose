@@ -54,7 +54,7 @@ fun SettingNicknameScreen(
                 placeHolder = "닉네임 2~10자 입력",
                 maxLength = 10,
                 errorStatus = (nickCheckState != NickNameCheckStatus.None && nickCheckState != NickNameCheckStatus.AuthSuccess),
-                successStatus = nickCheckState == NickNameCheckStatus.AuthSuccess,
+                positiveStatus = nickCheckState == NickNameCheckStatus.AuthSuccess,
                 onValueChange = {
                     inputText = it
                     viewModel.checkNickNameLocal(it)

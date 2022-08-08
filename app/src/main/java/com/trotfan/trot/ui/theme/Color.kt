@@ -35,8 +35,6 @@ val Secondary800 = Color(0XFF933026)
 val Secondary900 = Color(0XFF7A1917)
 
 val SemanticPositive500 = Color(0XFF2EAABA)
-val SemanticPositive300 = Color(0XFF2EAABA)
+val SemanticPositive300 = Color(0XFF58D7DC)
 val SemanticNegative500 = Color(0XFFD8223A)
 val SemanticNegative300 = Color(0XFFF37E78)
-
-val Pos300 = Color(0XFF58D7DC)
