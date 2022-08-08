@@ -10,6 +10,7 @@ import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.R
 import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.ui.signup.SearchStarScreen
+import com.trotfan.trot.ui.signup.SettingNicknameScreen
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,7 +21,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FanwooriTheme {
-                SearchStarScreen()
+//                SearchStarScreen()
+                SettingNicknameScreen()
 //                InvitationScreen {
 //                    dynamicLinkTest()
 //                }

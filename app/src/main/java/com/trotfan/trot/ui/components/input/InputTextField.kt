@@ -34,7 +34,9 @@ fun InputTextField(
     modifier: Modifier
 ) {
     var value by remember { mutableStateOf("") }
-    val focusBorderColor = if (positiveStatus) SemanticPositive300 else Primary300
+    val focusBorderColor =
+        if (positiveStatus) SemanticPositive300 else Primary300
+
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
 
@@ -78,7 +80,7 @@ fun InputTextField(
             )
         )
 
-        if (errorMessage.isNullOrEmpty().not() && successMessage.isNullOrEmpty().not()){
+        if (errorMessage.isNullOrEmpty().not() && successMessage.isNullOrEmpty().not()) {
             Text(
                 modifier = Modifier
                     .padding(top = 4.dp, start = 6.dp)
