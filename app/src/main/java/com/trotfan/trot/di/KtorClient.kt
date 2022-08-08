@@ -19,9 +19,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object Module {
-    const val baseUrl = "api.thecatapi.com/v1"
-
+object KtorClient {
     @Singleton
     @Provides
     fun provideKtorHttpClient(): HttpClient {
@@ -29,17 +27,16 @@ object Module {
             defaultRequest {
                 headers {
                     append("Content-type", "application/json")
-//                    append(HttpHeaders.Authorization, "Client-ID id 값")
                 }
                 url {
                     protocol = URLProtocol.HTTPS
-                    host = baseUrl
                 }
             }
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
                     isLenient = true
+                    ignoreUnknownKeys = true
                 })
             }
             install(Logging) {

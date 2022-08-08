@@ -1,9 +1,7 @@
 package com.trotfan.trot.di
 
-import com.trotfan.trot.network.ApiServiceOne
-import com.trotfan.trot.network.impl.ApiServiceOneImpl
-import com.trotfan.trot.network.ApiServiceTwo
-import com.trotfan.trot.network.impl.ApiServiceTwoImpl
+import com.trotfan.trot.network.AuthService
+import com.trotfan.trot.network.impl.AuthServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,9 +13,5 @@ import javax.inject.Singleton
 abstract class BindModule {
     @Binds
     @Singleton
-    abstract fun provideServiceOne(apiServiceOne: ApiServiceOneImpl): ApiServiceOne
-
-    @Binds
-    @Singleton
-    abstract fun provideServiceTwo(apiServiceTwo: ApiServiceTwoImpl): ApiServiceTwo
+    abstract fun provideAuthService(authService: AuthServiceImpl): AuthService
 }

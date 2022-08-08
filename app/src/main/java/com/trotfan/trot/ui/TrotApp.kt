@@ -21,7 +21,6 @@ import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
-import com.trotfan.trot.viewmodel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 
 object Destinations {
@@ -33,13 +32,11 @@ object Destinations {
 
 @Composable
 fun TrotApp(
-    viewModel: MainViewModel = viewModel()
 ) {
     FanwooriTheme {
         val scaffoldState: ScaffoldState = rememberScaffoldState()
         val navController: NavHostController = rememberNavController()
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
-        val testData by viewModel.testData.collectAsState()
 
 
 

@@ -19,14 +19,14 @@ import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Primary600
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: AuthViewModel,
+    onKakaoSignInOnClick: () -> Unit,
     onAppleSignInOnClick: () -> Unit,
     onGoogleSignInOnClick: () -> Unit
 ) {
-    val kakaoToken = viewModel.kakaoToken.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -42,7 +42,7 @@ fun LoginScreen(
                 textColor = Gray800,
                 backgroundColor = Color(0XFFFEE500)
             ) {
-                viewModel.kakaoLogin()
+                onKakaoSignInOnClick()
             }
             Spacer(modifier = Modifier.height(8.dp))
             LoginButton(

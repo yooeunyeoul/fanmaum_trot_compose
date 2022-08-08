@@ -14,14 +14,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.trotfan.trot.R
+import com.kakao.sdk.common.util.Utility
+import com.kakao.sdk.user.UserApiClient
+import com.trotfan.trot.BuildConfig
+import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.login.AppleLoginWebViewDialog
-import com.trotfan.trot.ui.login.AuthViewModel
 import com.trotfan.trot.ui.login.LoginScreen
+import com.trotfan.trot.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -44,7 +44,9 @@ class MainActivity : ComponentActivity() {
             var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
             Surface {
                 LoginScreen(
-                    authViewModel,
+                    onKakaoSignInOnClick = {
+                        handleKakaoLogin()
+                    },
                     onAppleSignInOnClick = {
                         isAppleLoginDialogOpen = !isAppleLoginDialogOpen
                     },
@@ -62,11 +64,27 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    fun handleKakaoLogin() {
+        UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+            if (token != null) {
+
+                val kakaoTokens = KakaoTokens(
+                    refreshToken = token.refreshToken,
+                    accessToken = token.accessToken,
+                    idToken = token.idToken
+                )
+                authViewModel.postKakaoToken(kakaoTokens)
+            } else if (error != null) {
+                Log.d("AuthViewModel", "로그인 실패 + $error")
+            }
+        }
+    }
+
     private fun googleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.server_client_id))
+            .requestIdToken(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
             .requestId()
-            .requestServerAuthCode(getString(R.string.server_client_id))
+            .requestServerAuthCode(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
             .requestEmail()
             .build()
         val googleSignInClient = GoogleSignIn.getClient(this, gso)

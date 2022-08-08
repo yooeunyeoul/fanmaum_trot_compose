@@ -36,7 +36,7 @@
     <color name="secondary_900">#FF7A1917</color>
 
     <color name="semantic_positive_500">#FF2EAABA</color>
-    <color name="semantic_positive_300">#FF2EAABA</color>
+    <color name="semantic_positive_300">#FF58D7DC</color>
     <color name="semantic_negative_500">#FFD8223A</color>
     <color name="semantic_negative_300">#FFF37E78</color>
 </resources>
