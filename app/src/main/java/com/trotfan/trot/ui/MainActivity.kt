@@ -5,18 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.R
-import com.trotfan.trot.ui.invitation.InvitationScreen
+import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.ui.signup.SearchStarScreen
-import com.trotfan.trot.ui.signup.SelectStarScreen
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import dagger.hilt.android.AndroidEntryPoint
-import io.ktor.network.selector.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,6 +26,12 @@ class MainActivity : ComponentActivity() {
 //                }
             }
 //            getDynamicLinkTest()
+        }
+    }
+
+    suspend fun setUserToken(token: String) {
+        userTokenStore.updateData {
+            it.toBuilder().setAccessToken(token).build()
         }
     }
 
