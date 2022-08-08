@@ -12,8 +12,11 @@ import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.invitation.InvitationScreen
+import com.trotfan.trot.ui.signup.SearchStarScreen
+import com.trotfan.trot.ui.signup.SelectStarScreen
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import dagger.hilt.android.AndroidEntryPoint
+import io.ktor.network.selector.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -22,11 +25,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FanwooriTheme {
-                InvitationScreen {
-                    dynamicLinkTest()
-                }
+                SearchStarScreen()
+//                InvitationScreen {
+//                    dynamicLinkTest()
+//                }
             }
-            getDynamicLinkTest()
+//            getDynamicLinkTest()
         }
     }
 
