@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.model.UserInfo
-import com.trotfan.trot.repository.SampleRepository
 import com.trotfan.trot.ui.components.input.SearchStatus
 import com.trotfan.trot.ui.signup.Sample
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val repository: SampleRepository
 ) : ViewModel() {
     private val _testData = MutableStateFlow<List<Sample>>(emptyList())
 
@@ -48,21 +46,6 @@ class SignUpViewModel @Inject constructor(
             _testData.emit(sampleList)
         }
     }
-
-    private fun getRestApiTest() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getApiServiceOne(
-                userInfo = UserInfo(
-                    id = "asdf",
-                    pw = "1234",
-                    nickname = "Seung Hee",
-                    stateMessage = "Log Success"
-                )
-            )
-        }
-
-    }
-
 
     fun searchStar(keyword: String) {
         val sampleList = mutableListOf<Sample>()

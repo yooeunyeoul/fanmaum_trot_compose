@@ -1,5 +1,6 @@
 package com.trotfan.trot.repository
 
+import com.trotfan.trot.model.GoogleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.model.UserInfo
 import com.trotfan.trot.network.AuthService
@@ -12,7 +13,7 @@ class AuthRepository @Inject constructor(
         return service.postKakaoLogin(kakaoTokens)
     }
 
-    suspend fun postGoogleLogin(authCode: String): UserInfo {
+    suspend fun postGoogleLogin(authCode: GoogleToken): UserInfo {
         return service.postGoogleLogin(authCode)
     }
 }

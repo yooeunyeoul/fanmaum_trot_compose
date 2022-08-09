@@ -14,28 +14,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.kakao.sdk.common.util.Utility
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.login.AppleLoginWebViewDialog
 import com.trotfan.trot.ui.login.LoginScreen
 import com.trotfan.trot.viewmodel.AuthViewModel
-import com.google.firebase.dynamiclinks.ktx.*
-import com.google.firebase.ktx.Firebase
-import com.trotfan.trot.R
-import com.trotfan.trot.model.userTokenStore
-import com.trotfan.trot.ui.signup.SearchStarScreen
-import com.trotfan.trot.ui.signup.SettingNicknameScreen
-import com.trotfan.trot.ui.theme.FanwooriTheme
+import com.trotfan.trot.viewmodel.InvitationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
+    private val invitationViewModel: InvitationViewModel by viewModels()
 
     private val googleSignInLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -48,6 +46,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getDynamicLink()
         setContent {
             var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
             Surface {
@@ -72,7 +71,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun handleKakaoLogin() {
+    private fun handleKakaoLogin() {
         UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
             if (token != null) {
 
@@ -82,6 +81,10 @@ class MainActivity : ComponentActivity() {
                     idToken = token.idToken
                 )
                 authViewModel.postKakaoToken(kakaoTokens)
+                Log.d(
+                    "AuthViewModel",
+                    "로그인 성공 refresh = ${token.refreshToken}\naccess = ${token.accessToken}\nid = ${token.idToken}"
+                )
             } else if (error != null) {
                 Log.d("AuthViewModel", "로그인 실패 + $error")
             }
@@ -100,36 +103,18 @@ class MainActivity : ComponentActivity() {
         googleSignInLauncher.launch(googleIntent)
     }
 
-    suspend fun setUserToken(token: String) {
-        userTokenStore.updateData {
-            it.toBuilder().setAccessToken(token).build()
-        }
-    }
-
-    private fun dynamicLinkTest() {
-        val dynamicLink = Firebase.dynamicLinks.shortLinkAsync {
-            link = Uri.parse("https://www.fanwoori.com/?test=123123&name=Jone")
-            domainUriPrefix = getString(R.string.dynamic_link_url)
-            androidParameters(packageName) {}
-            iosParameters("com.trotfan.trotDev") {}
-            socialMetaTagParameters {
-                title = "Example of a Dynamic Link"
-                description = "Ths link works whether the app is installed or not!"
-            }
-        }.addOnSuccessListener {
-            Log.d("dynamicLinkTest", it.shortLink.toString())
-        }
-    }
-
-    private fun getDynamicLinkTest() {
+    private fun getDynamicLink() {
         Firebase.dynamicLinks.getDynamicLink(intent)
             .addOnSuccessListener {
                 var deepLink: Uri? = null
                 if (it != null) {
-                    deepLink = it.link
-                    val test = deepLink?.getQueryParameters("test")
-                    val name = deepLink?.getQueryParameters("name")
-                    Log.d("dynamicLinkTest", "${test?.get(0)} // ${name?.get(0)}")
+                    lifecycleScope.launch {
+                        deepLink = it.link
+                        val code = deepLink?.getQueryParameters("invite_code")
+                        code?.get(0)?.let { c ->
+                            invitationViewModel.setInviteCode(code = c)
+                        }
+                    }
                 }
             }
             .addOnFailureListener {

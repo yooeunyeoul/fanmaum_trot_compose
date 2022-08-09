@@ -1,18 +1,21 @@
 package com.trotfan.trot.ui.login
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.R
+import com.trotfan.trot.UserTokenValue
+import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.ui.login.components.LoginButton
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
@@ -27,6 +30,12 @@ fun LoginScreen(
     onAppleSignInOnClick: () -> Unit,
     onGoogleSignInOnClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    val accessToken =
+        context.userTokenStore.data.collectAsState(initial = UserTokenValue.getDefaultInstance()).value.accessToken
+    var isSignIn by remember {
+        mutableStateOf(false)
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -96,6 +105,9 @@ fun LoginScreen(
                     style = FanwooriTypography.button2
                 )
             }
+        }
+        if (accessToken != null) {
+            isSignIn = true
         }
     }
 }

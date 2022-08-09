@@ -11,9 +11,14 @@ data class KakaoTokens(
 )
 
 @Serializable
+data class GoogleToken(
+    val authCode: String? = null
+)
+
+@Serializable
 data class UserInfo(
     @SerializedName("access_token")
     val access_token: String,
     @SerializedName("refresh_token")
-    val refresh_token: String
+    val refresh_token: String?
 )

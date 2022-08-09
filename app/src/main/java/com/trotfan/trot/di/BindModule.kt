@@ -1,7 +1,9 @@
 package com.trotfan.trot.di
 
 import com.trotfan.trot.network.AuthService
+import com.trotfan.trot.network.InvitationService
 import com.trotfan.trot.network.impl.AuthServiceImpl
+import com.trotfan.trot.network.impl.InvitationServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,4 +16,8 @@ abstract class BindModule {
     @Binds
     @Singleton
     abstract fun provideAuthService(authService: AuthServiceImpl): AuthService
+
+    @Binds
+    @Singleton
+    abstract fun provideInvitationService(invitationService: InvitationServiceImpl): InvitationService
 }

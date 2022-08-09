@@ -3,7 +3,6 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.repository.SampleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +20,6 @@ enum class NickNameCheckStatus(val message: String) {
 
 @HiltViewModel
 class NickNameViewModel @Inject constructor(
-    private val repository: SampleRepository
 ) : ViewModel() {
 
     val nickNameCheckStatus: StateFlow<NickNameCheckStatus>

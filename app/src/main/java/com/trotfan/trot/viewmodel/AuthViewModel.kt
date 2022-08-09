@@ -7,8 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.kakao.sdk.user.UserApiClient
+import com.trotfan.trot.model.GoogleToken
 import com.trotfan.trot.model.KakaoTokens
+import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,7 @@ class AuthViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     val googleToken = MutableStateFlow<String?>(null)
+    private val context = getApplication<Application>()
 
     fun googleLogin(completedTask: Task<GoogleSignInAccount>) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,11 +38,12 @@ class AuthViewModel @Inject constructor(
     fun postGoogleToken() {
         viewModelScope.launch(Dispatchers.IO) {
             kotlin.runCatching {
-                googleToken.value?.let { repository.postGoogleLogin(it) }
+                googleToken.value?.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
+                it?.let { it1 -> setUserToken(it1.access_token) }
                 Log.d("AuthViewModel", it?.access_token.toString())
             }.onFailure {
-                Log.d("AuthViewModel", it.message.toString())
+                Log.d("AuthViewModel", it.toString())
             }
         }
     }
@@ -50,6 +53,7 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
+                setUserToken(it.access_token)
                 Log.d("AuthViewModel", it.access_token)
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
@@ -68,4 +72,11 @@ class AuthViewModel @Inject constructor(
                 continuation.resume(null)
             }
         }
+
+    suspend fun setUserToken(token: String) {
+        context.userTokenStore.updateData {
+            it.toBuilder().setAccessToken(token).build()
+        }
+    }
+
 }

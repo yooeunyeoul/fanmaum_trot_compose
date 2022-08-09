@@ -1,5 +1,6 @@
 package com.trotfan.trot.network
 
+import com.trotfan.trot.model.GoogleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.model.UserInfo
 import io.ktor.client.statement.*
@@ -13,6 +14,6 @@ interface AuthService {
     ): UserInfo
 
     suspend fun postGoogleLogin(
-        authCode: String
+        authCode: GoogleToken
     ): UserInfo
 }

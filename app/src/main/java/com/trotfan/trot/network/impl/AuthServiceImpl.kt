@@ -1,6 +1,6 @@
 package com.trotfan.trot.network.impl
 
-import com.trotfan.trot.di.KtorClient
+import com.trotfan.trot.model.GoogleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.model.UserInfo
 import com.trotfan.trot.network.AuthService
@@ -22,12 +22,11 @@ class AuthServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
         }.body()
 
     override suspend fun postGoogleLogin(
-        authCode: String
+        authCode: GoogleToken
     ): UserInfo =
         httpClient.post {
             url(HttpRoutes.GOOGLE_LOGIN)
             contentType(ContentType.Application.Json)
             setBody(authCode)
         }.body()
-
 }

@@ -47,36 +47,6 @@ fun AppleLoginWebViewDialog(url: String, onDismissRequest: () -> Unit) {
                     loadUrl(url)
                 }
             })
-
-            var value by remember { mutableStateOf("") }
-            val focusRequester = remember { FocusRequester() }
-            val focusManager = LocalFocusManager.current
-
-
-//            OutlinedTextField(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp)
-//                    .focusRequester(focusRequester),
-//                value = value,
-//                singleLine = true,
-//                isError = true,
-//                onValueChange = { value = it },
-//                label = { Text(text = "닉네임") },
-//                shape = RoundedCornerShape(12.dp),
-//                keyboardActions = KeyboardActions {
-//                    focusManager.clearFocus()
-//                },
-//                colors = TextFieldDefaults.outlinedTextFieldColors(
-//                    focusedBorderColor = Primary300,
-//                    unfocusedBorderColor = Color.Transparent,
-//                    placeholderColor = Gray400,
-//                    focusedLabelColor = Primary300,
-//                    unfocusedLabelColor = Gray400,
-//                    containerColor = Gray100,
-//                    errorBorderColor = SemanticNegative300,
-//                )
-//            )
         }
     }
 }
