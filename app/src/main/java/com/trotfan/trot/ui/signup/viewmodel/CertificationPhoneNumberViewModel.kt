@@ -3,8 +3,9 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.repository.SampleRepository
+import com.trotfan.trot.repository.SignUpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -32,7 +33,7 @@ enum class CertificationNumberCheckStatus(
 
 @HiltViewModel
 class CertificationPhoneNumberViewModel @Inject constructor(
-    private val repository: SampleRepository
+    private val repository: SignUpRepository
 ) : ViewModel() {
 
     val certificationNumberStatus: StateFlow<CertificationNumberCheckStatus?>
@@ -40,16 +41,28 @@ class CertificationPhoneNumberViewModel @Inject constructor(
     private val _certificationNumberStatus =
         MutableStateFlow<CertificationNumberCheckStatus?>(null)
 
+    private val certificationNumber = MutableStateFlow<String>("")
 
-    init {
-//        getRestApiTest()
-        initSampleData()
-        Log.d("Initializing", "MainViewModel")
-    }
+    fun requestCertificationCode(phoneNumber: String) {
+        viewModelScope.launch(Dispatchers.IO) {
 
-    private fun initSampleData() {
-        viewModelScope.launch {
-
+            try {
+                val randomCode = (111111..999999).shuffled().last()
+                certificationNumber.emit(randomCode.toString())
+                val message = "팬우리 인증번호 ${randomCode} 입니다."
+                val response = repository.requestSmsCertification(
+                    phoneNumber = phoneNumber,
+                    message = message
+                )
+                if (response.result_code == "200") {
+                    Log.e("문자인증", "성공")
+                } else {
+                    Log.e("문자인증", "실패")
+                }
+                Log.e("문자인증 코드", randomCode.toString())
+            } catch (e: Exception) {
+                Log.e("Error", e.message.toString())
+            }
         }
     }
 
@@ -60,11 +73,11 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                 _certificationNumberStatus.emit(CertificationNumberCheckStatus.TimeExceeded)
             } else {
                 when (number) {
-                    "111111" -> {
-                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.NotAuth)
+                    certificationNumber.value-> {
+                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
                     }
                     else -> {
-                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
+                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.NotAuth)
                     }
                 }
             }

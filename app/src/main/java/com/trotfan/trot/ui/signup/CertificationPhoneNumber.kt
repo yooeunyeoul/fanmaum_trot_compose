@@ -145,6 +145,7 @@ fun CertificationPhoneScreen(
                 certificationNumberSend = true
                 focusManager.clearFocus()
                 focusRequester.requestFocus()
+                viewModel.requestCertificationCode(inputPhoneNumber)
 
             }
         }

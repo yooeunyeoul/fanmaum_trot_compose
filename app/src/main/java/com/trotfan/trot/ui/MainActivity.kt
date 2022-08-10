@@ -12,6 +12,7 @@ import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.invitation.InvitationScreen
+import com.trotfan.trot.ui.signup.CertificationPhoneScreen
 import com.trotfan.trot.ui.signup.SearchStarScreen
 import com.trotfan.trot.ui.signup.SelectStarScreen
 import com.trotfan.trot.ui.signup.SettingNicknameScreen
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FanwooriTheme {
 //                SearchStarScreen()
-                SettingNicknameScreen()
+                CertificationPhoneScreen()
 //                InvitationScreen {
 //                    dynamicLinkTest()
 //                }

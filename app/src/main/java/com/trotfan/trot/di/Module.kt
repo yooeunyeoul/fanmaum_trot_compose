@@ -2,6 +2,7 @@ package com.trotfan.trot.di
 
 import android.content.ContentValues
 import android.util.Log
+import com.trotfan.trot.network.impl.SmsHeaderKey
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +15,7 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -21,27 +23,19 @@ import javax.inject.Singleton
 object Module {
     const val baseUrl = "api.thecatapi.com/v1"
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+        prettyPrint = true
+        isLenient = true
+        encodeDefaults = true
+    }
+
     @Singleton
     @Provides
     fun provideKtorHttpClient(): HttpClient {
         return HttpClient(CIO) {
-            defaultRequest {
-                headers {
-                    append("Content-type", "application/json")
-//                    append(HttpHeaders.Authorization, "Client-ID id 값")
-                }
-                url {
-                    protocol = URLProtocol.HTTPS
-                    host = baseUrl
-                }
-            }
             install(JsonFeature) {
-                serializer = KotlinxSerializer(json = kotlinx.serialization.json.Json {
-                    ignoreUnknownKeys = true //모델에 없고, json 에 있는경우 해당 key 무시
-                    prettyPrint = true
-                    isLenient = true // "" 따옴표 잘못된건 무시하고 처리
-                    encodeDefaults = false // null 인 값도 json 에 포함 시킨다.
-                })
+                serializer = KotlinxSerializer(json)
             }
             install(Logging) {
                 logger = object : Logger {
