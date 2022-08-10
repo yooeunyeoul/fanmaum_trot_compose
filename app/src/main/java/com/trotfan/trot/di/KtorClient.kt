@@ -24,19 +24,20 @@ object KtorClient {
     @Provides
     fun provideKtorHttpClient(): HttpClient {
         return HttpClient(CIO) {
-            defaultRequest {
-                headers {
-                    append("Content-type", "application/json")
-                }
-                url {
-                    protocol = URLProtocol.HTTPS
-                }
-            }
+//            defaultRequest {
+//                headers {
+//                    append("Content-type", "application/json")
+//                }
+//                url {
+//                    protocol = URLProtocol.HTTPS
+//                }
+//            }
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
                     isLenient = true
                     ignoreUnknownKeys = true
+                    explicitNulls = false
                 })
             }
             install(Logging) {

@@ -25,7 +25,7 @@ import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
 import com.trotfan.trot.ui.signup.components.ListItemButton
-import com.trotfan.trot.ui.signup.viewmodel.SignUpViewModel
+import com.trotfan.trot.ui.signup.viewmodel.StarSelectViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
@@ -37,7 +37,7 @@ data class Sample(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SelectStarScreen(viewModel: SignUpViewModel = viewModel()) {
+fun SelectStarScreen(viewModel: StarSelectViewModel = viewModel()) {
 
     val listState = rememberLazyListState()
     val testData by viewModel.testData.collectAsState()

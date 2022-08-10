@@ -27,14 +27,14 @@ import com.trotfan.trot.ui.components.input.SearchStatus
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
 import com.trotfan.trot.ui.signup.components.ListItemButton
-import com.trotfan.trot.ui.signup.viewmodel.SignUpViewModel
+import com.trotfan.trot.ui.signup.viewmodel.StarSelectViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
 
 
 @Composable
-fun SearchStarScreen(viewModel: SignUpViewModel = viewModel()) {
+fun SearchStarScreen(viewModel: StarSelectViewModel = viewModel()) {
 
     val testData by viewModel.testData.collectAsState()
     val searchState by viewModel.searchStatus.collectAsState()

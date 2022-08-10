@@ -46,7 +46,8 @@ fun InputTextField(
     Column {
         OutlinedTextField(
             modifier = modifier
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester)
+                .fillMaxWidth(),
             value = value,
             singleLine = true,
             isError = errorStatus,

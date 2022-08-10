@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.signup
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
@@ -8,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -110,28 +112,31 @@ fun CertificationPhoneScreen(
             Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            InputTextField(
-                placeHolder = "예) 01012345678",
-                maxLength = 11,
-                errorStatus = errorState,
-                onValueChange = {
-                    inputPhoneNumber = it
-                    errorState =
-                        inputPhoneNumber.length > 3 && inputPhoneNumber.substring(
-                            0,
-                            3
-                        ) == "010" == false
-                },
-                errorMessage = "휴대폰 번호가 형식에 맞지\n" +
-                        "않아요.",
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
+
+            Column(Modifier.weight(1f)) {
+                InputTextField(
+                    placeHolder = "예) 01012345678",
+                    maxLength = 11,
+                    errorStatus = errorState,
+                    onValueChange = {
+                        inputPhoneNumber = it
+                        errorState =
+                            inputPhoneNumber.length > 3 && inputPhoneNumber.substring(
+                                0,
+                                3
+                            ) == "010" == false
+                    },
+                    errorMessage = "휴대폰 번호가 형식에 맞지\n" +
+                            "않아요.",
+                    modifier = Modifier,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    )
                 )
-            )
+
+            }
 
             Spacer(modifier = Modifier.width(8.dp))
 
@@ -139,6 +144,7 @@ fun CertificationPhoneScreen(
                 text = "인증번호 받기",
                 enabled = inputPhoneNumber.length >= 11 && !errorState,
                 modifier = Modifier
+                    .defaultMinSize(minWidth = 120.dp)
                     .width(120.dp)
             ) {
                 ticks = 180

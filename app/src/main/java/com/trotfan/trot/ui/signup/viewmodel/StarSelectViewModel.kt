@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
+class StarSelectViewModel @Inject constructor(
     private val repository: SignUpRepository
 ) : ViewModel() {
     private val _testData = MutableStateFlow<List<Sample>>(emptyList())
@@ -59,6 +59,14 @@ class SignUpViewModel @Inject constructor(
                 "empty" -> {
                     _testData.emit(listOf())
                     _searchState.emit(SearchStatus.NoResult)
+                }
+                "search"->{
+                    for (i in 0..100) {
+                        sampleList.add(Sample(id = i))
+                    }
+                    _testData.emit(sampleList)
+                    _searchState.emit(SearchStatus.SearchResult)
+
                 }
                 else -> {
                     for (i in 0..10) {

@@ -24,6 +24,10 @@ import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.login.AppleLoginWebViewDialog
 import com.trotfan.trot.ui.login.LoginScreen
+import com.trotfan.trot.ui.signup.CertificationPhoneScreen
+import com.trotfan.trot.ui.signup.SearchStarScreen
+import com.trotfan.trot.ui.signup.SelectStarScreen
+import com.trotfan.trot.ui.signup.SettingNicknameScreen
 import com.trotfan.trot.viewmodel.AuthViewModel
 import com.trotfan.trot.viewmodel.InvitationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,26 +52,27 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         getDynamicLink()
         setContent {
-            var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
-            Surface {
-                LoginScreen(
-                    onKakaoSignInOnClick = {
-                        handleKakaoLogin()
-                    },
-                    onAppleSignInOnClick = {
-                        isAppleLoginDialogOpen = !isAppleLoginDialogOpen
-                    },
-                    onGoogleSignInOnClick = {
-                        googleSignIn()
-                    }
-                )
-
-                if (isAppleLoginDialogOpen) {
-                    AppleLoginWebViewDialog(url = "https://www.google.com/") {
-                        isAppleLoginDialogOpen = false
-                    }
-                }
-            }
+            CertificationPhoneScreen()
+//            var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
+//            Surface {
+//                LoginScreen(
+//                    onKakaoSignInOnClick = {
+//                        handleKakaoLogin()
+//                    },
+//                    onAppleSignInOnClick = {
+//                        isAppleLoginDialogOpen = !isAppleLoginDialogOpen
+//                    },
+//                    onGoogleSignInOnClick = {
+//                        googleSignIn()
+//                    }
+//                )
+//
+//                if (isAppleLoginDialogOpen) {
+//                    AppleLoginWebViewDialog(url = "https://www.google.com/") {
+//                        isAppleLoginDialogOpen = false
+//                    }
+//                }
+//            }
         }
     }
 
