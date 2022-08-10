@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -31,7 +32,9 @@ fun InputTextField(
     positiveStatus: Boolean = false,
     errorMessage: String? = null,
     successMessage: String? = null,
-    modifier: Modifier
+    modifier: Modifier,
+    keyboardOptions: KeyboardOptions? = null,
+    trailingIconDisabled: Boolean = false
 ) {
     var value by remember { mutableStateOf("") }
     val focusBorderColor =
@@ -43,8 +46,8 @@ fun InputTextField(
     Column {
         OutlinedTextField(
             modifier = modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester)
+                .fillMaxWidth(),
             value = value,
             singleLine = true,
             isError = errorStatus,
@@ -58,14 +61,17 @@ fun InputTextField(
                 focusManager.clearFocus()
             },
             trailingIcon = {
-                if (value.isBlank()) return@OutlinedTextField else Icon(
-                    painterResource(id = R.drawable.input_clear),
-                    null,
-                    Modifier.clickable {
-                        value = ""
-                        onValueChange(value)
-                    }
-                )
+                if (!trailingIconDisabled) {
+                    if (value.isBlank()) return@OutlinedTextField else Icon(
+                        painterResource(id = R.drawable.input_clear),
+                        null,
+                        Modifier.clickable {
+                            value = ""
+                            onValueChange(value)
+                        }
+                    )
+                }
+
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = Gray100,
@@ -77,8 +83,10 @@ fun InputTextField(
                 unfocusedLabelColor = Gray400,
                 errorBorderColor = SemanticNegative300,
                 errorTrailingIconColor = Gray600
+            ),
+            keyboardOptions = keyboardOptions ?: KeyboardOptions(),
+
             )
-        )
 
         if (errorMessage.isNullOrEmpty().not() && successMessage.isNullOrEmpty().not()) {
             Text(

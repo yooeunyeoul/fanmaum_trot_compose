@@ -3,18 +3,18 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.model.UserInfo
+import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.components.input.SearchStatus
 import com.trotfan.trot.ui.signup.Sample
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
+class StarSelectViewModel @Inject constructor(
+    private val repository: SignUpRepository
 ) : ViewModel() {
     private val _testData = MutableStateFlow<List<Sample>>(emptyList())
 
@@ -47,6 +47,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+
     fun searchStar(keyword: String) {
         val sampleList = mutableListOf<Sample>()
         viewModelScope.launch {
@@ -58,6 +59,14 @@ class SignUpViewModel @Inject constructor(
                 "empty" -> {
                     _testData.emit(listOf())
                     _searchState.emit(SearchStatus.NoResult)
+                }
+                "search"->{
+                    for (i in 0..100) {
+                        sampleList.add(Sample(id = i))
+                    }
+                    _testData.emit(sampleList)
+                    _searchState.emit(SearchStatus.SearchResult)
+
                 }
                 else -> {
                     for (i in 0..10) {
