@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.signup
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
@@ -9,15 +8,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.button.Outline1Button
-import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
@@ -30,7 +28,9 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun CertificationPhoneScreen(
-    viewModel: CertificationPhoneNumberViewModel = viewModel()
+    navController: NavController,
+    viewModel: CertificationPhoneNumberViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
 ) {
     var inputPhoneNumber by remember {
         mutableStateOf("")
@@ -71,6 +71,11 @@ fun CertificationPhoneScreen(
                 buttonOneText = status?.buttonText ?: ""
             ) {
                 viewModel.hideCertificateDialog()
+                navController.navigate(SignUpSections.InvitationCode.route) {
+                    popUpTo(SignUpSections.CertificationPhoneNumber.route) {
+                        inclusive = true
+                    }
+                }
             }
         }
         null -> {
@@ -86,7 +91,7 @@ fun CertificationPhoneScreen(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .focusRequester(focusRequester)
     ) {

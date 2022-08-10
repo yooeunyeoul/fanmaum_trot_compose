@@ -7,11 +7,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
+import com.trotfan.trot.ui.home.HomeSections
+import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
@@ -21,7 +25,9 @@ import java.util.regex.Pattern
 @Composable
 fun InvitationScreen(
     linkText: String = "",
-    dynamicClick: () -> Unit
+    dynamicClick: () -> Unit,
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
     var errorState by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf(linkText) }
@@ -30,7 +36,7 @@ fun InvitationScreen(
     var completeDialogState by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Text(
             modifier = Modifier
@@ -84,6 +90,7 @@ fun InvitationScreen(
 
             Outline1Button(text = "건너뛰기", modifier = Modifier.weight(1f)) {
                 skipDialogState = true
+
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -101,10 +108,16 @@ fun InvitationScreen(
                 positiveText = "건너뛰기",
                 negativeText = "취소",
                 onDismiss = { skipDialogState = false },
-                onPositive = {}
+                onPositive = {
+                    navController.navigate(HomeSections.VOTE.route){
+                        popUpTo(SignUpSections.InvitationCode.route){
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
-        
+
         if (completeDialogState) {
             VerticalDialog(
                 contentText = "타임투표권 500표 받았어요!",
@@ -119,6 +132,6 @@ fun InvitationScreen(
 @Composable
 fun InvitationPreview() {
     FanwooriTheme {
-        InvitationScreen {}
+        InvitationScreen(dynamicClick = {}, navController = rememberNavController())
     }
 }

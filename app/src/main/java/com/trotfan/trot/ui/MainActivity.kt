@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         getDynamicLink()
         setContent {
-            CertificationPhoneScreen()
+            TrotApp()
 //            var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
 //            Surface {
 //                LoginScreen(

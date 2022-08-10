@@ -16,7 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.BackIcon
 import com.trotfan.trot.ui.components.button.ContainedButton
@@ -34,7 +37,11 @@ import com.trotfan.trot.ui.theme.Gray700
 
 
 @Composable
-fun SearchStarScreen(viewModel: StarSelectViewModel = viewModel()) {
+fun SearchStarScreen(
+    navController: NavController,
+    viewModel: StarSelectViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
+) {
 
     val testData by viewModel.testData.collectAsState()
     val searchState by viewModel.searchStatus.collectAsState()
@@ -58,7 +65,16 @@ fun SearchStarScreen(viewModel: StarSelectViewModel = viewModel()) {
                     "최초 1회만 가능해요!",
             positiveText = "선택",
             negativeText = "취소",
-            contentText = selectedItem?.id.toString()
+            contentText = selectedItem?.id.toString(),
+            onPositive = {
+                navController.navigate(SignUpSections.SettingNickName.route) {
+                    popUpTo(SignUpSections.SearchStar.route) {
+                        inclusive = true
+                    }
+                    navController.backQueue.removeIf { it.destination.route == SignUpSections.SelectStar.route }
+                }
+
+            }
         ) {
             viewModel.selectStar(selectedItem)
             starSelectDialog = false
@@ -93,7 +109,7 @@ fun SearchStarScreen(viewModel: StarSelectViewModel = viewModel()) {
     }
 
     Column(
-        Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(bottom = 24.dp)
     ) {
@@ -107,7 +123,7 @@ fun SearchStarScreen(viewModel: StarSelectViewModel = viewModel()) {
         ) {
             BackIcon(
                 onCLick = {
-
+                    navController.popBackStack()
                 }, modifier = Modifier.align(CenterVertically)
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -271,5 +287,5 @@ fun SearchStarScreen(viewModel: StarSelectViewModel = viewModel()) {
 
 @Composable
 fun PreviewSearchStarScreen() {
-    SearchStarScreen()
+    SearchStarScreen(navController = rememberNavController())
 }

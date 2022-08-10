@@ -8,7 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.input.InputTextField
@@ -21,7 +24,9 @@ import com.trotfan.trot.ui.theme.Gray700
 
 @Composable
 fun SettingNicknameScreen(
-    viewModel: NickNameViewModel = viewModel()
+    navController: NavController,
+    viewModel: NickNameViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
 ) {
     var inputText by remember {
         mutableStateOf("")
@@ -29,7 +34,7 @@ fun SettingNicknameScreen(
     val nickCheckState by viewModel.nickNameCheckStatus.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         CustomTopAppBar(title = "회원가입")
         Text(
@@ -101,6 +106,11 @@ fun SettingNicknameScreen(
                 enabled = nickCheckState == NickNameCheckStatus.AuthSuccess,
                 modifier = Modifier.weight(1f)
             ) {
+                navController.navigate(SignUpSections.CertificationPhoneNumber.route){
+                    popUpTo(SignUpSections.SettingNickName.route) {
+                        inclusive = true
+                    }
+                }
 
             }
         }
@@ -110,5 +120,5 @@ fun SettingNicknameScreen(
 @Preview
 @Composable
 fun PreviewSettingNickNameScreen() {
-    SettingNicknameScreen()
+    SettingNicknameScreen(navController = rememberNavController())
 }
