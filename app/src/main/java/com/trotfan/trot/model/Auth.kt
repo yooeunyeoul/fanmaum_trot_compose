@@ -17,8 +17,6 @@ data class GoogleToken(
 
 @Serializable
 data class UserInfo(
-    @SerializedName("access_token")
     val access_token: String,
-    @SerializedName("refresh_token")
     val refresh_token: String?
 )

@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                 )
 
                 if (isAppleLoginDialogOpen) {
-                    AppleLoginWebViewDialog(url = "https://www.google.com/") {
+                    AppleLoginWebViewDialog {
                         isAppleLoginDialogOpen = false
                     }
                 }
