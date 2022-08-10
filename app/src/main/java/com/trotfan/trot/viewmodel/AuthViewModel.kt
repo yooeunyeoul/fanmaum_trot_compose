@@ -12,6 +12,7 @@ import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -75,6 +76,7 @@ class AuthViewModel @Inject constructor(
 
     suspend fun setUserToken(token: String) {
         context.userTokenStore.updateData {
+            Log.d("userTokenStore", token)
             it.toBuilder().setAccessToken(token).build()
         }
     }

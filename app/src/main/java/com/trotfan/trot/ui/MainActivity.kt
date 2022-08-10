@@ -65,6 +65,9 @@ class MainActivity : ComponentActivity() {
                 if (isAppleLoginDialogOpen) {
                     AppleLoginWebViewDialog {
                         isAppleLoginDialogOpen = false
+                        lifecycleScope.launch {
+                            it?.let { it1 -> authViewModel.setUserToken(it1) }
+                        }
                     }
                 }
             }

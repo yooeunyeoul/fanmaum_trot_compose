@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
@@ -83,5 +84,10 @@ class AppleWebViewClient(private val onDismissRequest: (String?) -> Unit) : WebV
                 }
             }
         }
+    }
+
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        onDismissRequest(request?.url?.getQueryParameter("id_token"))
+        return super.shouldOverrideUrlLoading(view, request)
     }
 }
