@@ -2,40 +2,42 @@ package com.trotfan.trot.di
 
 import android.content.ContentValues
 import android.util.Log
-import com.trotfan.trot.network.impl.SmsHeaderKey
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object Module {
-    const val baseUrl = "api.thecatapi.com/v1"
-
-    private val json = Json {
-        ignoreUnknownKeys = true
-        prettyPrint = true
-        isLenient = true
-        encodeDefaults = true
-    }
-
+object KtorClient {
     @Singleton
     @Provides
     fun provideKtorHttpClient(): HttpClient {
         return HttpClient(CIO) {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(json)
+            defaultRequest {
+                headers {
+                    append("Content-type", "application/json")
+                }
+                url {
+                    protocol = URLProtocol.HTTPS
+                }
+            }
+            install(ContentNegotiation) {
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
             }
             install(Logging) {
                 logger = object : Logger {

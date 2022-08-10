@@ -1,10 +1,17 @@
 package com.trotfan.trot.ui.utils
 
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import com.google.firebase.dynamiclinks.ShortDynamicLink
+import com.google.firebase.dynamiclinks.ktx.*
+import com.google.firebase.ktx.Firebase
+import com.trotfan.trot.R
 
 
 inline fun Modifier.clickable(crossinline onClick: () -> Unit): Modifier = composed {
@@ -13,5 +20,26 @@ inline fun Modifier.clickable(crossinline onClick: () -> Unit): Modifier = compo
         interactionSource = MutableInteractionSource()
     ) {
         onClick()
+    }
+}
+
+fun addDynamicLink(
+    titleText: String,
+    uri: String,
+    descriptionText: String,
+    packageName: String,
+    onSuccess: (ShortDynamicLink) -> Unit
+) {
+    Firebase.dynamicLinks.shortLinkAsync {
+        link = Uri.parse(uri)
+        domainUriPrefix = "https://fanwoori.page.link"
+        androidParameters(packageName) {}
+        iosParameters("com.trotfan.trotDev") {}
+        socialMetaTagParameters {
+            title = titleText
+            description = descriptionText
+        }
+    }.addOnSuccessListener {
+        onSuccess(it)
     }
 }
