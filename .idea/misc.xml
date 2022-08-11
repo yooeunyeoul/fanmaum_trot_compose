@@ -17,6 +17,8 @@
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/Login.kt" value="0.22" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/components/GoogleSiginButton.kt" value="1.0" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/components/LoginButton.kt" value="0.2916666666666667" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/signup/SelectStar.kt" value="0.18431221020092736" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/signup/SettingNickName.kt" value="0.2014358108108108" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/theme/Type.kt" value="0.23375527426160336" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.15" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.15" />

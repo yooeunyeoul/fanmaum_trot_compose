@@ -19,12 +19,9 @@ import com.trotfan.trot.ui.theme.Gray700
 import java.util.regex.Pattern
 
 @Composable
-fun InvitationScreen(
-    linkText: String = "",
-    dynamicClick: () -> Unit
-) {
+fun InvitationScreen() {
     var errorState by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf(linkText) }
+    var errorMessage by remember { mutableStateOf("") }
     var completeState by remember { mutableStateOf(false) }
     var skipDialogState by remember { mutableStateOf(false) }
     var completeDialogState by remember { mutableStateOf(false) }
@@ -119,6 +116,6 @@ fun InvitationScreen(
 @Composable
 fun InvitationPreview() {
     FanwooriTheme {
-        InvitationScreen {}
+        InvitationScreen()
     }
 }
