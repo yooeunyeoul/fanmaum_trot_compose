@@ -35,12 +35,6 @@ class AuthServiceImpl @Inject constructor(
             contentType(ContentType.Application.Json)
             setBody(authCode)
         }
-
-        val token = responses.headers["id_token"]
-        context.userTokenStore.updateData {
-            it.toBuilder().setAccessToken(token).build()
-        }
-
         return responses.body()
     }
 }

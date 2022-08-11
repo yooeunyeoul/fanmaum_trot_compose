@@ -50,9 +50,6 @@ fun NavGraphBuilder.addSignUpGraph(
     }
     composable(SignUpSections.InvitationCode.route) { from ->
         InvitationScreen(
-            dynamicClick = {
-
-            },
             navController = navController,
             modifier = modifier
         )

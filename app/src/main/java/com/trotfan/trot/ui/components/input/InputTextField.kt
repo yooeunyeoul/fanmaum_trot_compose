@@ -88,7 +88,7 @@ fun InputTextField(
 
             )
 
-        if (errorMessage.isNullOrEmpty().not() && successMessage.isNullOrEmpty().not()) {
+        if (errorStatus || positiveStatus) {
             Text(
                 modifier = Modifier
                     .padding(top = 4.dp, start = 6.dp)

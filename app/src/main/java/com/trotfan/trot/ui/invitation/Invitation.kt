@@ -14,6 +14,7 @@ import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
+import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.theme.FanwooriTheme
@@ -24,13 +25,12 @@ import java.util.regex.Pattern
 
 @Composable
 fun InvitationScreen(
+    modifier: Modifier = Modifier,
     linkText: String = "",
-    dynamicClick: () -> Unit,
-    navController: NavController,
-    modifier: Modifier = Modifier
+    navController: NavController
 ) {
     var errorState by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf(linkText) }
+    var errorMessage by remember { mutableStateOf("") }
     var completeState by remember { mutableStateOf(false) }
     var skipDialogState by remember { mutableStateOf(false) }
     var completeDialogState by remember { mutableStateOf(false) }
@@ -38,6 +38,8 @@ fun InvitationScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
+        CustomTopAppBar(title = "회원가입")
+
         Text(
             modifier = Modifier
                 .padding(top = 8.dp),
@@ -108,8 +110,8 @@ fun InvitationScreen(
                 negativeText = "취소",
                 onDismiss = { skipDialogState = false },
                 onPositive = {
-                    navController.navigate(HomeSections.VOTE.route){
-                        popUpTo(SignUpSections.InvitationCode.route){
+                    navController.navigate(HomeSections.VOTE.route) {
+                        popUpTo(SignUpSections.InvitationCode.route) {
                             inclusive = true
                         }
                     }
@@ -131,6 +133,6 @@ fun InvitationScreen(
 @Composable
 fun InvitationPreview() {
     FanwooriTheme {
-        InvitationScreen(dynamicClick = {}, navController = rememberNavController())
+        InvitationScreen(linkText = "#1234567", navController = rememberNavController())
     }
 }

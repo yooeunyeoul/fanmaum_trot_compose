@@ -35,77 +35,15 @@ class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
     private val invitationViewModel: InvitationViewModel by viewModels()
 
-    private val googleSignInLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-            authViewModel.googleLogin(task)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getDynamicLink()
         setContent {
-            TrotApp()
-//            var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
-//            Surface {
-//                LoginScreen(
-//                    onKakaoSignInOnClick = {
-//                        handleKakaoLogin()
-//                    },
-//                    onAppleSignInOnClick = {
-//                        isAppleLoginDialogOpen = !isAppleLoginDialogOpen
-//                    },
-//                    onGoogleSignInOnClick = {
-//                        googleSignIn()
-//                    }
-//                )
-//
-//                if (isAppleLoginDialogOpen) {
-//                    AppleLoginWebViewDialog {
-//                        isAppleLoginDialogOpen = false
-//                        lifecycleScope.launch {
-//                            it?.let { it1 -> authViewModel.setUserToken(it1) }
-//                        }
-//                    }
-//                }
-//            }
+            FanwooriApp(
+            )
         }
     }
 
-    private fun handleKakaoLogin() {
-        UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
-            if (token != null) {
-
-                val kakaoTokens = KakaoTokens(
-                    refreshToken = token.refreshToken,
-                    accessToken = token.accessToken,
-                    idToken = token.idToken
-                )
-                authViewModel.postKakaoToken(kakaoTokens)
-                Log.d(
-                    "AuthViewModel",
-                    "로그인 성공 refresh = ${token.refreshToken}\naccess = ${token.accessToken}\nid = ${token.idToken}"
-                )
-            } else if (error != null) {
-                Log.d("AuthViewModel", "로그인 실패 + $error")
-            }
-        }
-    }
-
-    private fun googleSignIn() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
-            .requestId()
-            .requestServerAuthCode(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
-            .requestEmail()
-            .build()
-        val googleSignInClient = GoogleSignIn.getClient(this, gso)
-        val googleIntent = googleSignInClient.signInIntent
-        googleSignInLauncher.launch(googleIntent)
-    }
 
     private fun getDynamicLink() {
         Firebase.dynamicLinks.getDynamicLink(intent)

@@ -62,30 +62,6 @@ fun AppleLoginWebViewDialog(onDismissRequest: (String?) -> Unit) {
 
 class AppleWebViewClient(private val onDismissRequest: (String?) -> Unit) : WebViewClient() {
 
-    override fun onPageFinished(view: WebView?, url: String?) {
-        super.onPageFinished(view, url)
-        url?.let {
-            val uri = Uri.parse(it)
-            Log.d("appleLogin", url)
-
-            //status
-            uri.getQueryParameter("status")?.let { status ->
-                when (status) {
-                    "fail" -> {
-                        Log.d("appleLogin", "fail")
-                    }
-                    "success" -> {
-                        Log.d("appleLogin", url)
-                        onDismissRequest.invoke("test")
-                    }
-                    else -> {
-                        Log.d("appleLogin", status)
-                    }
-                }
-            }
-        }
-    }
-
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
         onDismissRequest(request?.url?.getQueryParameter("id_token"))
         return super.shouldOverrideUrlLoading(view, request)

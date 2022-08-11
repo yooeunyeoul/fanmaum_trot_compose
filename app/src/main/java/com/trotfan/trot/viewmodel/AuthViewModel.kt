@@ -12,9 +12,11 @@ import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -26,23 +28,25 @@ class AuthViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    val googleToken = MutableStateFlow<String?>(null)
     private val context = getApplication<Application>()
 
+    private val _accessCode = MutableStateFlow("")
+    val accessCode: StateFlow<String>
+        get() = _accessCode
+
     fun googleLogin(completedTask: Task<GoogleSignInAccount>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            googleToken.emit(handleGoogleLogin(completedTask))
-            postGoogleToken()
+        viewModelScope.launch() {
+            postGoogleToken(handleGoogleLogin(completedTask))
         }
     }
 
-    fun postGoogleToken() {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun postGoogleToken(handleGoogleLogin: String?) {
+        viewModelScope.launch() {
             kotlin.runCatching {
-                googleToken.value?.let { repository.postGoogleLogin(GoogleToken(it)) }
+                handleGoogleLogin.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
-                it?.let { it1 -> setUserToken(it1.access_token) }
-                Log.d("AuthViewModel", it?.access_token.toString())
+                Log.d("AuthViewModel", it.access_token)
+                setUserToken(it.access_token)
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
             }
@@ -50,7 +54,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun postKakaoToken(kakaoTokens: KakaoTokens) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             kotlin.runCatching {
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
@@ -76,9 +80,9 @@ class AuthViewModel @Inject constructor(
 
     suspend fun setUserToken(token: String) {
         context.userTokenStore.updateData {
-            Log.d("userTokenStore", token)
+            Log.d("setUserToken", "setUserToken")
+            _accessCode.emit(token)
             it.toBuilder().setAccessToken(token).build()
         }
     }
-
 }
