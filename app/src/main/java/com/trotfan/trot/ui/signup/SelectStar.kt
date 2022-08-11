@@ -18,7 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.input.SearchTextField
@@ -37,7 +40,11 @@ data class Sample(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SelectStarScreen(viewModel: StarSelectViewModel = viewModel()) {
+fun SelectStarScreen(
+    navController: NavController,
+    viewModel: StarSelectViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
+) {
 
     val listState = rememberLazyListState()
     val testData by viewModel.testData.collectAsState()
@@ -56,7 +63,14 @@ fun SelectStarScreen(viewModel: StarSelectViewModel = viewModel()) {
                     "최초 1회만 가능해요!",
             positiveText = "선택",
             negativeText = "취소",
-            contentText = selectedItem?.id.toString()
+            contentText = selectedItem?.id.toString(),
+            onPositive = {
+                navController.navigate(SignUpSections.SettingNickName.route) {
+                    popUpTo(SignUpSections.SelectStar.route) {
+                        inclusive = true
+                    }
+                }
+            }
         ) {
             viewModel.selectStar(selectedItem)
             starSelectDialog = false
@@ -65,7 +79,7 @@ fun SelectStarScreen(viewModel: StarSelectViewModel = viewModel()) {
 
 
 
-    Column(Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         CustomTopAppBar(title = "회원가입")
         Spacer(modifier = Modifier.height(8.dp))
         Box(
@@ -98,7 +112,7 @@ fun SelectStarScreen(viewModel: StarSelectViewModel = viewModel()) {
                 stickyHeader {
                     SearchTextField(
                         onclick = {
-                            Log.e("Text ", "Text")
+                            navController.navigate(SignUpSections.SearchStar.route)
                         }, inputText = {
                             Log.e("Text ", it)
                         }, isEnabled = false, placeHolder = R.string.hint_search_star,
@@ -170,6 +184,6 @@ fun SelectStarScreen(viewModel: StarSelectViewModel = viewModel()) {
 )
 @Composable
 fun PreviewSelectStarScreen() {
-    SelectStarScreen()
+    SelectStarScreen(navController = rememberNavController())
 }
 

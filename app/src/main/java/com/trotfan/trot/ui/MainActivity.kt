@@ -48,29 +48,30 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         getDynamicLink()
         setContent {
-            var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
-            Surface {
-                LoginScreen(
-                    onKakaoSignInOnClick = {
-                        handleKakaoLogin()
-                    },
-                    onAppleSignInOnClick = {
-                        isAppleLoginDialogOpen = !isAppleLoginDialogOpen
-                    },
-                    onGoogleSignInOnClick = {
-                        googleSignIn()
-                    }
-                )
-
-                if (isAppleLoginDialogOpen) {
-                    AppleLoginWebViewDialog {
-                        isAppleLoginDialogOpen = false
-                        lifecycleScope.launch {
-                            it?.let { it1 -> authViewModel.setUserToken(it1) }
-                        }
-                    }
-                }
-            }
+            TrotApp()
+//            var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
+//            Surface {
+//                LoginScreen(
+//                    onKakaoSignInOnClick = {
+//                        handleKakaoLogin()
+//                    },
+//                    onAppleSignInOnClick = {
+//                        isAppleLoginDialogOpen = !isAppleLoginDialogOpen
+//                    },
+//                    onGoogleSignInOnClick = {
+//                        googleSignIn()
+//                    }
+//                )
+//
+//                if (isAppleLoginDialogOpen) {
+//                    AppleLoginWebViewDialog {
+//                        isAppleLoginDialogOpen = false
+//                        lifecycleScope.launch {
+//                            it?.let { it1 -> authViewModel.setUserToken(it1) }
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
