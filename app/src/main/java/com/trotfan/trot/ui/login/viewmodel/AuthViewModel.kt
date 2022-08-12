@@ -1,4 +1,4 @@
-package com.trotfan.trot.viewmodel
+package com.trotfan.trot.ui.login.viewmodel
 
 import android.app.Application
 import android.util.Log
@@ -12,7 +12,6 @@ import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject

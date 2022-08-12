@@ -1,4 +1,4 @@
-package com.trotfan.trot.viewmodel
+package com.trotfan.trot.ui.invitation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.trotfan.trot.repository.AuthRepository

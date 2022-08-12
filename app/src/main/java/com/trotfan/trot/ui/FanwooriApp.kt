@@ -21,10 +21,8 @@ import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.login.LoginNav
 import com.trotfan.trot.ui.login.addLoginGrape
-import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
-import com.trotfan.trot.viewmodel.AuthViewModel
 import kotlinx.coroutines.CoroutineScope
 
 object Destinations {

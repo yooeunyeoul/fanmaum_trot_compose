@@ -40,7 +40,7 @@ import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Primary600
 import com.trotfan.trot.ui.utils.clickable
-import com.trotfan.trot.viewmodel.AuthViewModel
+import com.trotfan.trot.ui.login.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(

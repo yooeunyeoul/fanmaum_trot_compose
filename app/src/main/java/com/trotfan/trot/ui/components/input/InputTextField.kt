@@ -25,6 +25,7 @@ import com.trotfan.trot.ui.theme.*
 
 @Composable
 fun InputTextField(
+    text: String = "",
     placeHolder: String,
     onValueChange: (String) -> Unit,
     maxLength: Int,
@@ -36,7 +37,7 @@ fun InputTextField(
     keyboardOptions: KeyboardOptions? = null,
     trailingIconDisabled: Boolean = false
 ) {
-    var value by remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(text) }
     val focusBorderColor =
         if (positiveStatus) SemanticPositive300 else Primary300
 
