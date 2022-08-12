@@ -13,10 +13,7 @@ import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -33,6 +30,14 @@ class AuthViewModel @Inject constructor(
     private val _accessCode = MutableStateFlow("")
     val accessCode: StateFlow<String>
         get() = _accessCode
+
+    init {
+        viewModelScope.launch {
+            context.userTokenStore.data.collect {
+                _accessCode.emit(it.accessToken)
+            }
+        }
+    }
 
     fun googleLogin(completedTask: Task<GoogleSignInAccount>) {
         viewModelScope.launch() {
