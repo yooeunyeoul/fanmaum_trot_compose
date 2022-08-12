@@ -27,14 +27,34 @@ class AuthViewModel @Inject constructor(
 
     private val context = getApplication<Application>()
 
+    private val _serverAvailable = MutableStateFlow(true)
+    val serverAvailable: StateFlow<Boolean>
+        get() = _serverAvailable
+
     private val _accessCode = MutableStateFlow("")
     val accessCode: StateFlow<String>
         get() = _accessCode
 
     init {
+        getServerState()
+    }
+
+    fun getServerState() {
         viewModelScope.launch {
-            context.userTokenStore.data.collect {
-                _accessCode.emit(it.accessToken)
+            kotlin.runCatching {
+                repository.getServerStateService()
+            }.onSuccess { state ->
+                if (state.isAvailable) {
+                    Log.d("AuthViewModel", state.isAvailable.toString())
+                    context.userTokenStore.data.collect {
+                        _accessCode.emit(it.accessToken)
+                    }
+                } else {
+                    //서버 점검
+                    _serverAvailable.emit(false)
+                }
+            }.onFailure {
+                Log.d("AuthViewModel", it.message.toString())
             }
         }
     }

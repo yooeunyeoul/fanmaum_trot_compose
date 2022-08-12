@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.login
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -10,30 +11,28 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.R
-import com.trotfan.trot.UserTokenValue
 import com.trotfan.trot.model.KakaoTokens
-import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.ui.login.components.LoginButton
 import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -42,7 +41,6 @@ import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Primary600
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.viewmodel.AuthViewModel
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun LoginScreen(
@@ -59,6 +57,7 @@ fun LoginScreen(
             }
         }
     val accessToken by viewModel.accessCode.collectAsState()
+    val serverAvailable by viewModel.serverAvailable.collectAsState()
 
     var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -152,6 +151,23 @@ fun LoginScreen(
                 }
             }
         }
+
+        if (serverAvailable.not()) {
+            AlertDialog(
+                onDismissRequest = {
+                },
+                text = {
+                    Text("보다 안정적인 서비스를 제공하기 위해 서버를 점검하고 있습니다. 빠르게 점검하고 돌아올게요!")
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        (context as? Activity)?.finish()
+                    }) {
+                        Text("확인")
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -173,21 +189,34 @@ fun googleSignIn(
 
 
 private fun handleKakaoLogin(context: Context, viewModel: AuthViewModel) {
-    UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-        if (token != null) {
-
-            val kakaoTokens = KakaoTokens(
-                refreshToken = token.refreshToken,
-                accessToken = token.accessToken,
-                idToken = token.idToken
-            )
-            viewModel.postKakaoToken(kakaoTokens)
-            Log.d(
-                "AuthViewModel",
-                "로그인 성공 refresh = ${token.refreshToken}\naccess = ${token.accessToken}\nid = ${token.idToken}"
-            )
-        } else if (error != null) {
-            Log.d("AuthViewModel", "로그인 실패 + $error")
+    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+        UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
+            if (token != null) {
+                kakaoLoginSuccess(token = token, viewModel)
+            } else if (error != null) {
+                Log.d("AuthViewModel", "로그인 실패 + $error")
+            }
+        }
+    } else {
+        UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
+            if (error != null) {
+                Log.d("AuthViewModel", "로그인 실패 + $error")
+            } else if (token != null) {
+                kakaoLoginSuccess(token = token, viewModel)
+            }
         }
     }
+}
+
+private fun kakaoLoginSuccess(token: OAuthToken, viewModel: AuthViewModel) {
+    val kakaoTokens = KakaoTokens(
+        refreshToken = token.refreshToken,
+        accessToken = token.accessToken,
+        idToken = token.idToken
+    )
+    viewModel.postKakaoToken(kakaoTokens)
+    Log.d(
+        "AuthViewModel",
+        "로그인 성공 refresh = ${token.refreshToken}\naccess = ${token.accessToken}\nid = ${token.idToken}"
+    )
 }

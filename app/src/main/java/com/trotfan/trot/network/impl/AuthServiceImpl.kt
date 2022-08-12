@@ -4,7 +4,6 @@ import android.content.Context
 import com.trotfan.trot.model.GoogleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.model.UserInfo
-import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.network.AuthService
 import com.trotfan.trot.network.HttpRoutes
 import dagger.hilt.android.qualifiers.ApplicationContext
