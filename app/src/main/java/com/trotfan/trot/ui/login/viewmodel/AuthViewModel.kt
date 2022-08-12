@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.GoogleToken
 import com.trotfan.trot.model.KakaoTokens
-import com.trotfan.trot.model.userTokenStore
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
