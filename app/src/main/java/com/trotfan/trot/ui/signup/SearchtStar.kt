@@ -17,10 +17,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.trotfan.trot.R
+import com.trotfan.trot.model.Person
 import com.trotfan.trot.ui.components.BackIcon
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.button.OutlineIconButton
@@ -30,7 +33,7 @@ import com.trotfan.trot.ui.components.input.SearchStatus
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
 import com.trotfan.trot.ui.signup.components.ListItemButton
-import com.trotfan.trot.ui.signup.viewmodel.StarSelectViewModel
+import com.trotfan.trot.ui.signup.viewmodel.StarSearchViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
@@ -39,15 +42,16 @@ import com.trotfan.trot.ui.theme.Gray700
 @Composable
 fun SearchStarScreen(
     navController: NavController,
-    viewModel: StarSelectViewModel = hiltViewModel(),
+    viewModel: StarSearchViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
 
-    val testData by viewModel.testData.collectAsState()
+    val starListState: LazyPagingItems<Person>? =
+        viewModel.starListState.value?.collectAsLazyPagingItems()
     val searchState by viewModel.searchStatus.collectAsState()
     val requestComplete by viewModel.requestComplete.collectAsState()
 
-    var selectedItem: Sample? by remember {
+    var selectedItem: Person? by remember {
         mutableStateOf(null)
     }
 
@@ -65,7 +69,7 @@ fun SearchStarScreen(
                     "최초 1회만 가능해요!",
             positiveText = "선택",
             negativeText = "취소",
-            contentText = selectedItem?.id.toString(),
+            contentText = selectedItem?.name ?: "",
             onPositive = {
                 navController.navigate(SignUpSections.SettingNickName.route) {
                     popUpTo(SignUpSections.SearchStar.route) {
@@ -89,6 +93,9 @@ fun SearchStarScreen(
             negativeText = "취소",
             onPositiveWithInputText = { starName ->
                 viewModel.requestStar(starName)
+            },
+            onPositive = {
+                return@HorizontalDialog
             },
             inputPlaceHolderText = "스타 이름 입력",
             onDismiss = {
@@ -145,9 +152,19 @@ fun SearchStarScreen(
             )
         }
 
+        when (starListState?.loadState?.refresh) {
+            is LoadState.Error -> {
+                viewModel.changeSearchState(SearchStatus.NoResult)
+            }
+            is LoadState.Loading -> {
+                viewModel.changeSearchState(SearchStatus.SearchResult)
+            }
+            is LoadState.NotLoading -> {}
+            else -> {}
+        }
+
         when (searchState) {
             SearchStatus.TrySearch -> {
-
                 Spacer(modifier = Modifier.height(128.dp))
 
                 Text(
@@ -158,15 +175,17 @@ fun SearchStarScreen(
                 )
 
             }
+
             SearchStatus.SearchResult -> {
-                Box() {
+                Box(Modifier.fillMaxHeight()) {
                     LazyColumn(
                         state = rememberLazyListState(),
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                         contentPadding = PaddingValues(bottom = 72.dp)
                     ) {
-
-                        itemsIndexed(testData) { index, item ->
+                        itemsIndexed(
+                            items = starListState?.itemSnapshotList?.items ?: emptyList()
+                        ) { index, item ->
                             if (index == 0) {
                                 Spacer(modifier = Modifier.height(24.dp))
                                 Text(
@@ -177,14 +196,19 @@ fun SearchStarScreen(
                                 Spacer(modifier = Modifier.height(4.dp))
                             }
                             ListItemButton(
-                                text = "팡야팡야",
-                                subText = null,
-                                imageUrl = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg",
+                                text = item.name,
+                                subText = item.group,
+                                imageUrl = item.image,
                                 unCheckedTrailingIcon = R.drawable.icon_heart,
                                 checkedTrailingIcon = R.drawable.icon_heartfilled,
                                 checked = selectedItem == item,
                                 onClick = {
-                                    selectedItem = it as Sample
+                                    val clickedItem = it as Person
+                                    selectedItem = if (clickedItem == selectedItem) {
+                                        null
+                                    } else {
+                                        clickedItem
+                                    }
                                 },
                                 item = item
                             )
@@ -208,15 +232,15 @@ fun SearchStarScreen(
                         ContainedButton(
                             text = "다음",
                             enabled = selectedItem != null,
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.BottomCenter)
                         ) {
                             starSelectDialog = true
                         }
                     }
 
                 }
-
             }
+
             SearchStatus.NoResult -> {
                 Spacer(modifier = Modifier.height(189.dp))
                 Text(
@@ -281,9 +305,9 @@ fun SearchStarScreen(
 
             }
         }
+
     }
 }
-
 
 @Composable
 fun PreviewSearchStarScreen() {

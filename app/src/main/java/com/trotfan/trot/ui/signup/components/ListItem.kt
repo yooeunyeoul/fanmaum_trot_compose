@@ -3,6 +3,7 @@ package com.trotfan.trot.ui.signup.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
@@ -15,10 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.signup.Sample
 import com.trotfan.trot.ui.theme.*
@@ -66,9 +71,11 @@ fun ListItemButton(
                 )
         ) {
             AsyncImage(
-                model = imageUrl,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl).crossfade(true).build(),
                 contentDescription = null,
-                placeholder = painterResource(id = R.drawable.apple_symbol),
+                error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(56.dp)
