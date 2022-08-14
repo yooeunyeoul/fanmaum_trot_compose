@@ -162,7 +162,7 @@ fun CertificationPhoneScreen(
         }
         if (errorState) {
             Text(
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp, start = 6.dp),
                 text = "휴대폰 번호가 형식에 맞지\n" +
                         "않아요.",
                 style = FanwooriTypography.caption1,

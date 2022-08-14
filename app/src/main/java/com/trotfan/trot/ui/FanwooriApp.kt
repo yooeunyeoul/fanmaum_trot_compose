@@ -1,17 +1,14 @@
 package com.trotfan.trot.ui
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -19,11 +16,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.Destinations.DETAIL_ID_KEY
-import com.trotfan.trot.ui.Destinations.HOME_ROUTE
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
-import com.trotfan.trot.ui.signup.SignUpSections
+import com.trotfan.trot.ui.login.LoginNav
+import com.trotfan.trot.ui.login.addLoginGrape
 import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +33,7 @@ object Destinations {
 
 
 @Composable
-fun TrotApp(
+fun FanwooriApp(
 ) {
     FanwooriTheme {
         val scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -71,13 +68,17 @@ fun TrotApp(
             NavHost(
                 navController = navController,
                 modifier = Modifier.padding(innerPadding),
-                startDestination = "가수선택"
+                startDestination = "로그인"
             ) {
 
                 navigation(
-                    route = "가수선택",
-                    startDestination = SignUpSections.SelectStar.route
+                    route = "로그인",
+                    startDestination = LoginNav.Login.route
                 ) {
+                    addLoginGrape(
+                        modifier = Modifier,
+                        navController = navController
+                    )
                     addHomeGraph(
                         onItemSelected = { id, entry ->
                             // 각화면의 디테일 작업

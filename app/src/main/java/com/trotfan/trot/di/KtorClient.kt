@@ -14,12 +14,14 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object KtorClient {
+    @OptIn(ExperimentalSerializationApi::class)
     @Singleton
     @Provides
     fun provideKtorHttpClient(): HttpClient {

@@ -1,4 +1,4 @@
-package com.trotfan.trot.model
+package com.trotfan.trot.datastore
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException
@@ -10,6 +10,7 @@ import com.trotfan.trot.UserTokenValue
 import java.io.InputStream
 import java.io.OutputStream
 
+@Suppress("BlockingMethodInNonBlockingContext")
 object UserTokenSerializer : Serializer<UserTokenValue> {
     override val defaultValue: UserTokenValue
         get() = UserTokenValue.getDefaultInstance()

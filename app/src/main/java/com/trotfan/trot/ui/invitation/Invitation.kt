@@ -10,10 +10,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.components.button.ContainedButton
-import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
+import com.trotfan.trot.ui.components.input.InputTextField
+import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.theme.FanwooriTheme
@@ -24,13 +25,12 @@ import java.util.regex.Pattern
 
 @Composable
 fun InvitationScreen(
+    modifier: Modifier = Modifier,
     linkText: String = "",
-    dynamicClick: () -> Unit,
     navController: NavController,
-    modifier: Modifier = Modifier
 ) {
     var errorState by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf(linkText) }
+    var errorMessage by remember { mutableStateOf("") }
     var completeState by remember { mutableStateOf(false) }
     var skipDialogState by remember { mutableStateOf(false) }
     var completeDialogState by remember { mutableStateOf(false) }
@@ -38,6 +38,8 @@ fun InvitationScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
+        CustomTopAppBar(title = "회원가입")
+
         Text(
             modifier = Modifier
                 .padding(top = 8.dp),
@@ -56,6 +58,7 @@ fun InvitationScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         InputTextField(
+            text = linkText,
             placeHolder = "#8자리 코드",
             maxLength = 8,
             errorStatus = errorState,
@@ -90,7 +93,6 @@ fun InvitationScreen(
 
             Outline1Button(text = "건너뛰기", modifier = Modifier.weight(1f)) {
                 skipDialogState = true
-
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -109,8 +111,8 @@ fun InvitationScreen(
                 negativeText = "취소",
                 onDismiss = { skipDialogState = false },
                 onPositive = {
-                    navController.navigate(HomeSections.VOTE.route){
-                        popUpTo(SignUpSections.InvitationCode.route){
+                    navController.navigate(HomeSections.VOTE.route) {
+                        popUpTo(SignUpSections.InvitationCode.route) {
                             inclusive = true
                         }
                     }
@@ -122,7 +124,14 @@ fun InvitationScreen(
             VerticalDialog(
                 contentText = "타임투표권 500표 받았어요!",
                 buttonOneText = "확인",
-                onDismiss = { completeDialogState = false }
+                onDismiss = {
+                    completeDialogState = false
+                    navController.navigate(HomeSections.VOTE.route) {
+                        popUpTo(SignUpSections.InvitationCode.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
     }
@@ -132,6 +141,6 @@ fun InvitationScreen(
 @Composable
 fun InvitationPreview() {
     FanwooriTheme {
-        InvitationScreen(dynamicClick = {}, navController = rememberNavController())
+        InvitationScreen(linkText = "#1234567", navController = rememberNavController())
     }
 }

@@ -1,52 +1,69 @@
 package com.trotfan.trot.ui.login
 
+import android.annotation.SuppressLint
+import android.net.Uri
+import android.util.Log
+import android.view.ViewGroup
+import android.webkit.JavascriptInterface
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.semantics.Role.Companion.Button
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.trotfan.trot.ui.theme.Gray100
-import com.trotfan.trot.ui.theme.Gray400
-import com.trotfan.trot.ui.theme.Primary300
-import com.trotfan.trot.ui.theme.SemanticNegative300
+import java.util.*
 
+
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun AppleLoginWebViewDialog(url: String, onDismissRequest: () -> Unit) {
+fun AppleLoginWebViewDialog(onDismissRequest: (String?) -> Unit) {
     val context = LocalContext.current
+    var accessCode: String? = null
 
     Dialog(
-        onDismissRequest = { onDismissRequest() },
+        onDismissRequest = { onDismissRequest(accessCode) },
         properties = DialogProperties()
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.7f)
                 .background(MaterialTheme.colorScheme.surface)
         ) {
-            AndroidView(factory = {
-                WebView(context).apply {
-                    webViewClient = WebViewClient()
-                    loadUrl(url)
+            val uri =
+                "${AppleConst.APPLE_AUTH_URL}?response_type=code&v=1.1.6&response_mode=form_post&client_id=${AppleConst.APPLE_CLIENT_ID}&scope=${AppleConst.APPLE_SCOPE}&state=${UUID.randomUUID()}&redirect_uri=${AppleConst.APPLE_REDIRECT_URI}"
+            AndroidView(
+                factory = {
+                    WebView(context).apply {
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                        )
+
+                        webViewClient = AppleWebViewClient(onDismissRequest)
+
+                        isVerticalScrollBarEnabled = false
+                        isHorizontalScrollBarEnabled = false
+                        settings.javaScriptEnabled = true
+                    }
+                },
+                update = {
+                    it.loadUrl(uri)
                 }
-            })
+            )
         }
+    }
+}
+
+
+class AppleWebViewClient(private val onDismissRequest: (String?) -> Unit) : WebViewClient() {
+
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        onDismissRequest(request?.url?.getQueryParameter("id_token"))
+        return super.shouldOverrideUrlLoading(view, request)
     }
 }
