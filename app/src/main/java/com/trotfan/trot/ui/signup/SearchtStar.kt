@@ -63,6 +63,17 @@ fun SearchStarScreen(
         mutableStateOf(false)
     }
 
+    if (viewModel.onComplete.collectAsState().value) {
+        LaunchedEffect(Unit) {
+            navController.navigate(SignUpSections.SettingNickName.route) {
+                popUpTo(SignUpSections.SearchStar.route) {
+                    inclusive = true
+                }
+                navController.backQueue.removeIf { it.destination.route == SignUpSections.SelectStar.route }
+            }
+        }
+    }
+
     if (starSelectDialog) {
         HorizontalDialogSelectStar(
             titleText = "내 스타 선택은\n" +
@@ -71,16 +82,9 @@ fun SearchStarScreen(
             negativeText = "취소",
             contentText = selectedItem?.name ?: "",
             onPositive = {
-                navController.navigate(SignUpSections.SettingNickName.route) {
-                    popUpTo(SignUpSections.SearchStar.route) {
-                        inclusive = true
-                    }
-                    navController.backQueue.removeIf { it.destination.route == SignUpSections.SelectStar.route }
-                }
-
+                viewModel.selectStar(selectedItem)
             }
         ) {
-            viewModel.selectStar(selectedItem)
             starSelectDialog = false
         }
     }

@@ -1,8 +1,11 @@
 package com.trotfan.trot.ui.signup.viewmodel
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.repository.SignUpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +24,11 @@ enum class NickNameCheckStatus(val message: String) {
 
 @HiltViewModel
 class NickNameViewModel @Inject constructor(
-    private val repository: SignUpRepository
-) : ViewModel() {
+    private val repository: SignUpRepository,
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val context = getApplication<Application>()
 
     val nickNameCheckStatus: StateFlow<NickNameCheckStatus>
         get() = _nickNameCheckStatus
@@ -48,19 +54,23 @@ class NickNameViewModel @Inject constructor(
         }
     }
 
-    fun checkNickNameApi(nickName: String, userId: Long) {
+    fun checkNickNameApi(nickName: String) {
         viewModelScope.launch {
-            val response = repository.updateUser(userid = userId.toString(), nickName)
+            context.userIdStore.data.collect {
+                kotlin.runCatching {
+                    val response = repository.updateUser(userid = it.userId.toString(), nickName)
 
-            when (response.code) {
-                1 -> {
-                    _nickNameCheckStatus.emit(NickNameCheckStatus.NotAuth)
-                }
-                2 -> {
-                    _nickNameCheckStatus.emit(NickNameCheckStatus.Duplicate)
-                }
-                200 -> {
-                    _nickNameCheckStatus.emit(NickNameCheckStatus.AuthSuccess)
+                    when (response.code) {
+                        1 -> {
+                            _nickNameCheckStatus.emit(NickNameCheckStatus.NotAuth)
+                        }
+                        2 -> {
+                            _nickNameCheckStatus.emit(NickNameCheckStatus.Duplicate)
+                        }
+                        200 -> {
+                            _nickNameCheckStatus.emit(NickNameCheckStatus.AuthSuccess)
+                        }
+                    }
                 }
             }
         }

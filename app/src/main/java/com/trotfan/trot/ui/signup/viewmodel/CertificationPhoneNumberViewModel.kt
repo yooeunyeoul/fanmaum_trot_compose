@@ -1,13 +1,17 @@
 package com.trotfan.trot.ui.signup.viewmodel
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.repository.SignUpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,8 +41,11 @@ enum class CertificationNumberCheckStatus(
 
 @HiltViewModel
 class CertificationPhoneNumberViewModel @Inject constructor(
-    private val repository: SignUpRepository
-) : ViewModel() {
+    private val repository: SignUpRepository,
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val context = getApplication<Application>()
 
     val certificationNumberStatus: StateFlow<CertificationNumberCheckStatus?>
         get() = _certificationNumberStatus
@@ -53,7 +60,6 @@ class CertificationPhoneNumberViewModel @Inject constructor(
         get() = _onComplete
 
     private val _duplicate = MutableStateFlow(false)
-
 
 
     fun requestCertificationCode(phoneNumber: String, randomCode: String) {
@@ -105,11 +111,16 @@ class CertificationPhoneNumberViewModel @Inject constructor(
 
     fun updateUser(phoneNum: String) {
         viewModelScope.launch {
-            val response = repository.updateUser(userid = "1", phoneNumber = phoneNum)
-            if (response.code == 200) {
-                _onComplete.emit(true)
-            } else {
-                _certificationNumberStatus.emit(CertificationNumberCheckStatus.Duplicate)
+            context.userIdStore.data.collect {
+                kotlin.runCatching {
+                    val response =
+                        repository.updateUser(userid = it.userId.toString(), phoneNumber = phoneNum)
+                    if (response.code == 200) {
+                        _onComplete.emit(true)
+                    } else {
+                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.Duplicate)
+                    }
+                }
             }
         }
     }

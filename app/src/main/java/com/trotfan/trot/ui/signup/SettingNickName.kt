@@ -92,39 +92,36 @@ fun SettingNicknameScreen(
                 .align(Alignment.End)
                 .padding(top = 14.dp)
         ) {
-            suspend {
-                context.userIdStore.data.collect {
-                    viewModel.checkNickNameApi(inputText, it.userId)
-                }
-            }
+            viewModel.checkNickNameApi(inputText)
         }
+    }
 
 
 
-        Row(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
+    Row(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(bottom = 24.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom
+    ) {
+
+        ContainedButton(
+            text = "다음",
+            enabled = nickCheckState == NickNameCheckStatus.AuthSuccess,
+            modifier = Modifier.weight(1f)
         ) {
-
-            ContainedButton(
-                text = "다음",
-                enabled = nickCheckState == NickNameCheckStatus.AuthSuccess,
-                modifier = Modifier.weight(1f)
-            ) {
-                navController?.navigate(SignUpSections.CertificationPhoneNumber.route){
-                    popUpTo(SignUpSections.SettingNickName.route) {
-                        inclusive = true
-                    }
+            navController?.navigate(SignUpSections.CertificationPhoneNumber.route) {
+                popUpTo(SignUpSections.SettingNickName.route) {
+                    inclusive = true
                 }
-
             }
+
         }
     }
 }
+
 
 @Preview
 @Composable

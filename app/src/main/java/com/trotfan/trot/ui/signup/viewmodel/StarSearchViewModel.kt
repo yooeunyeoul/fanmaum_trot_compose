@@ -1,9 +1,11 @@
 package com.trotfan.trot.ui.signup.viewmodel
 
 import android.R.id
+import android.app.Application
 import android.os.Bundle
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -13,6 +15,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.datasource.GetStarDataSourceForName
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Person
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.components.input.SearchStatus
@@ -25,8 +28,11 @@ import javax.inject.Inject
 @HiltViewModel
 class StarSearchViewModel @Inject constructor(
     private val repository: SignUpRepository,
-    private val dataSource: GetStarDataSourceForName
-) : ViewModel() {
+    private val dataSource: GetStarDataSourceForName,
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val context = getApplication<Application>()
 
     private val _searchState = MutableStateFlow(SearchStatus.TrySearch)
     val searchStatus: StateFlow<SearchStatus>
@@ -39,6 +45,10 @@ class StarSearchViewModel @Inject constructor(
     private val _startListState = mutableStateOf<Flow<PagingData<Person>>?>((null))
     val starListState: State<Flow<PagingData<Person>>?>
         get() = _startListState
+
+    private val _onComplete = MutableStateFlow(false)
+    val onComplete: StateFlow<Boolean>
+        get() = _onComplete
 
 
     fun searchStar(keyword: String) {
@@ -83,7 +93,15 @@ class StarSearchViewModel @Inject constructor(
 
     fun selectStar(selectedItem: Person?) {
         viewModelScope.launch {
-
+            context.userIdStore.data.collect {
+                val response = repository.updateUser(
+                    userid = it.userId.toString(),
+                    starId = selectedItem?.id.toString()
+                )
+                if (response.code == 200) {
+                    _onComplete.emit(true)
+                }
+            }
         }
     }
 
