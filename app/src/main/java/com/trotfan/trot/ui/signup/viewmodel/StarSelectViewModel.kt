@@ -1,12 +1,17 @@
 package com.trotfan.trot.ui.signup.viewmodel
 
-import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.trotfan.trot.datasource.GetStarDataSource
+import com.trotfan.trot.model.Person
 import com.trotfan.trot.repository.SignUpRepository
-import com.trotfan.trot.ui.components.input.SearchStatus
-import com.trotfan.trot.ui.signup.Sample
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -14,89 +19,35 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StarSelectViewModel @Inject constructor(
-    private val repository: SignUpRepository
+    private val repository: SignUpRepository,
+    private val dataSource: GetStarDataSource
 ) : ViewModel() {
-    private val _testData = MutableStateFlow<List<Sample>>(emptyList())
 
-    //    private val _testData = MutableStateFlow<List<Sample>>(emptyList())
-    val testData: StateFlow<List<Sample>>
-        get() = _testData
+    private val _onComplete = MutableStateFlow(false)
+    val onComplete: StateFlow<Boolean>
+        get() = _onComplete
 
-    private val _searchState = MutableStateFlow(SearchStatus.TrySearch)
-    val searchStatus: StateFlow<SearchStatus>
-        get() = _searchState
-
-    private val _requestComplete = MutableStateFlow(false)
-    val requestComplete: StateFlow<Boolean>
-        get() = _requestComplete
+    private val _startListState = mutableStateOf<Flow<PagingData<Person>>?>(null)
+    val starListState: State<Flow<PagingData<Person>>?>
+        get() = _startListState
 
 
     init {
-//        getRestApiTest()
-        initSampleData()
-        Log.d("Initializing", "MainViewModel")
+        getStartList()
     }
 
-    private fun initSampleData() {
+    fun getStartList() {
         viewModelScope.launch {
-            val sampleList = mutableListOf<Sample>()
-            repeat(30) {
-                sampleList.add(Sample(id = it))
+            _startListState.value = Pager(PagingConfig(pageSize = 15)) { dataSource }.flow
+        }
+    }
+
+    fun selectStar(selectedItem: Person?) {
+        viewModelScope.launch {
+            val response = repository.updateUser(userid = "1", starId = selectedItem?.id.toString())
+            if (response.code == 200) {
+                _onComplete.emit(true)
             }
-            _testData.emit(sampleList)
-        }
-    }
-
-
-    fun searchStar(keyword: String) {
-        val sampleList = mutableListOf<Sample>()
-        viewModelScope.launch {
-            when (keyword) {
-                "" -> {
-                    _testData.emit(listOf())
-                    _searchState.emit(SearchStatus.TrySearch)
-                }
-                "empty" -> {
-                    _testData.emit(listOf())
-                    _searchState.emit(SearchStatus.NoResult)
-                }
-                "search"->{
-                    for (i in 0..100) {
-                        sampleList.add(Sample(id = i))
-                    }
-                    _testData.emit(sampleList)
-                    _searchState.emit(SearchStatus.SearchResult)
-
-                }
-                else -> {
-                    for (i in 0..10) {
-                        sampleList.add(Sample(id = i))
-                    }
-                    _testData.emit(sampleList)
-                    _searchState.emit(SearchStatus.SearchResult)
-                }
-
-            }
-        }
-
-    }
-
-    fun requestStar(starName: String) {
-        viewModelScope.launch {
-            _requestComplete.emit(true)
-        }
-    }
-
-    fun dismissCompleteDialog() {
-        viewModelScope.launch {
-            _requestComplete.emit(false)
-        }
-
-    }
-
-    fun selectStar(selectedItem: Sample?) {
-        viewModelScope.launch {
-
         }
     }
 }

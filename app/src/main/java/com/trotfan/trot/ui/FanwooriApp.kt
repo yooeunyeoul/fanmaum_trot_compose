@@ -21,6 +21,7 @@ import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.login.LoginNav
 import com.trotfan.trot.ui.login.addLoginGrape
+import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
@@ -73,7 +74,7 @@ fun FanwooriApp(
 
                 navigation(
                     route = "로그인",
-                    startDestination = LoginNav.Login.route
+                    startDestination = SignUpSections.SelectStar.route
                 ) {
                     addLoginGrape(
                         modifier = Modifier,

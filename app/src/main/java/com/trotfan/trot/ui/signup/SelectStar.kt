@@ -19,10 +19,12 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.trotfan.trot.R
+import com.trotfan.trot.model.Person
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
@@ -47,14 +49,25 @@ fun SelectStarScreen(
 ) {
 
     val listState = rememberLazyListState()
-    val testData by viewModel.testData.collectAsState()
+    val starListState: LazyPagingItems<Person>? =
+        viewModel.starListState.value?.collectAsLazyPagingItems()
 
-    var selectedItem: Sample? by remember {
+    var selectedItem: Person? by remember {
         mutableStateOf(null)
     }
 
     var starSelectDialog by remember {
         mutableStateOf(false)
+    }
+
+    if (viewModel.onComplete.collectAsState().value) {
+        LaunchedEffect(Unit) {
+            navController.navigate(SignUpSections.SettingNickName.route) {
+                popUpTo(SignUpSections.SelectStar.route) {
+                    inclusive = true
+                }
+            }
+        }
     }
 
     if (starSelectDialog) {
@@ -63,16 +76,12 @@ fun SelectStarScreen(
                     "최초 1회만 가능해요!",
             positiveText = "선택",
             negativeText = "취소",
-            contentText = selectedItem?.id.toString(),
+            contentText = selectedItem?.name ?: "",
             onPositive = {
-                navController.navigate(SignUpSections.SettingNickName.route) {
-                    popUpTo(SignUpSections.SelectStar.route) {
-                        inclusive = true
-                    }
-                }
+                viewModel.selectStar(selectedItem)
             }
         ) {
-            viewModel.selectStar(selectedItem)
+
             starSelectDialog = false
         }
     }
@@ -120,7 +129,9 @@ fun SelectStarScreen(
                     )
                 }
 
-                itemsIndexed(testData) { index, item ->
+                itemsIndexed(
+                    starListState?.itemSnapshotList?.items ?: emptyList()
+                ) { index, item ->
                     if (index == 0) {
                         Spacer(modifier = Modifier.height(20.dp))
                         Text(
@@ -131,14 +142,19 @@ fun SelectStarScreen(
                         Spacer(modifier = Modifier.height(6.dp))
                     }
                     ListItemButton(
-                        text = "팡야팡야",
-                        subText = null,
-                        imageUrl = "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg",
+                        text = item.name,
+                        subText = item.group,
+                        imageUrl = item.image,
                         unCheckedTrailingIcon = R.drawable.icon_heart,
                         checkedTrailingIcon = R.drawable.icon_heartfilled,
                         checked = selectedItem == item,
                         onClick = {
-                            selectedItem = it as Sample
+                            val clickedItem = it as Person
+                            selectedItem = if (clickedItem == selectedItem) {
+                                null
+                            } else {
+                                clickedItem
+                            }
                         },
                         item = item
                     )
@@ -176,7 +192,7 @@ fun SelectStarScreen(
 }
 
 @Preview(
-    name = "Preview Select Star",
+    name = "Preview Select com.trotfan.trot.model.Star",
     device = Devices.NEXUS_6,
     showBackground = true,
     showSystemUi = true,

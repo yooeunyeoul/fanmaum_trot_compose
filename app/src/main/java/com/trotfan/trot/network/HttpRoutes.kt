@@ -5,7 +5,8 @@ object HttpRoutes {
     const val KAKAO_LOGIN = "$BASE_URL/oauth2/login/kakao"
     const val GOOGLE_LOGIN = "$BASE_URL/oauth2/login/google"
     const val SERVER_STATE = "https://fanwoori-develop-api.services"
-    const val USER = "$BASE_URL/users"
+    const val GET_STAR_LIST = "$BASE_URL/stars"
+    const val USERS = "$BASE_URL/users"
 
     enum class SmsCertification(val key: String, val url: String) {
         DEV(

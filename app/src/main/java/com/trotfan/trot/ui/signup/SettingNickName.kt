@@ -106,7 +106,7 @@ fun SettingNicknameScreen(
                 enabled = nickCheckState == NickNameCheckStatus.AuthSuccess,
                 modifier = Modifier.weight(1f)
             ) {
-                navController.navigate(SignUpSections.CertificationPhoneNumber.route){
+                navController?.navigate(SignUpSections.CertificationPhoneNumber.route){
                     popUpTo(SignUpSections.SettingNickName.route) {
                         inclusive = true
                     }
