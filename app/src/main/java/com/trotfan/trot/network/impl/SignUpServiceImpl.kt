@@ -1,9 +1,7 @@
 package com.trotfan.trot.network.impl
 
 import com.trotfan.trot.BuildConfig
-import com.trotfan.trot.model.Person
-import com.trotfan.trot.model.SmsCertificationRequestResult
-import com.trotfan.trot.model.StarItem
+import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.SignUpService
 import io.ktor.client.*
@@ -68,4 +66,45 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         return response.body<StarItem>().data
     }
 
+    override suspend fun updateUser(
+        userId: String,
+        nickName: String?,
+        starId: String?,
+        phoneNumber: String?,
+        redeemCode: String?
+    ): UpdateUserResponse {
+        val response = httpClient.request(HttpRoutes.USERS + "/${userId}") {
+            method = HttpMethod.Patch
+            contentType(ContentType.Application.Json)
+            headers {
+                append(
+                    name = "X-Requested-With",
+                    value = "XMLHttpRequest"
+                )
+            }
+            setBody(FormDataContent(Parameters.build {
+                if (nickName != null) {
+                    append("name", nickName)
+                }
+                if (starId != null) {
+                    append("star_id", starId)
+                }
+                if (phoneNumber != null) {
+                    append("phone_number", phoneNumber)
+                }
+                if (redeemCode != null) {
+                    append("redeem_code", redeemCode)
+                }
+            }))
+
+        }
+        return when (response.status.value) {
+            200 -> {
+                UpdateUserResponse(code = 200)
+            }
+            else -> {
+                response.body()
+            }
+        }
+    }
 }

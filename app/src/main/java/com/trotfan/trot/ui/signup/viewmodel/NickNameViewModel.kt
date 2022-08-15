@@ -31,15 +31,7 @@ class NickNameViewModel @Inject constructor(
 
 
     init {
-//        getRestApiTest()
-        initSampleData()
         Log.d("Initializing", "MainViewModel")
-    }
-
-    private fun initSampleData() {
-        viewModelScope.launch {
-
-        }
     }
 
     fun checkNickNameLocal(nickName: String) {
@@ -58,14 +50,16 @@ class NickNameViewModel @Inject constructor(
 
     fun checkNickNameApi(nickName: String) {
         viewModelScope.launch {
-            when (nickName) {
-                "already" -> {
-                    _nickNameCheckStatus.emit(NickNameCheckStatus.Duplicate)
-                }
-                "noAuth" -> {
+            val response = repository.updateUser(userid = "2", nickName)
+
+            when (response.code) {
+                1 -> {
                     _nickNameCheckStatus.emit(NickNameCheckStatus.NotAuth)
                 }
-                else -> {
+                2 -> {
+                    _nickNameCheckStatus.emit(NickNameCheckStatus.Duplicate)
+                }
+                200 -> {
                     _nickNameCheckStatus.emit(NickNameCheckStatus.AuthSuccess)
                 }
             }

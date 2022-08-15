@@ -1,7 +1,6 @@
 package com.trotfan.trot.network
 
-import com.trotfan.trot.model.Person
-import com.trotfan.trot.model.SmsCertificationRequestResult
+import com.trotfan.trot.model.*
 
 interface SignUpService {
     suspend fun requestCertificationCode(
@@ -17,4 +16,13 @@ interface SignUpService {
         page: Int,
         name: String
     ): List<Person>
+
+    suspend fun updateUser(
+        userId: String,
+        nickName: String?,
+        starId: String?,
+        phoneNumber: String?,
+        redeemCode: String?
+    ): UpdateUserResponse
+
 }
