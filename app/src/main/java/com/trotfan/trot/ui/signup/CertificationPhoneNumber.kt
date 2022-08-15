@@ -116,6 +116,14 @@ fun CertificationPhoneScreen(
         null -> {
 
         }
+        CertificationNumberCheckStatus.Duplicate -> {
+            VerticalDialog(
+                contentText = status?.content ?: "",
+                buttonOneText = status?.buttonText ?: ""
+            ) {
+                viewModel.hideCertificateDialog()
+            }
+        }
     }
 
     LaunchedEffect(certificationNumberSend && ticks != 0) {

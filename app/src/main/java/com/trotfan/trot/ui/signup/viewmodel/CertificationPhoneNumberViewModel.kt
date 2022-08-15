@@ -28,6 +28,10 @@ enum class CertificationNumberCheckStatus(
     AuthSuccess(
         content = "인증번호가 확인 되었어요.",
         buttonText = "확인"
+    ),
+    Duplicate(
+        content = "이미 가입된 번호가 존재합니다.",
+        buttonText = "확인"
     )
 }
 
@@ -47,6 +51,9 @@ class CertificationPhoneNumberViewModel @Inject constructor(
     private val _onComplete = MutableStateFlow(false)
     val onComplete: StateFlow<Boolean>
         get() = _onComplete
+
+    private val _duplicate = MutableStateFlow(false)
+
 
 
     fun requestCertificationCode(phoneNumber: String, randomCode: String) {
@@ -101,6 +108,8 @@ class CertificationPhoneNumberViewModel @Inject constructor(
             val response = repository.updateUser(userid = "1", phoneNumber = phoneNum)
             if (response.code == 200) {
                 _onComplete.emit(true)
+            } else {
+                _certificationNumberStatus.emit(CertificationNumberCheckStatus.Duplicate)
             }
         }
     }
