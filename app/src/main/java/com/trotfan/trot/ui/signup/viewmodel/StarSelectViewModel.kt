@@ -9,7 +9,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.trotfan.trot.datasource.GetStarDataSource
 import com.trotfan.trot.model.Person
-import com.trotfan.trot.model.StarItem
 import com.trotfan.trot.repository.SignUpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -24,9 +23,9 @@ class StarSelectViewModel @Inject constructor(
     private val dataSource: GetStarDataSource
 ) : ViewModel() {
 
-    private val _requestComplete = MutableStateFlow(false)
-    val requestComplete: StateFlow<Boolean>
-        get() = _requestComplete
+    private val _onComplete = MutableStateFlow(false)
+    val onComplete: StateFlow<Boolean>
+        get() = _onComplete
 
     private val _startListState = mutableStateOf<Flow<PagingData<Person>>?>(null)
     val starListState: State<Flow<PagingData<Person>>?>
@@ -45,7 +44,10 @@ class StarSelectViewModel @Inject constructor(
 
     fun selectStar(selectedItem: Person?) {
         viewModelScope.launch {
-
+            val response = repository.updateUser(userid = "1", starId = selectedItem?.id.toString())
+            if (response.code == 200) {
+                _onComplete.emit(true)
+            }
         }
     }
 }

@@ -60,6 +60,16 @@ fun SelectStarScreen(
         mutableStateOf(false)
     }
 
+    if (viewModel.onComplete.collectAsState().value) {
+        LaunchedEffect(Unit) {
+            navController.navigate(SignUpSections.SettingNickName.route) {
+                popUpTo(SignUpSections.SelectStar.route) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+
     if (starSelectDialog) {
         HorizontalDialogSelectStar(
             titleText = "내 스타 선택은\n" +
@@ -68,14 +78,10 @@ fun SelectStarScreen(
             negativeText = "취소",
             contentText = selectedItem?.name ?: "",
             onPositive = {
-                navController.navigate(SignUpSections.SettingNickName.route) {
-                    popUpTo(SignUpSections.SelectStar.route) {
-                        inclusive = true
-                    }
-                }
+                viewModel.selectStar(selectedItem)
             }
         ) {
-            viewModel.selectStar(selectedItem)
+
             starSelectDialog = false
         }
     }
