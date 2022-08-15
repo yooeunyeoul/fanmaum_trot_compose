@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateUserResponse(
     val code: Int? = 0,
-    val errors: Errors? = null,
-    val message: String? = null
+//    val errors: Errors? = null,
+//    val message: String? = null
 //    val `data`: SignUpUserInfo? = null
 )

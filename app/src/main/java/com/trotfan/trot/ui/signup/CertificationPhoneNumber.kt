@@ -1,13 +1,17 @@
 package com.trotfan.trot.ui.signup
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -23,6 +27,7 @@ import com.trotfan.trot.ui.signup.viewmodel.CertificationNumberCheckStatus
 import com.trotfan.trot.ui.signup.viewmodel.CertificationPhoneNumberViewModel
 import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -33,9 +38,6 @@ fun CertificationPhoneScreen(
     modifier: Modifier = Modifier
 ) {
     var inputPhoneNumber by remember {
-        mutableStateOf("")
-    }
-    var inputCertificationNumber by remember {
         mutableStateOf("")
     }
     var errorState by remember {
@@ -52,6 +54,44 @@ fun CertificationPhoneScreen(
     val minute: String = (ticks.toLong() / 60 % 60).toString()
 
     val status by viewModel.certificationNumberStatus.collectAsState()
+
+    val certificationNumber by viewModel.certificationNumber.collectAsState()
+
+    var ddd by remember {
+        mutableStateOf("")
+    }
+
+    val snackState = remember { SnackbarHostState() }
+    val snackScope = rememberCoroutineScope()
+
+    SnackbarHost(
+        hostState = snackState,
+        Modifier
+            .background(color = Color.White)
+            .padding(top = 325.dp)
+    )
+
+    fun launchSnackBar() {
+        snackScope.launch { snackState.showSnackbar(ddd) }
+    }
+
+    var inputCertificationNumber by remember {
+        mutableStateOf("")
+    }
+
+    if (viewModel.onComplete.collectAsState().value) {
+        LaunchedEffect(Unit) {
+            navController.navigate(SignUpSections.InvitationCode.route) {
+                popUpTo(SignUpSections.CertificationPhoneNumber.route) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+
+
+
+
 
 
 
@@ -70,12 +110,7 @@ fun CertificationPhoneScreen(
                 contentText = status?.content ?: "",
                 buttonOneText = status?.buttonText ?: ""
             ) {
-                viewModel.hideCertificateDialog()
-                navController.navigate(SignUpSections.InvitationCode.route) {
-                    popUpTo(SignUpSections.CertificationPhoneNumber.route) {
-                        inclusive = true
-                    }
-                }
+                viewModel.updateUser(inputPhoneNumber)
             }
         }
         null -> {
@@ -156,7 +191,11 @@ fun CertificationPhoneScreen(
                 certificationNumberSend = true
                 focusManager.clearFocus()
                 focusRequester.requestFocus()
-                viewModel.requestCertificationCode(inputPhoneNumber)
+                val randomCode = (111111..999999).shuffled().last().toString()
+                ddd = randomCode
+                launchSnackBar()
+                viewModel.requestCertificationCode(inputPhoneNumber, randomCode)
+
 
             }
         }

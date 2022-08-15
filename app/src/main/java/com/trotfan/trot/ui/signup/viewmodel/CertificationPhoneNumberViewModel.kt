@@ -41,14 +41,19 @@ class CertificationPhoneNumberViewModel @Inject constructor(
     private val _certificationNumberStatus =
         MutableStateFlow<CertificationNumberCheckStatus?>(null)
 
-    private val certificationNumber = MutableStateFlow<String>("")
+    private val _certificationNumber = MutableStateFlow<String>("")
+    val certificationNumber = _certificationNumber
 
-    fun requestCertificationCode(phoneNumber: String) {
+    private val _onComplete = MutableStateFlow(false)
+    val onComplete: StateFlow<Boolean>
+        get() = _onComplete
+
+
+    fun requestCertificationCode(phoneNumber: String, randomCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
-                val randomCode = (111111..999999).shuffled().last()
-                certificationNumber.emit(randomCode.toString())
+//                val randomCode = (111111..999999).shuffled().last()
                 val message = "팬우리 인증번호 ${randomCode} 입니다."
                 val response = repository.requestSmsCertification(
                     phoneNumber = phoneNumber,
@@ -56,6 +61,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                 )
                 if (response.result_code == "200") {
                     Log.e("문자인증", "성공")
+                    _certificationNumber.emit(randomCode.toString())
                 } else {
                     Log.e("문자인증", "실패")
                 }
@@ -73,7 +79,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                 _certificationNumberStatus.emit(CertificationNumberCheckStatus.TimeExceeded)
             } else {
                 when (number) {
-                    certificationNumber.value-> {
+                    _certificationNumber.value -> {
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
                     }
                     else -> {
@@ -88,7 +94,15 @@ class CertificationPhoneNumberViewModel @Inject constructor(
         viewModelScope.launch {
             _certificationNumberStatus.emit(null)
         }
+    }
 
+    fun updateUser(phoneNum: String) {
+        viewModelScope.launch {
+            val response = repository.updateUser(userid = "1", phoneNumber = phoneNum)
+            if (response.code == 200) {
+                _onComplete.emit(true)
+            }
+        }
     }
 
 
