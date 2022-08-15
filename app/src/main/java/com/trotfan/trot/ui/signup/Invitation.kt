@@ -1,6 +1,5 @@
-package com.trotfan.trot.ui.invitation
+package com.trotfan.trot.ui.signup
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -18,8 +17,7 @@ import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.HomeSections
-import com.trotfan.trot.ui.invitation.viewmodel.InvitationViewModel
-import com.trotfan.trot.ui.signup.SignUpSections
+import com.trotfan.trot.ui.signup.viewmodel.InvitationViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
@@ -37,7 +35,7 @@ fun InvitationScreen(
     var errorMessage by remember { mutableStateOf("") }
     var completeState by remember { mutableStateOf(false) }
     var skipDialogState by remember { mutableStateOf(false) }
-    var completeDialogState by remember { mutableStateOf(false) }
+    val completeDialogState by viewModel.completeStatus.collectAsState(initial = false)
 
     var inviteCode by remember { mutableStateOf(linkText) }
 
@@ -105,7 +103,9 @@ fun InvitationScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             ContainedButton(text = "완료", enabled = completeState, modifier = Modifier.weight(1f)) {
-                viewModel.postInviteCode(inviteCode = inviteCode)
+                viewModel.postInviteCode(
+                    inviteCode = inviteCode
+                )
             }
         }
 
@@ -132,7 +132,6 @@ fun InvitationScreen(
                 contentText = "타임투표권 500표 받았어요!",
                 buttonOneText = "확인",
                 onDismiss = {
-                    completeDialogState = false
                     navController.navigate(HomeSections.VOTE.route) {
                         popUpTo(SignUpSections.InvitationCode.route) {
                             inclusive = true

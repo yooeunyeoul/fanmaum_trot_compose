@@ -38,6 +38,6 @@ class AuthServiceImpl @Inject constructor(
 
     override suspend fun getUserInfo(userId: Int): UserInfoData =
         httpClient.get {
-            url("${HttpRoutes.USER}/$userId")
+            url("${HttpRoutes.USERS}/$userId")
         }.body()
 }

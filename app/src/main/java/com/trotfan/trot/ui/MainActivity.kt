@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class ㅕMainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
 //    private val invitationViewModel: InvitationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

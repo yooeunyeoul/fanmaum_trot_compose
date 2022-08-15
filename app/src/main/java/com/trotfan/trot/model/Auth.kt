@@ -35,12 +35,6 @@ data class UserInfoData(
 data class UserInfo(
     @SerializedName("id")
     val id: Int,
-    @SerializedName("idp")
-    val idp: Int,
-    @SerializedName("sub")
-    val sub: String?,
-    @SerializedName("email")
-    val email: String?,
     @SerializedName("invitation_code")
     val invitation_code: String?,
     @SerializedName("star_id")

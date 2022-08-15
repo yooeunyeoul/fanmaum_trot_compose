@@ -48,9 +48,9 @@ class NickNameViewModel @Inject constructor(
         }
     }
 
-    fun checkNickNameApi(nickName: String) {
+    fun checkNickNameApi(nickName: String, userId: Long) {
         viewModelScope.launch {
-            val response = repository.updateUser(userid = "2", nickName)
+            val response = repository.updateUser(userid = userId.toString(), nickName)
 
             when (response.code) {
                 1 -> {

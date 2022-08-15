@@ -5,6 +5,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -12,6 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.input.InputTextField
@@ -21,6 +23,8 @@ import com.trotfan.trot.ui.signup.viewmodel.NickNameViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun SettingNicknameScreen(
@@ -28,6 +32,7 @@ fun SettingNicknameScreen(
     viewModel: NickNameViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     var inputText by remember {
         mutableStateOf("")
     }
@@ -87,7 +92,11 @@ fun SettingNicknameScreen(
                 .align(Alignment.End)
                 .padding(top = 14.dp)
         ) {
-            viewModel.checkNickNameApi(inputText)
+            suspend {
+                context.userIdStore.data.collect {
+                    viewModel.checkNickNameApi(inputText, it.userId)
+                }
+            }
         }
 
 
