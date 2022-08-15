@@ -7,9 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.GoogleToken
 import com.trotfan.trot.model.KakaoTokens
+import com.trotfan.trot.model.UserInfo
+import com.trotfan.trot.model.UserInfoData
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -33,6 +36,10 @@ class AuthViewModel @Inject constructor(
     private val _accessCode = MutableStateFlow("")
     val accessCode: StateFlow<String>
         get() = _accessCode
+
+    private val _userInfo = MutableStateFlow<UserInfo?>(null)
+    val userInfo: StateFlow<UserInfo?>
+        get() = _userInfo
 
     init {
         getServerState()
@@ -71,6 +78,7 @@ class AuthViewModel @Inject constructor(
             }.onSuccess {
                 Log.d("AuthViewModel", it.access_token)
                 setUserToken(it.access_token)
+                setUserId(it.id)
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
             }
@@ -83,9 +91,25 @@ class AuthViewModel @Inject constructor(
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
                 setUserToken(it.access_token)
+                setUserId(it.id)
                 Log.d("AuthViewModel", it.access_token)
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
+            }
+        }
+    }
+
+    fun getUserInfo() {
+        viewModelScope.launch {
+            context.userIdStore.data.collect {
+                kotlin.runCatching {
+                    repository.getUserInfo(it.userId.toInt())
+                }.onSuccess {
+                    _userInfo.emit(it.data)
+                    Log.d("AuthViewModel", it.data.id.toString())
+                }.onFailure {
+                    Log.d("AuthViewModel", it.message.toString())
+                }
             }
         }
     }
@@ -107,6 +131,13 @@ class AuthViewModel @Inject constructor(
             Log.d("setUserToken", "setUserToken")
             _accessCode.emit(token)
             it.toBuilder().setAccessToken(token).build()
+        }
+    }
+
+    suspend fun setUserId(userId: Int) {
+        context.userIdStore.updateData {
+            Log.d("setUserId", userId.toString())
+            it.toBuilder().setUserId(userId.toLong()).build()
         }
     }
 }

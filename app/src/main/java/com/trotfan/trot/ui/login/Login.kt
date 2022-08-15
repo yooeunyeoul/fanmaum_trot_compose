@@ -33,6 +33,7 @@ import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.R
 import com.trotfan.trot.model.KakaoTokens
+import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
 import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -57,6 +58,7 @@ fun LoginScreen(
             }
         }
     val accessToken by viewModel.accessCode.collectAsState()
+    val userInfo by viewModel.userInfo.collectAsState()
     val serverAvailable by viewModel.serverAvailable.collectAsState()
 
     var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -144,9 +146,41 @@ fun LoginScreen(
         Log.d("accessToken", accessToken)
         if (accessToken.isEmpty().not()) {
             LaunchedEffect(accessToken) {
-                navController.navigate(SignUpSections.SelectStar.route) {
-                    popUpTo(LoginNav.Login.route) {
-                        inclusive = true
+                viewModel.getUserInfo()
+            }
+        }
+
+        if (userInfo != null) {
+            LaunchedEffect(userInfo) {
+                if (userInfo!!.star_id == null) {
+                    navController.navigate(SignUpSections.SelectStar.route) {
+                        popUpTo(LoginNav.Login.route) {
+                            inclusive = true
+                        }
+                    }
+                } else if (userInfo!!.name == null) {
+                    navController.navigate(SignUpSections.SettingNickName.route) {
+                        popUpTo(LoginNav.Login.route) {
+                            inclusive = true
+                        }
+                    }
+                } else if (userInfo!!.phone_number == null) {
+                    navController.navigate(SignUpSections.CertificationPhoneNumber.route) {
+                        popUpTo(LoginNav.Login.route) {
+                            inclusive = true
+                        }
+                    }
+                } else if (userInfo!!.redeem_code == null) {
+                    navController.navigate(SignUpSections.InvitationCode.route) {
+                        popUpTo(LoginNav.Login.route) {
+                            inclusive = true
+                        }
+                    }
+                } else {
+                    navController.navigate(HomeSections.VOTE.route) {
+                        popUpTo(LoginNav.Login.route) {
+                            inclusive = true
+                        }
                     }
                 }
             }

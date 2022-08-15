@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.invitation
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -7,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.components.button.ContainedButton
@@ -16,6 +18,7 @@ import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.HomeSections
+import com.trotfan.trot.ui.invitation.viewmodel.InvitationViewModel
 import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -28,12 +31,15 @@ fun InvitationScreen(
     modifier: Modifier = Modifier,
     linkText: String = "",
     navController: NavController,
+    viewModel: InvitationViewModel = hiltViewModel()
 ) {
     var errorState by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     var completeState by remember { mutableStateOf(false) }
     var skipDialogState by remember { mutableStateOf(false) }
     var completeDialogState by remember { mutableStateOf(false) }
+
+    var inviteCode by remember { mutableStateOf(linkText) }
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -58,7 +64,7 @@ fun InvitationScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         InputTextField(
-            text = linkText,
+            text = inviteCode,
             placeHolder = "#8자리 코드",
             maxLength = 8,
             errorStatus = errorState,
@@ -75,6 +81,7 @@ fun InvitationScreen(
                     }
                 } else {
                     errorState = false
+                    inviteCode = it
                     completeState = errorState.not() && it.length == 8
                 }
             },
@@ -98,7 +105,7 @@ fun InvitationScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             ContainedButton(text = "완료", enabled = completeState, modifier = Modifier.weight(1f)) {
-                completeDialogState = true
+                viewModel.postInviteCode(inviteCode = inviteCode)
             }
         }
 
