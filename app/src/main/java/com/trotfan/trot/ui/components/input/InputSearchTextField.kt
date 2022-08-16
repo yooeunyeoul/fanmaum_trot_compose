@@ -26,7 +26,7 @@ import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.utils.clickable
 
 enum class SearchStatus {
-    TrySearch, NoResult, SearchResult
+    TrySearch, NoResult, SearchResult, Loading
 }
 
 @Composable

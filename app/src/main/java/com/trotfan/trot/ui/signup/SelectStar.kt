@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.trotfan.trot.R
@@ -50,7 +52,7 @@ fun SelectStarScreen(
 
     val listState = rememberLazyListState()
     val starListState: LazyPagingItems<Person>? =
-        viewModel.starListState.value?.collectAsLazyPagingItems()
+        viewModel.starListState.collectAsLazyPagingItems()
 
     var selectedItem: Person? by remember {
         mutableStateOf(null)
@@ -103,6 +105,7 @@ fun SelectStarScreen(
                 contentPadding = PaddingValues(bottom = 72.dp)
             ) {
                 item {
+
                     Text(
                         text = "내 스타\n1명을 선택해주세요",
                         color = Gray700,
@@ -128,36 +131,73 @@ fun SelectStarScreen(
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                 }
-
-                itemsIndexed(
-                    starListState?.itemSnapshotList?.items ?: emptyList()
-                ) { index, item ->
-                    if (index == 0) {
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text(
-                            text = "전체 스타",
-                            color = Gray600,
-                            style = FanwooriTypography.caption2
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                    }
-                    ListItemButton(
-                        text = item.name,
-                        subText = item.group,
-                        imageUrl = item.image,
-                        unCheckedTrailingIcon = R.drawable.icon_heart,
-                        checkedTrailingIcon = R.drawable.icon_heartfilled,
-                        checked = selectedItem == item,
-                        onClick = {
-                            val clickedItem = it as Person
-                            selectedItem = if (clickedItem == selectedItem) {
-                                null
-                            } else {
-                                clickedItem
-                            }
-                        },
-                        item = item
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "전체 스타",
+                        color = Gray600,
+                        style = FanwooriTypography.caption2
                     )
+                    Spacer(modifier = Modifier.height(6.dp))
+                }
+
+                when (starListState?.loadState?.refresh) {
+                    is LoadState.NotLoading -> {
+                        itemsIndexed(
+                            starListState?.itemSnapshotList?.items ?: emptyList(),
+                            key = { index, item -> item.id }
+                        ) { index, item ->
+                            ListItemButton(
+                                text = item.name,
+                                subText = item.group,
+                                imageUrl = item.image,
+                                unCheckedTrailingIcon = R.drawable.icon_heart,
+                                checkedTrailingIcon = R.drawable.icon_heartfilled,
+                                checked = selectedItem == item,
+                                onClick = {
+                                    val clickedItem = it as Person
+                                    selectedItem = if (clickedItem == selectedItem) {
+                                        null
+                                    } else {
+                                        clickedItem
+                                    }
+                                },
+                                item = item
+                            )
+
+
+                        }
+
+                    }
+                    is LoadState.Loading -> {
+                        item {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            ) {
+                                CircularProgressIndicator()
+                            }
+
+                        }
+
+
+                    }
+                    is LoadState.Error -> {
+                        item() {
+                            Column(verticalArrangement = Arrangement.Center) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+                    else -> {
+                        item() {
+                            Column(verticalArrangement = Arrangement.Center) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
                 }
             }
 

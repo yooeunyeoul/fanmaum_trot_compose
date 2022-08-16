@@ -8,9 +8,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -161,9 +163,11 @@ fun SearchStarScreen(
                 viewModel.changeSearchState(SearchStatus.NoResult)
             }
             is LoadState.Loading -> {
+                viewModel.changeSearchState(SearchStatus.Loading)
+            }
+            is LoadState.NotLoading -> {
                 viewModel.changeSearchState(SearchStatus.SearchResult)
             }
-            is LoadState.NotLoading -> {}
             else -> {}
         }
 
@@ -306,6 +310,16 @@ fun SearchStarScreen(
                     }
                 )
 
+
+            }
+            SearchStatus.Loading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
 
             }
         }
