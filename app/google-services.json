@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "27320645027-62digvpgqgnlt2hdieeuk5l4aav0obi2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot",
+            "certificate_hash": "d96d9350a262e47485e71f3b8663dcf602530ad3"
+          }
+        },
+        {
+          "client_id": "27320645027-6mbvlkvc0rd3va3u4cl4dhipcf9i3mbe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot",
+            "certificate_hash": "1f2452745a587ac9baaee1dd41d1b55c1deadb96"
+          }
+        },
+        {
+          "client_id": "27320645027-d5d7nlvmrfmhoe6cgqa2anan7fqatrrh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot",
+            "certificate_hash": "f34456907af32a1305ad6e47378741b7f87ea03c"
+          }
+        },
+        {
           "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -21,6 +45,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyBUlQHHRGC9cS9o0Hrct5MplwOSd62mM6c"
+        },
+        {
+          "current_key": "AIzaSyC5QFdGYfgsBsyyIjmnlrW45tnTN0kbXK0"
         }
       ],
       "services": {
@@ -50,6 +77,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "27320645027-5vjf6jfvu5jrl3jh7lko0hbr49h6at9s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.dev",
+            "certificate_hash": "d96d9350a262e47485e71f3b8663dcf602530ad3"
+          }
+        },
+        {
+          "client_id": "27320645027-m7rucbgbcrd76emkgq8417js5vqlvd3o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.dev",
+            "certificate_hash": "f34456907af32a1305ad6e47378741b7f87ea03c"
+          }
+        },
+        {
+          "client_id": "27320645027-u11flsgr2somh3f33nh4o5pku13fgfet.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.dev",
+            "certificate_hash": "1f2452745a587ac9baaee1dd41d1b55c1deadb96"
+          }
+        },
+        {
           "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -57,6 +108,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyBUlQHHRGC9cS9o0Hrct5MplwOSd62mM6c"
+        },
+        {
+          "current_key": "AIzaSyC5QFdGYfgsBsyyIjmnlrW45tnTN0kbXK0"
         }
       ],
       "services": {
@@ -86,6 +140,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "27320645027-c96l4gkihcret91108eduuonqvor05st.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.qa",
+            "certificate_hash": "d96d9350a262e47485e71f3b8663dcf602530ad3"
+          }
+        },
+        {
+          "client_id": "27320645027-i0pphdarn19a4fmn86j2d1ktfrp3eski.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.qa",
+            "certificate_hash": "f34456907af32a1305ad6e47378741b7f87ea03c"
+          }
+        },
+        {
+          "client_id": "27320645027-rflbcjntuvl85vshb2dp6h33niiin4rc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.qa",
+            "certificate_hash": "1f2452745a587ac9baaee1dd41d1b55c1deadb96"
+          }
+        },
+        {
           "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -93,6 +171,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyBUlQHHRGC9cS9o0Hrct5MplwOSd62mM6c"
+        },
+        {
+          "current_key": "AIzaSyC5QFdGYfgsBsyyIjmnlrW45tnTN0kbXK0"
         }
       ],
       "services": {

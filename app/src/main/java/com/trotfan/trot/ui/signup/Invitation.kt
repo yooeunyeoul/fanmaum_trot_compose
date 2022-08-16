@@ -1,15 +1,18 @@
 package com.trotfan.trot.ui.signup
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
@@ -22,6 +25,9 @@ import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import java.util.regex.Pattern
 
 @Composable
@@ -31,12 +37,14 @@ fun InvitationScreen(
     navController: NavController,
     viewModel: InvitationViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     var errorState by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     var completeState by remember { mutableStateOf(false) }
     var skipDialogState by remember { mutableStateOf(false) }
     val completeDialogState by viewModel.completeStatus.collectAsState(initial = false)
 
+    val codeError by viewModel.codeError.collectAsState()
     var inviteCode by remember { mutableStateOf(linkText) }
 
     Column(
@@ -65,7 +73,11 @@ fun InvitationScreen(
             text = inviteCode,
             placeHolder = "#8자리 코드",
             maxLength = 8,
-            errorStatus = errorState,
+            errorStatus = if (codeError) {
+                true
+            } else {
+                codeError
+            },
             onValueChange = {
                 if (it.isNotBlank() && it[0] != '#') {
                     errorState = true
@@ -83,7 +95,11 @@ fun InvitationScreen(
                     completeState = errorState.not() && it.length == 8
                 }
             },
-            errorMessage = errorMessage,
+            errorMessage = if (codeError) {
+                "유효하지 않는 코드에요"
+            } else {
+                errorMessage
+            },
             modifier = Modifier
         )
 
@@ -118,6 +134,7 @@ fun InvitationScreen(
                 negativeText = "취소",
                 onDismiss = { skipDialogState = false },
                 onPositive = {
+                    viewModel.postInviteCode("")
                     navController.navigate(HomeSections.VOTE.route) {
                         popUpTo(SignUpSections.InvitationCode.route) {
                             inclusive = true

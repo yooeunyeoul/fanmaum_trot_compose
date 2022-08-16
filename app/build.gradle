@@ -9,9 +9,6 @@ plugins {
     id "com.google.protobuf" version "0.8.17"
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 android {
     compileSdk 32
 
@@ -26,10 +23,6 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-
-        buildConfigField "String", "GOOGLE_SERVER_CLIENT_ID", properties['google_server_client_id']
-        buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties['kakao_navite_app_key']
-        resValue "string", "kakao_oauth_host", properties['kakao_oauth_host']
     }
 
     buildTypes {

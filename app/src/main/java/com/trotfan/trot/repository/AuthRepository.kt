@@ -17,6 +17,10 @@ class AuthRepository @Inject constructor(
         return authService.postGoogleLogin(authCode)
     }
 
+    suspend fun postAppleLogin(authCode: AppleToken): UserToken {
+        return authService.postAppleLogin(authCode)
+    }
+
     suspend fun getServerStateService(): ServerState {
         return serverStateService.getServerState()
     }

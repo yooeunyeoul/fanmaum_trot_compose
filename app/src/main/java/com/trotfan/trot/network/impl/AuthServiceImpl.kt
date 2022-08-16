@@ -1,16 +1,12 @@
 package com.trotfan.trot.network.impl
 
-import android.content.Context
-import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.AuthService
 import com.trotfan.trot.network.HttpRoutes
-import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class AuthServiceImpl @Inject constructor(
@@ -34,6 +30,15 @@ class AuthServiceImpl @Inject constructor(
             setBody(authCode)
         }
         return responses.body()
+    }
+
+    override suspend fun postAppleLogin(authCode: AppleToken): UserToken {
+        val response = httpClient.post {
+            url(HttpRoutes.APPLE_LOGIN)
+            contentType(ContentType.Application.Json)
+            setBody(authCode)
+        }
+        return response.body()
     }
 
     override suspend fun getUserInfo(userId: Int): UserInfoData =

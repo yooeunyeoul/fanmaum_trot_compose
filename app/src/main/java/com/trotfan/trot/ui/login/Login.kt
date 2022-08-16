@@ -30,18 +30,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
-import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.R
+import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.model.AppleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
+import com.trotfan.trot.ui.login.viewmodel.AuthViewModel
 import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Primary600
 import com.trotfan.trot.ui.utils.clickable
-import com.trotfan.trot.ui.login.viewmodel.AuthViewModel
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun LoginScreen(
@@ -55,9 +58,19 @@ fun LoginScreen(
             if (result.resultCode == ComponentActivity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 viewModel.googleLogin(task)
+            } else {
+                Log.d("googleAuth", result.toString())
             }
         }
-    val accessToken by viewModel.accessCode.collectAsState()
+
+    val userId = flow {
+        context.userIdStore.data.map {
+            it.userId
+        }.collect(collector = {
+            this.emit(it)
+        })
+    }.collectAsState(initial = 0)
+    val userToken by viewModel.userToken.collectAsState()
     val userInfo by viewModel.userInfo.collectAsState()
     val serverAvailable by viewModel.serverAvailable.collectAsState()
 
@@ -137,16 +150,9 @@ fun LoginScreen(
             AppleLoginWebViewDialog {
                 isAppleLoginDialogOpen = false
                 Log.d("AuthViewModel", it.toString())
-                suspend {
-                    it?.let { it1 -> viewModel.setUserToken(it1) }
+                it?.let {
+                    viewModel.postAppleToken(it)
                 }
-            }
-        }
-
-        Log.d("accessToken", accessToken)
-        if (accessToken.isEmpty().not()) {
-            LaunchedEffect(accessToken) {
-                viewModel.getUserInfo()
             }
         }
 
@@ -211,9 +217,9 @@ fun googleSignIn(
     context: Context
 ) {
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
+        .requestIdToken(context.getString(R.string.google_server_client_id))
         .requestId()
-        .requestServerAuthCode(BuildConfig.GOOGLE_SERVER_CLIENT_ID)
+        .requestServerAuthCode(context.getString(R.string.google_server_client_id))
         .requestEmail()
         .build()
     val googleSignInClient = GoogleSignIn.getClient(context, gso)

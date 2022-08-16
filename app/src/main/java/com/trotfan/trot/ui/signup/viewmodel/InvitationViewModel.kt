@@ -1,9 +1,7 @@
 package com.trotfan.trot.ui.signup.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.repository.SignUpRepository
@@ -24,6 +22,10 @@ class InvitationViewModel @Inject constructor(
         get() = _completeStatus
     private val _completeStatus = MutableStateFlow(false)
 
+    val codeError: StateFlow<Boolean>
+        get() = _codeError
+    private val _codeError = MutableStateFlow(false)
+
     fun postInviteCode(inviteCode: String) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
@@ -33,7 +35,12 @@ class InvitationViewModel @Inject constructor(
                         redeemCode = inviteCode
                     )
                 }.onSuccess {
-                    _completeStatus.emit(true)
+                    when (it.code) {
+                        3 -> _codeError.emit(true)
+                        200 -> {
+                            if (inviteCode != "") _completeStatus.emit(true)
+                        }
+                    }
                 }
             }
         }

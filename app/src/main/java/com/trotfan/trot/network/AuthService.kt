@@ -11,6 +11,10 @@ interface AuthService {
         authCode: GoogleToken
     ): UserToken
 
+    suspend fun postAppleLogin(
+        authCode: AppleToken
+    ): UserToken
+
     suspend fun getUserInfo(
         userId: Int
     ): UserInfoData

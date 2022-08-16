@@ -17,14 +17,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.trotfan.trot.model.AppleToken
 import java.util.*
 
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun AppleLoginWebViewDialog(onDismissRequest: (String?) -> Unit) {
+fun AppleLoginWebViewDialog(onDismissRequest: (AppleToken?) -> Unit) {
     val context = LocalContext.current
-    var accessCode: String? = null
+    val accessCode: AppleToken? = null
 
     Dialog(
         onDismissRequest = { onDismissRequest(accessCode) },
@@ -60,10 +61,14 @@ fun AppleLoginWebViewDialog(onDismissRequest: (String?) -> Unit) {
 }
 
 
-class AppleWebViewClient(private val onDismissRequest: (String?) -> Unit) : WebViewClient() {
+class AppleWebViewClient(private val onDismissRequest: (AppleToken?) -> Unit) : WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-        onDismissRequest(request?.url?.getQueryParameter("id_token"))
+        Log.d("AuthViewModel", request?.url?.toString() + "")
+        val idToken = request?.url?.getQueryParameter("id-token")
+        val accessToken = request?.url?.getQueryParameter("access-token")
+        val refreshToken = request?.url?.getQueryParameter("refresh-token")
+        onDismissRequest(AppleToken(idToken, accessToken, refreshToken))
         return super.shouldOverrideUrlLoading(view, request)
     }
 }

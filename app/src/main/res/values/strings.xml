@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Fabwoori</string>
+    <string name="kakao_navite_app_key">0896a83ef914dbc24ad6bdeec31d202d</string>
+    <string name="kakao_oauth_host">kakao0896a83ef914dbc24ad6bdeec31d202d</string>
+    <string name="google_server_client_id">27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com</string>
     <string name="dynamic_link_url">https://fanwoori.page.link</string>
     <string name="home_vote">VOTE</string>
     <string name="home_mypage">MYPAGE</string>

@@ -16,13 +16,20 @@ data class GoogleToken(
 )
 
 @Serializable
+data class AppleToken(
+    val idToken: String? = null,
+    val accessToken: String? = null,
+    val refreshToken: String? = null
+)
+
+@Serializable
 data class UserToken(
     @SerializedName("access_token")
     val access_token: String,
     @SerializedName("refresh_token")
     val refresh_token: String?,
-    @SerializedName("id")
-    val id: Int
+    @SerializedName("user_id")
+    val user_id: Int
 )
 
 @Serializable

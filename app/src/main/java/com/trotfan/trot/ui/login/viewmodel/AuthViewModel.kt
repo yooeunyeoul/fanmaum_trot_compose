@@ -9,10 +9,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
-import com.trotfan.trot.model.GoogleToken
-import com.trotfan.trot.model.KakaoTokens
-import com.trotfan.trot.model.UserInfo
-import com.trotfan.trot.model.UserInfoData
+import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -33,9 +30,9 @@ class AuthViewModel @Inject constructor(
     val serverAvailable: StateFlow<Boolean>
         get() = _serverAvailable
 
-    private val _accessCode = MutableStateFlow("")
-    val accessCode: StateFlow<String>
-        get() = _accessCode
+    private val _userToken = MutableStateFlow<UserToken?>(null)
+    val userToken: StateFlow<UserToken?>
+        get() = _userToken
 
     private val _userInfo = MutableStateFlow<UserInfo?>(null)
     val userInfo: StateFlow<UserInfo?>
@@ -52,15 +49,15 @@ class AuthViewModel @Inject constructor(
             }.onSuccess { state ->
                 if (state.isAvailable) {
                     Log.d("AuthViewModel", state.isAvailable.toString())
-                    context.userTokenStore.data.collect {
-                        _accessCode.emit(it.accessToken)
+                    context.userIdStore.data.collect {
+                        if (it.userId.toInt() != 0) {
+                            getUserInfo(it.userId)
+                        }
                     }
                 } else {
                     //서버 점검
                     _serverAvailable.emit(false)
                 }
-            }.onFailure {
-                Log.d("AuthViewModel", it.message.toString())
             }
         }
     }
@@ -77,10 +74,26 @@ class AuthViewModel @Inject constructor(
                 handleGoogleLogin.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
                 Log.d("AuthViewModel", it.access_token)
+                _userToken.emit(it)
                 setUserToken(it.access_token)
-                setUserId(it.id)
+                setUserId(it.user_id)
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
+            }
+        }
+    }
+
+    fun postAppleToken(token: AppleToken) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                repository.postAppleLogin(token)
+            }.onSuccess {
+                _userToken.emit(it)
+                setUserToken(it.access_token)
+                setUserId(it.user_id)
+                Log.d("AuthViewModel", it.access_token)
+            }.onFailure {
+                Log.d("AuthViewModel", it.message.toString())
             }
         }
     }
@@ -90,8 +103,9 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
+                _userToken.emit(it)
                 setUserToken(it.access_token)
-                setUserId(it.id)
+                setUserId(it.user_id)
                 Log.d("AuthViewModel", it.access_token)
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
@@ -99,17 +113,15 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun getUserInfo() {
+    fun getUserInfo(userId: Long) {
         viewModelScope.launch {
-            context.userIdStore.data.collect {
-                kotlin.runCatching {
-                    repository.getUserInfo(it.userId.toInt())
-                }.onSuccess {
-                    _userInfo.emit(it.data)
-                    Log.d("AuthViewModel", it.data.id.toString())
-                }.onFailure {
-                    Log.d("AuthViewModel", it.message.toString())
-                }
+            kotlin.runCatching {
+                repository.getUserInfo(userId.toInt())
+            }.onSuccess {
+                _userInfo.emit(it.data)
+                Log.d("AuthViewModel", it.data.id.toString())
+            }.onFailure {
+                Log.d("AuthViewModel", it.message.toString())
             }
         }
     }
@@ -129,7 +141,6 @@ class AuthViewModel @Inject constructor(
     suspend fun setUserToken(token: String) {
         context.userTokenStore.updateData {
             Log.d("setUserToken", "setUserToken")
-            _accessCode.emit(token)
             it.toBuilder().setAccessToken(token).build()
         }
     }
