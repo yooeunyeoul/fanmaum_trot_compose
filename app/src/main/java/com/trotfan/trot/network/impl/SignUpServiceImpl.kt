@@ -37,7 +37,7 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
                 )
             }
             body = FormDataContent(Parameters.build {
-                append("send_phone", "1644-0219")
+                append("send_phone", "16440219")
                 append("dest_phone", phoneNumber)
                 append("msg_body", message)
             })
