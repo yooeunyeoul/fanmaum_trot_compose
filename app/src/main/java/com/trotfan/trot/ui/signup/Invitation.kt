@@ -154,10 +154,12 @@ fun InvitationScreen(
             )
         }
 
-        if (skipState) {
-            navController.navigate(HomeSections.VOTE.route) {
-                popUpTo(SignUpSections.InvitationCode.route) {
-                    inclusive = true
+        LaunchedEffect(skipState) {
+            if (skipState) {
+                navController.navigate(HomeSections.VOTE.route) {
+                    popUpTo(SignUpSections.InvitationCode.route) {
+                        inclusive = true
+                    }
                 }
             }
         }
