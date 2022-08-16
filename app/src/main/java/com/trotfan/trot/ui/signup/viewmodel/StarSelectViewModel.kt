@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.trotfan.trot.datasource.GetStarDataSource
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Person
@@ -35,19 +36,19 @@ class StarSelectViewModel @Inject constructor(
         get() = _onComplete
 
     private val _startListState = mutableStateOf<Flow<PagingData<Person>>?>(null)
-    val starListState: State<Flow<PagingData<Person>>?>
-        get() = _startListState
+    val starListState =
+        Pager(PagingConfig(pageSize = 15)) { dataSource }.flow.cachedIn(viewModelScope)
 
 
     init {
-        getStartList()
+//        getStartList()
     }
 
-    fun getStartList() {
-        viewModelScope.launch {
-            _startListState.value = Pager(PagingConfig(pageSize = 15)) { dataSource }.flow
-        }
-    }
+//    fun getStartList() {
+//        viewModelScope.launch {
+//            _startListState.value = Pager(PagingConfig(pageSize = 15)) { dataSource }.flow
+//        }
+//    }
 
     fun selectStar(selectedItem: Person?) {
         viewModelScope.launch {
