@@ -21,8 +21,8 @@ data class UserToken(
     val access_token: String,
     @SerializedName("refresh_token")
     val refresh_token: String?,
-    @SerializedName("id")
-    val id: Int
+    @SerializedName("user_id")
+    val user_id: Int
 )
 
 @Serializable

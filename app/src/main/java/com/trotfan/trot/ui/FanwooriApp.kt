@@ -74,7 +74,7 @@ fun FanwooriApp(
 
                 navigation(
                     route = "로그인",
-                    startDestination = SignUpSections.SettingNickName.route
+                    startDestination = LoginNav.Login.route
                 ) {
                     addLoginGrape(
                         modifier = Modifier,

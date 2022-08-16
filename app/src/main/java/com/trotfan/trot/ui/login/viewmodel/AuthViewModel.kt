@@ -12,7 +12,6 @@ import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.GoogleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.model.UserInfo
-import com.trotfan.trot.model.UserInfoData
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -78,7 +77,7 @@ class AuthViewModel @Inject constructor(
             }.onSuccess {
                 Log.d("AuthViewModel", it.access_token)
                 setUserToken(it.access_token)
-                setUserId(it.id)
+                setUserId(it.user_id)
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
             }
@@ -91,7 +90,7 @@ class AuthViewModel @Inject constructor(
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
                 setUserToken(it.access_token)
-                setUserId(it.id)
+                setUserId(it.user_id)
                 Log.d("AuthViewModel", it.access_token)
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
