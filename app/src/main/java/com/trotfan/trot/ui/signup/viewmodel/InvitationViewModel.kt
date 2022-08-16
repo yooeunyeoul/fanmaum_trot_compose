@@ -22,6 +22,10 @@ class InvitationViewModel @Inject constructor(
         get() = _completeStatus
     private val _completeStatus = MutableStateFlow(false)
 
+    val skipStatus: StateFlow<Boolean>
+        get() = _skipStatus
+    private val _skipStatus = MutableStateFlow(false)
+
     val codeError: StateFlow<Boolean>
         get() = _codeError
     private val _codeError = MutableStateFlow(false)
@@ -39,6 +43,7 @@ class InvitationViewModel @Inject constructor(
                         3 -> _codeError.emit(true)
                         200 -> {
                             if (inviteCode != "") _completeStatus.emit(true)
+                            else _skipStatus.emit(true)
                         }
                     }
                 }

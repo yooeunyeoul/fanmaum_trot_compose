@@ -43,6 +43,7 @@ fun InvitationScreen(
     var completeState by remember { mutableStateOf(false) }
     var skipDialogState by remember { mutableStateOf(false) }
     val completeDialogState by viewModel.completeStatus.collectAsState(initial = false)
+    val skipState by viewModel.skipStatus.collectAsState(initial = false)
 
     val codeError by viewModel.codeError.collectAsState()
     var inviteCode by remember { mutableStateOf(linkText) }
@@ -135,11 +136,6 @@ fun InvitationScreen(
                 onDismiss = { skipDialogState = false },
                 onPositive = {
                     viewModel.postInviteCode("")
-                    navController.navigate(HomeSections.VOTE.route) {
-                        popUpTo(SignUpSections.InvitationCode.route) {
-                            inclusive = true
-                        }
-                    }
                 }
             )
         }
@@ -156,6 +152,14 @@ fun InvitationScreen(
                     }
                 }
             )
+        }
+
+        if (skipState) {
+            navController.navigate(HomeSections.VOTE.route) {
+                popUpTo(SignUpSections.InvitationCode.route) {
+                    inclusive = true
+                }
+            }
         }
     }
 }
