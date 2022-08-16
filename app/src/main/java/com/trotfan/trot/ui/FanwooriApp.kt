@@ -54,7 +54,7 @@ fun FanwooriApp(
                                 navController.navigate(route) {
                                     launchSingleTop = true
                                     restoreState = true
-                                    popUpTo(navController.graph.findStartDestination().id) {
+                                    popUpTo(HomeSections.VOTE.route) {
                                         saveState = true
                                     }
                                 }
