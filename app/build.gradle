@@ -51,12 +51,15 @@ android {
         create("dev") {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "_dev"
-            manifestPlaceholders = [appLabel: "Fanwoori_dev"]
+            manifestPlaceholders = [appLabel: "Fanwoori_dev",
+                                    kakaoKey: "kakao0896a83ef914dbc24ad6bdeec31d202d"
+            ]
         }
         create("qa") {
             applicationIdSuffix = ".qa"
             versionNameSuffix = "_qa"
-            manifestPlaceholders = [appLabel: "Fanwoori_qa"]
+            manifestPlaceholders = [appLabel: "Fanwoori_qa",
+                                    kakaoKey: "kakaoa85178977eed8c1ed9dae2e47d89a254"]
         }
         create("product") {
             manifestPlaceholders = [appLabel: "Fanwoori_product"]
@@ -139,8 +142,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
 
     //Datastore
-    implementation  "androidx.datastore:datastore:1.0.0"
-    implementation  "com.google.protobuf:protobuf-javalite:3.19.4"
+    implementation "androidx.datastore:datastore:1.0.0"
+    implementation "com.google.protobuf:protobuf-javalite:3.19.4"
 
     //coil
     implementation 'io.coil-kt:coil-compose:2.1.0'
