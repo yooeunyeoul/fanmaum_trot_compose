@@ -21,10 +21,12 @@ import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.signup.viewmodel.InvitationViewModel
+import com.trotfan.trot.ui.signup.viewmodel.InviteCodeCheckStatus
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -38,14 +40,11 @@ fun InvitationScreen(
     viewModel: InvitationViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    var errorState by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-    var completeState by remember { mutableStateOf(false) }
     var skipDialogState by remember { mutableStateOf(false) }
     val completeDialogState by viewModel.completeStatus.collectAsState(initial = false)
     val skipState by viewModel.skipStatus.collectAsState(initial = false)
 
-    val codeError by viewModel.codeError.collectAsState()
+    val inviteCodeCheckState by viewModel.inviteCodeCheckStatus.collectAsState()
     var inviteCode by remember { mutableStateOf(linkText) }
 
     Column(
@@ -74,33 +73,12 @@ fun InvitationScreen(
             text = inviteCode,
             placeHolder = "#8자리 코드",
             maxLength = 8,
-            errorStatus = if (codeError) {
-                true
-            } else {
-                codeError
-            },
+            errorStatus = inviteCodeCheckState != InviteCodeCheckStatus.None,
             onValueChange = {
-                if (it.isNotBlank() && it[0] != '#') {
-                    errorState = true
-                    if (errorState) {
-                        errorMessage = "초대코드는 #으로 시작해요"
-                    }
-                } else if (!Pattern.matches("^[0-9|a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣#]*\$", it)) {
-                    errorState = true
-                    if (errorState) {
-                        errorMessage = "#을 제외한 특수문자와 공백은 입력할 수 없어요."
-                    }
-                } else {
-                    errorState = false
-                    inviteCode = it
-                    completeState = errorState.not() && it.length == 8
-                }
+                viewModel.checkInviteCodeLocal(it)
+                inviteCode = it
             },
-            errorMessage = if (codeError) {
-                "유효하지 않는 코드에요"
-            } else {
-                errorMessage
-            },
+            errorMessage = inviteCodeCheckState.code,
             modifier = Modifier
         )
 
@@ -119,7 +97,11 @@ fun InvitationScreen(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            ContainedButton(text = "완료", enabled = completeState, modifier = Modifier.weight(1f)) {
+            ContainedButton(
+                text = "완료",
+                enabled = inviteCodeCheckState == InviteCodeCheckStatus.None && inviteCode.length == 8,
+                modifier = Modifier.weight(1f)
+            ) {
                 viewModel.postInviteCode(
                     inviteCode = inviteCode
                 )

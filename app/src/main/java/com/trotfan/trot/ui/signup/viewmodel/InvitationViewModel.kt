@@ -9,7 +9,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import javax.inject.Inject
+
+enum class InviteCodeCheckStatus(val code: String) {
+    None(""),
+    FirstCharacterError("초대코드는 #으로 시작해요."),
+    SpecialCharacterEmpty("#을 제외한 특수문자와 공백은 입력할 수 없어요."),
+    InvalidCodeError("유효하지 않는 코드에요.")
+}
 
 @HiltViewModel
 class InvitationViewModel @Inject constructor(
@@ -26,9 +34,28 @@ class InvitationViewModel @Inject constructor(
         get() = _skipStatus
     private val _skipStatus = MutableStateFlow(false)
 
-    val codeError: StateFlow<Boolean>
-        get() = _codeError
-    private val _codeError = MutableStateFlow(false)
+    val inviteCodeCheckStatus: StateFlow<InviteCodeCheckStatus>
+        get() = _inviteCodeCheckStatus
+    private val _inviteCodeCheckStatus =
+        MutableStateFlow(InviteCodeCheckStatus.None)
+
+    fun checkInviteCodeLocal(code: String) {
+        viewModelScope.launch {
+            when {
+                !Pattern.matches("^[0-9|a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣#]*\$", code)
+                -> {
+                    _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.SpecialCharacterEmpty)
+                }
+                code.isNotBlank() && code[0] != '#'
+                -> {
+                    _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.FirstCharacterError)
+                }
+                else -> {
+                    _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.None)
+                }
+            }
+        }
+    }
 
     fun postInviteCode(inviteCode: String) {
         viewModelScope.launch {
@@ -40,7 +67,7 @@ class InvitationViewModel @Inject constructor(
                     )
                 }.onSuccess {
                     when (it.code) {
-                        3 -> _codeError.emit(true)
+                        3 -> _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.InvalidCodeError)
                         200 -> {
                             if (inviteCode != "") _completeStatus.emit(true)
                             else _skipStatus.emit(true)

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.FanwooriTheme
@@ -29,6 +30,7 @@ fun LoginButton(
     icon: Painter?,
     textColor: Color = Gray700,
     borderColor: Color = Gray300,
+    borderWidth: Dp = 1.dp,
     backgroundColor: Color = Color.Transparent,
     onClick: () -> Unit
 ) {
@@ -38,7 +40,7 @@ fun LoginButton(
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp)
             .clip(RoundedCornerShape(24.dp))
-            .border(1.dp, borderColor, RoundedCornerShape(24.dp))
+            .border(borderWidth, borderColor, RoundedCornerShape(24.dp))
             .background(backgroundColor)
             .clickable {
                 onClick()

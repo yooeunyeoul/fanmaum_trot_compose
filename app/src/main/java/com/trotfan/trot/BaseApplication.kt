@@ -9,6 +9,10 @@ class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        KakaoSdk.init(this, getString(R.string.kakao_navite_app_key))
+        if (BuildConfig.DEBUG) {
+            KakaoSdk.init(this, getString(R.string.kakao_navite_app_key_debug))
+        } else {
+            KakaoSdk.init(this, getString(R.string.kakao_navite_app_key_qa))
+        }
     }
 }

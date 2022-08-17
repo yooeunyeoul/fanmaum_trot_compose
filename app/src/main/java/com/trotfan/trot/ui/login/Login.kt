@@ -86,9 +86,10 @@ fun LoginScreen(
         ) {
             LoginButton(
                 text = "카카오톡 계정으로 로그인",
-                icon = null,
+                icon = painterResource(id = R.drawable.kakao_symbol),
                 textColor = Gray800,
-                backgroundColor = Color(0XFFFEE500)
+                backgroundColor = Color(0XFFFEE500),
+                borderWidth = 0.dp,
             ) {
                 handleKakaoLogin(context, viewModel)
             }
