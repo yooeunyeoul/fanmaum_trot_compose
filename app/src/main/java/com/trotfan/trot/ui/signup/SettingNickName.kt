@@ -61,6 +61,7 @@ fun SettingNicknameScreen(
         Spacer(modifier = Modifier.height(32.dp))
         Box(modifier = Modifier.height(80.dp)) {
             InputTextField(
+                text = inputText,
                 placeHolder = "닉네임 2~10자 입력",
                 maxLength = 10,
                 errorStatus = (nickCheckState != NickNameCheckStatus.None && nickCheckState != NickNameCheckStatus.AuthSuccess),

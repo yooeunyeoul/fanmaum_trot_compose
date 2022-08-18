@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +34,7 @@ fun HorizontalDialog(
     onDismiss: () -> Unit
 ) {
 
-    var inputText = ""
+    var inputText by remember { mutableStateOf("") }
     Dialog(
         onDismissRequest = {
             onDismiss()
@@ -77,6 +77,7 @@ fun HorizontalDialog(
 
                 inputPlaceHolderText?.let {
                     InputTextField(
+                        text = inputText,
                         placeHolder = inputPlaceHolderText, onValueChange = {
                             inputText = it
                         }, maxLength = maxLength,

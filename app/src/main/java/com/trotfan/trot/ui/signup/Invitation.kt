@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.signup
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -12,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
@@ -26,11 +24,6 @@ import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import java.util.regex.Pattern
 
 @Composable
 fun InvitationScreen(
@@ -45,7 +38,7 @@ fun InvitationScreen(
     val skipState by viewModel.skipStatus.collectAsState(initial = false)
 
     val inviteCodeCheckState by viewModel.inviteCodeCheckStatus.collectAsState()
-    var inviteCode by remember { mutableStateOf(linkText) }
+    val inviteCode by viewModel.inviteCode.collectAsState()
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -76,7 +69,6 @@ fun InvitationScreen(
             errorStatus = inviteCodeCheckState != InviteCodeCheckStatus.None,
             onValueChange = {
                 viewModel.checkInviteCodeLocal(it)
-                inviteCode = it
             },
             errorMessage = inviteCodeCheckState.code,
             modifier = Modifier
@@ -102,9 +94,7 @@ fun InvitationScreen(
                 enabled = inviteCodeCheckState == InviteCodeCheckStatus.None && inviteCode.length == 8,
                 modifier = Modifier.weight(1f)
             ) {
-                viewModel.postInviteCode(
-                    inviteCode = inviteCode
-                )
+                viewModel.postInviteCode()
             }
         }
 
@@ -117,7 +107,7 @@ fun InvitationScreen(
                 negativeText = "취소",
                 onDismiss = { skipDialogState = false },
                 onPositive = {
-                    viewModel.postInviteCode("")
+                    viewModel.postInviteCode()
                 }
             )
         }

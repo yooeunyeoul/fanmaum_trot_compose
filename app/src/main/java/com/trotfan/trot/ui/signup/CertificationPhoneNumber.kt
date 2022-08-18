@@ -165,6 +165,7 @@ fun CertificationPhoneScreen(
 
             Column(Modifier.weight(1f)) {
                 InputTextField(
+                    text = inputPhoneNumber,
                     placeHolder = "예) 01012345678",
                     maxLength = 11,
                     errorStatus = errorState,
@@ -228,6 +229,7 @@ fun CertificationPhoneScreen(
                     .height(56.dp)
             ) {
                 InputTextField(
+                    text = inputCertificationNumber,
                     placeHolder = "인증번호 6자리 입력",
                     maxLength = 6,
                     onValueChange = {

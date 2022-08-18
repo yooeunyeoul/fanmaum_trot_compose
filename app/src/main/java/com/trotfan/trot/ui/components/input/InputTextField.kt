@@ -49,7 +49,7 @@ fun InputTextField(
             modifier = modifier
                 .focusRequester(focusRequester)
                 .fillMaxWidth(),
-            value = value,
+            value = text,
             singleLine = true,
             isError = errorStatus,
             onValueChange = {

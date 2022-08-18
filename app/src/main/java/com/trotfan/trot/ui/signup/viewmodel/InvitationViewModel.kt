@@ -39,6 +39,10 @@ class InvitationViewModel @Inject constructor(
     private val _inviteCodeCheckStatus =
         MutableStateFlow(InviteCodeCheckStatus.None)
 
+    val inviteCode: StateFlow<String>
+        get() = _inviteCode
+    private val _inviteCode = MutableStateFlow("")
+
     fun checkInviteCodeLocal(code: String) {
         viewModelScope.launch {
             when {
@@ -52,24 +56,25 @@ class InvitationViewModel @Inject constructor(
                 }
                 else -> {
                     _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.None)
+                    _inviteCode.emit(code)
                 }
             }
         }
     }
 
-    fun postInviteCode(inviteCode: String) {
+    fun postInviteCode() {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.updateUser(
                         userid = it.userId.toString(),
-                        redeemCode = inviteCode
+                        redeemCode = _inviteCode.value
                     )
                 }.onSuccess {
                     when (it.code) {
                         3 -> _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.InvalidCodeError)
                         200 -> {
-                            if (inviteCode != "") _completeStatus.emit(true)
+                            if (_inviteCode.value != "") _completeStatus.emit(true)
                             else _skipStatus.emit(true)
                         }
                     }
