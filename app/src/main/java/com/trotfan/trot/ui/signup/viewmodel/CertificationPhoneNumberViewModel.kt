@@ -55,18 +55,11 @@ class CertificationPhoneNumberViewModel @Inject constructor(
     private val _certificationNumber = MutableStateFlow<String>("")
     val certificationNumber = _certificationNumber
 
-    private val _onComplete = MutableStateFlow(false)
-    val onComplete: StateFlow<Boolean>
-        get() = _onComplete
-
-    private val _duplicate = MutableStateFlow(false)
-
 
     fun requestCertificationCode(phoneNumber: String, randomCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
-//                val randomCode = (111111..999999).shuffled().last()
                 val message = "팬우리 인증번호 ${randomCode} 입니다."
                 val response = repository.requestSmsCertification(
                     phoneNumber = phoneNumber,
@@ -93,7 +86,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
             } else {
                 when (number) {
                     _certificationNumber.value -> {
-                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
+                        updateUser(number)
                     }
                     else -> {
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.NotAuth)
@@ -116,7 +109,8 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                     val response =
                         repository.updateUser(userid = it.userId.toString(), phoneNumber = phoneNum)
                     if (response.code == 200) {
-                        _onComplete.emit(true)
+//                        _onComplete.emit(true)
+                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
                     } else {
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.Duplicate)
                     }
