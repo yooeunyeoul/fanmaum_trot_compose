@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,8 @@ fun SettingNicknameScreen(
         mutableStateOf("")
     }
     val nickCheckState by viewModel.nickNameCheckStatus.collectAsState()
+    val focusManager = LocalFocusManager.current
+
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -94,13 +97,15 @@ fun SettingNicknameScreen(
                 .padding(top = 14.dp)
         ) {
             viewModel.checkNickNameApi(inputText)
+            focusManager.clearFocus()
+
         }
     }
 
 
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight()
             .fillMaxWidth()
             .padding(bottom = 24.dp),

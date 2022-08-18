@@ -1,6 +1,7 @@
 package com.trotfan.trot.ui.components.input
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Icon
@@ -15,7 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
@@ -31,7 +34,6 @@ enum class SearchStatus {
 
 @Composable
 fun SearchTextField(
-    onclick: () -> Unit = {},
     inputText: (String) -> Unit,
     isEnabled: Boolean = true,
     onClickSearch: (String) -> Unit = {},
@@ -53,13 +55,9 @@ fun SearchTextField(
     showClearIcon = text.isNotEmpty()
 
     TextField(
-
         modifier = modifier
             .fillMaxWidth()
-            .focusRequester(focusRequester)
-            .clickable {
-                onclick.invoke()
-            },
+            .focusRequester(focusRequester),
         value = text,
         shape = RoundedCornerShape(12.dp),
         enabled = isEnabled,
@@ -71,6 +69,7 @@ fun SearchTextField(
         },
         leadingIcon = {
             Icon(
+                modifier = Modifier.padding(start = 0.dp),
                 painter = painterResource(id = R.drawable.icon_search),
                 contentDescription = "Search Icon"
             )
@@ -93,12 +92,14 @@ fun SearchTextField(
         placeholder = {
             Text(
                 text = stringResource(id = placeHolder),
-                style = FanwooriTypography.body1,
+                style = FanwooriTypography.body3,
                 color = Gray400,
                 maxLines = 1,
-                fontSize = 17.sp
+                fontSize = 17.sp,
+                letterSpacing = (-0.25).sp,
+                textAlign = TextAlign.Start,
 
-            )
+                )
         },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
