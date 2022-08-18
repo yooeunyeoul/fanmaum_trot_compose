@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -36,6 +37,7 @@ import com.trotfan.trot.ui.signup.viewmodel.StarSelectViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.utils.clickable
 
 data class Sample(
     var id: Int = 0,
@@ -102,7 +104,7 @@ fun SelectStarScreen(
             LazyColumn(
                 state = listState,
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                contentPadding = PaddingValues(bottom = 72.dp)
+                contentPadding = PaddingValues(bottom = 96.dp)
             ) {
                 item {
 
@@ -117,28 +119,35 @@ fun SelectStarScreen(
                         color = Gray600,
                         style = FanwooriTypography.caption1
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(28.dp))
 
                 }
 
                 stickyHeader {
-                    SearchTextField(
-                        onclick = {
-                            navController.navigate(SignUpSections.SearchStar.route)
-                        }, inputText = {
-                            Log.e("Text ", it)
-                        }, isEnabled = false, placeHolder = R.string.hint_search_star,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate(SignUpSections.SearchStar.route)
+                            }
+                            .background(color = Color.White)
+                    ) {
+                        SearchTextField(
+                            inputText = {
+                                Log.e("Text ", it)
+                            }, isEnabled = false, placeHolder = R.string.hint_search_star,
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+                    }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(20.dp))
                     Text(
                         text = "전체 스타",
                         color = Gray600,
-                        style = FanwooriTypography.caption2
+                        style = FanwooriTypography.caption2,
+                        modifier = Modifier.padding(bottom = 6.dp)
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+
                 }
 
                 when (starListState?.loadState?.refresh) {

@@ -8,11 +8,12 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,10 +28,13 @@ import com.trotfan.trot.ui.signup.viewmodel.CertificationNumberCheckStatus
 import com.trotfan.trot.ui.signup.viewmodel.CertificationPhoneNumberViewModel
 import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+enum class RequestButtonText(val text: String) {
+    ReceiveCode("인증번호 받기"), REQUEST("재전송")
+}
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CertificationPhoneScreen(
     navController: NavController,
@@ -55,45 +59,11 @@ fun CertificationPhoneScreen(
 
     val status by viewModel.certificationNumberStatus.collectAsState()
 
-    val certificationNumber by viewModel.certificationNumber.collectAsState()
-
-    var ddd by remember {
-        mutableStateOf("")
-    }
-
-    val snackState = remember { SnackbarHostState() }
-    val snackScope = rememberCoroutineScope()
-
-    SnackbarHost(
-        hostState = snackState,
-        Modifier
-            .background(color = Color.White)
-            .padding(top = 325.dp)
-    )
-
-    fun launchSnackBar() {
-        snackScope.launch { snackState.showSnackbar(ddd) }
-    }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     var inputCertificationNumber by remember {
         mutableStateOf("")
     }
-
-    if (viewModel.onComplete.collectAsState().value) {
-        LaunchedEffect(Unit) {
-            navController.navigate(SignUpSections.InvitationCode.route) {
-                popUpTo(SignUpSections.CertificationPhoneNumber.route) {
-                    inclusive = true
-                }
-            }
-        }
-    }
-
-
-
-
-
-
 
     when (status) {
         CertificationNumberCheckStatus.TimeExceeded,
@@ -110,7 +80,12 @@ fun CertificationPhoneScreen(
                 contentText = status?.content ?: "",
                 buttonOneText = status?.buttonText ?: ""
             ) {
-                viewModel.updateUser(inputPhoneNumber)
+                navController.navigate(SignUpSections.InvitationCode.route) {
+                    popUpTo(SignUpSections.CertificationPhoneNumber.route) {
+                        inclusive = true
+                    }
+                }
+
             }
         }
         null -> {
@@ -133,10 +108,21 @@ fun CertificationPhoneScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        delay(200)
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .focusRequester(focusRequester)
+            .onFocusChanged {
+                if (it.isFocused) {
+                    keyboardController?.show()
+                }
+            }
     ) {
         CustomTopAppBar(title = "회원가입")
         Text(
@@ -165,8 +151,8 @@ fun CertificationPhoneScreen(
 
             Column(Modifier.weight(1f)) {
                 InputTextField(
-                    text = inputPhoneNumber,
                     placeHolder = "예) 01012345678",
+                    text = inputPhoneNumber,
                     maxLength = 11,
                     errorStatus = errorState,
                     onValueChange = {
@@ -190,7 +176,8 @@ fun CertificationPhoneScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Outline1Button(
-                text = "인증번호 받기",
+                text = if (inputPhoneNumber.length == 11 && certificationNumberSend)
+                    RequestButtonText.REQUEST.text else RequestButtonText.ReceiveCode.text,
                 enabled = inputPhoneNumber.length >= 11 && !errorState,
                 modifier = Modifier
                     .defaultMinSize(minWidth = 120.dp)
@@ -201,8 +188,6 @@ fun CertificationPhoneScreen(
                 focusManager.clearFocus()
                 focusRequester.requestFocus()
                 val randomCode = (111111..999999).shuffled().last().toString()
-                ddd = randomCode
-                launchSnackBar()
                 viewModel.requestCertificationCode(inputPhoneNumber, randomCode)
 
 
@@ -271,27 +256,19 @@ fun CertificationPhoneScreen(
         }
 
         if (certificationNumberSend) {
-            Row(
+
+            ContainedButton(
+                text = "인증하기",
+                enabled = inputCertificationNumber.length == 6,
                 modifier = Modifier
-                    .fillMaxHeight()
                     .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
+                    .padding(top = 24.dp)
             ) {
-
-                ContainedButton(
-                    text = "인증하기",
-                    enabled = inputCertificationNumber.length == 6,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    viewModel.checkAuthNumber(
-                        number = inputCertificationNumber,
-                        time = ticks
-                    )
-                }
+                viewModel.checkAuthNumber(
+                    number = inputCertificationNumber,
+                    time = ticks
+                )
             }
-
         }
     }
 }

@@ -3,6 +3,7 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.R.id
 import android.app.Application
 import android.os.Bundle
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -72,15 +73,13 @@ class StarSearchViewModel @Inject constructor(
 
     }
 
-    fun requestStar(starName: String) {
-        if (starName.isEmpty()) {
-            return
-        }
+    fun requestStar(starName: String, completeListener: () -> Unit) {
         viewModelScope.launch {
             Firebase.analytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST, Bundle().apply {
                 putString(FirebaseAnalytics.Param.ITEM_NAME, starName)
             })
             _requestComplete.emit(true)
+            completeListener.invoke()
         }
     }
 

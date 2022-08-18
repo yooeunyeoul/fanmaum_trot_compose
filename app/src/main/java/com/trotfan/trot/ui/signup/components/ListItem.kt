@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
@@ -36,6 +37,8 @@ fun ListItemButton(
     imageUrl: String?,
     textColor: Color = Gray700,
     subTextColor: Color = Gray600,
+    selectedTextColor: Color = Primary700,
+    selectedSubTextColor: Color = Primary500,
     checkedTrailingIcon: Int,
     unCheckedTrailingIcon: Int,
     checked: Boolean = false,
@@ -54,9 +57,16 @@ fun ListItemButton(
             .fillMaxWidth()
             .clickable {
                 onClick.invoke(item)
-            },
+            }
+            .border(
+                if (checked) 1.dp
+                else 0.dp,
+                color = if (checked) Primary100 else Gray100,
+                shape = RoundedCornerShape(16.dp)
+            ),
         shape = RoundedCornerShape(16.dp),
         backgroundColor = animatedColor,
+        elevation = 0.dp
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -79,18 +89,19 @@ fun ListItemButton(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(56.dp)
+                    .border(width = 1.dp, color = Gray300, CircleShape)
             )
             Spacer(modifier = Modifier.size(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = text,
-                    color = textColor,
+                    color = if (checked) selectedTextColor else textColor,
                     style = FanwooriTypography.button1
                 )
                 if (subText != null) {
                     Text(
                         text = subText ?: "",
-                        color = subTextColor,
+                        color = if (checked) selectedSubTextColor else subTextColor,
                         style = FanwooriTypography.caption2
                     )
                 }
