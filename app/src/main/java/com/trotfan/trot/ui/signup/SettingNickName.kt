@@ -99,7 +99,7 @@ fun SettingNicknameScreen(
 
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight()
             .fillMaxWidth()
             .padding(bottom = 24.dp),

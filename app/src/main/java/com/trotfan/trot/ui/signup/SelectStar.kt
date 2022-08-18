@@ -102,7 +102,7 @@ fun SelectStarScreen(
             LazyColumn(
                 state = listState,
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                contentPadding = PaddingValues(bottom = 72.dp)
+                contentPadding = PaddingValues(bottom = 96.dp)
             ) {
                 item {
 
@@ -117,28 +117,34 @@ fun SelectStarScreen(
                         color = Gray600,
                         style = FanwooriTypography.caption1
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(28.dp))
 
                 }
 
                 stickyHeader {
-                    SearchTextField(
-                        onclick = {
-                            navController.navigate(SignUpSections.SearchStar.route)
-                        }, inputText = {
-                            Log.e("Text ", it)
-                        }, isEnabled = false, placeHolder = R.string.hint_search_star,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                    ) {
+                        SearchTextField(
+                            onclick = {
+                                navController.navigate(SignUpSections.SearchStar.route)
+                            }, inputText = {
+                                Log.e("Text ", it)
+                            }, isEnabled = false, placeHolder = R.string.hint_search_star,
+                            modifier = Modifier.padding(bottom = 24.dp)
+                        )
+                    }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(20.dp))
                     Text(
                         text = "전체 스타",
                         color = Gray600,
-                        style = FanwooriTypography.caption2
+                        style = FanwooriTypography.caption2,
+                        modifier = Modifier.padding(bottom = 6.dp)
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+
                 }
 
                 when (starListState?.loadState?.refresh) {

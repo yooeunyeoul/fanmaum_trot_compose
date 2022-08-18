@@ -27,9 +27,11 @@ import com.trotfan.trot.ui.signup.viewmodel.CertificationNumberCheckStatus
 import com.trotfan.trot.ui.signup.viewmodel.CertificationPhoneNumberViewModel
 import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+enum class RequestButtonText(val text: String) {
+    ReceiveCode("인증번호 받기"), REQUEST("재전송")
+}
 
 @Composable
 fun CertificationPhoneScreen(
@@ -71,9 +73,6 @@ fun CertificationPhoneScreen(
             .padding(top = 325.dp)
     )
 
-    fun launchSnackBar() {
-        snackScope.launch { snackState.showSnackbar(ddd) }
-    }
 
     var inputCertificationNumber by remember {
         mutableStateOf("")
@@ -165,7 +164,7 @@ fun CertificationPhoneScreen(
 
             Column(Modifier.weight(1f)) {
                 InputTextField(
-                    placeHolder = "예) 01012345678",
+                    placeHolder = "예)01012345678",
                     maxLength = 11,
                     errorStatus = errorState,
                     onValueChange = {
@@ -189,7 +188,8 @@ fun CertificationPhoneScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Outline1Button(
-                text = "인증번호 받기",
+                text = if (inputPhoneNumber.length == 11 && certificationNumberSend)
+                    RequestButtonText.REQUEST.text else RequestButtonText.ReceiveCode.text,
                 enabled = inputPhoneNumber.length >= 11 && !errorState,
                 modifier = Modifier
                     .defaultMinSize(minWidth = 120.dp)
@@ -201,7 +201,6 @@ fun CertificationPhoneScreen(
                 focusRequester.requestFocus()
                 val randomCode = (111111..999999).shuffled().last().toString()
                 ddd = randomCode
-                launchSnackBar()
                 viewModel.requestCertificationCode(inputPhoneNumber, randomCode)
 
 
@@ -269,27 +268,19 @@ fun CertificationPhoneScreen(
         }
 
         if (certificationNumberSend) {
-            Row(
+
+            ContainedButton(
+                text = "인증하기",
+                enabled = inputCertificationNumber.length == 6,
                 modifier = Modifier
-                    .fillMaxHeight()
                     .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
+                    .padding(top = 24.dp)
             ) {
-
-                ContainedButton(
-                    text = "인증하기",
-                    enabled = inputCertificationNumber.length == 6,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    viewModel.checkAuthNumber(
-                        number = inputCertificationNumber,
-                        time = ticks
-                    )
-                }
+                viewModel.checkAuthNumber(
+                    number = inputCertificationNumber,
+                    time = ticks
+                )
             }
-
         }
     }
 }
