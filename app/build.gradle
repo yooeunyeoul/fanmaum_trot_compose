@@ -23,7 +23,6 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        signingConfig signingConfigs.debug
     }
 
     Properties keyProperties = new Properties()
