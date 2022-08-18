@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -36,6 +37,7 @@ import com.trotfan.trot.ui.signup.viewmodel.StarSelectViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.utils.clickable
 
 data class Sample(
     var id: Int = 0,
@@ -125,12 +127,13 @@ fun SelectStarScreen(
                     Box(
                         Modifier
                             .fillMaxWidth()
+                            .clickable {
+                                navController.navigate(SignUpSections.SearchStar.route)
+                            }
                             .background(color = Color.White)
                     ) {
                         SearchTextField(
-                            onclick = {
-                                navController.navigate(SignUpSections.SearchStar.route)
-                            }, inputText = {
+                            inputText = {
                                 Log.e("Text ", it)
                             }, isEnabled = false, placeHolder = R.string.hint_search_star,
                             modifier = Modifier.padding(bottom = 24.dp)

@@ -34,7 +34,6 @@ enum class SearchStatus {
 
 @Composable
 fun SearchTextField(
-    onclick: () -> Unit = {},
     inputText: (String) -> Unit,
     isEnabled: Boolean = true,
     onClickSearch: (String) -> Unit = {},
@@ -56,13 +55,9 @@ fun SearchTextField(
     showClearIcon = text.isNotEmpty()
 
     TextField(
-
         modifier = modifier
             .fillMaxWidth()
-            .focusRequester(focusRequester)
-            .clickable {
-                onclick.invoke()
-            },
+            .focusRequester(focusRequester),
         value = text,
         shape = RoundedCornerShape(12.dp),
         enabled = isEnabled,

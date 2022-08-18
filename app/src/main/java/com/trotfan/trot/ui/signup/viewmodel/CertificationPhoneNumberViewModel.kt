@@ -25,9 +25,9 @@ enum class CertificationNumberCheckStatus(
         buttonText = "인증번호 다시 받기"
     ),
     NotAuth(
-        content = "유효하지 않은 인증번호예요.\n" +
-                "인증번호를 다시 받아주세요.",
-        buttonText = "인증번호 다시 받기"
+        content = "인증번호가 올바르지 않아요.\n" +
+                "인증번호를 다시 입력해주세요.",
+        buttonText = "인증번호 다시 입력"
     ),
     AuthSuccess(
         content = "인증번호가 확인 되었어요.",

@@ -14,9 +14,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -39,8 +46,10 @@ import com.trotfan.trot.ui.signup.viewmodel.StarSearchViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
+import kotlinx.coroutines.delay
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchStarScreen(
     navController: NavController,
@@ -65,6 +74,12 @@ fun SearchStarScreen(
         mutableStateOf(false)
     }
 
+    var requestStarName by remember {
+        mutableStateOf("")
+    }
+
+    val focusRequester = remember { FocusRequester() }
+
     if (viewModel.onComplete.collectAsState().value) {
         LaunchedEffect(Unit) {
             navController.navigate(SignUpSections.SettingNickName.route) {
@@ -75,6 +90,14 @@ fun SearchStarScreen(
             }
         }
     }
+
+
+
+    LaunchedEffect(focusRequester) {
+        delay(200)
+        focusRequester.requestFocus()
+    }
+
 
     if (starSelectDialog) {
         HorizontalDialogSelectStar(
@@ -97,12 +120,17 @@ fun SearchStarScreen(
             titleText = "스타 추가 요청",
             positiveText = "요청",
             negativeText = "취소",
-            onPositiveWithInputText = { starName ->
-                viewModel.requestStar(starName)
+            onInputText = {
+                requestStarName = it
             },
             onPositive = {
-                return@HorizontalDialog
+                viewModel.requestStar(requestStarName) {
+                    requestStarName = ""
+                    requestDialog = false
+
+                }
             },
+            positiveButtonEnabled = requestStarName.trim().isNotEmpty(),
             inputPlaceHolderText = "스타 이름 입력",
             onDismiss = {
                 requestDialog = false
@@ -141,10 +169,9 @@ fun SearchStarScreen(
             )
             Spacer(modifier = Modifier.width(4.dp))
             SearchTextField(
-                modifier = Modifier,
-                onclick = {
-                    Log.e("Text ", "Text")
-                }, inputText = {
+                modifier = Modifier
+                    .focusRequester(focusRequester),
+                inputText = {
                     if (it.isEmpty()) {
                         viewModel.searchStar(it)
                     } else {
@@ -154,7 +181,8 @@ fun SearchStarScreen(
                 onClickSearch = {
                     viewModel.searchStar(it)
 
-                }, placeHolder = R.string.hint_search_star
+                },
+                placeHolder = R.string.hint_search_star
             )
         }
 

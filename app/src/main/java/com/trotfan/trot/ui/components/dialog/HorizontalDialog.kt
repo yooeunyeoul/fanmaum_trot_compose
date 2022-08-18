@@ -31,6 +31,8 @@ fun HorizontalDialog(
     negativeText: String,
     onPositive: () -> Unit = { },
     onPositiveWithInputText: (String) -> Unit = { },
+    positiveButtonEnabled: Boolean = true,
+    onInputText: (String) -> Unit = {},
     onDismiss: () -> Unit
 ) {
 
@@ -79,6 +81,7 @@ fun HorizontalDialog(
                     InputTextField(
                         placeHolder = inputPlaceHolderText, onValueChange = {
                             inputText = it
+                            onInputText.invoke(it)
                         }, maxLength = maxLength,
                         modifier = Modifier.padding(top = 12.dp)
                     )
@@ -100,6 +103,7 @@ fun HorizontalDialog(
 
                     ContainedButton(
                         text = positiveText,
+                        enabled = positiveButtonEnabled,
                         modifier = Modifier.weight(1f)
                     ) {
                         if (inputText.isEmpty()) {
