@@ -123,7 +123,7 @@ fun SearchStarScreen(
             onInputText = {
                 requestStarName = it
             },
-            onPositive = {
+            onPositiveWithInputText = {
                 viewModel.requestStar(requestStarName) {
                     requestStarName = ""
                     requestDialog = false

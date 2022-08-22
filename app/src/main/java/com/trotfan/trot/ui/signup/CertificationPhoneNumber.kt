@@ -30,6 +30,7 @@ import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
+
 enum class RequestButtonText(val text: String) {
     ReceiveCode("인증번호 받기"), REQUEST("재전송")
 }
@@ -42,6 +43,9 @@ fun CertificationPhoneScreen(
     modifier: Modifier = Modifier
 ) {
     var inputPhoneNumber by remember {
+        mutableStateOf("")
+    }
+    var requestedInputNumber by remember {
         mutableStateOf("")
     }
     var errorState by remember {
@@ -176,7 +180,7 @@ fun CertificationPhoneScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Outline1Button(
-                text = if (inputPhoneNumber.length == 11 && certificationNumberSend)
+                text = if (inputPhoneNumber.length == 11 && certificationNumberSend && requestedInputNumber == inputPhoneNumber)
                     RequestButtonText.REQUEST.text else RequestButtonText.ReceiveCode.text,
                 enabled = inputPhoneNumber.length >= 11 && !errorState,
                 modifier = Modifier
@@ -185,6 +189,7 @@ fun CertificationPhoneScreen(
             ) {
                 ticks = 180
                 certificationNumberSend = true
+                requestedInputNumber = inputPhoneNumber
                 focusManager.clearFocus()
                 focusRequester.requestFocus()
                 val randomCode = (111111..999999).shuffled().last().toString()

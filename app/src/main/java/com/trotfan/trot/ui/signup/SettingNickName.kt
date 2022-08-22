@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,18 +29,18 @@ import com.trotfan.trot.ui.theme.Gray700
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SettingNicknameScreen(
     navController: NavController,
     viewModel: NickNameViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     var inputText by remember {
         mutableStateOf("")
     }
     val nickCheckState by viewModel.nickNameCheckStatus.collectAsState()
-    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
 
     Column(
@@ -97,8 +99,7 @@ fun SettingNicknameScreen(
                 .padding(top = 14.dp)
         ) {
             viewModel.checkNickNameApi(inputText)
-            focusManager.clearFocus()
-
+            keyboardController?.hide()
         }
     }
 
@@ -123,7 +124,6 @@ fun SettingNicknameScreen(
                     inclusive = true
                 }
             }
-
         }
     }
 }

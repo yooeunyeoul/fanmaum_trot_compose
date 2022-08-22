@@ -75,8 +75,8 @@ fun ListItemButton(
                 .fillMaxWidth()
                 .padding(
                     start = 12.dp,
-                    top = 9.dp,
-                    bottom = 9.dp,
+                    top = 8.dp,
+                    bottom = 8.dp,
                     end = 12.dp
                 )
         ) {

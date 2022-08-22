@@ -43,7 +43,7 @@ class NickNameViewModel @Inject constructor(
     fun checkNickNameLocal(nickName: String) {
         viewModelScope.launch {
             when {
-                !Pattern.matches("^[0-9|a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣#]*\$", nickName)
+                !Pattern.matches("^[0-9|a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*$", nickName)
                 -> {
                     _nickNameCheckStatus.emit(NickNameCheckStatus.SpecialCharacterEmpty)
                 }
