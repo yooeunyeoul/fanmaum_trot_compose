@@ -1,5 +1,7 @@
 package com.trotfan.trot.ui.components.dialog
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -19,7 +21,10 @@ import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.Primary700
+import com.trotfan.trot.ui.utils.drawColoredShadow
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HorizontalDialog(
     modifier: Modifier = Modifier,
@@ -106,6 +111,7 @@ fun HorizontalDialog(
                         text = positiveText,
                         enabled = positiveButtonEnabled,
                         modifier = Modifier.weight(1f)
+                            .drawColoredShadow(color = Primary700)
                     ) {
                         if (inputText.isEmpty()) {
                             onPositive()
