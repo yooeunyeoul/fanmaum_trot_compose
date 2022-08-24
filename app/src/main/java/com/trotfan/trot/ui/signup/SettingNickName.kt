@@ -36,10 +36,8 @@ fun SettingNicknameScreen(
     viewModel: NickNameViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    var inputText by remember {
-        mutableStateOf("")
-    }
     val nickCheckState by viewModel.nickNameCheckStatus.collectAsState()
+    val inputNickname by viewModel.inputNickName.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
 
@@ -66,13 +64,13 @@ fun SettingNicknameScreen(
         Spacer(modifier = Modifier.height(32.dp))
         Box(modifier = Modifier.height(80.dp)) {
             InputTextField(
-                text = inputText,
+                text = inputNickname,
                 placeHolder = "닉네임 2~10자 입력",
                 maxLength = 10,
                 errorStatus = (nickCheckState != NickNameCheckStatus.None && nickCheckState != NickNameCheckStatus.AuthSuccess),
                 positiveStatus = nickCheckState == NickNameCheckStatus.AuthSuccess,
                 onValueChange = {
-                    inputText = it
+//                    inputText = it
                     viewModel.checkNickNameLocal(it)
                 },
                 errorMessage = nickCheckState?.message,
@@ -81,7 +79,7 @@ fun SettingNicknameScreen(
             )
 
             Text(
-                text = "${inputText.length} / 10",
+                text = "${inputNickname.length} / 10",
                 textAlign = TextAlign.End,
                 style = FanwooriTypography.button2,
                 color = Gray700,
@@ -92,13 +90,13 @@ fun SettingNicknameScreen(
         }
         Outline1Button(
             text = "중복확인",
-            enabled = inputText.length >= 2 && nickCheckState != NickNameCheckStatus.SpecialCharacterEmpty,
+            enabled = inputNickname.length >= 2 && nickCheckState != NickNameCheckStatus.SpecialCharacterEmpty,
             modifier = Modifier
                 .width(100.dp)
                 .align(Alignment.End)
                 .padding(top = 14.dp)
         ) {
-            viewModel.checkNickNameApi(inputText)
+            viewModel.checkNickNameApi(inputNickname)
             keyboardController?.hide()
         }
     }

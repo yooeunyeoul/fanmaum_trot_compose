@@ -35,6 +35,10 @@ class NickNameViewModel @Inject constructor(
     private val _nickNameCheckStatus =
         MutableStateFlow(NickNameCheckStatus.None)
 
+    val inputNickName: StateFlow<String>
+        get() = _inputNickName
+    private val _inputNickName = MutableStateFlow("")
+
 
     init {
         Log.d("Initializing", "MainViewModel")
@@ -49,6 +53,7 @@ class NickNameViewModel @Inject constructor(
                 }
                 else -> {
                     _nickNameCheckStatus.emit(NickNameCheckStatus.None)
+                    _inputNickName.emit(nickName)
                 }
             }
         }
