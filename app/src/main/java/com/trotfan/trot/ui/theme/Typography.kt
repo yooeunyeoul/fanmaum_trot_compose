@@ -15,10 +15,12 @@ class Typography internal constructor(
     val h2: TextStyle,
     val subtitle1: TextStyle,
     val subtitle2: TextStyle,
+    val subtitle3: TextStyle,
     val body1: TextStyle,
     val body2: TextStyle,
     val body3: TextStyle,
     val body4: TextStyle,
+    val body5: TextStyle,
     val button1: TextStyle,
     val button2: TextStyle,
     val caption1: TextStyle,
@@ -27,8 +29,8 @@ class Typography internal constructor(
     constructor(
         defaultFontFamily: FontFamily = FontFamily.Default,
         h1: TextStyle = TextStyle(
-            fontWeight = FontWeight.Light,
-            fontSize = 96.sp,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 28.sp,
             letterSpacing = (-1.5).sp
         ),
         h2: TextStyle = TextStyle(
@@ -45,6 +47,11 @@ class Typography internal constructor(
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
             letterSpacing = 0.1.sp
+        ),
+        subtitle3: TextStyle = TextStyle(
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 15.sp,
+            letterSpacing = (-0.25).sp
         ),
         body1: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
@@ -65,6 +72,11 @@ class Typography internal constructor(
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
             letterSpacing = 0.25.sp
+        ),
+        body5: TextStyle = TextStyle(
+            fontWeight = FontWeight.Normal,
+            fontSize = 17.sp,
+            letterSpacing = (-0.25).sp
         ),
         button1: TextStyle = TextStyle(
             fontWeight = FontWeight.Medium,
@@ -91,10 +103,12 @@ class Typography internal constructor(
         h2 = h2.withDefaultFontFamily(defaultFontFamily),
         subtitle1 = subtitle1.withDefaultFontFamily(defaultFontFamily),
         subtitle2 = subtitle2.withDefaultFontFamily(defaultFontFamily),
+        subtitle3 = subtitle3.withDefaultFontFamily(defaultFontFamily),
         body1 = body1.withDefaultFontFamily(defaultFontFamily),
         body2 = body2.withDefaultFontFamily(defaultFontFamily),
         body3 = body3.withDefaultFontFamily(defaultFontFamily),
         body4 = body4.withDefaultFontFamily(defaultFontFamily),
+        body5 = body5.withDefaultFontFamily(defaultFontFamily),
         button1 = button1.withDefaultFontFamily(defaultFontFamily),
         button2 = button2.withDefaultFontFamily(defaultFontFamily),
         caption1 = caption1.withDefaultFontFamily(defaultFontFamily),
@@ -109,10 +123,12 @@ class Typography internal constructor(
         h2: TextStyle = this.h2,
         subtitle1: TextStyle = this.subtitle1,
         subtitle2: TextStyle = this.subtitle2,
+        subtitle3: TextStyle = this.subtitle3,
         body1: TextStyle = this.body1,
         body2: TextStyle = this.body2,
         body3: TextStyle = this.body3,
         body4: TextStyle = this.body4,
+        body5: TextStyle = this.body5,
         button1: TextStyle = this.button1,
         button2: TextStyle = this.button2,
         caption1: TextStyle = this.caption1,
@@ -122,10 +138,12 @@ class Typography internal constructor(
         h2 = h2,
         subtitle1 = subtitle1,
         subtitle2 = subtitle2,
+        subtitle3 = subtitle3,
         body1 = body1,
         body2 = body2,
         body3 = body3,
         body4 = body4,
+        body5 = body5,
         button1 = button1,
         button2 = button2,
         caption1 = caption1,
@@ -140,10 +158,12 @@ class Typography internal constructor(
         if (h2 != other.h2) return false
         if (subtitle1 != other.subtitle1) return false
         if (subtitle2 != other.subtitle2) return false
+        if (subtitle3 != other.subtitle3) return false
         if (body1 != other.body1) return false
         if (body2 != other.body2) return false
         if (body3 != other.body3) return false
         if (body4 != other.body4) return false
+        if (body5 != other.body5) return false
         if (button1 != other.button1) return false
         if (button2 != other.button2) return false
         if (caption1 != other.caption1) return false
@@ -157,10 +177,12 @@ class Typography internal constructor(
         result = 31 * result + h2.hashCode()
         result = 31 * result + subtitle1.hashCode()
         result = 31 * result + subtitle2.hashCode()
+        result = 31 * result + subtitle3.hashCode()
         result = 31 * result + body1.hashCode()
         result = 31 * result + body2.hashCode()
         result = 31 * result + body3.hashCode()
         result = 31 * result + body4.hashCode()
+        result = 31 * result + body5.hashCode()
         result = 31 * result + button1.hashCode()
         result = 31 * result + button2.hashCode()
         result = 31 * result + caption1.hashCode()
@@ -170,8 +192,8 @@ class Typography internal constructor(
 
     override fun toString(): String {
         return "Typography(h1=$h1, h2=$h2, " +
-                "subtitle1=$subtitle1, subtitle2=$subtitle2, body1=$body1, " +
-                "body2=$body2, body3=$body3, body4=$body4, button1=$button1, button2=$button2, caption2=$caption2, caption1=$caption1)"
+                "subtitle1=$subtitle1, subtitle2=$subtitle2, subtitle3=$subtitle3, body1=$body1, " +
+                "body2=$body2, body3=$body3, body4=$body4, body5=$body5, button1=$button1, button2=$button2, caption2=$caption2, caption1=$caption1)"
     }
 }
 

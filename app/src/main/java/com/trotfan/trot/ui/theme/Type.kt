@@ -25,6 +25,7 @@ val FanwooriTypography = Typography(
     h1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 28.sp,
+        letterSpacing = (-0.7).sp,
     ),
     subtitle1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
@@ -35,6 +36,11 @@ val FanwooriTypography = Typography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
         letterSpacing = (-0.3).sp,
+    ),
+    subtitle3 = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
+        letterSpacing = (-0.25).sp
     ),
     body1 = TextStyle(
         fontWeight = FontWeight.Normal,
@@ -55,6 +61,11 @@ val FanwooriTypography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
         letterSpacing = (-0.3).sp,
+    ),
+    body5 = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 17.sp,
+        letterSpacing = (-0.25).sp,
     ),
     button1 = TextStyle(
         fontWeight = FontWeight.SemiBold,
