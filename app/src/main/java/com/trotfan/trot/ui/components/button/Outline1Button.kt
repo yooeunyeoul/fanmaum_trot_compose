@@ -32,13 +32,13 @@ fun Outline1Button(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .clip(RoundedCornerShape(24.dp))
+            .height(56.dp)
+            .clip(RoundedCornerShape(28.dp))
             .border(
                 1.dp,
                 if (enabled) {
                     if (isPressed) Primary500 else Primary300
-                } else Gray300, RoundedCornerShape(24.dp)
+                } else Gray300, RoundedCornerShape(28.dp)
             )
             .clickable(
                 indication = null,

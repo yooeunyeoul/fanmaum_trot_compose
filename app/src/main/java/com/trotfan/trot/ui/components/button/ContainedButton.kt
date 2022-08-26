@@ -33,8 +33,8 @@ fun ContainedButton(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .clip(RoundedCornerShape(24.dp))
+            .height(56.dp)
+            .clip(RoundedCornerShape(28.dp))
             .clickable(
                 indication = null,
                 interactionSource = interactionSource

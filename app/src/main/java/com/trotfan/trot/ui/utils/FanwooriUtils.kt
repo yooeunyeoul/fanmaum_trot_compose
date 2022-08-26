@@ -52,7 +52,7 @@ fun addDynamicLink(
 @RequiresApi(Build.VERSION_CODES.O)
 fun Modifier.drawColoredShadow(
     color: Color,
-    alpha: Float = 0.28f,
+    alpha: Float = 0.20f,
     borderRadius: Dp = 28.dp,
     shadowRadius: Dp = 4.dp,
     offsetY: Dp = 4.dp,

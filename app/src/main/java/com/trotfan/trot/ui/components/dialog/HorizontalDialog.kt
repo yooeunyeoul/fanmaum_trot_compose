@@ -127,6 +127,7 @@ fun HorizontalDialog(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun HorizontalTitleDialogPreview() {
@@ -143,6 +144,7 @@ fun HorizontalTitleDialogPreview() {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun HorizontalInputDialogPreview() {

@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.signup
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,12 +17,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -33,7 +28,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Person
-import com.trotfan.trot.ui.components.BackIcon
+import com.trotfan.trot.ui.components.button.BackIcon
 import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.button.OutlineIconButton
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog

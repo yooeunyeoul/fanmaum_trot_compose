@@ -1,5 +1,7 @@
 package com.trotfan.trot.ui.home.vote
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -10,16 +12,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
+import com.trotfan.trot.ui.home.dialog.FeverTimeDialog
+import com.trotfan.trot.ui.home.dialog.RollingDialog
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VoteHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier
-
 ) {
-    var updateStatus by rememberSaveable { mutableStateOf(true) }
-    var autoVoteStatus by rememberSaveable { mutableStateOf(true) }
-    var feverStatus by rememberSaveable { mutableStateOf(true) }
+    var updateStatus by rememberSaveable { mutableStateOf(false) }
+    var autoVoteStatus by rememberSaveable { mutableStateOf(false) }
+    var feverStatus by rememberSaveable { mutableStateOf(false) }
+    var rollingStatus by rememberSaveable { mutableStateOf(true) }
 
     Surface(
         color = Color.White,
@@ -57,6 +62,21 @@ fun VoteHome(
             )
         }
 
+        if (feverStatus) {
+            FeverTimeDialog(
+                onDismiss = {
+                    feverStatus = false
+                }
+            )
+        }
+
+        if (rollingStatus) {
+            RollingDialog(
+                onDismiss = {
+                    rollingStatus = false
+                }
+            )
+        }
 
         Text(text = "This is VoteHome", fontWeight = FontWeight.Bold)
     }

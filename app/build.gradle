@@ -150,6 +150,9 @@ dependencies {
     //paging
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
 
+    //ViewPager
+    implementation "com.google.accompanist:accompanist-pager:0.22.0-rc"
+
 }
 
 protobuf {
