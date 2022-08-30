@@ -10,7 +10,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.*
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -19,9 +18,7 @@ import com.trotfan.trot.ui.Destinations.DETAIL_ID_KEY
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
-import com.trotfan.trot.ui.login.LoginNav
 import com.trotfan.trot.ui.login.addLoginGrape
-import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
@@ -45,8 +42,8 @@ fun FanwooriApp(
         Scaffold(
             bottomBar = {
                 when (navBackStackEntry?.destination?.route) {
-                    HomeSections.VOTE.route, HomeSections.CHARGE.route,
-                    HomeSections.RANKING.route, HomeSections.MyProfile.route -> {
+                    HomeSections.VOTE.route, HomeSections.Ranking.route,
+                    HomeSections.MyPage.route, HomeSections.Store.route -> {
                         TrotBottomBar(
                             tabs = HomeSections.values(),
                             currentRoute = HomeSections.VOTE.route,
@@ -74,7 +71,7 @@ fun FanwooriApp(
 
                 navigation(
                     route = "로그인",
-                    startDestination = SignUpSections.SettingNickName.route
+                    startDestination = HomeSections.VOTE.route
                 ) {
                     addLoginGrape(
                         modifier = Modifier,
