@@ -160,35 +160,15 @@ fun LoginScreen(
         if (userInfo != null) {
             LaunchedEffect(userInfo) {
                 if (userInfo!!.star_id == null) {
-                    navController.navigate(SignUpSections.SelectStar.route) {
-                        popUpTo(LoginNav.Login.route) {
-                            inclusive = true
-                        }
-                    }
+                    routeSections(navController, SignUpSections.SelectStar.route)
                 } else if (userInfo!!.name == null) {
-                    navController.navigate(SignUpSections.SettingNickName.route) {
-                        popUpTo(LoginNav.Login.route) {
-                            inclusive = true
-                        }
-                    }
+                    routeSections(navController, SignUpSections.SettingNickName.route)
                 } else if (userInfo!!.phone_number == null) {
-                    navController.navigate(SignUpSections.CertificationPhoneNumber.route) {
-                        popUpTo(LoginNav.Login.route) {
-                            inclusive = true
-                        }
-                    }
+                    routeSections(navController, SignUpSections.CertificationPhoneNumber.route)
                 } else if (userInfo!!.redeem_code == null) {
-                    navController.navigate(SignUpSections.InvitationCode.route) {
-                        popUpTo(LoginNav.Login.route) {
-                            inclusive = true
-                        }
-                    }
+                    routeSections(navController, SignUpSections.InvitationCode.route)
                 } else {
-                    navController.navigate(HomeSections.VOTE.route) {
-                        popUpTo(LoginNav.Login.route) {
-                            inclusive = true
-                        }
-                    }
+                    routeSections(navController, HomeSections.VOTE.route)
                 }
             }
         }
@@ -208,6 +188,15 @@ fun LoginScreen(
                     }
                 }
             )
+        }
+    }
+}
+
+
+fun routeSections(nevController: NavController, route: String) {
+    nevController.navigate(route) {
+        popUpTo(LoginNav.Login.route) {
+            inclusive = true
         }
     }
 }
