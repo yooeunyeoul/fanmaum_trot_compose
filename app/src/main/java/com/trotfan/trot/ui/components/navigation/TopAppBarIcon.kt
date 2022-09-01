@@ -2,6 +2,7 @@ package com.trotfan.trot.ui.components.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -24,6 +25,7 @@ fun CustomTopAppBarWithIcon(
     modifier: Modifier = Modifier,
     title: String,
     @StringRes icon: Int = R.drawable.icon_share,
+    onClickIcon: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -44,7 +46,10 @@ fun CustomTopAppBarWithIcon(
         )
         Icon(
             painter = painterResource(id = icon),
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.clickable {
+                onClickIcon.invoke()
+            }
         )
     }
 }

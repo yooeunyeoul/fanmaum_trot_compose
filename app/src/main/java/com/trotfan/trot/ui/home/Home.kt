@@ -2,6 +2,8 @@ package com.trotfan.trot.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
@@ -25,6 +27,7 @@ import com.trotfan.trot.ui.home.mypage.MyPageHome
 import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 
 enum class HomeSections(
     val title: String,
@@ -88,8 +91,12 @@ fun TrotBottomBar(
                             onClick = {
                                 selectedSection = sections
                                 onSelected(sections.route)
-                            }
+                            },
+                            interactionSource = MutableInteractionSource(),
+                            indication = null
+
                         )
+
                 ) {
                     Divider(thickness = 1.dp, color = Gray100)
                     Spacer(modifier = Modifier.height(8.dp))
@@ -98,10 +105,27 @@ fun TrotBottomBar(
                             .layoutId("icon")
                             .padding(horizontal = TextIconSpacing),
                         content = {
+                            var id = 0
+                            when (sections.title) {
+                                HomeSections.VOTE.title -> {
+                                    id = R.drawable.vote
+                                }
+                                HomeSections.Ranking.title -> {
+                                    id = R.drawable.ranking
+                                }
+                                HomeSections.Store.title -> {
+                                    id = R.drawable.store
+                                }
+                                HomeSections.MyPage.title -> {
+                                    id = R.drawable.mypage
+                                }
+
+                            }
                             Icon(
-                                painter = painterResource(id = R.drawable.iconback_default),
+                                painter = painterResource(id = id),
                                 modifier = Modifier.height(18.3.dp),
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = if (selectedSection.title == sections.title) Gray750 else Gray400
                             )
                         }
 

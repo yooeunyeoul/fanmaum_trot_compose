@@ -1,24 +1,43 @@
 package com.trotfan.trot.ui.home.vote
 
+import android.content.Intent
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.VerticalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
+
+
+data class VerticalPagerContent(
+    val userName: String,
+    val starName: String,
+    val icon: String
+)
+
 
 @Composable
 fun VoteHome(
@@ -26,6 +45,7 @@ fun VoteHome(
     modifier: Modifier = Modifier
 
 ) {
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -34,7 +54,16 @@ fun VoteHome(
     ) {
         CustomTopAppBarWithIcon(
             title = "투표",
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            onClickIcon = {
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, "#팬우리 n월 000월 투표")
+                    type = "text/plain"
+                }
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                context.startActivity(shareIntent)
+            }
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,7 +77,27 @@ fun VoteHome(
                     shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
                 )
         ) {
-            voteToStar(starName = "임영웅", icon = "sladfj", userName = "양파쿵야")
+            voteToStar(
+                items = listOf(
+                    VerticalPagerContent(
+                        userName = "임영웅",
+                        starName = "난ㄴ세영ㅇ웅",
+                        icon = ""
+                    ),
+                    VerticalPagerContent(
+                        userName = "임영웅",
+                        starName = "난ㄴ세영ㅇ웅",
+                        icon = ""
+                    ),
+                    VerticalPagerContent(
+                        userName = "임영웅",
+                        starName = "난ㄴ세영ㅇ웅",
+                        icon = ""
+                    )
+
+
+                )
+            )
 //            voteIng()
 //            voteEndHeader()
         }
@@ -72,12 +121,21 @@ fun VoteHome(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        modifier = Modifier.size(40.dp),
-                        painter = painterResource(id = R.drawable.icon_add),
-                        contentDescription = null
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(color = Color.White, shape = CircleShape),
+                        painter = painterResource(id = R.drawable.vote_iconbenefits),
+                        contentDescription = null,
+                        tint = Color("#F5D79B".toColorInt())
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text(text = "우승혜택보기", modifier = Modifier.weight(1f))
+                    Text(
+                        text = "우승혜택보기",
+                        modifier = Modifier.weight(1f),
+                        style = FanwooriTypography.subtitle3,
+                        fontSize = 15.sp,
+                        color = Gray750
+                    )
                     Icon(
                         painter = painterResource(id = R.drawable.icon_arrow),
                         contentDescription = null
@@ -133,51 +191,81 @@ fun VoteHome(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun voteToStar(icon: String, userName: String, starName: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(start = 18.dp, end = 18.dp)
-    ) {
-        Icon(painter = painterResource(id = R.drawable.icon_add), contentDescription = null)
+fun voteToStar(items: List<VerticalPagerContent>) {
 
-        Text(
-            text = "${userName}님이 ${starName}님에게 투표했어요!",
-            maxLines = 1,
-            style = FanwooriTypography.body2,
-            fontSize = 15.sp,
-            color = Secondary900
-        )
+    val pagerState = rememberPagerState(
+        initialPage = items.size
+    )
+    LaunchedEffect(key1 = Unit, block = {
+        while (true) {
+            yield()
+            delay(2000)
+            pagerState.animateScrollToPage(
+                page = (pagerState.currentPage + 1) % (pagerState.pageCount),
+                animationSpec = tween(600)
+            )
+        }
+    })
+
+    VerticalPager(
+        count = items.size,
+        state = pagerState
+    ) { currentPage ->
+        Column(
+            Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 18.dp, end = 18.dp)
+            ) {
+                Icon(painter = painterResource(id = R.drawable.icon_add), contentDescription = null)
+
+                Text(
+                    text = "${items[currentPage].userName}님이 ${items[currentPage].starName}님에게 투표했어요!",
+                    maxLines = 1,
+                    style = FanwooriTypography.body2,
+                    fontSize = 15.sp,
+                    color = Secondary900
+                )
+            }
+            Spacer(modifier = Modifier.height(3.dp))
+            Row(
+                modifier = Modifier
+                    .padding(start = 18.dp, end = 18.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = "100,000,000,000,000,000,000,000,000,00,00,00,00",
+                    color = Secondary500,
+
+                    modifier = Modifier.weight(weight = 1f, fill = false),
+                    style = FanwooriTypography.button1,
+                    maxLines = 1,
+                    fontSize = 17.sp,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.width(2.dp))
+                Text(
+                    text = "표",
+                    color = Secondary500,
+                    style = FanwooriTypography.button1,
+                    maxLines = 1,
+                    fontSize = 17.sp,
+                    overflow = TextOverflow.Visible
+                )
+
+
+            }
+
+
+        }
+
     }
-    Spacer(modifier = Modifier.height(3.dp))
-    Row(
-        modifier = Modifier
-            .padding(start = 18.dp, end = 18.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            text = "100,000,000,000,000,000,000,000,000,00,00,00,00",
-            color = Secondary500,
 
-            modifier = Modifier.weight(weight = 1f, fill = false),
-            style = FanwooriTypography.button1,
-            maxLines = 1,
-            fontSize = 17.sp,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.width(2.dp))
-        Text(
-            text = "표",
-            color = Secondary500,
-            style = FanwooriTypography.button1,
-            maxLines = 1,
-            fontSize = 17.sp,
-            overflow = TextOverflow.Visible
-        )
-
-
-    }
 }
 
 @Composable
