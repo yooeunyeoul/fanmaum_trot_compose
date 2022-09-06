@@ -67,6 +67,9 @@ fun RankButton(
                         .background(Gray750)
                         .width(64.dp)
                         .height(40.dp)
+                        .clickable {
+                            onClick(index)
+                        }
                 ) {
                     Text(
                         text = "${index + 1}위",
@@ -75,9 +78,6 @@ fun RankButton(
                         style = FanwooriTypography.button1,
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .clickable {
-                                onClick(index)
-                            }
                     )
                 }
             } else {
@@ -87,6 +87,9 @@ fun RankButton(
                         .clip(RoundedCornerShape(20.dp))
                         .width(64.dp)
                         .height(40.dp)
+                        .clickable {
+                            onClick(index)
+                        }
                 ) {
                     Text(
                         text = "${index + 1}위",
@@ -95,9 +98,6 @@ fun RankButton(
                         style = FanwooriTypography.button1,
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .clickable {
-                                onClick(index)
-                            }
                     )
                 }
             }
