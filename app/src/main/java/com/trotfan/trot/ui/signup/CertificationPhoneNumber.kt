@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.trotfan.trot.ui.components.button.ContainedButton
+import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.InputTextField
@@ -262,7 +262,7 @@ fun CertificationPhoneScreen(
 
         if (certificationNumberSend) {
 
-            ContainedButton(
+            ContainedLargeButton(
                 text = "인증하기",
                 enabled = inputCertificationNumber.length == 6,
                 modifier = Modifier

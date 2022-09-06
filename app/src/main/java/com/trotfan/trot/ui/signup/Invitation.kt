@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.trotfan.trot.ui.components.button.ContainedButton
+import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
@@ -89,7 +89,7 @@ fun InvitationScreen(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            ContainedButton(
+            ContainedLargeButton(
                 text = "완료",
                 enabled = inviteCodeCheckState == InviteCodeCheckStatus.None && inviteCode.length == 8,
                 modifier = Modifier.weight(1f)

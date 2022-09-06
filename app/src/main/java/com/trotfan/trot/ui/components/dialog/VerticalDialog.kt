@@ -15,7 +15,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.button.TextButton
-import com.trotfan.trot.ui.components.button.ContainedButton
+import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 
@@ -36,7 +36,7 @@ fun VerticalDialog(
     ) {
         Surface(
             modifier = modifier
-                .width(296.dp)
+                .width(328.dp)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(24.dp),
             color = Color.White
@@ -58,7 +58,7 @@ fun VerticalDialog(
                     color = Gray600
                 )
 
-                ContainedButton(
+                ContainedLargeButton(
                     text = buttonOneText,
                     modifier = Modifier.padding(
                         top = if (buttonTwoText.isNullOrEmpty()) 24.dp else 16.dp,

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.*
 
 @Composable
-fun ContainedButton(
+fun ContainedMediumButton(
     modifier: Modifier = Modifier,
     text: String,
     enabled: Boolean = true,
@@ -33,8 +33,8 @@ fun ContainedButton(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .clip(RoundedCornerShape(24.dp))
+            .height(40.dp)
+            .clip(RoundedCornerShape(20.dp))
             .clickable(
                 indication = null,
                 interactionSource = interactionSource
@@ -45,8 +45,8 @@ fun ContainedButton(
             }
             .background(
                 if (enabled) {
-                    if (isPressed) Primary700 else Primary500
-                } else Gray300
+                    if (isPressed) Primary600 else Primary500
+                } else Gray100
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -55,8 +55,8 @@ fun ContainedButton(
         Text(
             text = text,
             color = if (enabled) {
-                if (isPressed) Gray400 else Color.White
-            } else Gray500,
+                if (isPressed) Primary100 else Color.White
+            } else Gray400,
             style = FanwooriTypography.button1
         )
     }
