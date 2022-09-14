@@ -28,7 +28,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Person
-import com.trotfan.trot.ui.components.button.ContainedButton
+import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
@@ -224,7 +224,7 @@ fun SelectStarScreen(
                     .height(96.dp)
                     .align(Alignment.BottomCenter)
             ) {
-                ContainedButton(
+                ContainedLargeButton(
                     text = "다음",
                     enabled = selectedItem != null,
                     modifier = Modifier.align(Alignment.Center)

@@ -10,6 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.*
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -18,7 +19,9 @@ import com.trotfan.trot.ui.Destinations.DETAIL_ID_KEY
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
+import com.trotfan.trot.ui.login.LoginNav
 import com.trotfan.trot.ui.login.addLoginGrape
+import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
@@ -71,7 +74,7 @@ fun FanwooriApp(
 
                 navigation(
                     route = "로그인",
-                    startDestination = HomeSections.VOTE.route
+                    startDestination = LoginNav.Login.route
                 ) {
                     addLoginGrape(
                         modifier = Modifier,

@@ -38,10 +38,7 @@ import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
 import com.trotfan.trot.ui.login.viewmodel.AuthViewModel
 import com.trotfan.trot.ui.signup.SignUpSections
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray600
-import com.trotfan.trot.ui.theme.Gray800
-import com.trotfan.trot.ui.theme.Primary600
+import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -127,12 +124,12 @@ fun LoginScreen(
                         .padding(end = 10.dp)
                         .clickable() {},
                     text = "이용약관",
-                    color = Primary600,
+                    color = Secondary800,
                     style = FanwooriTypography.button2,
                 )
                 Spacer(
                     modifier = Modifier
-                        .background(Primary600)
+                        .background(Secondary800)
                         .width(1.dp)
                         .height(8.dp)
                 )
@@ -141,7 +138,7 @@ fun LoginScreen(
                         .padding(start = 10.dp)
                         .clickable { },
                     text = "개인정보처리방침",
-                    color = Primary600,
+                    color = Secondary800,
                     style = FanwooriTypography.button2
                 )
             }

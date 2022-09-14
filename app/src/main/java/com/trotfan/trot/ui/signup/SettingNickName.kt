@@ -17,7 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.ui.components.button.ContainedButton
+import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
@@ -112,7 +112,7 @@ fun SettingNicknameScreen(
         verticalAlignment = Alignment.Bottom
     ) {
 
-        ContainedButton(
+        ContainedLargeButton(
             text = "다음",
             enabled = nickCheckState == NickNameCheckStatus.AuthSuccess,
             modifier = Modifier.weight(1f)

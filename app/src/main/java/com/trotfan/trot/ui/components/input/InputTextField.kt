@@ -39,7 +39,7 @@ fun InputTextField(
 ) {
     var value by remember { mutableStateOf(text) }
     val focusBorderColor =
-        if (positiveStatus) SemanticPositive300 else Gray700
+        if (positiveStatus) SemanticPositive300 else Gray600
 
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
