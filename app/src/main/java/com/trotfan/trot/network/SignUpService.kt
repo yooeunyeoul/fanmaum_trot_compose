@@ -1,21 +1,22 @@
 package com.trotfan.trot.network
 
 import com.trotfan.trot.model.*
+import com.trotfan.trot.network.response.CommonListResponse
+import com.trotfan.trot.network.response.CommonResponse
 
 interface SignUpService {
     suspend fun requestCertificationCode(
-        phoneNumber: String,
-        message: String
-    ): SmsCertificationRequestResult
+        phoneNumber: String
+    ): ReturnStatus
 
     suspend fun getStarList(
-        page: Int,
-    ): List<Person>
+        cursor: String,
+    ): CommonResponse<stars<Star>>
 
     suspend fun starSearch(
-        page: Int,
+        cursor: String,
         name: String
-    ): List<Person>
+    ): CommonResponse<stars<Star>>
 
     suspend fun updateUser(
         userId: String,

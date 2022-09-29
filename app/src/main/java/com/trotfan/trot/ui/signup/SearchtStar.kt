@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.signup
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,12 +17,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -32,7 +27,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Person
+import com.trotfan.trot.model.Star
 import com.trotfan.trot.ui.components.BackIcon
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.OutlineIconButton
@@ -57,12 +52,12 @@ fun SearchStarScreen(
     modifier: Modifier = Modifier
 ) {
 
-    val starListState: LazyPagingItems<Person>? =
+    val starListState: LazyPagingItems<Star>? =
         viewModel.starListState.value?.collectAsLazyPagingItems()
     val searchState by viewModel.searchStatus.collectAsState()
     val requestComplete by viewModel.requestComplete.collectAsState()
 
-    var selectedItem: Person? by remember {
+    var selectedItem: Star? by remember {
         mutableStateOf(null)
     }
 
@@ -233,13 +228,13 @@ fun SearchStarScreen(
                             }
                             ListItemButton(
                                 text = item.name,
-                                subText = item.group,
+                                subText = item.group.name,
                                 imageUrl = item.image,
                                 unCheckedTrailingIcon = R.drawable.icon_heart,
                                 checkedTrailingIcon = R.drawable.icon_heartfilled,
                                 checked = selectedItem == item,
                                 onClick = {
-                                    val clickedItem = it as Person
+                                    val clickedItem = it as Star
                                     selectedItem = if (clickedItem == selectedItem) {
                                         null
                                     } else {

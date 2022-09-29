@@ -1,28 +1,39 @@
 package com.trotfan.trot.datasource
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.trotfan.trot.model.Person
-import com.trotfan.trot.model.StarItem
+import com.trotfan.trot.model.Star
 import com.trotfan.trot.network.SignUpService
 import retrofit2.HttpException
 import javax.inject.Inject
 
 open class GetStarDataSource @Inject constructor(
     private val service: SignUpService
-) : PagingSource<Int, Person>() {
-    override fun getRefreshKey(state: PagingState<Int, Person>): Int? =
-        state.anchorPosition
+) : PagingSource<String, Star>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Person> {
+
+    override fun getRefreshKey(state: PagingState<String, Star>): String? =
+        state.anchorPosition?.let { anchorPosition ->
+            val anchorPageIndex = state.pages.indexOf(state.closestPageToPosition(anchorPosition))
+            state.pages.getOrNull(anchorPageIndex + 1)?.prevKey ?: state.pages.getOrNull(
+                anchorPageIndex - 1
+            )?.nextKey
+        }
+
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, Star> {
         return try {
-            val nextPage = params.key ?: 1
-            val starList = service.getStarList(page = nextPage)
+
+            val data = service.getStarList(params.key ?: "").data
+            Log.e("cursor", "nextCursor::::" + params.key.toString())
+            val starList = data.stars
+            var nextCursor = data.meta.nextCursor
+            var prevCursor = data.meta.prevCursor
 
             LoadResult.Page(
                 data = starList,
-                prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (starList.isEmpty()) null else nextPage + 1
+                prevKey = if (prevCursor?.isEmpty() == true) null else prevCursor,
+                nextKey = if (nextCursor?.isEmpty() == true) null else nextCursor
             )
 
         } catch (e: HttpException) {
@@ -39,18 +50,23 @@ class GetStarDataSourceForName @Inject constructor(
 
     var starName: String = ""
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Person> {
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, Star> {
         return try {
-            val nextPage = params.key ?: 1
-            val starList = service.starSearch(page = nextPage, name = starName)
+            val nextPage = ""
+            var nextCursor: String? = null
+            var prevCursor: String? = null
+            val data = service.getStarList(nextCursor ?: "").data
+            val starList = data.stars
+            nextCursor = data.meta.nextCursor
+            prevCursor = data.meta.prevCursor
 
-            if (starList.isEmpty() && nextPage == 1) {
-                LoadResult.Error(Exception("No Result Error"))
+            if (starList.isEmpty() && nextPage == null) {
+                LoadResult.Error(Exception("No com.trotfan.trot.model.Result Error"))
             } else {
                 LoadResult.Page(
-                    data = starList,
-                    prevKey = if (nextPage == 1) null else nextPage - 1,
-                    nextKey = if (starList.isEmpty()) null else nextPage + 1
+                    data = listOf(),
+                    prevKey = prevCursor,
+                    nextKey = nextCursor
                 )
             }
 

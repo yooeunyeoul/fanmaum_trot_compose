@@ -6,17 +6,8 @@ object HttpRoutes {
     const val GOOGLE_LOGIN = "$BASE_URL/oauth2/login/google"
     const val APPLE_LOGIN = "$BASE_URL/oauth2/login/apple"
     const val SERVER_STATE = "https://fanwoori-develop-api.services"
+    const val STAR_SEARCH = "$BASE_URL/com.trotfan.trot.model.stars"
     const val GET_STAR_LIST = "$BASE_URL/stars"
     const val USERS = "$BASE_URL/users"
-
-    enum class SmsCertification(val key: String, val url: String) {
-        DEV(
-            key = "MS0xMzY1NjY2MTAyNDk0LTA2MWE4ZDgyLTZhZmMtNGU5OS05YThkLTgyNmFmYzVlOTkzZQ==",
-            url = "https://api.apistore.co.kr/ppurio_test/1/message_test/sms/fanmaum"
-        ),
-        PRO(
-            key = "ODgyOS0xNTMxNzA4OTA3MTM5LTk5MmY1MTRkLWRmNmUtNDg3OC1hZjUxLTRkZGY2ZTg4NzgyYg==",
-            url = "https://api.apistore.co.kr/ppurio/1/message/sms/fanmaum"
-        )
-    }
+    const val SMS = "$BASE_URL/auth/sms"
 }

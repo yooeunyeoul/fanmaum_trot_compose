@@ -192,8 +192,7 @@ fun CertificationPhoneScreen(
                 requestedInputNumber = inputPhoneNumber
                 focusManager.clearFocus()
                 focusRequester.requestFocus()
-                val randomCode = (111111..999999).shuffled().last().toString()
-                viewModel.requestCertificationCode(inputPhoneNumber, randomCode)
+                viewModel.requestCertificationCode(inputPhoneNumber)
 
 
             }
