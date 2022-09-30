@@ -11,6 +11,7 @@ interface SignUpService {
 
     suspend fun getStarList(
         cursor: String,
+        search: String
     ): CommonResponse<stars<Star>>
 
     suspend fun starSearch(

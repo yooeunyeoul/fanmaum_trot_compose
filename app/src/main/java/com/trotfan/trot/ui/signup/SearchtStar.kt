@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Star
 import com.trotfan.trot.ui.components.BackIcon
@@ -214,35 +215,36 @@ fun SearchStarScreen(
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                         contentPadding = PaddingValues(bottom = 72.dp)
                     ) {
-                        itemsIndexed(
-                            items = starListState?.itemSnapshotList?.items ?: emptyList()
-                        ) { index, item ->
-                            if (index == 0) {
-                                Spacer(modifier = Modifier.height(24.dp))
-                                Text(
-                                    text = "검색 결과",
-                                    color = Gray600,
-                                    style = FanwooriTypography.caption2
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                            }
-                            ListItemButton(
-                                text = item.name,
-                                subText = item.group.name,
-                                imageUrl = item.image,
-                                unCheckedTrailingIcon = R.drawable.icon_heart,
-                                checkedTrailingIcon = R.drawable.icon_heartfilled,
-                                checked = selectedItem == item,
-                                onClick = {
-                                    val clickedItem = it as Star
-                                    selectedItem = if (clickedItem == selectedItem) {
-                                        null
-                                    } else {
-                                        clickedItem
-                                    }
-                                },
-                                item = item
+                        item {
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Text(
+                                text = "검색 결과",
+                                color = Gray600,
+                                style = FanwooriTypography.caption2
                             )
+                            Spacer(modifier = Modifier.height(4.dp))
+                        }
+                        starListState?.let {
+                            items(it) { item ->
+                                ListItemButton(
+                                    text = item?.name?:"",
+                                    subText = item?.group?.name,
+                                    imageUrl = item?.image,
+                                    unCheckedTrailingIcon = R.drawable.icon_heart,
+                                    checkedTrailingIcon = R.drawable.icon_heartfilled,
+                                    checked = selectedItem == item,
+                                    onClick = {
+                                        val clickedItem = it as Star
+                                        selectedItem = if (clickedItem == selectedItem) {
+                                            null
+                                        } else {
+                                            clickedItem
+                                        }
+                                    },
+                                    item = item
+                                )
+
+                            }
                         }
                     }
 

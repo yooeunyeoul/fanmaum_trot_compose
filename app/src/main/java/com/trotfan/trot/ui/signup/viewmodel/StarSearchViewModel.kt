@@ -12,7 +12,7 @@ import androidx.paging.PagingData
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
-import com.trotfan.trot.datasource.GetStarDataSourceForName
+import com.trotfan.trot.datasource.GetStarDataSource
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Star
 import com.trotfan.trot.repository.SignUpRepository
@@ -26,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StarSearchViewModel @Inject constructor(
     private val repository: SignUpRepository,
-    private val dataSource: GetStarDataSourceForName,
+    private val dataSource: GetStarDataSource,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -61,7 +61,7 @@ class StarSearchViewModel @Inject constructor(
                     _searchState.emit(SearchStatus.NoResult)
                 }
                 else -> {
-                    _startListState.value = Pager(PagingConfig(pageSize = 15)) {
+                    _startListState.value = Pager(PagingConfig(pageSize = 10)) {
                         dataSource.apply { starName = keyword }
                     }.flow
                 }
