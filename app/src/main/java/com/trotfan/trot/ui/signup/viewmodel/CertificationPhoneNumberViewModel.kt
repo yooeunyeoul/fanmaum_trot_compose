@@ -56,22 +56,18 @@ class CertificationPhoneNumberViewModel @Inject constructor(
     val certificationNumber = _certificationNumber
 
 
-    fun requestCertificationCode(phoneNumber: String, randomCode: String) {
+    fun requestCertificationCode(phoneNumber: String) {
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
-                val message = "팬우리 인증번호 ${randomCode} 입니다."
                 val response = repository.requestSmsCertification(
                     phoneNumber = phoneNumber,
-                    message = message
                 )
-                if (response.result_code == "200") {
+                if (response.status.code == 202) {
                     Log.e("문자인증", "성공")
-                    _certificationNumber.emit(randomCode.toString())
                 } else {
                     Log.e("문자인증", "실패")
                 }
-                Log.e("문자인증 코드", randomCode.toString())
             } catch (e: Exception) {
                 Log.e("Error", e.message.toString())
             }

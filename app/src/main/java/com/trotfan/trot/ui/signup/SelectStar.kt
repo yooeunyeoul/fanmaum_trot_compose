@@ -4,9 +4,9 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,9 +26,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Person
-import com.trotfan.trot.ui.components.button.ContainedButton
+import com.trotfan.trot.model.Star
+import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
@@ -53,10 +54,10 @@ fun SelectStarScreen(
 ) {
 
     val listState = rememberLazyListState()
-    val starListState: LazyPagingItems<Person>? =
+    val starListState: LazyPagingItems<Star> =
         viewModel.starListState.collectAsLazyPagingItems()
 
-    var selectedItem: Person? by remember {
+    var selectedItem: Star? by remember {
         mutableStateOf(null)
     }
 
@@ -152,19 +153,16 @@ fun SelectStarScreen(
 
                 when (starListState?.loadState?.refresh) {
                     is LoadState.NotLoading -> {
-                        itemsIndexed(
-                            starListState?.itemSnapshotList?.items ?: emptyList(),
-                            key = { index, item -> item.id }
-                        ) { index, item ->
+                        items(items = starListState) { item ->
                             ListItemButton(
-                                text = item.name,
-                                subText = item.group,
-                                imageUrl = item.image,
+                                text = item?.name ?: "",
+                                subText = item?.group?.name,
+                                imageUrl = item?.image,
                                 unCheckedTrailingIcon = R.drawable.icon_heart,
                                 checkedTrailingIcon = R.drawable.icon_heartfilled,
                                 checked = selectedItem == item,
                                 onClick = {
-                                    val clickedItem = it as Person
+                                    val clickedItem = it as Star
                                     selectedItem = if (clickedItem == selectedItem) {
                                         null
                                     } else {
@@ -173,7 +171,6 @@ fun SelectStarScreen(
                                 },
                                 item = item
                             )
-
 
                         }
 
@@ -224,7 +221,7 @@ fun SelectStarScreen(
                     .height(96.dp)
                     .align(Alignment.BottomCenter)
             ) {
-                ContainedButton(
+                ContainedLargeButton(
                     text = "다음",
                     enabled = selectedItem != null,
                     modifier = Modifier.align(Alignment.Center)
@@ -241,7 +238,7 @@ fun SelectStarScreen(
 }
 
 @Preview(
-    name = "Preview Select com.trotfan.trot.model.Star",
+    name = "Preview Select com.trotfan.trot.model.com.trotfan.trot.model.Star",
     device = Devices.NEXUS_6,
     showBackground = true,
     showSystemUi = true,

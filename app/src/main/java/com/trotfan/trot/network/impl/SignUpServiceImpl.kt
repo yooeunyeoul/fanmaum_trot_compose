@@ -1,9 +1,9 @@
 package com.trotfan.trot.network.impl
 
-import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.SignUpService
+import com.trotfan.trot.network.response.CommonResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -16,54 +16,37 @@ import javax.inject.Inject
 class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) : SignUpService {
     @OptIn(InternalAPI::class)
     override suspend fun requestCertificationCode(
-        phoneNumber: String,
-        message: String
-    ): SmsCertificationRequestResult {
+        phoneNumber: String
+    ): ReturnStatus {
         return httpClient.submitForm(
-            url = if (BuildConfig.DEBUG) {
-                HttpRoutes.SmsCertification.DEV.url
-            } else {
-                HttpRoutes.SmsCertification.PRO.url
-            }
+            url = HttpRoutes.SMS
         ) {
-            headers {
-                append(
-                    name = "x-waple-authorization",
-                    value = if (BuildConfig.DEBUG) {
-                        HttpRoutes.SmsCertification.DEV.key
-                    } else {
-                        HttpRoutes.SmsCertification.PRO.key
-                    }
-                )
-            }
             body = FormDataContent(Parameters.build {
-                append("send_phone", "16440219")
-                append("dest_phone", phoneNumber)
-                append("msg_body", message)
+                append("to", phoneNumber)
             })
         }.body()
     }
 
-    override suspend fun getStarList(page: Int): List<Person> {
+    override suspend fun getStarList(cursor: String): CommonResponse<stars<Star>> {
 
         val response = httpClient.get(HttpRoutes.GET_STAR_LIST) {
             contentType(ContentType.Application.Json)
             url {
-                parameter("page", page)
+                parameter("cursor", cursor)
             }
         }
-        return response.body<StarItem>().data
+        return response.body()
     }
 
-    override suspend fun starSearch(page: Int, name: String): List<Person> {
+    override suspend fun starSearch(page: String, name: String): CommonResponse<stars<Star>> {
 
-        val response = httpClient.get(HttpRoutes.GET_STAR_LIST + "/${name.trim()}") {
+        val response = httpClient.get(HttpRoutes.STAR_SEARCH + "/${name.trim()}") {
             contentType(ContentType.Application.Json)
             url {
                 parameter("page", page)
             }
         }
-        return response.body<StarItem>().data
+        return response.body()
     }
 
     override suspend fun updateUser(

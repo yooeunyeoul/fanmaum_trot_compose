@@ -45,8 +45,8 @@ fun FanwooriApp(
         Scaffold(
             bottomBar = {
                 when (navBackStackEntry?.destination?.route) {
-                    HomeSections.VOTE.route, HomeSections.CHARGE.route,
-                    HomeSections.RANKING.route, HomeSections.MyProfile.route -> {
+                    HomeSections.VOTE.route, HomeSections.Ranking.route,
+                    HomeSections.MyPage.route, HomeSections.Store.route -> {
                         TrotBottomBar(
                             tabs = HomeSections.values(),
                             currentRoute = HomeSections.VOTE.route,

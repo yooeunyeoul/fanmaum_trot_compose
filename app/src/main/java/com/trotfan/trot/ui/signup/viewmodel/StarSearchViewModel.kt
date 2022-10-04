@@ -1,13 +1,10 @@
 package com.trotfan.trot.ui.signup.viewmodel
 
-import android.R.id
 import android.app.Application
 import android.os.Bundle
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,7 +14,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.datasource.GetStarDataSourceForName
 import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.model.Person
+import com.trotfan.trot.model.Star
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.components.input.SearchStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,8 +40,8 @@ class StarSearchViewModel @Inject constructor(
     val requestComplete: StateFlow<Boolean>
         get() = _requestComplete
 
-    private val _startListState = mutableStateOf<Flow<PagingData<Person>>?>((null))
-    val starListState: State<Flow<PagingData<Person>>?>
+    private val _startListState = mutableStateOf<Flow<PagingData<Star>>?>((null))
+    val starListState: State<Flow<PagingData<Star>>?>
         get() = _startListState
 
     private val _onComplete = MutableStateFlow(false)
@@ -90,7 +87,7 @@ class StarSearchViewModel @Inject constructor(
 
     }
 
-    fun selectStar(selectedItem: Person?) {
+    fun selectStar(selectedItem: Star?) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 val response = repository.updateUser(

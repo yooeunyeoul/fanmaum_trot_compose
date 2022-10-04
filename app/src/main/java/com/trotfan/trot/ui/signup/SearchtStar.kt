@@ -30,6 +30,9 @@ import com.trotfan.trot.R
 import com.trotfan.trot.model.Person
 import com.trotfan.trot.ui.components.button.BackIcon
 import com.trotfan.trot.ui.components.button.ContainedButton
+import com.trotfan.trot.model.Star
+import com.trotfan.trot.ui.components.BackIcon
+import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.OutlineIconButton
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
@@ -52,12 +55,12 @@ fun SearchStarScreen(
     modifier: Modifier = Modifier
 ) {
 
-    val starListState: LazyPagingItems<Person>? =
+    val starListState: LazyPagingItems<Star>? =
         viewModel.starListState.value?.collectAsLazyPagingItems()
     val searchState by viewModel.searchStatus.collectAsState()
     val requestComplete by viewModel.requestComplete.collectAsState()
 
-    var selectedItem: Person? by remember {
+    var selectedItem: Star? by remember {
         mutableStateOf(null)
     }
 
@@ -228,13 +231,13 @@ fun SearchStarScreen(
                             }
                             ListItemButton(
                                 text = item.name,
-                                subText = item.group,
+                                subText = item.group.name,
                                 imageUrl = item.image,
                                 unCheckedTrailingIcon = R.drawable.icon_heart,
                                 checkedTrailingIcon = R.drawable.icon_heartfilled,
                                 checked = selectedItem == item,
                                 onClick = {
-                                    val clickedItem = it as Person
+                                    val clickedItem = it as Star
                                     selectedItem = if (clickedItem == selectedItem) {
                                         null
                                     } else {
@@ -260,7 +263,7 @@ fun SearchStarScreen(
                             .height(96.dp)
                             .align(Alignment.BottomCenter)
                     ) {
-                        ContainedButton(
+                        ContainedLargeButton(
                             text = "다음",
                             enabled = selectedItem != null,
                             modifier = Modifier.align(Alignment.BottomCenter)
