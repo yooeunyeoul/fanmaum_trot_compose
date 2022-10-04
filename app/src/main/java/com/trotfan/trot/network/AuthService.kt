@@ -1,21 +1,22 @@
 package com.trotfan.trot.network
 
 import com.trotfan.trot.model.*
+import com.trotfan.trot.network.response.CommonResponse
 
 interface AuthService {
     suspend fun postKakaoLogin(
         kakaoTokens: KakaoTokens
-    ): UserToken
+    ): CommonResponse<UserToken>
 
     suspend fun postGoogleLogin(
         authCode: GoogleToken
-    ): UserToken
+    ): CommonResponse<UserToken>
 
     suspend fun postAppleLogin(
         authCode: AppleToken
-    ): UserToken
+    ): CommonResponse<UserToken>
 
     suspend fun getUserInfo(
         userId: Int
-    ): UserInfoData
+    ): CommonResponse<UserInfo>
 }
