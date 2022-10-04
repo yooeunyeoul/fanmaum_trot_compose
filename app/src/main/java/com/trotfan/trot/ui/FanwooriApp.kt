@@ -20,6 +20,7 @@ import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefitsNav
 import com.trotfan.trot.ui.home.vote.benefits.addVoteBenefitsGraph
+import com.trotfan.trot.ui.login.LoginNav
 import com.trotfan.trot.ui.login.addLoginGraph
 import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
@@ -73,7 +74,7 @@ fun FanwooriApp(
 
                 navigation(
                     route = "로그인",
-                    startDestination = VoteBenefitsNav.VoteBenefits.route
+                    startDestination = LoginNav.Login.route
                 ) {
                     addLoginGraph(
                         modifier = Modifier,

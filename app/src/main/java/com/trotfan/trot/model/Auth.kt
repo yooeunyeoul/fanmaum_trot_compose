@@ -5,21 +5,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class KakaoTokens(
-    val refreshToken: String? = null,
-    val accessToken: String? = null,
-    val idToken: String? = null
+    val refresh_token: String? = null,
+    val access_token: String? = null,
+    val id_token: String? = null
 )
 
 @Serializable
 data class GoogleToken(
-    val authCode: String? = null
+    val auth_code: String? = null
 )
 
 @Serializable
 data class AppleToken(
-    val idToken: String? = null,
-    val accessToken: String? = null,
-    val refreshToken: String? = null
+    val id_token: String? = null,
+    val access_token: String? = null,
+    val refresh_token: String? = null
 )
 
 @Serializable

@@ -32,7 +32,6 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.model.AppleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
@@ -240,9 +239,9 @@ private fun handleKakaoLogin(context: Context, viewModel: AuthViewModel) {
 
 private fun kakaoLoginSuccess(token: OAuthToken, viewModel: AuthViewModel) {
     val kakaoTokens = KakaoTokens(
-        refreshToken = token.refreshToken,
-        accessToken = token.accessToken,
-        idToken = token.idToken
+        refresh_token = token.refreshToken,
+        access_token = token.accessToken,
+        id_token = token.idToken
     )
     viewModel.postKakaoToken(kakaoTokens)
     Log.d(
