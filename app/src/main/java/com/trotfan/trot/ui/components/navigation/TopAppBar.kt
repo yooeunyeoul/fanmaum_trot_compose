@@ -17,11 +17,13 @@ import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.utils.clickable
 
 @Composable
 fun CustomTopAppBar(
     title: String,
-    icon: Int? = null
+    icon: Int? = null,
+    onDismiss: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -35,7 +37,7 @@ fun CustomTopAppBar(
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp).clickable { onDismiss() }
             )
         }
 

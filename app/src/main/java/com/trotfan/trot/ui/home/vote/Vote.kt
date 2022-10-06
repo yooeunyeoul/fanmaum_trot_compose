@@ -14,6 +14,7 @@ import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.dialog.FeverTimeDialog
 import com.trotfan.trot.ui.home.dialog.RollingDialog
+import com.trotfan.trot.ui.home.vote.guide.VoteGuide
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -21,10 +22,11 @@ fun VoteHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var updateStatus by rememberSaveable { mutableStateOf(false) }
-    var autoVoteStatus by rememberSaveable { mutableStateOf(false) }
-    var feverStatus by rememberSaveable { mutableStateOf(false) }
+    var updateStatus by rememberSaveable { mutableStateOf(true) }
+    var autoVoteStatus by rememberSaveable { mutableStateOf(true) }
+    var feverStatus by rememberSaveable { mutableStateOf(true) }
     var rollingStatus by rememberSaveable { mutableStateOf(true) }
+    var voteGuideStatus by rememberSaveable { mutableStateOf(true) }
 
     Surface(
         color = Color.White,
@@ -74,6 +76,14 @@ fun VoteHome(
             RollingDialog(
                 onDismiss = {
                     rollingStatus = false
+                }
+            )
+        }
+
+        if (voteGuideStatus) {
+            VoteGuide(
+                onDismiss = {
+                    voteGuideStatus = false
                 }
             )
         }

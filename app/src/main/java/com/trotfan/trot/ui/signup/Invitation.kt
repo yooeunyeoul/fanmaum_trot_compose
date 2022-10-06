@@ -14,8 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.R
-import com.trotfan.trot.ui.components.button.ContainedButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
@@ -143,6 +141,7 @@ fun InvitationScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun InvitationPreview() {
