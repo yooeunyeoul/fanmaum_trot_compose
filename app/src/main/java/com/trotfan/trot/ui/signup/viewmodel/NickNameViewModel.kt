@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,16 +64,16 @@ class NickNameViewModel @Inject constructor(
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 kotlin.runCatching {
-                    val response = repository.updateUser(userid = it.userId.toString(), nickName)
+                    val response = repository.updateUser(userid = it.userId.toInt(), nickName)
 
-                    when (response.code) {
-                        1 -> {
+                    when (response.result.code) {
+                        ResultCodeStatus.UnAcceptableName.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.NotAuth)
                         }
-                        2 -> {
+                        ResultCodeStatus.AlreadyInUse.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.Duplicate)
                         }
-                        200 -> {
+                        ResultCodeStatus.Success.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.AuthSuccess)
                         }
                     }

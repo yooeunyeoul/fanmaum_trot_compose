@@ -51,6 +51,9 @@ fun CertificationPhoneScreen(
     var errorState by remember {
         mutableStateOf(false)
     }
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
     var certificationNumberSend by remember {
         mutableStateOf(false)
     }
@@ -68,6 +71,7 @@ fun CertificationPhoneScreen(
     var inputCertificationNumber by remember {
         mutableStateOf("")
     }
+
 
     when (status) {
         CertificationNumberCheckStatus.TimeExceeded,
@@ -92,16 +96,20 @@ fun CertificationPhoneScreen(
 
             }
         }
+        CertificationNumberCheckStatus.RequestSuccess -> {
+            LaunchedEffect(key1 = Unit, block = {
+                certificationNumberSend = true
+            })
+        }
         null -> {
 
         }
         CertificationNumberCheckStatus.Duplicate -> {
-            VerticalDialog(
-                contentText = status?.content ?: "",
-                buttonOneText = status?.buttonText ?: ""
-            ) {
-                viewModel.hideCertificateDialog()
-            }
+            errorMessage = CertificationNumberCheckStatus.Duplicate.content
+            errorState = true
+        }
+        else -> {
+
         }
     }
 
@@ -161,14 +169,19 @@ fun CertificationPhoneScreen(
                     errorStatus = errorState,
                     onValueChange = {
                         inputPhoneNumber = it
-                        errorState =
-                            inputPhoneNumber.length > 3 && inputPhoneNumber.substring(
+                        if (inputPhoneNumber.length > 3 && inputPhoneNumber.substring(
                                 0,
                                 3
-                            ) == "010" == false
+                            ) != "010"
+                        ) {
+                            errorMessage = CertificationNumberCheckStatus.NotFitForm.content
+                            errorState = true
+                        } else {
+                            errorState = false
+                            viewModel.clearErrorState()
+                        }
                     },
-                    errorMessage = "휴대폰 번호가 형식에 맞지\n" +
-                            "않아요.",
+                    errorMessage = errorMessage,
                     modifier = Modifier,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
@@ -187,8 +200,9 @@ fun CertificationPhoneScreen(
                     .defaultMinSize(minWidth = 120.dp)
                     .width(120.dp)
             ) {
+
                 ticks = 180
-                certificationNumberSend = true
+//                certificationNumberSend = true
                 requestedInputNumber = inputPhoneNumber
                 focusManager.clearFocus()
                 focusRequester.requestFocus()

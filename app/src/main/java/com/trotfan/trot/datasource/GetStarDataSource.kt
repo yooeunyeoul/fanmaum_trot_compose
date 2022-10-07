@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.trotfan.trot.model.Star
 import com.trotfan.trot.network.SignUpService
+import com.trotfan.trot.ui.components.input.SearchStatus
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -31,12 +32,15 @@ class GetStarDataSource @Inject constructor(
             var nextCursor = data.meta.nextCursor
             var prevCursor = data.meta.prevCursor
 
-            LoadResult.Page(
-                data = starList,
-                prevKey = if (prevCursor?.isEmpty() == true) null else prevCursor,
-                nextKey = if (nextCursor?.isEmpty() == true) null else nextCursor
-            )
-
+            if (starList.isEmpty() && nextCursor.isEmpty() && prevCursor.isEmpty()) {
+                LoadResult.Error(Exception(SearchStatus.NoResult.name))
+            } else {
+                LoadResult.Page(
+                    data = starList,
+                    prevKey = if (prevCursor.isEmpty()) null else prevCursor,
+                    nextKey = if (nextCursor.isEmpty()) null else nextCursor
+                )
+            }
         } catch (e: HttpException) {
             LoadResult.Error(Exception(e.localizedMessage))
         } catch (e: Exception) {
@@ -44,37 +48,3 @@ class GetStarDataSource @Inject constructor(
         }
     }
 }
-
-//class GetStarDataSourceForName @Inject constructor(
-//    private val service: SignUpService
-//) : GetStarDataSource(service) {
-//
-//    var starName: String = ""
-//
-//    override suspend fun load(params: LoadParams<String>): LoadResult<String, Star> {
-//        return try {
-//            val nextPage = ""
-//            var nextCursor: String? = null
-//            var prevCursor: String? = null
-//            val data = service.starSearch(nextCursor ?: "", name = starName).data
-//            val starList = data.stars
-//            nextCursor = data.meta.nextCursor
-//            prevCursor = data.meta.prevCursor
-//
-//            if (starList.isEmpty()) {
-//                LoadResult.Error(Exception("No com.trotfan.trot.model.Result Error"))
-//            } else {
-//                LoadResult.Page(
-//                    data = starList,
-//                    prevKey = if (prevCursor?.isEmpty() == true) null else prevCursor,
-//                    nextKey = if (nextCursor?.isEmpty() == true) null else nextCursor
-//                )
-//            }
-//
-//        } catch (e: HttpException) {
-//            LoadResult.Error(Exception(e.localizedMessage))
-//        } catch (e: Exception) {
-//            LoadResult.Error(Exception(e.localizedMessage))
-//        }
-//    }
-//}

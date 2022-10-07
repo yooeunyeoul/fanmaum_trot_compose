@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Meta(
     @SerialName("next_cursor")
-    val nextCursor: String?,
+    val nextCursor: String,
     @SerialName("per_page")
     val perPage: Int?,
     @SerialName("prev_cursor")
-    val prevCursor: String?
+    val prevCursor: String
 )

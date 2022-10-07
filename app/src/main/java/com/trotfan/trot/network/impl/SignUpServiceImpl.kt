@@ -1,7 +1,9 @@
 package com.trotfan.trot.network.impl
 
+import coil.request.SuccessResult
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes
+import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.response.CommonResponse
 import io.ktor.client.*
@@ -17,7 +19,7 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
     @OptIn(InternalAPI::class)
     override suspend fun requestCertificationCode(
         phoneNumber: String
-    ): ReturnStatus {
+    ): CommonResponse<SmsAuth> {
         return httpClient.submitForm(
             url = HttpRoutes.SMS
         ) {
@@ -52,13 +54,13 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
     }
 
     override suspend fun updateUser(
-        userId: String,
+        userId: Int,
         nickName: String?,
-        starId: String?,
+        starId: Int?,
         phoneNumber: String?,
         redeemCode: String?
-    ): UpdateUserResponse {
-        val response = httpClient.request(HttpRoutes.USERS + "/${userId}") {
+    ): CommonResponse<Unit> {
+        return httpClient.request(HttpRoutes.USERS + "/${userId}") {
             method = HttpMethod.Patch
             contentType(ContentType.Application.Json)
             headers {
@@ -72,7 +74,7 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
                     append("name", nickName)
                 }
                 if (starId != null) {
-                    append("star_id", starId)
+                    append("star_id", starId.toString())
                 }
                 if (phoneNumber != null) {
                     append("phone_number", phoneNumber)
@@ -82,14 +84,6 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
                 }
             }))
 
-        }
-        return when (response.status.value) {
-            200 -> {
-                UpdateUserResponse(code = 200)
-            }
-            else -> {
-                response.body()
-            }
-        }
+        }.body()
     }
 }

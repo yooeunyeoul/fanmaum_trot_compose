@@ -6,6 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.model.Result
+import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -34,10 +36,22 @@ enum class CertificationNumberCheckStatus(
         buttonText = "확인"
     ),
     Duplicate(
-        content = "이미 가입된 번호가 존재합니다.",
-        buttonText = "확인"
+        content = "이미 가입된 휴대폰 번호예요",
+        buttonText = ""
+    ),
+    NotFitForm(
+        content = "휴대폰 번호가 형식에 맞지\n" +
+                "않아요.",
+        buttonText = ""
+    ),
+    RequestSuccess(
+        content = "",
+        buttonText = ""
     )
+
+
 }
+
 
 @HiltViewModel
 class CertificationPhoneNumberViewModel @Inject constructor(
@@ -63,10 +77,15 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                 val response = repository.requestSmsCertification(
                     phoneNumber = phoneNumber,
                 )
-                if (response.status.code == 202) {
-                    Log.e("문자인증", "성공")
-                } else {
-                    Log.e("문자인증", "실패")
+                when (response.result.code) {
+                    ResultCodeStatus.Success.code -> {
+                        _certificationNumber.value = response.data.code.toString()
+                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.RequestSuccess)
+                    }
+                    ResultCodeStatus.NumberAlreadyRegistered.code -> {
+                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.Duplicate)
+                    }
+
                 }
             } catch (e: Exception) {
                 Log.e("Error", e.message.toString())
@@ -98,17 +117,21 @@ class CertificationPhoneNumberViewModel @Inject constructor(
         }
     }
 
+    fun clearErrorState() {
+        viewModelScope.launch {
+            _certificationNumberStatus.emit(null)
+        }
+    }
+
     fun updateUser(phoneNum: String) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     val response =
-                        repository.updateUser(userid = it.userId.toString(), phoneNumber = phoneNum)
-                    if (response.code == 200) {
+                        repository.updateUser(userid = it.userId.toInt(), phoneNumber = phoneNum)
+                    if (response.result.code == ResultCodeStatus.Success.code) {
 //                        _onComplete.emit(true)
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
-                    } else {
-                        _certificationNumberStatus.emit(CertificationNumberCheckStatus.Duplicate)
                     }
                 }
             }

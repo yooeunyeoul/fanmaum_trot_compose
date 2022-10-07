@@ -15,6 +15,7 @@ import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.datasource.GetStarDataSource
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Star
+import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.components.input.SearchStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,9 +58,6 @@ class StarSearchViewModel @Inject constructor(
                     _searchState.emit(SearchStatus.TrySearch)
                     _startListState.value = null
                 }
-                "empty" -> {
-                    _searchState.emit(SearchStatus.NoResult)
-                }
                 else -> {
                     _startListState.value = Pager(PagingConfig(pageSize = 10)) {
                         dataSource.apply { starName = keyword }
@@ -91,10 +89,10 @@ class StarSearchViewModel @Inject constructor(
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 val response = repository.updateUser(
-                    userid = it.userId.toString(),
-                    starId = selectedItem?.id.toString()
+                    userid = it.userId.toInt(),
+                    starId = selectedItem?.id
                 )
-                if (response.code == 200) {
+                if (response.result.code == ResultCodeStatus.Success.code) {
                     _onComplete.emit(true)
                 }
             }

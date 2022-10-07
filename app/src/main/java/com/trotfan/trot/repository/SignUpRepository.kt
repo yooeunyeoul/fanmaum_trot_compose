@@ -1,10 +1,8 @@
 package com.trotfan.trot.repository
 
-import com.trotfan.trot.model.ReturnStatus
-import com.trotfan.trot.model.SmsCertificationRequestResult
-import com.trotfan.trot.model.Status
-import com.trotfan.trot.model.UpdateUserResponse
+import com.trotfan.trot.model.*
 import com.trotfan.trot.network.SignUpService
+import com.trotfan.trot.network.response.CommonResponse
 import javax.inject.Inject
 
 class SignUpRepository @Inject constructor(
@@ -12,16 +10,16 @@ class SignUpRepository @Inject constructor(
 ) {
     suspend fun requestSmsCertification(
         phoneNumber: String,
-    ): ReturnStatus =
+    ): CommonResponse<SmsAuth> =
         service.requestCertificationCode(phoneNumber)
 
     suspend fun updateUser(
-        userid: String,
+        userid: Int,
         nickName: String? = null,
-        starId: String? = null,
+        starId: Int? = null,
         phoneNumber: String? = null,
         redeemCode: String? = null
-    ): UpdateUserResponse =
+    ): CommonResponse<Unit> =
         service.updateUser(userid, nickName, starId, phoneNumber, redeemCode)
 
 

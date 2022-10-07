@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,13 +68,13 @@ class InvitationViewModel @Inject constructor(
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.updateUser(
-                        userid = it.userId.toString(),
+                        userid = it.userId.toInt(),
                         redeemCode = _inviteCode.value
                     )
                 }.onSuccess {
-                    when (it.code) {
-                        3 -> _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.InvalidCodeError)
-                        200 -> {
+                    when (it.result.code) {
+                        ResultCodeStatus.InvalidCode.code -> _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.InvalidCodeError)
+                        ResultCodeStatus.Success.code -> {
                             if (_inviteCode.value != "") _completeStatus.emit(true)
                             else _skipStatus.emit(true)
                         }
