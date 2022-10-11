@@ -3,6 +3,8 @@ package com.trotfan.trot.ui.home.vote
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -15,18 +17,23 @@ import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.dialog.FeverTimeDialog
 import com.trotfan.trot.ui.home.dialog.RollingDialog
 import com.trotfan.trot.ui.home.vote.guide.VoteGuide
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VoteHome(
     onItemClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    votingBottomSheetState: ModalBottomSheetState
 ) {
-    var updateStatus by rememberSaveable { mutableStateOf(true) }
+    var updateStatus by rememberSaveable { mutableStateOf(false) }
     var autoVoteStatus by rememberSaveable { mutableStateOf(true) }
-    var feverStatus by rememberSaveable { mutableStateOf(true) }
-    var rollingStatus by rememberSaveable { mutableStateOf(true) }
-    var voteGuideStatus by rememberSaveable { mutableStateOf(true) }
+    var feverStatus by rememberSaveable { mutableStateOf(false) }
+    var rollingStatus by rememberSaveable { mutableStateOf(false) }
+    var voteGuideStatus by rememberSaveable { mutableStateOf(false) }
+
+    val coroutineScope = rememberCoroutineScope()
 
     Surface(
         color = Color.White,
@@ -41,6 +48,9 @@ fun VoteHome(
                 buttonOneText = "출석했어요!",
                 onDismiss = {
                     autoVoteStatus = false
+                    coroutineScope.launch {
+                        votingBottomSheetState.show()
+                    }
                 }
             )
         }

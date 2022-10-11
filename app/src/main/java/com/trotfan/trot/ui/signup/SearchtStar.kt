@@ -32,7 +32,7 @@ import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.button.BackIcon
 import com.trotfan.trot.model.Star
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.OutlineIconButton
+import com.trotfan.trot.ui.components.button.IconOutline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.SearchStatus
@@ -325,7 +325,7 @@ fun SearchStarScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-                OutlineIconButton(
+                IconOutline1Button(
                     text = "스타 추가 요청",
                     icon = R.drawable.icon_add,
                     enabled = true,
@@ -352,6 +352,7 @@ fun SearchStarScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PreviewSearchStarScreen() {
     SearchStarScreen(navController = rememberNavController())

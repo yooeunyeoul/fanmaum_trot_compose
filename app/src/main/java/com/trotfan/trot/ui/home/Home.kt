@@ -1,5 +1,7 @@
 package com.trotfan.trot.ui.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -156,16 +158,20 @@ fun TrotBottomBar(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    votingBottomSheetState: ModalBottomSheetState
 ) {
     composable(HomeSections.VOTE.route) { from ->
         VoteHome(
             onItemClick = { id ->
                 onItemSelected(id, from)
             },
-            modifier = modifier
+            modifier = modifier,
+            votingBottomSheetState = votingBottomSheetState
         )
     }
     composable(HomeSections.MyPage.route) { from ->
