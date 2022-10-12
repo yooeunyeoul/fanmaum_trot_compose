@@ -39,7 +39,9 @@ fun CustomTopAppBarWithIcon(
     ) {
         Text(
             fontSize = 20.sp,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .weight(1f),
             text = title,
             textAlign = TextAlign.Start,
             color = Gray800,
@@ -59,9 +61,11 @@ fun CustomTopAppBarWithIcon(
         Icon(
             painter = painterResource(id = endIcon),
             contentDescription = null,
-            modifier = Modifier.clickable {
-                onClickEndIcon.invoke()
-            }
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .clickable {
+                    onClickEndIcon.invoke()
+                }
         )
     }
 }

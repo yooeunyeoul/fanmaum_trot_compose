@@ -12,9 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,12 +28,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
+import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
+import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
+import com.trotfan.trot.ui.signup.viewmodel.CertificationPhoneNumberViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
 import kotlinx.coroutines.delay
@@ -46,18 +48,19 @@ import java.util.*
 
 data class VerticalPagerContent(
     val userName: String,
-    val starName: String,
-    val icon: String
+    val starName: String
 )
 
 
 @Composable
 fun VoteHome(
     onItemClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: VoteHomeViewModel = hiltViewModel()
 
 ) {
     val context = LocalContext.current
+    val voteStatus by viewModel.voteStatus.collectAsState()
 
     Column(
         modifier = Modifier
@@ -66,7 +69,7 @@ fun VoteHome(
     ) {
         CustomTopAppBarWithIcon(
             title = "투표",
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            modifier = Modifier,
             onClickEndIcon = {
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
@@ -91,29 +94,36 @@ fun VoteHome(
                     .height(height = 80.dp)
             )
 
-            voteToStar(
-                items = listOf(
-                    VerticalPagerContent(
-                        userName = "유은열",
-                        starName = "임영웅",
-                        icon = ""
-                    ),
-                    VerticalPagerContent(
-                        userName = "유은열",
-                        starName = "임영웅",
-                        icon = ""
-                    ),
-                    VerticalPagerContent(
-                        userName = "유은열",
-                        starName = "임영웅",
-                        icon = ""
+            when (voteStatus) {
+                VoteStatus.VoteStar -> {
+                    voteToStar(
+                        items = listOf(
+                            VerticalPagerContent(
+                                userName = "유은열",
+                                starName = "임영웅",
+                            ),
+                            VerticalPagerContent(
+                                userName = "유은열",
+                                starName = "임영웅"
+                            ),
+                            VerticalPagerContent(
+                                userName = "유은열",
+                                starName = "임영웅"
+                            )
+                        )
                     )
-                )
-            )
+                }
+                VoteStatus.VoteEnd -> {
+                    voteEndHeader()
+                }
+                VoteStatus.NotVoteForFiveTimes -> {
+                    voteIng()
+                }
+            }
+
+
         }
-//        voteIngFooter()
-//        voteIng()
-//        voteEndHeader()
+
 
 
         LazyColumn(
@@ -133,69 +143,110 @@ fun VoteHome(
                             .height(80.dp)
                             .fillMaxWidth()
                     )
-
-                }
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp)
-                        .background(color = Primary50),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    ScheduledToDisappear()
-
-//                    TryMission()
-
-
                 }
             }
-            stickyHeader {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.White)
-                ) {
-                    Row(
-                        Modifier
-                            .padding(start = 24.dp, end = 24.dp)
-                            .fillMaxWidth()
-                            .height(72.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "오늘의 순위",
-                            style = FanwooriTypography.h2,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Gray800,
-                            fontSize = 22.sp,
-                            modifier = Modifier.weight(1f)
-                        )
 
-                        Text(
-                            text = "일일투표 마감까지",
-                            style = FanwooriTypography.caption2,
-                            color = Gray600,
-                            fontSize = 13.sp
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "08:40:59",
-                            style = FanwooriTypography.body2,
-                            color = Gray750,
-                            fontSize = 15.sp
-                        )
+            when (voteStatus) {
+                VoteStatus.VoteStar, VoteStatus.NotVoteForFiveTimes -> {
+                    item {
+                        Spacer(modifier = Modifier.height(32.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp)
+                                .background(color = Primary50),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+//                    ScheduledToDisappear()
+
+                            TryMission()
+
+
+                        }
+                    }
+                    stickyHeader {
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(color = Color.White)
+                        ) {
+                            Row(
+                                Modifier
+                                    .padding(start = 24.dp, end = 24.dp)
+                                    .fillMaxWidth()
+                                    .height(72.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "오늘의 순위",
+                                    style = FanwooriTypography.h2,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Gray800,
+                                    fontSize = 22.sp,
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                Text(
+                                    text = "일일투표 마감까지",
+                                    style = FanwooriTypography.caption2,
+                                    color = Gray600,
+                                    fontSize = 13.sp
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = "08:40:59",
+                                    style = FanwooriTypography.body2,
+                                    color = Gray750,
+                                    fontSize = 15.sp
+                                )
+
+                            }
+                        }
+                    }
+                    item {
+                        TodayRankingView()
 
                     }
                 }
-            }
-            item {
-                TodayRankingView()
+                VoteStatus.VoteEnd -> {
+                    item {
+                        Spacer(modifier = Modifier.height(48.dp))
+                        Column(
+                            modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.vote_counting),
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.height(17.2.dp))
+                            Text(
+                                text = "일일투표 집계 중",
+                                style = FanwooriTypography.subtitle2,
+                                color = Gray700,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 18.sp
+                            )
+                            Spacer(modifier = Modifier.height(11.dp))
+                            Text(
+                                text = "투표 결과는 자정 이후\n" +
+                                        "순위에서 확인할 수 있어요.",
+                                style = FanwooriTypography.caption1,
+                                color = Gray600,
+                                fontSize = 15.sp,
+                                textAlign = TextAlign.Center
+                            )
 
+
+                        }
+                    }
+
+                }
             }
+
+
         }
 
     }
@@ -255,7 +306,7 @@ fun TodayRankingView() {
         state = pagerState,
         modifier = Modifier.disabledHorizontalPointerInputScroll()
     ) { index ->
-        Column(modifier = Modifier.height(800.dp)) {
+        Column(modifier = Modifier.height(600.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.vote_main),
                 contentDescription = null,
@@ -408,10 +459,10 @@ fun voteToStar(items: List<VerticalPagerContent>) {
     LaunchedEffect(key1 = Unit, block = {
         while (true) {
             yield()
-            delay(2000)
+            delay(3000)
             pagerState.animateScrollToPage(
                 page = (pagerState.currentPage + 1) % (pagerState.pageCount),
-                animationSpec = tween(600)
+                animationSpec = tween(500)
             )
         }
     })
@@ -485,133 +536,63 @@ fun voteToStar(items: List<VerticalPagerContent>) {
 
 @Composable
 fun voteIng() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(start = 18.dp, end = 18.dp)
+    Column(
+        Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
 
         Text(
             text = "투표 진행 중",
+            color = Color.White,
+            style = FanwooriTypography.subtitle4,
             maxLines = 1,
-            style = FanwooriTypography.body2,
-            fontSize = 15.sp,
-            color = Secondary900
+            fontSize = 18.sp,
         )
-    }
-    Spacer(modifier = Modifier.height(3.dp))
-    Row(
-        modifier = Modifier
-            .padding(start = 18.dp, end = 18.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            text = "지금 내 스타에게 투표해보세요",
-            color = Secondary500,
 
-            modifier = Modifier.weight(weight = 1f, fill = false),
-            style = FanwooriTypography.button1,
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "지금 내 스타에게 투표해보세요!",
+            color = Color.White,
+            style = FanwooriTypography.body2,
             maxLines = 1,
-            fontSize = 17.sp,
+            fontSize = 15.sp,
             overflow = TextOverflow.Ellipsis
         )
+
+
     }
 }
 
 @Composable
 fun voteEndHeader() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(start = 18.dp, end = 18.dp)
+    Column(
+        Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
 
         Text(
             text = "투표 마감",
+            color = Color.White,
+            style = FanwooriTypography.subtitle4,
             maxLines = 1,
-            style = FanwooriTypography.body2,
-            fontSize = 15.sp,
-            color = Secondary900
+            fontSize = 18.sp,
         )
-    }
-    Spacer(modifier = Modifier.height(3.dp))
-    Row(
-        modifier = Modifier
-            .padding(start = 18.dp, end = 18.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-    ) {
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = "[투표 집계 시간] 23:30:00 ~ 23:59:59",
-            color = Secondary500,
-
-            modifier = Modifier.weight(weight = 1f, fill = false),
-            style = FanwooriTypography.button1,
+            color = Color.White,
+            style = FanwooriTypography.body2,
             maxLines = 1,
-            fontSize = 17.sp,
+            fontSize = 15.sp,
             overflow = TextOverflow.Ellipsis
         )
-    }
-}
-
-@Composable
-fun voteIngFooter() {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .background(color = Primary50)
-            .fillMaxWidth()
-            .height(46.dp)
-    ) {
-        Text(
-            text = "투표마감 22.08.31",
-            fontSize = 15.sp,
-            color = Primary900,
-            style = FanwooriTypography.caption1
-        )
-        Spacer(modifier = Modifier.width(10.33.dp))
-        Icon(
-            tint = Primary600,
-            painter = painterResource(id = R.drawable.icon_timer),
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.width(4.33.dp))
-        Text(
-            text = "23:30",
-            fontSize = 15.sp,
-            color = Primary900,
-            style = FanwooriTypography.caption1
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = "21일 남았어요",
-            fontSize = 18.sp,
-            color = Primary700,
-            style = FanwooriTypography.subtitle2
-        )
 
 
     }
 
-}
-
-@Composable
-fun voteEndFooter() {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .background(color = Primary50)
-            .fillMaxWidth()
-            .height(46.dp)
-    ) {
-        Text(
-            text = "자정부터 다시 투표할 수 있어요!",
-            fontSize = 18.sp,
-            color = Primary700,
-            style = FanwooriTypography.subtitle2
-        )
-
-
-    }
 }
