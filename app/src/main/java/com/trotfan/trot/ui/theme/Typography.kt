@@ -16,6 +16,7 @@ class Typography internal constructor(
     val subtitle1: TextStyle,
     val subtitle2: TextStyle,
     val subtitle3: TextStyle,
+    val subtitle4: TextStyle,
     val body1: TextStyle,
     val body2: TextStyle,
     val body3: TextStyle,
@@ -51,6 +52,11 @@ class Typography internal constructor(
         subtitle3: TextStyle = TextStyle(
             fontWeight = FontWeight.SemiBold,
             fontSize = 15.sp,
+            letterSpacing = (-0.25).sp
+        ),
+        subtitle4: TextStyle = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
             letterSpacing = (-0.25).sp
         ),
         body1: TextStyle = TextStyle(
@@ -104,6 +110,7 @@ class Typography internal constructor(
         subtitle1 = subtitle1.withDefaultFontFamily(defaultFontFamily),
         subtitle2 = subtitle2.withDefaultFontFamily(defaultFontFamily),
         subtitle3 = subtitle3.withDefaultFontFamily(defaultFontFamily),
+        subtitle4 = subtitle4.withDefaultFontFamily(defaultFontFamily),
         body1 = body1.withDefaultFontFamily(defaultFontFamily),
         body2 = body2.withDefaultFontFamily(defaultFontFamily),
         body3 = body3.withDefaultFontFamily(defaultFontFamily),

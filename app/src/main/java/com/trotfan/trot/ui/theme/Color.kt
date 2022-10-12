@@ -41,3 +41,5 @@ val SemanticPositive500 = Color(0XFF2DC4B3)
 val SemanticPositive300 = Color(0XFF81E2D7)
 val SemanticNegative500 = Color(0XFFF76C1B)
 val SemanticNegative300 = Color(0XFFFFAC7C)
+
+val VoteBackGround = Color(0XFFFF5F5F5)

@@ -17,15 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray800
 
 @Composable
 fun CustomTopAppBarWithIcon(
     modifier: Modifier = Modifier,
     title: String,
-    @StringRes icon: Int = R.drawable.icon_share,
-    onClickIcon: () -> Unit = {}
+    @StringRes startIcon: Int = R.drawable.icon_info,
+    @StringRes endIcon: Int = R.drawable.icon_share,
+    onClickStartIcon: () -> Unit = {},
+    onClickEndIcon: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -44,11 +45,22 @@ fun CustomTopAppBarWithIcon(
             color = Gray800,
             style = FanwooriTypography.body2,
         )
+
         Icon(
-            painter = painterResource(id = icon),
+            painter = painterResource(id = startIcon),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(end = 28.3.dp)
+                .clickable {
+                    onClickStartIcon.invoke()
+                }
+        )
+
+        Icon(
+            painter = painterResource(id = endIcon),
             contentDescription = null,
             modifier = Modifier.clickable {
-                onClickIcon.invoke()
+                onClickEndIcon.invoke()
             }
         )
     }

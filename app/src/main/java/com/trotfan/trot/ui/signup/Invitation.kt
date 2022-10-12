@@ -117,7 +117,7 @@ fun InvitationScreen(
                 contentText = "타임투표권 500표 받았어요!",
                 buttonOneText = "확인",
                 onDismiss = {
-                    navController.navigate(HomeSections.VOTE.route) {
+                    navController.navigate(HomeSections.Vote.route) {
                         popUpTo(SignUpSections.InvitationCode.route) {
                             inclusive = true
                         }
@@ -128,7 +128,7 @@ fun InvitationScreen(
 
         LaunchedEffect(skipState) {
             if (skipState) {
-                navController.navigate(HomeSections.VOTE.route) {
+                navController.navigate(HomeSections.Vote.route) {
                     popUpTo(SignUpSections.InvitationCode.route) {
                         inclusive = true
                     }

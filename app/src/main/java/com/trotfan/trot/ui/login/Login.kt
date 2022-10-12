@@ -32,7 +32,6 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.model.AppleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
@@ -181,7 +180,7 @@ fun LoginScreen(
                         }
                     }
                 } else {
-                    navController.navigate(HomeSections.VOTE.route) {
+                    navController.navigate(HomeSections.Vote.route) {
                         popUpTo(LoginNav.Login.route) {
                             inclusive = true
                         }

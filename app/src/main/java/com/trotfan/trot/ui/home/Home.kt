@@ -1,8 +1,6 @@
 package com.trotfan.trot.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
@@ -12,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,15 +24,14 @@ import com.trotfan.trot.ui.home.mypage.MyPageHome
 import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.theme.*
-import com.trotfan.trot.ui.utils.clickable
 
 enum class HomeSections(
     val title: String,
     val route: String
 ) {
-    VOTE(title = "투표", route = "home/vote"),
-    Ranking(title = "랭킹", route = "home/ranking"),
-    Store(title = "스토어", route = "home/store"),
+    Vote(title = "투표", route = "home/vote"),
+    Ranking(title = "순위", route = "home/ranking"),
+    Charge(title = "충전", route = "home/charge"),
     MyPage(title = "마이페이지", route = "home/mypage")
 }
 
@@ -48,7 +44,7 @@ fun PreviewTrotBottomBar() {
     FanwooriTheme {
         TrotBottomBar(
             tabs = HomeSections.values(),
-            currentRoute = HomeSections.VOTE.route,
+            currentRoute = HomeSections.Vote.route,
             onSelected = {
 
             }
@@ -64,7 +60,7 @@ fun TrotBottomBar(
 ) {
 
     var selectedSection by remember {
-        mutableStateOf(HomeSections.VOTE)
+        mutableStateOf(HomeSections.Vote)
     }
 
 
@@ -107,17 +103,17 @@ fun TrotBottomBar(
                         content = {
                             var id = 0
                             when (sections.title) {
-                                HomeSections.VOTE.title -> {
-                                    id = R.drawable.vote
+                                HomeSections.Vote.title -> {
+                                    id = R.drawable.icon_vote
                                 }
                                 HomeSections.Ranking.title -> {
-                                    id = R.drawable.ranking
+                                    id = R.drawable.icon_ranking
                                 }
-                                HomeSections.Store.title -> {
-                                    id = R.drawable.store
+                                HomeSections.Charge.title -> {
+                                    id = R.drawable.icon_charge
                                 }
                                 HomeSections.MyPage.title -> {
-                                    id = R.drawable.mypage
+                                    id = R.drawable.icon_mypage
                                 }
 
                             }
@@ -160,7 +156,7 @@ fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    composable(HomeSections.VOTE.route) { from ->
+    composable(HomeSections.Vote.route) { from ->
         VoteHome(
             onItemClick = { id ->
                 onItemSelected(id, from)
@@ -184,7 +180,7 @@ fun NavGraphBuilder.addHomeGraph(
             modifier = modifier
         )
     }
-    composable(HomeSections.Store.route) { from ->
+    composable(HomeSections.Charge.route) { from ->
         MyPageHome(
             onItemClick = { id ->
                 onItemSelected(id, from)

@@ -1,35 +1,47 @@
+@file:OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
+
 package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
+import java.util.*
 
 
 data class VerticalPagerContent(
@@ -50,145 +62,340 @@ fun VoteHome(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .background(color = VoteBackGround)
     ) {
         CustomTopAppBarWithIcon(
             title = "투표",
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            onClickIcon = {
+            onClickEndIcon = {
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, "#팬우리 n월 000월 투표")
+                    putExtra(
+                        Intent.EXTRA_TEXT, voteTopShareText()
+                    )
+
                     type = "text/plain"
                 }
                 val shareIntent = Intent.createChooser(sendIntent, null)
                 context.startActivity(shareIntent)
             }
         )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Primary50)
-                .height(76.dp)
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
-                )
-        ) {
+
+        Box(modifier = Modifier.height(80.dp)) {
+            Image(
+                painter = painterResource(id = R.drawable.vote_board),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(height = 80.dp)
+            )
+
             voteToStar(
                 items = listOf(
                     VerticalPagerContent(
-                        userName = "임영웅",
-                        starName = "난ㄴ세영ㅇ웅",
+                        userName = "유은열",
+                        starName = "임영웅",
                         icon = ""
                     ),
                     VerticalPagerContent(
-                        userName = "임영웅",
-                        starName = "난ㄴ세영ㅇ웅",
+                        userName = "유은열",
+                        starName = "임영웅",
                         icon = ""
                     ),
                     VerticalPagerContent(
-                        userName = "임영웅",
-                        starName = "난ㄴ세영ㅇ웅",
+                        userName = "유은열",
+                        starName = "임영웅",
                         icon = ""
                     )
-
-
                 )
             )
-//            voteIng()
-//            voteEndHeader()
         }
-        voteIngFooter()
+//        voteIngFooter()
+//        voteIng()
+//        voteEndHeader()
 
-        Spacer(modifier = modifier.height(16.dp))
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             item {
-                Row(
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp)
-                        .background(color = Gray100, shape = RoundedCornerShape(12.dp))
-                        .padding(start = 16.dp, end = 16.dp)
-                        .height(56.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(color = Color.White, shape = CircleShape),
-                        painter = painterResource(id = R.drawable.vote_iconbenefits),
+                Spacer(modifier = modifier.height(39.dp))
+                Box(Modifier.fillMaxWidth()) {
+                    Top3View(modifier = Modifier.padding(top = 40.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.vote_main),
                         contentDescription = null,
-                        tint = Color("#F5D79B".toColorInt())
+                        modifier = Modifier
+                            .height(80.dp)
+                            .fillMaxWidth()
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "우승혜택보기",
-                        modifier = Modifier.weight(1f),
-                        style = FanwooriTypography.subtitle3,
-                        fontSize = 15.sp,
-                        color = Gray750
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_arrow),
-                        contentDescription = null
-                    )
+
                 }
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(20.dp)
-                        )
-                        .border(width = 1.dp, color = Gray200, shape = RoundedCornerShape(20.dp))
-                        .height(40.dp)
-                        .padding(start = 15.dp, end = 15.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.info),
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.width(5.3.dp))
-                    Text(
-                        text = "팬우리 투표안내",
-                        fontSize = 15.sp,
-                        style = FanwooriTypography.body2,
-                        color = Gray700
-                    )
-                }
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(16.dp)
-                )
-                Divider(color = Gray100, modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp)
-                        .height(48.dp), verticalAlignment = Alignment.CenterVertically
+                        .height(40.dp)
+                        .background(color = Primary50),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "일일투표 실시간 차트",
-                        style = FanwooriTypography.subtitle3,
-                        color = Gray700,
-                        fontSize = 15.sp
-                    )
+
+                    ScheduledToDisappear()
+
+//                    TryMission()
+
+
                 }
+            }
+            stickyHeader {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White)
+                ) {
+                    Row(
+                        Modifier
+                            .padding(start = 24.dp, end = 24.dp)
+                            .fillMaxWidth()
+                            .height(72.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "오늘의 순위",
+                            style = FanwooriTypography.h2,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Gray800,
+                            fontSize = 22.sp,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Text(
+                            text = "일일투표 마감까지",
+                            style = FanwooriTypography.caption2,
+                            color = Gray600,
+                            fontSize = 13.sp
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "08:40:59",
+                            style = FanwooriTypography.body2,
+                            color = Gray750,
+                            fontSize = 15.sp
+                        )
+
+                    }
+                }
+            }
+            item {
+                TodayRankingView()
+
             }
         }
 
     }
+}
+
+@Composable
+fun TodayRankingView() {
+    val tabData = listOf<String>("남자스타", "여자스타")
+
+    val pagerState = rememberPagerState(
+        initialPage = 0
+    )
+    val tabIndex = pagerState.currentPage
+    val coroutineScope = rememberCoroutineScope()
+
+    TabRow(
+        selectedTabIndex = tabIndex,
+        backgroundColor = Color.White,
+        contentColor = Primary300,
+        indicator = { tabPositions ->
+            Box(
+                Modifier
+                    .tabIndicatorOffset(tabPositions[tabIndex])
+                    .height(3.dp)
+                    .padding(
+                        start = if (tabIndex == 0) 20.dp else 0.dp,
+                        end = if (tabIndex == 1) 20.dp else 0.dp
+                    )
+                    .background(color = Primary300, shape = RoundedCornerShape(1.5.dp))
+            )
+
+        }, divider = {
+            Divider(color = Gray200, modifier = Modifier.height(1.dp))
+        },
+        modifier = Modifier
+            .height(48.dp)
+    ) {
+        tabData.forEachIndexed { index, text ->
+            Tab(modifier = Modifier, selected = tabIndex == index, onClick = {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(index)
+                }
+            }, text = {
+                Text(
+                    text = text,
+                    style = FanwooriTypography.body3,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (pagerState.currentPage == index) Primary900 else Gray600,
+                    fontSize = 17.sp
+                )
+            })
+        }
+    }
+
+    HorizontalPager(
+        count = 2,
+        state = pagerState,
+        modifier = Modifier.disabledHorizontalPointerInputScroll()
+    ) { index ->
+        Column(modifier = Modifier.height(800.dp)) {
+            Image(
+                painter = painterResource(id = R.drawable.vote_main),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(80.dp)
+                    .fillMaxWidth()
+            )
+        }
+
+    }
+
+}
+
+fun voteTopShareText(): String {
+    return "#팬우리 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 투표 참여하고\n" +
+            "\n" +
+            "유람선부터 기부까지 ❗ \n" +
+            "\n" +
+            "최애만을 위한 특별한 광고 한가득 선물하기 \uD83C\uDF81\uD83C\uDF88\n" +
+            "\n" +
+            " \n" +
+            "\n" +
+            "내 최애는 현재 ❓❔위\n" +
+            "\n" +
+            " \n" +
+            "\n" +
+            "\uD83D\uDD3B실시간 순위 보러 가기\uD83D\uDD3B\n" +
+            "\n" +
+            "투표 링크(딥링크)"
+}
+
+@Composable
+fun TryMission() {
+    Text(
+        text = "미션을 수행하고 투표권을 모아보세요!",
+        style = FanwooriTypography.body2,
+        color = Primary800,
+        fontSize = 15.sp
+    )
+    Spacer(modifier = Modifier.width(34.dp))
+    Text(
+        text = "충전하기",
+        style = FanwooriTypography.button1,
+        color = Primary800,
+        fontSize = 17.sp,
+        textDecoration = TextDecoration.Underline
+    )
+
+
+}
+
+@Composable
+fun ScheduledToDisappear() {
+    Text(
+        text = "오늘 소멸 예정",
+        style = FanwooriTypography.body2,
+        color = Primary800,
+        fontSize = 15.sp
+    )
+    Spacer(modifier = Modifier.width(6.4.dp))
+    Image(
+        painter = painterResource(id = R.drawable.icon_vote),
+        contentDescription = null
+    )
+    Text(
+        text = "4,000",
+        style = FanwooriTypography.subtitle3,
+        color = Primary800,
+        fontSize = 15.sp
+    )
+
+}
+
+
+@Composable
+fun Top3View(modifier: Modifier) {
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp),
+        backgroundColor = Color.White,
+        shape = RoundedCornerShape(32.dp),
+        elevation = 8.dp
+    ) {
+
+        Column(
+            modifier = modifier
+                .padding(bottom = 32.dp, top = 16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "팬마음 2022 왕중왕전",
+                style = FanwooriTypography.subtitle1,
+                fontSize = 20.sp,
+                color = Gray800
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "상하이 글로벌 트윈 타워 광고\n" +
+                        "인천공항 60m LED 광고\n" +
+                        "뉴욕 타임스퀘어 광고",
+                style = FanwooriTypography.body3,
+                fontSize = 17.sp,
+                color = Gray600,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(
+                        color = Gray800,
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                    .height(40.dp)
+                    .padding(start = 15.dp, end = 15.dp)
+            ) {
+                Text(
+                    text = "TOP3 혜택 자세히보기",
+                    fontSize = 15.sp,
+                    style = FanwooriTypography.subtitle3,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_arrow),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+
+
+        }
+
+
+    }
+
+
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -221,17 +428,26 @@ fun voteToStar(items: List<VerticalPagerContent>) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 18.dp, end = 18.dp)
             ) {
-                Icon(painter = painterResource(id = R.drawable.icon_add), contentDescription = null)
-
                 Text(
-                    text = "${items[currentPage].userName}님이 ${items[currentPage].starName}님에게 투표했어요!",
-                    maxLines = 1,
-                    style = FanwooriTypography.body2,
+                    buildAnnotatedString {
+                        append("${items[currentPage].userName}님이")
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                fontSize = 18.sp
+                            )
+                        ) {
+                            append(" ${items[currentPage].starName} ")
+                        }
+                        append("님에게 투표했어요!")
+                    }, maxLines = 1, style = FanwooriTypography.body2,
                     fontSize = 15.sp,
-                    color = Secondary900
+                    color = Color.White
                 )
             }
-            Spacer(modifier = Modifier.height(3.dp))
+            Spacer(modifier = Modifier.height(9.5.dp))
             Row(
                 modifier = Modifier
                     .padding(start = 18.dp, end = 18.dp)
@@ -240,21 +456,20 @@ fun voteToStar(items: List<VerticalPagerContent>) {
             ) {
                 Text(
                     text = "100,000,000,000,000,000,000,000,000,00,00,00,00",
-                    color = Secondary500,
-
+                    color = Color.White,
                     modifier = Modifier.weight(weight = 1f, fill = false),
-                    style = FanwooriTypography.button1,
+                    style = FanwooriTypography.subtitle4,
                     maxLines = 1,
-                    fontSize = 17.sp,
+                    fontSize = 18.sp,
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.width(2.dp))
                 Text(
                     text = "표",
-                    color = Secondary500,
-                    style = FanwooriTypography.button1,
+                    color = Color.White,
+                    style = FanwooriTypography.subtitle4,
                     maxLines = 1,
-                    fontSize = 17.sp,
+                    fontSize = 18.sp,
                     overflow = TextOverflow.Visible
                 )
 
@@ -400,4 +615,3 @@ fun voteEndFooter() {
 
     }
 }
-
