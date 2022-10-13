@@ -73,10 +73,11 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 handleGoogleLogin.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
-                Log.d("AuthViewModel", it.access_token)
-                _userToken.emit(it)
-                setUserToken(it.access_token)
-                setUserId(it.user_id)
+                val userToken = it.data
+                Log.d("AuthViewModel", userToken.access_token)
+                _userToken.emit(userToken)
+                setUserToken(userToken.access_token)
+                setUserId(userToken.user_id)
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
             }
@@ -88,10 +89,11 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.postAppleLogin(token)
             }.onSuccess {
-                _userToken.emit(it)
-                setUserToken(it.access_token)
-                setUserId(it.user_id)
-                Log.d("AuthViewModel", it.access_token)
+                val userToken = it.data
+                _userToken.emit(userToken)
+                setUserToken(userToken.access_token)
+                setUserId(userToken.user_id)
+                Log.d("AuthViewModel", userToken.access_token)
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
             }
@@ -103,10 +105,11 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
-                _userToken.emit(it)
-                setUserToken(it.access_token)
-                setUserId(it.user_id)
-                Log.d("AuthViewModel", it.access_token)
+                val userToken = it.data
+                _userToken.emit(userToken)
+                setUserToken(userToken.access_token)
+                setUserId(userToken.user_id)
+                Log.d("AuthViewModel", userToken.access_token)
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
             }
@@ -118,8 +121,9 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.getUserInfo(userId.toInt())
             }.onSuccess {
-                _userInfo.emit(it.data)
-                Log.d("AuthViewModel", it.data.id.toString())
+                val userInfo = it.data
+                _userInfo.emit(userInfo)
+                Log.d("AuthViewModel", userInfo.toString())
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
             }

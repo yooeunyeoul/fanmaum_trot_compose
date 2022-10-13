@@ -3,6 +3,7 @@ package com.trotfan.trot.network.impl
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.AuthService
 import com.trotfan.trot.network.HttpRoutes
+import com.trotfan.trot.network.response.CommonResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -14,7 +15,7 @@ class AuthServiceImpl @Inject constructor(
 ) : AuthService {
     override suspend fun postKakaoLogin(
         kakaoTokens: KakaoTokens
-    ): UserToken =
+    ): CommonResponse<UserToken> =
         httpClient.post {
             url(HttpRoutes.KAKAO_LOGIN)
             contentType(ContentType.Application.Json)
@@ -23,7 +24,7 @@ class AuthServiceImpl @Inject constructor(
 
     override suspend fun postGoogleLogin(
         authCode: GoogleToken
-    ): UserToken {
+    ): CommonResponse<UserToken> {
         val responses = httpClient.post {
             url(HttpRoutes.GOOGLE_LOGIN)
             contentType(ContentType.Application.Json)
@@ -32,7 +33,7 @@ class AuthServiceImpl @Inject constructor(
         return responses.body()
     }
 
-    override suspend fun postAppleLogin(authCode: AppleToken): UserToken {
+    override suspend fun postAppleLogin(authCode: AppleToken): CommonResponse<UserToken> {
         val response = httpClient.post {
             url(HttpRoutes.APPLE_LOGIN)
             contentType(ContentType.Application.Json)
@@ -41,7 +42,7 @@ class AuthServiceImpl @Inject constructor(
         return response.body()
     }
 
-    override suspend fun getUserInfo(userId: Int): UserInfoData =
+    override suspend fun getUserInfo(userId: Int): CommonResponse<UserInfo> =
         httpClient.get {
             url("${HttpRoutes.USERS}/$userId")
         }.body()
