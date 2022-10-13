@@ -33,19 +33,13 @@ data class UserToken(
 )
 
 @Serializable
-data class UserInfoData(
-    @SerializedName("data")
-    val data: UserInfo
-)
-
-@Serializable
 data class UserInfo(
     @SerializedName("id")
     val id: Int,
     @SerializedName("invitation_code")
     val invitation_code: String?,
     @SerializedName("star_id")
-    val star_id: Int?,
+    val star: Star?,
     @SerializedName("name")
     val name: String?,
     @SerializedName("phone_number")

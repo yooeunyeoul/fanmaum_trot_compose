@@ -39,64 +39,37 @@ fun VoteHome(
         color = Color.White,
         modifier = Modifier.fillMaxSize()
     ) {
-
-
-        if (autoVoteStatus) {
-            VerticalDialog(
-                contentText = "팬우리에 매일 출석만 해도,\n" +
-                        "내 스타에게 자동으로 투표가 돼요!",
-                buttonOneText = "출석했어요!",
-                onDismiss = {
-                    autoVoteStatus = false
-                    coroutineScope.launch {
-                        votingBottomSheetState.show()
-                    }
-                }
-            )
-        }
-
-        if (updateStatus) {
-            HorizontalDialog(
-                titleText = "새로운 버전이\n" + "업데이트되었어요!",
-                contentText = "업데이트 내용\n" +
-                        "업데이트 내용\n" +
-                        "\n" +
-                        "지금 바로 업데이트하고\n" +
-                        "즐겨보세요 \uD83D\uDE09",
-                positiveText = "다음에",
-                negativeText = "업데이트",
-                onPositive = {
-                    updateStatus = false
-                },
-                onDismiss = {
-                    updateStatus = false
-                }
-            )
-        }
-
-        if (feverStatus) {
-            FeverTimeDialog(
-                onDismiss = {
-                    feverStatus = false
-                }
-            )
-        }
-
-        if (rollingStatus) {
-            RollingDialog(
-                onDismiss = {
-                    rollingStatus = false
-                }
-            )
-        }
-
-        if (voteGuideStatus) {
-            VoteGuide(
-                onDismiss = {
-                    voteGuideStatus = false
-                }
-            )
-        }
+//
+//
+//        if (autoVoteStatus) {
+//            VerticalDialog(
+//                contentText = "팬우리에 매일 출석만 해도,\n" +
+//                        "내 스타에게 자동으로 투표가 돼요!",
+//                buttonOneText = "출석했어요!",
+//                onDismiss = {
+//                    autoVoteStatus = false
+//                    coroutineScope.launch {
+//                        votingBottomSheetState.show()
+//                    }
+//                }
+//            )
+//        }
+//
+//        if (feverStatus) {
+//            FeverTimeDialog(
+//                onDismiss = {
+//                    feverStatus = false
+//                }
+//            )
+//        }
+//
+//        if (voteGuideStatus) {
+//            VoteGuide(
+//                onDismiss = {
+//                    voteGuideStatus = false
+//                }
+//            )
+//        }
 
         Text(text = "This is VoteHome", fontWeight = FontWeight.Bold)
     }

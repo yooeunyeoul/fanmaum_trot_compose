@@ -155,7 +155,7 @@ fun LoginScreen(
 
         if (userInfo != null) {
             LaunchedEffect(userInfo) {
-                if (userInfo!!.star_id == null) {
+                if (userInfo!!.star == null) {
                     routeSections(navController, SignUpSections.SelectStar.route)
                 } else if (userInfo!!.name == null) {
                     routeSections(navController, SignUpSections.SettingNickName.route)

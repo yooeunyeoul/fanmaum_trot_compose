@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.home.dialog
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,11 +24,13 @@ import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.trotfan.trot.model.Layer
 import com.trotfan.trot.ui.theme.FanwooriTypography
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalPagerApi::class)
 @Composable
 fun RollingDialog(
+    layers: List<Layer>,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit
 ) {
@@ -37,17 +38,12 @@ fun RollingDialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
-        var slideImage by remember {
-            mutableStateOf("https://1.bp.blogspot.com/-ohzbOYsNNEg/YD-q0fm_hjI/AAAAAAAATDM/Vh-kTEXeFk0UWFY-0EfUo-ex0-TEXlRjwCLcBGAsYHQ/s0/155102157_442051980379472_3136584645181513799_n.jpg")
-        }
+        val rollingLayer by remember { mutableStateOf(layers) }
 
-        var color by remember {
-            mutableStateOf(Color.Black)
-        }
         val state = rememberPagerState()
 
         LaunchedEffect(state) {
-            state.scrollToPage(501)
+            state.scrollToPage(layers.size * 5)
         }
 
         Column(
@@ -57,45 +53,27 @@ fun RollingDialog(
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 HorizontalPager(
-                    count = 1000,
+                    count = layers.size * 10,
                     state = state,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(468.dp)
                         .clip(RoundedCornerShape(24.dp))
                 ) { page ->
-                    when (page % 3) {
-                        0 -> {
-//                            slideImage =
-//                                "https://1.bp.blogspot.com/-ohzbOYsNNEg/YD-q0fm_hjI/AAAAAAAATDM/Vh-kTEXeFk0UWFY-0EfUo-ex0-TEXlRjwCLcBGAsYHQ/s0/155102157_442051980379472_3136584645181513799_n.jpg"
-                            color = Color.Black
-                        }
-                        1 -> {
-//                            slideImage =
-//                                "https://image.xportsnews.com/contents/images/upload/article/2022/0313/1647169234362908.jpg"
-                            color = Color.Yellow
-                        }
-                        2 -> {
-//                            slideImage =
-//                                "https://thumbnews.nateimg.co.kr/view610///news.nateimg.co.kr/orgImg/iz/2021/09/10/vCLCFJbUFOdS637668330000252438.jpg"
-                            color = Color.Blue
-                        }
-                    }
 
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(color),
+                            .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-//                        AsyncImage(
-//                            model = ImageRequest.Builder(LocalContext.current)
-//                                .data(slideImage)
-//                                .crossfade(true).build(),
-//                            contentScale = ContentScale.Crop,
-//                            modifier = Modifier.fillMaxWidth(),
-//                            contentDescription = null
-//                        )
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(rollingLayer[page % rollingLayer.size].image)
+                                .crossfade(true).build(),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxWidth(),
+                            contentDescription = null
+                        )
                     }
                 }
 
@@ -105,8 +83,8 @@ fun RollingDialog(
                         .padding(bottom = 24.dp)
                 ) {
                     DotsIndicator(
-                        totalDots = 3,
-                        selectedIndex = state.currentPage % 3,
+                        totalDots = layers.size,
+                        selectedIndex = state.currentPage % layers.size,
                         selectedColor = Color.White,
                         unSelectedColor = Color.LightGray,
                     )
@@ -124,7 +102,8 @@ fun RollingDialog(
                     color = Color.White,
                     style = FanwooriTypography.button2,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .clickable { onDismiss() }
                         .align(Alignment.CenterVertically)
                 )
@@ -141,7 +120,8 @@ fun RollingDialog(
                     color = Color.White,
                     style = FanwooriTypography.button2,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .clickable { onDismiss() }
                         .align(Alignment.CenterVertically)
                 )
