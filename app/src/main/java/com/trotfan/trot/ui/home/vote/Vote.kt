@@ -3,6 +3,7 @@
 package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -34,12 +35,15 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
+import com.trotfan.trot.model.Top3Benefit
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.signup.viewmodel.CertificationPhoneNumberViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
+import io.socket.client.IO
+import io.socket.client.Socket
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -51,7 +55,6 @@ data class VerticalPagerContent(
     val starName: String
 )
 
-
 @Composable
 fun VoteHome(
     onItemClick: (Long) -> Unit,
@@ -61,6 +64,9 @@ fun VoteHome(
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
+    val top3Info by viewModel.top3Info.collectAsState()
+
+    viewModel.connectSocket()
 
     Column(
         modifier = Modifier
@@ -125,7 +131,6 @@ fun VoteHome(
         }
 
 
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -135,7 +140,7 @@ fun VoteHome(
             item {
                 Spacer(modifier = modifier.height(39.dp))
                 Box(Modifier.fillMaxWidth()) {
-                    Top3View(modifier = Modifier.padding(top = 40.dp))
+                    Top3View(modifier = Modifier.padding(top = 40.dp), top3Info)
                     Image(
                         painter = painterResource(id = R.drawable.vote_main),
                         contentDescription = null,
@@ -206,7 +211,7 @@ fun VoteHome(
                         }
                     }
                     item {
-                        TodayRankingView()
+                        TodayRankingView(0)
 
                     }
                 }
@@ -253,11 +258,11 @@ fun VoteHome(
 }
 
 @Composable
-fun TodayRankingView() {
+fun TodayRankingView(initPage:Int) {
     val tabData = listOf<String>("남자스타", "여자스타")
 
     val pagerState = rememberPagerState(
-        initialPage = 0
+        initialPage = initPage
     )
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
@@ -382,7 +387,7 @@ fun ScheduledToDisappear() {
 
 
 @Composable
-fun Top3View(modifier: Modifier) {
+fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
 
     Card(
         modifier = modifier
@@ -400,16 +405,14 @@ fun Top3View(modifier: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "팬마음 2022 왕중왕전",
+                text = top3Benefit?.title ?: "",
                 style = FanwooriTypography.subtitle1,
                 fontSize = 20.sp,
                 color = Gray800
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "상하이 글로벌 트윈 타워 광고\n" +
-                        "인천공항 60m LED 광고\n" +
-                        "뉴욕 타임스퀘어 광고",
+                text = top3Benefit?.content ?: "",
                 style = FanwooriTypography.body3,
                 fontSize = 17.sp,
                 color = Gray600,
@@ -459,7 +462,7 @@ fun voteToStar(items: List<VerticalPagerContent>) {
     LaunchedEffect(key1 = Unit, block = {
         while (true) {
             yield()
-            delay(3000)
+            delay(3500)
             pagerState.animateScrollToPage(
                 page = (pagerState.currentPage + 1) % (pagerState.pageCount),
                 animationSpec = tween(500)

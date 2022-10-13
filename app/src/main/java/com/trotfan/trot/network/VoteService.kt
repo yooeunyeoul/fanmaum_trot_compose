@@ -1,5 +1,11 @@
 package com.trotfan.trot.network
 
-interface VoteService {
+import com.trotfan.trot.model.SmsAuth
+import com.trotfan.trot.model.Top3Benefit
+import com.trotfan.trot.network.response.CommonListResponse
+import com.trotfan.trot.network.response.CommonResponse
 
+interface VoteService {
+    suspend fun VoteList(
+    ): CommonListResponse<Top3Benefit>
 }
