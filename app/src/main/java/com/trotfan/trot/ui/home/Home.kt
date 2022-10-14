@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.trotfan.trot.R
+import com.trotfan.trot.datastore.dateManager
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.charge.ChargeHome
@@ -34,6 +37,9 @@ import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.theme.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 enum class HomeSections(
     val title: String,
@@ -76,6 +82,8 @@ fun TrotBottomBar(
         mutableStateOf(HomeSections.VOTE)
     }
 
+    val context = LocalContext.current
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val mainPopups by viewModel.mainPopups.collectAsState()
     var updateState by rememberSaveable { mutableStateOf(false) }
     var rollingState by rememberSaveable { mutableStateOf(false) }
@@ -90,7 +98,11 @@ fun TrotBottomBar(
         } else {
             if (mainPopups?.layers != null) {
                 LaunchedEffect(mainPopups?.layers) {
-                    rollingState = true
+                    context.dateManager.data.collect {
+                        if (it.rollingDate != LocalDate.now().toString()) {
+                            rollingState = true
+                        }
+                    }
                 }
             }
 
@@ -114,7 +126,13 @@ fun TrotBottomBar(
                     updateState = false
                 },
                 onDismiss = {
-                    rollingState = true
+                    coroutineScope.launch {
+                        context.dateManager.data.collect { date ->
+                            if (date.rollingDate != LocalDate.now().toString()) {
+                                rollingState = true
+                            }
+                        }
+                    }
                     feverStatus = true
                     autoVoteStatus = true
                     updateState = false
@@ -125,7 +143,7 @@ fun TrotBottomBar(
 
     if (autoVoteStatus) {
         AutoVotingDialog {
-
+            autoVoteStatus = false
         }
     }
 

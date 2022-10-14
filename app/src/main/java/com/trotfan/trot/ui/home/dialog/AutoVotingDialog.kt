@@ -41,17 +41,22 @@ fun AutoVotingDialog(
         Column(
             modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp),
+                .padding(start = 16.dp, end = 16.dp)
+                .clip(RoundedCornerShape(24.dp))
+                .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
 
             Row(
+                modifier = Modifier.padding(top = 77.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Chip(
-                    modifier = Modifier.background(Secondary50),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Secondary50),
                     text = "양파쿵야",
                     textColor = Secondary600
                 )

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MainPopups(
     val update: Update?,
-    val layers: List<Layer>,
+    val layers: List<Layer>?,
     val is_rewarded: Boolean
 )
 

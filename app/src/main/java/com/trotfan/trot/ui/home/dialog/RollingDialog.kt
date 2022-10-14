@@ -1,5 +1,8 @@
 package com.trotfan.trot.ui.home.dialog
 
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,9 +27,15 @@ import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.trotfan.trot.datastore.dateManager
 import com.trotfan.trot.model.Layer
 import com.trotfan.trot.ui.theme.FanwooriTypography
+import io.ktor.util.date.*
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalPagerApi::class)
 @Composable
 fun RollingDialog(
@@ -39,6 +48,8 @@ fun RollingDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         val rollingLayer by remember { mutableStateOf(layers) }
+        val context = LocalContext.current
+        val coroutineScope = rememberCoroutineScope()
 
         val state = rememberPagerState()
 
@@ -104,7 +115,12 @@ fun RollingDialog(
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .weight(1f)
-                        .clickable { onDismiss() }
+                        .clickable {
+                            coroutineScope.launch {
+                                setDate(context = context)
+                            }
+                            onDismiss()
+                        }
                         .align(Alignment.CenterVertically)
                 )
 
@@ -127,6 +143,14 @@ fun RollingDialog(
                 )
             }
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+suspend fun setDate(context: Context) {
+    context.dateManager.updateData {
+        val date = LocalDate.now().toString()
+        it.toBuilder().setRollingDate(date).build()
     }
 }
 

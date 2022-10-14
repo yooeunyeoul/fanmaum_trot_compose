@@ -15,16 +15,19 @@ import com.trotfan.trot.ui.theme.FanwooriTypography
 
 @Composable
 fun Chip(
-    modifier: Modifier,
-    text: String,
-    textColor: Color
+    modifier: Modifier, text: String, textColor: Color
 ) {
-    Box(modifier = modifier.height(40.dp).clip(RoundedCornerShape(8.dp))) {
+    Box(
+        modifier = modifier
+            .height(40.dp)
+    ) {
         Text(
             text = text,
             style = FanwooriTypography.subtitle1,
             color = textColor,
-            modifier = Modifier.align(Alignment.Center).padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
         )
     }
 }
