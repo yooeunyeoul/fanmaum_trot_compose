@@ -155,7 +155,7 @@ fun LoginScreen(
 
         if (userInfo != null) {
             LaunchedEffect(userInfo) {
-                if (userInfo!!.star_id == null) {
+                if (userInfo!!.favoriteStar == null) {
                     navController.navigate(SignUpSections.SelectStar.route) {
                         popUpTo(LoginNav.Login.route) {
                             inclusive = true

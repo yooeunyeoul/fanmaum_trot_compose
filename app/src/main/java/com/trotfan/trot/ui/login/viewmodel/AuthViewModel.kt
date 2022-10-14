@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.trotfan.trot.datastore.FavoriteStarDataStore
+import com.trotfan.trot.datastore.FavoriteStarManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.*
@@ -38,8 +40,11 @@ class AuthViewModel @Inject constructor(
     val userInfo: StateFlow<UserInfo?>
         get() = _userInfo
 
+    var favoriteStarManager: FavoriteStarManager
+
     init {
         getServerState()
+        favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
     }
 
     fun getServerState() {
@@ -122,12 +127,28 @@ class AuthViewModel @Inject constructor(
                 repository.getUserInfo(userId.toInt())
             }.onSuccess {
                 val userInfo = it.data
+                saveFavoriteStar(userInfo.favoriteStar)
+
                 _userInfo.emit(userInfo)
                 Log.d("AuthViewModel", userInfo.toString())
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
             }
         }
+    }
+
+    private fun saveFavoriteStar(favoriteStar: FavoriteStar?) {
+        viewModelScope.launch {
+            favoriteStar?.let {
+                favoriteStarManager.storeFavoriteStar(
+                    id = it.id,
+                    gender = it.gender,
+                    name = it.name,
+                    image = it.image
+                )
+            }
+        }
+
     }
 
     private suspend fun handleGoogleLogin(completedTask: Task<GoogleSignInAccount>): String? =

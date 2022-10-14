@@ -1,9 +1,12 @@
 package com.trotfan.trot.ui.home.vote.viewmodel
 
 import android.app.Application
+import android.os.UserManager
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.datastore.FavoriteStarDataStore
+import com.trotfan.trot.datastore.FavoriteStarManager
 import com.trotfan.trot.model.Top3Benefit
 import com.trotfan.trot.repository.VoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +33,10 @@ class VoteHomeViewModel @Inject constructor(
 
     lateinit var mSocket: Socket
 
+    var favoriteStarManager: FavoriteStarManager
+
+    private val context = getApplication<Application>()
+
     val voteStatus: StateFlow<VoteStatus>
         get() = _voteStatus
     private val _voteStatus =
@@ -40,14 +47,16 @@ class VoteHomeViewModel @Inject constructor(
     private val _top3Info =
         MutableStateFlow(Top3Benefit())
 
+
     init {
         getVoteList()
+        favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
     }
 
     fun getVoteList() {
         viewModelScope.launch {
             val response = repository.getVoteList()
-            Log.e("response",response.data.toString())
+            Log.e("response", response.data.toString())
             _top3Info.emit(response.data.first())
         }
     }
@@ -58,8 +67,6 @@ class VoteHomeViewModel @Inject constructor(
             val options = IO.Options()
             options.transports = arrayOf(WebSocket.NAME)
             mSocket = IO.socket("http://13.125.232.75:3000")
-
-            mSocket.connect()
             mSocket.on(Socket.EVENT_CONNECT) {
                 Log.e("CONNECT", "연결됐다!!!")
             }
@@ -69,6 +76,7 @@ class VoteHomeViewModel @Inject constructor(
             mSocket.on("vote status board") {
                 Log.e("vote status board", "이벤트" + it.get(0).toString())
             }
+            mSocket.connect()
 
         }
 

@@ -44,8 +44,8 @@ data class UserInfo(
     val id: Int,
     @SerializedName("invitation_code")
     val invitation_code: String?,
-    @SerializedName("star_id")
-    val star_id: Int?,
+    @SerializedName("star")
+    val favoriteStar: FavoriteStar?,
     @SerializedName("name")
     val name: String?,
     @SerializedName("phone_number")

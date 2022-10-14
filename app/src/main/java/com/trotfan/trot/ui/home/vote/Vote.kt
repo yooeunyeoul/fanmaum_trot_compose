@@ -3,7 +3,6 @@
 package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -39,11 +38,8 @@ import com.trotfan.trot.model.Top3Benefit
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
-import com.trotfan.trot.ui.signup.viewmodel.CertificationPhoneNumberViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
-import io.socket.client.IO
-import io.socket.client.Socket
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -65,8 +61,15 @@ fun VoteHome(
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
     val top3Info by viewModel.top3Info.collectAsState()
+    val favoriteStarGender by viewModel.favoriteStarManager.favoriteStarGenderFlow.collectAsState(
+        initial = 0
+    )
+    val favoriteStarName by viewModel.favoriteStarManager.favoriteStarNameFlow.collectAsState(
+        initial = ""
+    )
 
     viewModel.connectSocket()
+
 
     Column(
         modifier = Modifier
@@ -80,7 +83,7 @@ fun VoteHome(
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(
-                        Intent.EXTRA_TEXT, voteTopShareText()
+                        Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName)
                     )
 
                     type = "text/plain"
@@ -211,7 +214,7 @@ fun VoteHome(
                         }
                     }
                     item {
-                        TodayRankingView(0)
+                        TodayRankingView(favoriteStarGender ?: 0)
 
                     }
                 }
@@ -258,11 +261,11 @@ fun VoteHome(
 }
 
 @Composable
-fun TodayRankingView(initPage:Int) {
+fun TodayRankingView(initPage: Int) {
     val tabData = listOf<String>("남자스타", "여자스타")
 
     val pagerState = rememberPagerState(
-        initialPage = initPage
+        initialPage = 1
     )
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
@@ -325,16 +328,14 @@ fun TodayRankingView(initPage:Int) {
 
 }
 
-fun voteTopShareText(): String {
-    return "#팬우리 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 투표 참여하고\n" +
+fun voteTopShareText(favoriteStarName: String?): String {
+    return "#팬마음 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 투표 참여하고\n" +
             "\n" +
-            "유람선부터 기부까지 ❗ \n" +
-            "\n" +
-            "최애만을 위한 특별한 광고 한가득 선물하기 \uD83C\uDF81\uD83C\uDF88\n" +
+            "${favoriteStarName}만을 위한 특별한 광고 한가득 선물하기 \uD83C\uDF81\uD83C\uDF88\n" +
             "\n" +
             " \n" +
             "\n" +
-            "내 최애는 현재 ❓❔위\n" +
+            "내 ${favoriteStarName}는 현재 ❓❔위\n" +
             "\n" +
             " \n" +
             "\n" +
