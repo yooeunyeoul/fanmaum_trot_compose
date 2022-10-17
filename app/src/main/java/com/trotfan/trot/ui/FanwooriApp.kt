@@ -25,6 +25,7 @@ import com.trotfan.trot.ui.home.vote.benefits.addVoteBenefitsGraph
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
 import com.trotfan.trot.ui.login.LoginNav
 import com.trotfan.trot.ui.login.addLoginGraph
+import com.trotfan.trot.ui.signup.SignUpSections
 import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
@@ -114,7 +115,7 @@ fun FanwooriApp(
                     navigation(
                         route = "로그인",
 //                    startDestination = LoginNav.Login.route
-                        startDestination = HomeSections.Vote.route
+                        startDestination = LoginNav.Login.route
                     ) {
                         addLoginGraph(
                             modifier = Modifier,
