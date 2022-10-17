@@ -27,13 +27,21 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.trotfan.trot.R
+import com.trotfan.trot.datastore.dateManager
+import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.home.charge.ChargeHome
+import com.trotfan.trot.ui.home.dialog.AutoVotingDialog
+import com.trotfan.trot.ui.home.dialog.FeverTimeDialog
+import com.trotfan.trot.ui.home.dialog.RollingDialog
 import com.trotfan.trot.ui.home.mypage.MyPageHome
 import com.trotfan.trot.ui.home.ranking.RankHome
+import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 enum class HomeSections(
     val title: String,

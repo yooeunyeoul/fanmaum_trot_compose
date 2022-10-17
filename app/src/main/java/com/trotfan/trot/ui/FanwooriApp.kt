@@ -24,7 +24,6 @@ import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.vote.benefits.addVoteBenefitsGraph
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
 import com.trotfan.trot.ui.login.LoginNav
-import com.trotfan.trot.ui.login.addLoginGrape
 import com.trotfan.trot.ui.login.addLoginGraph
 import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
@@ -117,7 +116,7 @@ fun FanwooriApp(
 //                    startDestination = LoginNav.Login.route
                         startDestination = HomeSections.Vote.route
                     ) {
-                        addLoginGrape(
+                        addLoginGraph(
                             modifier = Modifier,
                             navController = navController
                         )

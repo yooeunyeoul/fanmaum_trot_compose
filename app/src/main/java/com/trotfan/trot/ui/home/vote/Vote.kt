@@ -123,13 +123,13 @@ fun VoteHome(
 
 
         }
-    var updateStatus by rememberSaveable { mutableStateOf(false) }
-    var autoVoteStatus by rememberSaveable { mutableStateOf(true) }
-    var feverStatus by rememberSaveable { mutableStateOf(false) }
-    var rollingStatus by rememberSaveable { mutableStateOf(false) }
-    var voteGuideStatus by rememberSaveable { mutableStateOf(false) }
+        var updateStatus by rememberSaveable { mutableStateOf(false) }
+        var autoVoteStatus by rememberSaveable { mutableStateOf(true) }
+        var feverStatus by rememberSaveable { mutableStateOf(false) }
+        var rollingStatus by rememberSaveable { mutableStateOf(false) }
+        var voteGuideStatus by rememberSaveable { mutableStateOf(false) }
 
-    val coroutineScope = rememberCoroutineScope()
+        val coroutineScope = rememberCoroutineScope()
 
         LazyColumn(
             modifier = Modifier
@@ -480,7 +480,7 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
 //                    voteGuideStatus = false
 //                }
 //            )
-//        }
+    }
 
 
 }
@@ -496,8 +496,8 @@ fun voteToStar(items: List<VoteStatusBoard>, count: Int) {
             yield()
             delay(3500)
             try {
-                Log.e("count","${items.count()}")
-                Log.e("pagerState.currentPage","${pagerState.currentPage}")
+                Log.e("count", "${items.count()}")
+                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
 
                 pagerState.animateScrollToPage(
                     page = (pagerState.currentPage + 1) % (pagerState.pageCount)
@@ -639,5 +639,6 @@ fun voteEndHeader() {
 
 
     }
-
 }
+
+

@@ -127,7 +127,7 @@ class AuthViewModel @Inject constructor(
                 repository.getUserInfo(userId.toInt())
             }.onSuccess {
                 val userInfo = it.data
-                saveFavoriteStar(userInfo.favoriteStar)
+                saveFavoriteStar(userInfo.star)
 
                 _userInfo.emit(userInfo)
                 Log.d("AuthViewModel", userInfo.toString())
@@ -137,7 +137,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun saveFavoriteStar(favoriteStar: FavoriteStar?) {
+    private fun saveFavoriteStar(favoriteStar: Star?) {
         viewModelScope.launch {
             favoriteStar?.let {
                 favoriteStarManager.storeFavoriteStar(

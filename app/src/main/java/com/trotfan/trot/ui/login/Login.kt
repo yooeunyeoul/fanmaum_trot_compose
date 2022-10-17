@@ -32,7 +32,6 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.model.AppleToken
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
@@ -165,7 +164,7 @@ fun LoginScreen(
                 } else if (userInfo!!.redeem_code == null) {
                     routeSections(navController, SignUpSections.InvitationCode.route)
                 } else {
-                    routeSections(navController, HomeSections.VOTE.route)
+                    routeSections(navController, HomeSections.Vote.route)
                 }
             }
         }

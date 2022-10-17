@@ -39,7 +39,7 @@ data class UserInfo(
     @SerializedName("invitation_code")
     val invitation_code: String?,
     @SerializedName("star")
-    val favoriteStar: Star?,
+    val star: Star?,
     @SerializedName("name")
     val name: String?,
     @SerializedName("phone_number")
