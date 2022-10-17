@@ -28,17 +28,17 @@ class GetStarDataSource @Inject constructor(
 
             val data = service.getStarList(params.key ?: "", search = starName).data
             Log.e("cursor", "nextCursor::::" + params.key.toString())
-            val starList = data.stars
-            var nextCursor = data.meta.nextCursor
-            var prevCursor = data.meta.prevCursor
+            val starList = data?.stars
+            var nextCursor = data?.meta?.nextCursor
+            var prevCursor = data?.meta?.prevCursor
 
-            if (starList.isEmpty() && nextCursor.isEmpty() && prevCursor.isEmpty()) {
+            if (starList?.isEmpty() == true && nextCursor?.isEmpty() == true && prevCursor?.isEmpty() == true) {
                 LoadResult.Error(Exception(SearchStatus.NoResult.name))
             } else {
                 LoadResult.Page(
-                    data = starList,
-                    prevKey = if (prevCursor.isEmpty()) null else prevCursor,
-                    nextKey = if (nextCursor.isEmpty()) null else nextCursor
+                    data = starList?: listOf(),
+                    prevKey = if (prevCursor?.isEmpty() == true) null else prevCursor,
+                    nextKey = if (nextCursor?.isEmpty() == true) null else nextCursor
                 )
             }
         } catch (e: HttpException) {

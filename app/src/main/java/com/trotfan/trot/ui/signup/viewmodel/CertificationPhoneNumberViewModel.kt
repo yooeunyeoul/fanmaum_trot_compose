@@ -79,7 +79,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                 )
                 when (response.result.code) {
                     ResultCodeStatus.Success.code -> {
-                        _certificationNumber.value = response.data.code.toString()
+                        _certificationNumber.value = response.data?.code.toString()
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.RequestSuccess)
                     }
                     ResultCodeStatus.NumberAlreadyRegistered.code -> {

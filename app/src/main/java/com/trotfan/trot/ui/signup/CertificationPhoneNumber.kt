@@ -181,7 +181,6 @@ fun CertificationPhoneScreen(
                             viewModel.clearErrorState()
                         }
                     },
-                    errorMessage = errorMessage,
                     modifier = Modifier,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
@@ -214,8 +213,7 @@ fun CertificationPhoneScreen(
         if (errorState) {
             Text(
                 modifier = Modifier.padding(top = 4.dp, start = 6.dp),
-                text = "휴대폰 번호가 형식에 맞지\n" +
-                        "않아요.",
+                text = errorMessage,
                 style = FanwooriTypography.caption1,
                 fontSize = 15.sp,
                 color = SemanticNegative500
