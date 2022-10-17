@@ -1,20 +1,28 @@
 package com.trotfan.trot.ui.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -24,6 +32,8 @@ import com.trotfan.trot.ui.home.mypage.MyPageHome
 import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
+import kotlinx.coroutines.CoroutineScope
 
 enum class HomeSections(
     val title: String,
@@ -38,6 +48,7 @@ enum class HomeSections(
 private val BottomNavHeight = 56.dp
 private val TextIconSpacing = 2.dp
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun PreviewTrotBottomBar() {
@@ -52,17 +63,101 @@ fun PreviewTrotBottomBar() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TrotBottomBar(
     tabs: Array<HomeSections>,
     currentRoute: String,
-    onSelected: (String) -> Unit
+    onSelected: (String) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     var selectedSection by remember {
         mutableStateOf(HomeSections.Vote)
     }
 
+    val context = LocalContext.current
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val mainPopups by viewModel.mainPopups.collectAsState()
+    var updateState by rememberSaveable { mutableStateOf(false) }
+    var rollingState by rememberSaveable { mutableStateOf(false) }
+    var feverStatus by rememberSaveable { mutableStateOf(false) }
+    var autoVoteStatus by rememberSaveable { mutableStateOf(false) }
+
+    if (mainPopups != null) {
+        if (mainPopups?.update != null) {
+            LaunchedEffect(mainPopups?.update) {
+                updateState = true
+            }
+        } else {
+            if (mainPopups?.layers != null) {
+                LaunchedEffect(mainPopups?.layers) {
+                    context.dateManager.data.collect {
+                        if (it.rollingDate != LocalDate.now().toString()) {
+                            rollingState = true
+                        }
+                    }
+                }
+            }
+
+            if (mainPopups?.is_rewarded == true) {
+                LaunchedEffect(mainPopups?.is_rewarded) {
+                    feverStatus = true
+                }
+            }
+        }
+    }
+
+
+    if (updateState) {
+        mainPopups?.update?.let {
+            HorizontalDialog(
+                titleText = it.title,
+                contentText = it.content,
+                positiveText = "업데이트",
+                negativeText = "다음에",
+                onPositive = {
+                    updateState = false
+                },
+                onDismiss = {
+                    coroutineScope.launch {
+                        context.dateManager.data.collect { date ->
+                            if (date.rollingDate != LocalDate.now().toString()) {
+                                rollingState = true
+                            }
+                        }
+                    }
+                    feverStatus = true
+                    autoVoteStatus = true
+                    updateState = false
+                }
+            )
+        }
+    }
+
+    if (autoVoteStatus) {
+        AutoVotingDialog {
+            autoVoteStatus = false
+        }
+    }
+
+    if (feverStatus) {
+        FeverTimeDialog {
+            feverStatus = false
+        }
+    }
+
+    if (rollingState) {
+        mainPopups?.layers?.let {
+            RollingDialog(
+                layers = it,
+                onDismiss = {
+                    rollingState = false
+                    feverStatus = true
+                }
+            )
+        }
+    }
 
     Surface(
         color = Color.White,
@@ -152,16 +247,20 @@ fun TrotBottomBar(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    votingBottomSheetState: ModalBottomSheetState
 ) {
     composable(HomeSections.Vote.route) { from ->
         VoteHome(
             onItemClick = { id ->
                 onItemSelected(id, from)
             },
-            modifier = modifier
+            modifier = modifier,
+            votingBottomSheetState = votingBottomSheetState
         )
     }
     composable(HomeSections.MyPage.route) { from ->

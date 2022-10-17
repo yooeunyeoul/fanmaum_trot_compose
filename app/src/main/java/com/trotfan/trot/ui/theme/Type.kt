@@ -73,7 +73,7 @@ val FanwooriTypography = Typography(
         letterSpacing = (-0.4).sp
     ),
     button2 = TextStyle(
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Medium,
         fontSize = 13.sp,
         letterSpacing = (-0.25).sp
     ),

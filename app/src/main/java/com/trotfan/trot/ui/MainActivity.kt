@@ -1,10 +1,13 @@
 package com.trotfan.trot.ui
 
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
@@ -16,6 +19,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 //    private val invitationViewModel: InvitationViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getDynamicLink()

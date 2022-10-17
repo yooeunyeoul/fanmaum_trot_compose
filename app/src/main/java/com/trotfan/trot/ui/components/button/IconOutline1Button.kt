@@ -24,7 +24,7 @@ import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
 
 @Composable
-fun OutlineIconButton(
+fun IconOutline1Button(
     modifier: Modifier = Modifier,
     text: String,
     enabled: Boolean = true,
@@ -90,10 +90,10 @@ fun OutlineIconButton(
     }
 }
 
-@Preview(name = "OutLineIconButton")
+@Preview(name = "IconOutline1Button")
 @Composable
-fun PreviewOutLineIconButton() {
-    OutlineIconButton(text = "Enabled",
+fun PreviewIconOutline1Button() {
+    IconOutline1Button(text = "Enabled",
         icon = R.drawable.icon_add,
         onClick = {})
 

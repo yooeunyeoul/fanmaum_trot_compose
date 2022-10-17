@@ -3,7 +3,9 @@
 package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,13 +50,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.util.*
 
-
+@OptIn(ExperimentalMaterialApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VoteHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: VoteHomeViewModel = hiltViewModel()
-
+    viewModel: VoteHomeViewModel = hiltViewModel(),
+    votingBottomSheetState: ModalBottomSheetState
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -119,7 +123,13 @@ fun VoteHome(
 
 
         }
+    var updateStatus by rememberSaveable { mutableStateOf(false) }
+    var autoVoteStatus by rememberSaveable { mutableStateOf(true) }
+    var feverStatus by rememberSaveable { mutableStateOf(false) }
+    var rollingStatus by rememberSaveable { mutableStateOf(false) }
+    var voteGuideStatus by rememberSaveable { mutableStateOf(false) }
 
+    val coroutineScope = rememberCoroutineScope()
 
         LazyColumn(
             modifier = Modifier
@@ -436,6 +446,41 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
 
 
     }
+    Surface(
+        color = Color.White,
+        modifier = Modifier.fillMaxSize()
+    ) {
+//
+//
+//        if (autoVoteStatus) {
+//            VerticalDialog(
+//                contentText = "팬우리에 매일 출석만 해도,\n" +
+//                        "내 스타에게 자동으로 투표가 돼요!",
+//                buttonOneText = "출석했어요!",
+//                onDismiss = {
+//                    autoVoteStatus = false
+//                    coroutineScope.launch {
+//                        votingBottomSheetState.show()
+//                    }
+//                }
+//            )
+//        }
+//
+//        if (feverStatus) {
+//            FeverTimeDialog(
+//                onDismiss = {
+//                    feverStatus = false
+//                }
+//            )
+//        }
+//
+//        if (voteGuideStatus) {
+//            VoteGuide(
+//                onDismiss = {
+//                    voteGuideStatus = false
+//                }
+//            )
+//        }
 
 
 }

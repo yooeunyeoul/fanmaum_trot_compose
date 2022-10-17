@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.login
+package com.trotfan.trot.ui.home.vote.benefits
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.Modifier
@@ -7,20 +7,20 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
 
-enum class LoginNav(
+enum class VoteBenefitsNav(
     @StringRes val title: Int? = null,
     val route: String
 ) {
-    Login(route = "login/login")
+    VoteBenefits(route = "vote/benefits")
 }
 
 
-fun NavGraphBuilder.addLoginGraph(
+fun NavGraphBuilder.addVoteBenefitsGraph(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(LoginNav.Login.route) { from ->
-        LoginScreen(
+    composable(VoteBenefitsNav.VoteBenefits.route) { from ->
+        VoteBenefits(
             navController = navController,
             modifier = modifier
         )

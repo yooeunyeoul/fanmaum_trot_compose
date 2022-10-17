@@ -1,5 +1,7 @@
 package com.trotfan.trot.ui.signup
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,10 +30,10 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.components.button.BackIcon
 import com.trotfan.trot.model.Star
-import com.trotfan.trot.ui.components.BackIcon
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.OutlineIconButton
+import com.trotfan.trot.ui.components.button.IconOutline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.SearchStatus
@@ -45,7 +47,7 @@ import com.trotfan.trot.ui.theme.Gray700
 import kotlinx.coroutines.delay
 
 
-@OptIn(ExperimentalComposeUiApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SearchStarScreen(
     navController: NavController,
@@ -325,7 +327,7 @@ fun SearchStarScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-                OutlineIconButton(
+                IconOutline1Button(
                     text = "스타 추가 요청",
                     icon = R.drawable.icon_add,
                     enabled = true,
@@ -352,6 +354,7 @@ fun SearchStarScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PreviewSearchStarScreen() {
     SearchStarScreen(navController = rememberNavController())

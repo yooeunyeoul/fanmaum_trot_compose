@@ -1,5 +1,7 @@
 package com.trotfan.trot.ui.signup
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -25,6 +27,7 @@ import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InvitationScreen(
     modifier: Modifier = Modifier,
@@ -138,6 +141,7 @@ fun InvitationScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun InvitationPreview() {

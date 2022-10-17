@@ -5,21 +5,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class KakaoTokens(
-    val refreshToken: String? = null,
-    val accessToken: String? = null,
-    val idToken: String? = null
+    val refresh_token: String? = null,
+    val access_token: String? = null,
+    val id_token: String? = null
 )
 
 @Serializable
 data class GoogleToken(
-    val authCode: String? = null
+    val auth_code: String? = null
 )
 
 @Serializable
 data class AppleToken(
-    val idToken: String? = null,
-    val accessToken: String? = null,
-    val refreshToken: String? = null
+    val id_token: String? = null,
+    val access_token: String? = null,
+    val refresh_token: String? = null
 )
 
 @Serializable
@@ -33,19 +33,13 @@ data class UserToken(
 )
 
 @Serializable
-data class UserInfoData(
-    @SerializedName("data")
-    val data: UserInfo
-)
-
-@Serializable
 data class UserInfo(
     @SerializedName("id")
     val id: Int,
     @SerializedName("invitation_code")
     val invitation_code: String?,
     @SerializedName("star")
-    val favoriteStar: FavoriteStar?,
+    val favoriteStar: Star?,
     @SerializedName("name")
     val name: String?,
     @SerializedName("phone_number")

@@ -3,9 +3,11 @@ package com.trotfan.trot.di
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.impl.SignUpServiceImpl
 import com.trotfan.trot.network.AuthService
+import com.trotfan.trot.network.HomeService
 import com.trotfan.trot.network.ServerStateService
 import com.trotfan.trot.network.VoteService
 import com.trotfan.trot.network.impl.AuthServiceImpl
+import com.trotfan.trot.network.impl.HomeServiceImpl
 import com.trotfan.trot.network.impl.ServerStateServiceImpl
 import com.trotfan.trot.network.impl.VoteServiceImpl
 import dagger.Binds
@@ -28,6 +30,10 @@ abstract class BindModule {
     @Binds
     @Singleton
     abstract fun serverStateService(serverStateService: ServerStateServiceImpl): ServerStateService
+
+    @Binds
+    @Singleton
+    abstract fun homeService(homeService: HomeServiceImpl): HomeService
 
     @Binds
     @Singleton

@@ -11,4 +11,5 @@ object HttpRoutes {
     const val USERS = "$BASE_URL/users"
     const val SMS = "$BASE_URL/auth/sms"
     const val VOTE_LIST = "$BASE_URL/votes"
+    const val POPUPS = "$BASE_URL/popups"
 }
