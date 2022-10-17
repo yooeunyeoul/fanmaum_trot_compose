@@ -11,6 +11,7 @@ data class FavoriteStar(
     val gender: Int,
     val id: Int,
     val image: String,
-    val name: String
+    val name: String,
+    val group: Group,
 )
 

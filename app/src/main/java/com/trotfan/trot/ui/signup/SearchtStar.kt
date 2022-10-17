@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -30,8 +28,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.trotfan.trot.R
+import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.ui.components.button.BackIcon
-import com.trotfan.trot.model.Star
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.IconOutline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
@@ -55,12 +53,12 @@ fun SearchStarScreen(
     modifier: Modifier = Modifier
 ) {
 
-    val starListState: LazyPagingItems<Star>? =
+    val starListState: LazyPagingItems<FavoriteStar>? =
         viewModel.starListState.value?.collectAsLazyPagingItems()
     val searchState by viewModel.searchStatus.collectAsState()
     val requestComplete by viewModel.requestComplete.collectAsState()
 
-    var selectedItem: Star? by remember {
+    var selectedItem: FavoriteStar? by remember {
         mutableStateOf(null)
     }
 
@@ -236,7 +234,7 @@ fun SearchStarScreen(
                                     checkedTrailingIcon = R.drawable.icon_heartfilled,
                                     checked = selectedItem == item,
                                     onClick = {
-                                        val clickedItem = it as Star
+                                        val clickedItem = it as FavoriteStar
                                         selectedItem = if (clickedItem == selectedItem) {
                                             null
                                         } else {

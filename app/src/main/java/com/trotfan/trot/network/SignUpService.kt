@@ -12,12 +12,12 @@ interface SignUpService {
     suspend fun getStarList(
         cursor: String,
         search: String
-    ): CommonResponse<stars<Star>>
+    ): CommonResponse<stars<FavoriteStar>>
 
     suspend fun starSearch(
         cursor: String,
         name: String
-    ): CommonResponse<stars<Star>>
+    ): CommonResponse<stars<FavoriteStar>>
 
     suspend fun updateUser(
         userId: Int,

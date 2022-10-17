@@ -9,7 +9,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.trotfan.trot.datasource.GetStarDataSource
 import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.model.Star
+import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,7 @@ class StarSelectViewModel @Inject constructor(
     val starListState =
         Pager(PagingConfig(pageSize = 15)) { dataSource }.flow.cachedIn(viewModelScope)
 
-    fun selectStar(selectedItem: Star?) {
+    fun selectStar(selectedItem: FavoriteStar?) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 val response = repository.updateUser(

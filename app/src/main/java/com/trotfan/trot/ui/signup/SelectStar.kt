@@ -6,8 +6,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
@@ -28,7 +26,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Star
+import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
@@ -54,10 +52,10 @@ fun SelectStarScreen(
 ) {
 
     val listState = rememberLazyListState()
-    val starListState: LazyPagingItems<Star> =
+    val starListState: LazyPagingItems<FavoriteStar> =
         viewModel.starListState.collectAsLazyPagingItems()
 
-    var selectedItem: Star? by remember {
+    var selectedItem: FavoriteStar? by remember {
         mutableStateOf(null)
     }
 
@@ -162,7 +160,7 @@ fun SelectStarScreen(
                                 checkedTrailingIcon = R.drawable.icon_heartfilled,
                                 checked = selectedItem == item,
                                 onClick = {
-                                    val clickedItem = it as Star
+                                    val clickedItem = it as FavoriteStar
                                     selectedItem = if (clickedItem == selectedItem) {
                                         null
                                     } else {

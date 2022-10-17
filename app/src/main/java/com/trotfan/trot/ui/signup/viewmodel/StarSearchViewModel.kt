@@ -14,12 +14,14 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.datasource.GetStarDataSource
 import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.model.Star
+import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.components.input.SearchStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,8 +43,8 @@ class StarSearchViewModel @Inject constructor(
     val requestComplete: StateFlow<Boolean>
         get() = _requestComplete
 
-    private val _startListState = mutableStateOf<Flow<PagingData<Star>>?>((null))
-    val starListState: State<Flow<PagingData<Star>>?>
+    private val _startListState = mutableStateOf<Flow<PagingData<FavoriteStar>>?>((null))
+    val starListState: State<Flow<PagingData<FavoriteStar>>?>
         get() = _startListState
 
     private val _onComplete = MutableStateFlow(false)
@@ -85,7 +87,7 @@ class StarSearchViewModel @Inject constructor(
 
     }
 
-    fun selectStar(selectedItem: Star?) {
+    fun selectStar(selectedItem: FavoriteStar?) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 val response = repository.updateUser(

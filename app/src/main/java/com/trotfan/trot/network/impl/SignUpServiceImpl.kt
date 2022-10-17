@@ -29,7 +29,7 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         }.body()
     }
 
-    override suspend fun getStarList(cursor: String, search: String): CommonResponse<stars<Star>> {
+    override suspend fun getStarList(cursor: String, search: String): CommonResponse<stars<FavoriteStar>> {
 
         val response = httpClient.get(HttpRoutes.GET_STAR_LIST) {
             contentType(ContentType.Application.Json)
@@ -41,7 +41,7 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         return response.body()
     }
 
-    override suspend fun starSearch(page: String, search: String): CommonResponse<stars<Star>> {
+    override suspend fun starSearch(page: String, search: String): CommonResponse<stars<FavoriteStar>> {
 
         val response = httpClient.get(HttpRoutes.GET_STAR_LIST) {
             contentType(ContentType.Application.Json)
