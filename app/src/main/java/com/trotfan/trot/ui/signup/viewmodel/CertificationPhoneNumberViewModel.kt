@@ -94,14 +94,14 @@ class CertificationPhoneNumberViewModel @Inject constructor(
     }
 
 
-    fun checkAuthNumber(number: String, time: Int) {
+    fun checkAuthNumber(number: String, time: Int, phoneNumber: String) {
         viewModelScope.launch {
             if (time == 0) {
                 _certificationNumberStatus.emit(CertificationNumberCheckStatus.TimeExceeded)
             } else {
                 when (number) {
                     _certificationNumber.value -> {
-                        updateUser(number)
+                        updateUser(phoneNumber)
                     }
                     else -> {
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.NotAuth)
@@ -132,7 +132,10 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                     if (response.result.code == ResultCodeStatus.Success.code) {
 //                        _onComplete.emit(true)
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
+                    } else {
+                        Log.e("Error",response.result.message)
                     }
+
                 }
             }
         }

@@ -284,6 +284,7 @@ fun CertificationPhoneScreen(
             ) {
                 viewModel.checkAuthNumber(
                     number = inputCertificationNumber,
+                    phoneNumber = inputPhoneNumber,
                     time = ticks
                 )
             }
