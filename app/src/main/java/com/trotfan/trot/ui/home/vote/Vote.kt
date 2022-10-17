@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +50,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.util.*
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -71,9 +73,20 @@ fun VoteHome(
         initial = ""
     )
 
+
+    var ticks by remember { mutableStateOf(7200) }
+    val second: String = (ticks.toLong() % 60).toString()
+    val minute: String = (ticks.toLong() / 60 % 60).toString()
+    val hour: String = (ticks.toLong() / 3600).toString()
+
     viewModel.connectSocket()
 
-
+    LaunchedEffect(ticks != 0) {
+        while (ticks > 0) {
+            delay(1.seconds)
+            ticks--
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +94,9 @@ fun VoteHome(
     ) {
         CustomTopAppBarWithIcon(
             title = "투표",
-            modifier = Modifier,
+            modifier = Modifier.clickable {
+                viewModel.changeVoteStatus()
+            },
             onClickEndIcon = {
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
@@ -107,18 +122,19 @@ fun VoteHome(
             )
 
             when (voteStatus) {
-                VoteStatus.VoteStar -> {
+                VoteStatus.VoteStar, VoteStatus.NotVoteForFiveTimes -> {
                     voteToStar(
                         items = voteStatusBoardList,
-                        count = voteStatusBoardListCount
+                        count = voteStatusBoardListCount,
+                        voteStatus = voteStatus
                     )
                 }
                 VoteStatus.VoteEnd -> {
                     voteEndHeader()
                 }
-                VoteStatus.NotVoteForFiveTimes -> {
-                    voteIng()
-                }
+//                VoteStatus.NotVoteForFiveTimes -> {
+//                    voteIng()
+//                }
             }
 
 
@@ -199,11 +215,13 @@ fun VoteHome(
                                     color = Gray600,
                                     fontSize = 13.sp
                                 )
-                                Spacer(modifier = Modifier.width(4.dp))
+                                Spacer(modifier = Modifier.width(5.dp))
                                 Text(
-                                    text = "08:40:59",
+                                    text = "${if (hour.toInt() < 10) "0${hour}" else hour}:${if (minute.toInt() < 10) "0${minute}" else minute}:${if (second.toInt() < 10) "0${second}" else second}",
                                     style = FanwooriTypography.body2,
                                     color = Gray750,
+                                    modifier = Modifier.width(64.dp),
+                                    textAlign = TextAlign.Start,
                                     fontSize = 15.sp
                                 )
 
@@ -487,24 +505,28 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun voteToStar(items: List<VoteStatusBoard>, count: Int) {
+fun voteToStar(items: List<VoteStatusBoard>, count: Int, voteStatus: VoteStatus) {
 
 
     val pagerState = rememberPagerState()
-    LaunchedEffect(key1 = Unit, block = {
-        while (true) {
+    LaunchedEffect(key1 = voteStatus, block = {
+        while (voteStatus == VoteStatus.VoteStar) {
             yield()
             delay(3500)
             try {
                 Log.e("count", "${items.count()}")
                 Log.e("pagerState.currentPage", "${pagerState.currentPage}")
-
                 pagerState.animateScrollToPage(
                     page = (pagerState.currentPage + 1) % (pagerState.pageCount)
                 )
             } catch (_: Throwable) {
 
             }
+        }
+        if (voteStatus == VoteStatus.NotVoteForFiveTimes) {
+            pagerState.animateScrollToPage(
+                page = items.size - 1
+            )
         }
     })
 
@@ -524,20 +546,34 @@ fun voteToStar(items: List<VoteStatusBoard>, count: Int) {
             ) {
                 Text(
                     buildAnnotatedString {
-//                        append("${items[currentPage].userName}님이")
-                        append("이소진님이")
 
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                                fontSize = 18.sp
-                            )
-                        ) {
-//                            append(" ${items[currentPage].starName} ")
-                            append(" 임영웅 ")
+                        when (voteStatus) {
+                            VoteStatus.VoteStar -> {
+                                append("${items[currentPage].user_name}님이")
+                                withStyle(
+                                    style = SpanStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        fontSize = 18.sp
+                                    )
+                                ) {
+                                    append(" ${items[currentPage].star_name} ")
+                                }
+                                append("님에게 투표했어요!")
+                            }
+                            VoteStatus.NotVoteForFiveTimes -> {
+                                Text(
+                                    text = "투표 진행 중",
+                                    color = Color.White,
+                                    style = FanwooriTypography.subtitle4,
+                                    maxLines = 1,
+                                    fontSize = 18.sp,
+                                )
+
+                            }
+                            else -> {}
                         }
-                        append("님에게 투표했어요!")
+
                     }, maxLines = 1, style = FanwooriTypography.body2,
                     fontSize = 15.sp,
                     color = Color.White
@@ -550,24 +586,41 @@ fun voteToStar(items: List<VoteStatusBoard>, count: Int) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
             ) {
-                Text(
-                    text = "${items[currentPage].quantity}",
-                    color = Color.White,
-                    modifier = Modifier.weight(weight = 1f, fill = false),
-                    style = FanwooriTypography.subtitle4,
-                    maxLines = 1,
-                    fontSize = 18.sp,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.width(2.dp))
-                Text(
-                    text = "표",
-                    color = Color.White,
-                    style = FanwooriTypography.subtitle4,
-                    maxLines = 1,
-                    fontSize = 18.sp,
-                    overflow = TextOverflow.Visible
-                )
+
+                when (voteStatus) {
+                    VoteStatus.VoteStar -> {
+                        Text(
+                            text = "${items[currentPage].quantity}",
+                            color = Color.White,
+                            modifier = Modifier.weight(weight = 1f, fill = false),
+                            style = FanwooriTypography.subtitle4,
+                            maxLines = 1,
+                            fontSize = 18.sp,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(
+                            text = "표",
+                            color = Color.White,
+                            style = FanwooriTypography.subtitle4,
+                            maxLines = 1,
+                            fontSize = 18.sp,
+                            overflow = TextOverflow.Visible
+                        )
+                    }
+                    VoteStatus.NotVoteForFiveTimes -> {
+                        Text(
+                            text = "[투표 집계 시간] 23:30:00 ~ 23:59:59",
+                            color = Color.White,
+                            style = FanwooriTypography.body2,
+                            maxLines = 1,
+                            fontSize = 15.sp,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    else -> {}
+                }
 
 
             }

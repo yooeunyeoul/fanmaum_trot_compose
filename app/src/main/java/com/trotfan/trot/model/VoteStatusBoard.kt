@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class VoteStatusBoard(
     val quantity: Int,
     @SerialName("star_name")
-    val starName: String,
+    val star_name: String,
     @SerialName("user_name")
-    val userName: String
+    val user_name: String
 )
