@@ -5,8 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SmsAuth(
     val code: Int,
-    @SerialName("created_at")
-    val createdAt: String,
+    val created_at: String,
     val signature: String,
     val time: Long
 )
