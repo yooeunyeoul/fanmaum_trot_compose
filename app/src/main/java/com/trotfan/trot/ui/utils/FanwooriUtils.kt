@@ -51,5 +51,13 @@ private val HorizontalScrollConsumer = object : NestedScrollConnection {
     override suspend fun onPreFling(available: Velocity) = available.copy(y = 0f)
 }
 
+private val VerticalScrollConsumer = object : NestedScrollConnection {
+    override fun onPreScroll(available: Offset, source: NestedScrollSource) = available.copy(x = 0f)
+    override suspend fun onPreFling(available: Velocity) = available.copy(x = 0f)
+}
+
 fun Modifier.disabledHorizontalPointerInputScroll(disabled: Boolean = true) =
     if (disabled) this.nestedScroll(HorizontalScrollConsumer) else this
+
+fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean = true) =
+    if (disabled) this.nestedScroll(VerticalScrollConsumer) else this

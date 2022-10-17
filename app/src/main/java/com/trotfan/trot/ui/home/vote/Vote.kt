@@ -3,7 +3,7 @@
 package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
-import androidx.compose.animation.core.tween
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,21 +35,18 @@ import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Top3Benefit
+import com.trotfan.trot.model.VoteStatusBoard
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
+import com.trotfan.trot.ui.utils.disabledVerticalPointerInputScroll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.util.*
 
-
-data class VerticalPagerContent(
-    val userName: String,
-    val starName: String
-)
 
 @Composable
 fun VoteHome(
@@ -61,6 +58,8 @@ fun VoteHome(
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
     val top3Info by viewModel.top3Info.collectAsState()
+    val voteStatusBoardList by viewModel.voteStatusBoardList.collectAsState()
+    val voteStatusBoardListCount by viewModel.voteStatusBoardListCount.collectAsState()
     val favoriteStarGender by viewModel.favoriteStarManager.favoriteStarGenderFlow.collectAsState(
         initial = 0
     )
@@ -106,20 +105,8 @@ fun VoteHome(
             when (voteStatus) {
                 VoteStatus.VoteStar -> {
                     voteToStar(
-                        items = listOf(
-                            VerticalPagerContent(
-                                userName = "유은열",
-                                starName = "임영웅",
-                            ),
-                            VerticalPagerContent(
-                                userName = "유은열",
-                                starName = "임영웅"
-                            ),
-                            VerticalPagerContent(
-                                userName = "유은열",
-                                starName = "임영웅"
-                            )
-                        )
+                        items = voteStatusBoardList,
+                        count = voteStatusBoardListCount
                     )
                 }
                 VoteStatus.VoteEnd -> {
@@ -455,26 +442,33 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun voteToStar(items: List<VerticalPagerContent>) {
+fun voteToStar(items: List<VoteStatusBoard>, count: Int) {
 
-    val pagerState = rememberPagerState(
-        initialPage = items.size
-    )
+
+    val pagerState = rememberPagerState()
     LaunchedEffect(key1 = Unit, block = {
         while (true) {
             yield()
             delay(3500)
-            pagerState.animateScrollToPage(
-                page = (pagerState.currentPage + 1) % (pagerState.pageCount),
-                animationSpec = tween(500)
-            )
+            try {
+                Log.e("count","${items.count()}")
+                Log.e("pagerState.currentPage","${pagerState.currentPage}")
+
+                pagerState.animateScrollToPage(
+                    page = (pagerState.currentPage + 1) % (pagerState.pageCount)
+                )
+            } catch (_: Throwable) {
+
+            }
         }
     })
 
     VerticalPager(
-        count = items.size,
-        state = pagerState
+        count = count,
+        state = pagerState,
+        modifier = Modifier.disabledVerticalPointerInputScroll()
     ) { currentPage ->
+        Log.e("items.size", "${items.size}")
         Column(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -485,7 +479,8 @@ fun voteToStar(items: List<VerticalPagerContent>) {
             ) {
                 Text(
                     buildAnnotatedString {
-                        append("${items[currentPage].userName}님이")
+//                        append("${items[currentPage].userName}님이")
+                        append("이소진님이")
 
                         withStyle(
                             style = SpanStyle(
@@ -494,7 +489,8 @@ fun voteToStar(items: List<VerticalPagerContent>) {
                                 fontSize = 18.sp
                             )
                         ) {
-                            append(" ${items[currentPage].starName} ")
+//                            append(" ${items[currentPage].starName} ")
+                            append(" 임영웅 ")
                         }
                         append("님에게 투표했어요!")
                     }, maxLines = 1, style = FanwooriTypography.body2,
@@ -510,7 +506,7 @@ fun voteToStar(items: List<VerticalPagerContent>) {
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "100,000,000,000,000,000,000,000,000,00,00,00,00",
+                    text = "${items[currentPage].quantity}",
                     color = Color.White,
                     modifier = Modifier.weight(weight = 1f, fill = false),
                     style = FanwooriTypography.subtitle4,

@@ -1,13 +1,14 @@
 package com.trotfan.trot.ui.home.vote.viewmodel
 
 import android.app.Application
-import android.os.UserManager
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.trotfan.trot.datastore.FavoriteStarDataStore
 import com.trotfan.trot.datastore.FavoriteStarManager
 import com.trotfan.trot.model.Top3Benefit
+import com.trotfan.trot.model.VoteStatusBoard
 import com.trotfan.trot.repository.VoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
@@ -16,6 +17,7 @@ import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import javax.inject.Inject
 
 enum class VoteStatus(
@@ -40,12 +42,22 @@ class VoteHomeViewModel @Inject constructor(
     val voteStatus: StateFlow<VoteStatus>
         get() = _voteStatus
     private val _voteStatus =
-        MutableStateFlow(VoteStatus.NotVoteForFiveTimes)
+        MutableStateFlow(VoteStatus.VoteStar)
 
     val top3Info: StateFlow<Top3Benefit?>
         get() = _top3Info
     private val _top3Info =
         MutableStateFlow(Top3Benefit())
+
+    val voteStatusBoardList: StateFlow<ArrayList<VoteStatusBoard>>
+        get() = _voteStatusBoardList
+    private val _voteStatusBoardList =
+        MutableStateFlow(arrayListOf<VoteStatusBoard>())
+
+    val voteStatusBoardListCount: StateFlow<Int>
+        get() = _voteStatusBoardListCount
+    private val _voteStatusBoardListCount =
+        MutableStateFlow(0)
 
 
     init {
@@ -66,18 +78,67 @@ class VoteHomeViewModel @Inject constructor(
         viewModelScope.launch {
             val options = IO.Options()
             options.transports = arrayOf(WebSocket.NAME)
-            mSocket = IO.socket("http://13.125.232.75:3000")
+            mSocket = IO.socket("http://13.125.232.75:3000/", options)
             mSocket.on(Socket.EVENT_CONNECT) {
                 Log.e("CONNECT", "연결됐다!!!")
             }
             mSocket.on(Socket.EVENT_CONNECT_ERROR) {
                 Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
+                val list = arrayListOf<VoteStatusBoard>()
+//                val olderList = _voteStatusBoardList.value
+                list.addAll(
+                    arrayListOf(
+                        VoteStatusBoard(
+                            quantity = System.currentTimeMillis().toInt(),
+                            starName = "아무개",
+                            userName = "유저네임"
+                        ),
+                        VoteStatusBoard(
+                            quantity = System.currentTimeMillis().toInt(),
+                            starName = "아무개2",
+                            userName = "유저네임2"
+                        ),
+                        VoteStatusBoard(
+                            quantity = System.currentTimeMillis().toInt(),
+                            starName = "아무개3",
+                            userName = "유저네임3"
+                        )
+                    )
+                )
+//                _voteStatusBoardList.value = olderList
+//                _voteStatus.value = VoteStatus.VoteStar
+//                sendEvent(list)
+
             }
             mSocket.on("vote status board") {
-                Log.e("vote status board", "이벤트" + it.get(0).toString())
+                if (it.isNotEmpty()) {
+                    val list = arrayListOf<VoteStatusBoard>()
+                    val jsonArray = it[0] as JSONArray
+                    for (i in 0 until jsonArray.length()) {
+                        val jsonObject = jsonArray.get(i).toString()
+                        val data = Gson().fromJson(jsonObject, VoteStatusBoard::class.java)
+                        list.add(data)
+//
+                    }
+                    sendEvent(list)
+                }
+
+                Log.e("vote status board", "이벤트" + it[0].toString())
+
+
             }
             mSocket.connect()
 
+        }
+
+    }
+
+    private fun sendEvent(list: ArrayList<VoteStatusBoard>) {
+        viewModelScope.launch {
+            val oldList = _voteStatusBoardList.value
+            oldList.addAll(list)
+            _voteStatusBoardList.emit(oldList)
+            _voteStatusBoardListCount.emit(oldList.count())
         }
 
     }
