@@ -79,10 +79,10 @@ class AuthViewModel @Inject constructor(
                 handleGoogleLogin.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
                 val userToken = it.data
-                Log.d("AuthViewModel", userToken.access_token)
+                userToken?.let { it1 -> Log.d("AuthViewModel", it1.access_token) }
                 _userToken.emit(userToken)
-                setUserToken(userToken.access_token)
-                setUserId(userToken.user_id)
+                userToken?.let { it1 -> setUserToken(it1.access_token) }
+                userToken?.user_id?.let { it1 -> setUserId(it1) }
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
             }
@@ -96,9 +96,9 @@ class AuthViewModel @Inject constructor(
             }.onSuccess {
                 val userToken = it.data
                 _userToken.emit(userToken)
-                setUserToken(userToken.access_token)
-                setUserId(userToken.user_id)
-                Log.d("AuthViewModel", userToken.access_token)
+                userToken?.let { it1 -> setUserToken(it1.access_token) }
+                userToken?.let { it1 -> setUserId(it1.user_id) }
+                userToken?.let { it1 -> Log.d("AuthViewModel", it1.access_token) }
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
             }
@@ -112,9 +112,9 @@ class AuthViewModel @Inject constructor(
             }.onSuccess {
                 val userToken = it.data
                 _userToken.emit(userToken)
-                setUserToken(userToken.access_token)
-                setUserId(userToken.user_id)
-                Log.d("AuthViewModel", userToken.access_token)
+                userToken?.let { it1 -> setUserToken(it1.access_token) }
+                userToken?.let { it1 -> setUserId(it1.user_id) }
+                userToken?.let { it1 -> Log.d("AuthViewModel", it1.access_token) }
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
             }
@@ -127,7 +127,7 @@ class AuthViewModel @Inject constructor(
                 repository.getUserInfo(userId.toInt())
             }.onSuccess {
                 val userInfo = it.data
-                saveFavoriteStar(userInfo.star)
+                saveFavoriteStar(userInfo?.star)
 
                 _userInfo.emit(userInfo)
                 Log.d("AuthViewModel", userInfo.toString())
