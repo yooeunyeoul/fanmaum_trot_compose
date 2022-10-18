@@ -125,7 +125,8 @@ fun FanwooriApp(
                             onItemSelected = { id, entry ->
                                 // 각화면의 디테일 작업
                             },
-                            votingBottomSheetState = votingBottomSheetState
+                            votingBottomSheetState = votingBottomSheetState,
+                            navController = navController
                         )
                         addSignUpGraph(
                             navController = navController,

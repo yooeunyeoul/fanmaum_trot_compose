@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
+import com.trotfan.trot.ui.signup.viewmodel.InviteCodeCheckStatus.InvalidCodeError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -73,7 +74,9 @@ class InvitationViewModel @Inject constructor(
                     )
                 }.onSuccess {
                     when (it.result.code) {
-                        ResultCodeStatus.InvalidCode.code -> _inviteCodeCheckStatus.emit(InviteCodeCheckStatus.InvalidCodeError)
+                        ResultCodeStatus.InvalidCode.code -> _inviteCodeCheckStatus.emit(
+                            InvalidCodeError
+                        )
                         ResultCodeStatus.Success.code -> {
                             if (_inviteCode.value != "") _completeStatus.emit(true)
                             else _skipStatus.emit(true)

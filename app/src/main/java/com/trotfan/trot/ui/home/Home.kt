@@ -1,5 +1,7 @@
 package com.trotfan.trot.ui.home
 
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -24,8 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.dateManager
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
@@ -87,34 +91,10 @@ fun TrotBottomBar(
     val context = LocalContext.current
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val mainPopups by viewModel.mainPopups.collectAsState()
-    var updateState by rememberSaveable { mutableStateOf(false) }
-    var rollingState by rememberSaveable { mutableStateOf(false) }
-    var feverStatus by rememberSaveable { mutableStateOf(false) }
-    var autoVoteStatus by rememberSaveable { mutableStateOf(false) }
-
-    if (mainPopups != null) {
-        if (mainPopups?.update != null) {
-            LaunchedEffect(mainPopups?.update) {
-                updateState = true
-            }
-        } else {
-            if (mainPopups?.layers != null) {
-                LaunchedEffect(mainPopups?.layers) {
-                    context.dateManager.data.collect {
-                        if (it.rollingDate != LocalDate.now().toString()) {
-                            rollingState = true
-                        }
-                    }
-                }
-            }
-
-            if (mainPopups?.is_rewarded == true) {
-                LaunchedEffect(mainPopups?.is_rewarded) {
-                    feverStatus = true
-                }
-            }
-        }
-    }
+    val updateState by viewModel.updateState.collectAsState()
+    val rollingState by viewModel.rollingState.collectAsState()
+    val feverStatus by viewModel.feverStatus.collectAsState()
+    val autoVoteStatus by viewModel.autoVoteStatus.collectAsState()
 
 
     if (updateState) {
@@ -125,19 +105,20 @@ fun TrotBottomBar(
                 positiveText = "업데이트",
                 negativeText = "다음에",
                 onPositive = {
-                    updateState = false
+                    viewModel.updateState.value = false
                 },
                 onDismiss = {
                     coroutineScope.launch {
                         context.dateManager.data.collect { date ->
                             if (date.rollingDate != LocalDate.now().toString()) {
-                                rollingState = true
+                                viewModel.rollingState.emit(true)
                             }
                         }
+                        viewModel.autoVoteStatus.emit(true)
+                        viewModel.feverStatus.emit(true)
+                        viewModel.rollingState.emit(true)
+                        viewModel.updateState.emit(false)
                     }
-                    feverStatus = true
-                    autoVoteStatus = true
-                    updateState = false
                 }
             )
         }
@@ -145,23 +126,36 @@ fun TrotBottomBar(
 
     if (autoVoteStatus) {
         AutoVotingDialog {
-            autoVoteStatus = false
+            coroutineScope.launch {
+                viewModel.autoVoteStatus.emit(false)
+            }
         }
     }
 
     if (feverStatus) {
         FeverTimeDialog {
-            feverStatus = false
+            coroutineScope.launch {
+                viewModel.feverStatus.emit(false)
+            }
         }
     }
 
     if (rollingState) {
-        mainPopups?.layers?.let {
+        mainPopups?.layers?.let { it ->
+            LaunchedEffect(mainPopups?.layers) {
+                context.dateManager.data.collect {
+                    if (it.rollingDate == LocalDate.now().toString()) {
+                        viewModel.rollingState.emit(false)
+                    }
+                }
+            }
+
             RollingDialog(
                 layers = it,
                 onDismiss = {
-                    rollingState = false
-                    feverStatus = true
+                    coroutineScope.launch {
+                        viewModel.rollingState.emit(false)
+                    }
                 }
             )
         }
@@ -260,13 +254,15 @@ fun TrotBottomBar(
 fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     modifier: Modifier = Modifier,
-    votingBottomSheetState: ModalBottomSheetState
+    votingBottomSheetState: ModalBottomSheetState,
+    navController: NavController
 ) {
     composable(HomeSections.Vote.route) { from ->
         VoteHome(
             onItemClick = { id ->
                 onItemSelected(id, from)
             },
+            navController = navController,
             modifier = modifier,
             votingBottomSheetState = votingBottomSheetState
         )

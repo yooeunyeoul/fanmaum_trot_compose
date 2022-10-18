@@ -33,6 +33,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
@@ -41,9 +42,12 @@ import com.trotfan.trot.R
 import com.trotfan.trot.model.Top3Benefit
 import com.trotfan.trot.model.VoteStatusBoard
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
+import com.trotfan.trot.ui.home.HomeSections
+import com.trotfan.trot.ui.home.vote.benefits.VoteBenefitsNav
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
 import com.trotfan.trot.ui.utils.disabledVerticalPointerInputScroll
 import kotlinx.coroutines.delay
@@ -58,6 +62,7 @@ import kotlin.time.Duration.Companion.seconds
 fun VoteHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
     votingBottomSheetState: ModalBottomSheetState
 ) {
@@ -139,13 +144,6 @@ fun VoteHome(
 
 
         }
-        var updateStatus by rememberSaveable { mutableStateOf(false) }
-        var autoVoteStatus by rememberSaveable { mutableStateOf(true) }
-        var feverStatus by rememberSaveable { mutableStateOf(false) }
-        var rollingStatus by rememberSaveable { mutableStateOf(false) }
-        var voteGuideStatus by rememberSaveable { mutableStateOf(false) }
-
-        val coroutineScope = rememberCoroutineScope()
 
         LazyColumn(
             modifier = Modifier
@@ -155,7 +153,15 @@ fun VoteHome(
 
             item {
                 Spacer(modifier = modifier.height(39.dp))
-                Box(Modifier.fillMaxWidth()) {
+                Box(Modifier.fillMaxWidth().clickable {
+                    navController.navigate(VoteBenefitsNav.VoteBenefits.route) {
+                        popUpTo(HomeSections.Vote.route) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }) {
                     Top3View(modifier = Modifier.padding(top = 40.dp), top3Info)
                     Image(
                         painter = painterResource(id = R.drawable.vote_main),
@@ -468,36 +474,6 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
         color = Color.White,
         modifier = Modifier.fillMaxSize()
     ) {
-//
-//
-//        if (autoVoteStatus) {
-//            VerticalDialog(
-//                contentText = "팬우리에 매일 출석만 해도,\n" +
-//                        "내 스타에게 자동으로 투표가 돼요!",
-//                buttonOneText = "출석했어요!",
-//                onDismiss = {
-//                    autoVoteStatus = false
-//                    coroutineScope.launch {
-//                        votingBottomSheetState.show()
-//                    }
-//                }
-//            )
-//        }
-//
-//        if (feverStatus) {
-//            FeverTimeDialog(
-//                onDismiss = {
-//                    feverStatus = false
-//                }
-//            )
-//        }
-//
-//        if (voteGuideStatus) {
-//            VoteGuide(
-//                onDismiss = {
-//                    voteGuideStatus = false
-//                }
-//            )
     }
 
 
