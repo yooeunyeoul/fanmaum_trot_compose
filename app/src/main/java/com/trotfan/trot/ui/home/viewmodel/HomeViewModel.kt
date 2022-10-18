@@ -57,7 +57,7 @@ class HomeViewModel @Inject constructor(
             }.onSuccess {
                 _mainPopups.emit(it.data)
                 it.data.let { mainPopups ->
-                    mainPopups.update?.version?.let { version ->
+                    mainPopups?.update?.version?.let { version ->
                         if (version.replace(".", "")
                                 .toInt() > BuildConfig.VERSION_NAME.replace(".", "")
                                 .replace("_dev", "")
@@ -65,16 +65,10 @@ class HomeViewModel @Inject constructor(
                         ) {
                             updateState.emit(true)
                         } else {
-                            if (it.data.autoVote.is_available) {
-                                autoVoteStatus.emit(true)
-                            }
+                            autoVoteStatus.emit(it.data?.autoVote?.is_available == true)
+                            feverStatus.emit(it.data?.is_rewarded == true)
 
-                            if (it.data.is_rewarded) {
-                                feverStatus.emit(true)
-                            }
-
-
-                            if (it.data.layers != null) {
+                            if (it.data?.layers != null) {
                                 rollingState.emit(true)
                             }
                         }
