@@ -61,6 +61,7 @@ class HomeViewModel @Inject constructor(
                         if (version.replace(".", "")
                                 .toInt() > BuildConfig.VERSION_NAME.replace(".", "")
                                 .replace("_dev", "")
+                                .replace("_qa","")
                                 .toInt()
                         ) {
                             updateState.emit(true)
