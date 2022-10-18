@@ -511,7 +511,7 @@ fun voteToStar(items: List<VoteStatusBoard>, count: Int, voteStatus: VoteStatus)
         state = pagerState,
         modifier = Modifier.disabledVerticalPointerInputScroll()
     ) { currentPage ->
-        Log.e("items.size", "${items.size}")
+//        Log.e("items.size", "${items.size}")
         Column(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally

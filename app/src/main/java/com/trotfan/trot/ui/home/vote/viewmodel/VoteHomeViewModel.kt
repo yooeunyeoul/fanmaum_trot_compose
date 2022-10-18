@@ -83,10 +83,10 @@ class VoteHomeViewModel @Inject constructor(
             options.transports = arrayOf(WebSocket.NAME)
             mSocket = IO.socket("http://13.125.232.75:3000/", options)
             mSocket.on(Socket.EVENT_CONNECT) {
-                Log.e("CONNECT", "연결됐다!!!")
+//                Log.e("CONNECT", "연결됐다!!!")
             }
             mSocket.on(Socket.EVENT_CONNECT_ERROR) {
-                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
+//                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
 //                val list = arrayListOf<VoteStatusBoard>()
 ////                val olderList = _voteStatusBoardList.value
 //                list.addAll(
@@ -119,16 +119,16 @@ class VoteHomeViewModel @Inject constructor(
                     val jsonArray = it[0] as JSONArray
                     for (i in 0 until jsonArray.length()) {
                         val jsonObject = jsonArray.get(i).toString()
-                        Log.e("JSONOBEJECT",jsonObject.toString())
+//                        Log.e("JSONOBEJECT",jsonObject.toString())
                         val data = Gson().fromJson(jsonObject, VoteStatusBoard::class.java)
-                        Log.e("data",data.toString())
+//                        Log.e("data",data.toString())
                         list.add(data)
 //
                     }
                     sendEvent(list)
                 }
 
-                Log.e("vote status board", "이벤트" + it[0].toString())
+//                Log.e("vote status board", "이벤트" + it[0].toString())
 
 
             }
