@@ -316,7 +316,7 @@ fun TodayRankingView(initPage: Int) {
         tabData.forEachIndexed { index, text ->
             Tab(modifier = Modifier, selected = tabIndex == index, onClick = {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(index)
+                    pagerState.scrollToPage(index)
                 }
             }, text = {
                 Text(
