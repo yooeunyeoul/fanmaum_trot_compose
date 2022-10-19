@@ -45,24 +45,6 @@ fun FeverTimeDialog(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "확인",
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(48.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .border(
-                        1.dp,
-                        Color.White, RoundedCornerShape(24.dp)
-                    )
-                    .clickable {
-                        onDismiss()
-                    }
-                    .wrapContentHeight()
-            )
         }
     }
 }

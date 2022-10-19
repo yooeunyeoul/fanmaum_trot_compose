@@ -32,7 +32,11 @@ fun VoteBenefits(
     var state by remember { mutableStateOf(0) }
 
     Scaffold(
-        topBar = { CustomTopAppBar(title = "우승혜택", icon = R.drawable.icon_back) }
+        topBar = {
+            CustomTopAppBar(title = "우승혜택", icon = R.drawable.icon_back) {
+                navController.popBackStack()
+            }
+        }
     ) { innerPadding ->
         Column(
             modifier = modifier.padding(innerPadding)
