@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,7 +25,7 @@ fun CustomTopAppBarWithIcon(
     modifier: Modifier = Modifier,
     title: String,
     @StringRes startIcon: Int = R.drawable.icon_info,
-    @StringRes endIcon: Int = R.drawable.icon_share,
+    @StringRes endIcon: Int = R.drawable.icon_share_aos,
     onClickStartIcon: () -> Unit = {},
     onClickEndIcon: () -> Unit = {}
 ) {
@@ -45,7 +46,8 @@ fun CustomTopAppBarWithIcon(
             text = title,
             textAlign = TextAlign.Start,
             color = Gray800,
-            style = FanwooriTypography.body2,
+            fontWeight = FontWeight.SemiBold,
+            style = FanwooriTypography.subtitle1,
         )
 
         Icon(
