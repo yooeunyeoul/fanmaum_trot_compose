@@ -153,18 +153,15 @@ fun VoteHome(
 
             item {
                 Spacer(modifier = modifier.height(39.dp))
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            navController.navigate(VoteBenefitsNav.VoteBenefits.route) {
-                                popUpTo(HomeSections.Vote.route) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }) {
+                Box(Modifier.fillMaxWidth().clickable {
+                    navController.navigate(VoteBenefitsNav.VoteBenefits.route) {
+                        popUpTo(HomeSections.Vote.route) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }) {
                     Top3View(modifier = Modifier.padding(top = 40.dp), top3Info)
                     Image(
                         painter = painterResource(id = R.drawable.vote_main),
@@ -184,15 +181,14 @@ fun VoteHome(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(40.dp)
-                                .background(color = Primary50)
-                                .padding(start = 24.dp, end = 24.dp),
+                                .background(color = Primary50),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
 //                    ScheduledToDisappear()
 
-                            TryMission(modifier = Modifier.weight(1f))
+                            TryMission()
 
 
                         }
@@ -230,8 +226,7 @@ fun VoteHome(
                                     text = "${if (hour.toInt() < 10) "0${hour}" else hour}:${if (minute.toInt() < 10) "0${minute}" else minute}:${if (second.toInt() < 10) "0${second}" else second}",
                                     style = FanwooriTypography.body2,
                                     color = Gray750,
-//                                    maxLines = 1,
-                                    modifier = Modifier.width(66.dp),
+                                    modifier = Modifier.width(64.dp),
                                     textAlign = TextAlign.Start,
                                     fontSize = 15.sp
                                 )
@@ -324,16 +319,12 @@ fun TodayRankingView(initPage: Int) {
                     pagerState.scrollToPage(index)
                 }
             }, text = {
-
                 Text(
                     text = text,
                     style = FanwooriTypography.body3,
                     fontWeight = FontWeight.SemiBold,
                     color = if (pagerState.currentPage == index) Primary900 else Gray600,
-                    fontSize = 17.sp,
-                    modifier = if (index == 0) Modifier.padding(start = 24.dp) else Modifier.padding(
-                        end = 24.dp
-                    )
+                    fontSize = 17.sp
                 )
             })
         }
@@ -375,21 +366,20 @@ fun voteTopShareText(favoriteStarName: String?): String {
 }
 
 @Composable
-fun TryMission(modifier: Modifier) {
-
+fun TryMission() {
     Text(
         text = "미션을 수행하고 투표권을 모아보세요!",
         style = FanwooriTypography.body2,
         color = Primary800,
         fontSize = 15.sp
     )
-
+    Spacer(modifier = Modifier.width(34.dp))
     Text(
         text = "충전하기",
         style = FanwooriTypography.button1,
         color = Primary800,
         fontSize = 17.sp,
-        textDecoration = TextDecoration.Underline,
+        textDecoration = TextDecoration.Underline
     )
 
 
@@ -427,7 +417,7 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
             .padding(start = 24.dp, end = 24.dp),
         backgroundColor = Color.White,
         shape = RoundedCornerShape(32.dp),
-        elevation = 6.dp
+        elevation = 8.dp
     ) {
 
         Column(
@@ -510,12 +500,9 @@ fun voteToStar(items: List<VoteStatusBoard>, count: Int, voteStatus: VoteStatus)
             }
         }
         if (voteStatus == VoteStatus.NotVoteForFiveTimes) {
-            if (items.isNotEmpty()) {
-                pagerState.animateScrollToPage(
-                    page = items.size - 1
-                )
-            }
-
+            pagerState.animateScrollToPage(
+                page = items.size - 1
+            )
         }
     })
 
@@ -599,7 +586,7 @@ fun voteToStar(items: List<VoteStatusBoard>, count: Int, voteStatus: VoteStatus)
                     }
                     VoteStatus.NotVoteForFiveTimes -> {
                         Text(
-                            text = "지금 내 스타에게 투표해보세요!",
+                            text = "[투표 집계 시간] 23:30:00 ~ 23:59:59",
                             color = Color.White,
                             style = FanwooriTypography.body2,
                             maxLines = 1,
