@@ -306,8 +306,8 @@ fun TodayRankingView(initPage: Int) {
                     .tabIndicatorOffset(tabPositions[tabIndex])
                     .height(3.dp)
                     .padding(
-                        start = if (tabIndex == 0) 20.dp else 0.dp,
-                        end = if (tabIndex == 1) 20.dp else 0.dp
+                        start = if (tabIndex == 0) 24.dp else 0.dp,
+                        end = if (tabIndex == 1) 24.dp else 0.dp
                     )
                     .background(color = Primary300, shape = RoundedCornerShape(1.5.dp))
             )
@@ -381,7 +381,8 @@ fun TryMission(modifier: Modifier) {
         text = "미션을 수행하고 투표권을 모아보세요!",
         style = FanwooriTypography.body2,
         color = Primary800,
-        fontSize = 15.sp
+        fontSize = 15.sp,
+        modifier = modifier
     )
 
     Text(
@@ -427,7 +428,7 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
             .padding(start = 24.dp, end = 24.dp),
         backgroundColor = Color.White,
         shape = RoundedCornerShape(32.dp),
-        elevation = 6.dp
+        elevation = 4.dp
     ) {
 
         Column(
