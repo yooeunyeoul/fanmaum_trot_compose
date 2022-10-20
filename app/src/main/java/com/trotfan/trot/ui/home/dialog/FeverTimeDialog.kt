@@ -19,6 +19,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.trotfan.trot.ui.utils.clickable
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -41,7 +42,9 @@ fun FeverTimeDialog(
                     .crossfade(true).build(),
                 contentScale = ContentScale.FillWidth,
                 contentDescription = null,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().clickable {
+                    onDismiss()
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
