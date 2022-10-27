@@ -299,9 +299,17 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun VotingBottomSheetPreview() {
     FanwooriTheme {
+        VotingBottomSheet(
+            votingBottomSheetState = rememberModalBottomSheetState(
+                initialValue = ModalBottomSheetValue.Hidden,
+                skipHalfExpanded = true
+            )
+        ) {
+        }
     }
 }
