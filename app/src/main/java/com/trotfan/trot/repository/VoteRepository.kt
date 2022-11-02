@@ -11,7 +11,7 @@ import javax.inject.Inject
 class VoteRepository @Inject constructor(
     private val voteService: VoteService
 ) {
-    suspend fun getVoteList(): CommonListResponse<Top3Benefit> =
+    suspend fun getVoteList(): CommonListResponse<Top3Benefit>? =
         voteService.VoteList()
 
 }

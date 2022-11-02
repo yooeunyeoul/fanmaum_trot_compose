@@ -71,8 +71,7 @@ class VoteHomeViewModel @Inject constructor(
     fun getVoteList() {
         viewModelScope.launch {
             val response = repository.getVoteList()
-            Log.e("response", response.data.toString())
-            _top3Info.emit(response.data.first())
+            _top3Info.emit(response?.data?.first() ?: Top3Benefit())
         }
     }
 
@@ -83,14 +82,14 @@ class VoteHomeViewModel @Inject constructor(
             options.transports = arrayOf(WebSocket.NAME)
             mSocket = IO.socket("http://13.125.232.75:3000/", options)
             mSocket.on(Socket.EVENT_CONNECT) {
-//                Log.e("CONNECT", "연결됐다!!!")
+                Log.e("CONNECT", "연결됐다!!!")
             }
             mSocket.on(Socket.EVENT_CONNECT_ERROR) {
 //                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
 //                val list = arrayListOf<VoteStatusBoard>()
 ////                val olderList = _voteStatusBoardList.value
 //                list.addAll(
-//                    arrayListOf(
+//                    arrayListOf(현곤
 //                        VoteStatusBoard(
 //                            quantity = System.currentTimeMillis().toInt(),
 //                            starName = "아무개",

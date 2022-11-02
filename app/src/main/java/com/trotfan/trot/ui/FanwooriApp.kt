@@ -115,7 +115,7 @@ fun FanwooriApp(
                     navigation(
                         route = "로그인",
 //                    startDestination = LoginNav.Login.route
-                        startDestination = LoginNav.Login.route
+                        startDestination = HomeSections.Vote.route
                     ) {
                         addLoginGraph(
                             modifier = Modifier,
