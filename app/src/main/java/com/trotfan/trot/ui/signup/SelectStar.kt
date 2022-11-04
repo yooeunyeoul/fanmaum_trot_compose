@@ -27,6 +27,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.trotfan.trot.R
 import com.trotfan.trot.model.FavoriteStar
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
@@ -65,8 +66,8 @@ fun SelectStarScreen(
 
     if (viewModel.onComplete.collectAsState().value) {
         LaunchedEffect(Unit) {
-            navController.navigate(SignUpSections.SettingNickName.route) {
-                popUpTo(SignUpSections.SelectStar.route) {
+            navController.navigate(Route.SettingNickname.route) {
+                popUpTo(Route.SelectStar.route) {
                     inclusive = true
                 }
             }
@@ -127,7 +128,7 @@ fun SelectStarScreen(
                         Modifier
                             .fillMaxWidth()
                             .clickable {
-                                navController.navigate(SignUpSections.SearchStar.route)
+                                navController.navigate(Route.SearchStar.route)
                             }
                             .background(color = Color.White)
                     ) {

@@ -1,32 +1,20 @@
 package com.trotfan.trot.ui
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import androidx.navigation.navigation
-import com.trotfan.trot.ui.Destinations.DETAIL_ID_KEY
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
-import com.trotfan.trot.ui.home.addHomeGraph
-import com.trotfan.trot.ui.home.vote.benefits.addVoteBenefitsGraph
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
-import com.trotfan.trot.ui.login.LoginNav
-import com.trotfan.trot.ui.login.addLoginGraph
-import com.trotfan.trot.ui.signup.SignUpSections
-import com.trotfan.trot.ui.signup.addSignUpGraph
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -37,6 +25,7 @@ object Destinations {
 }
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -89,7 +78,11 @@ fun FanwooriApp(
                     }
                 },
                 scaffoldState = scaffoldState
-            ) { innerPadding ->
+            ) {
+                NavigationComponent(
+                    navController = navController,
+                    votingBottomSheetState = votingBottomSheetState
+                )
 
                 if (votingCompleteState) {
                     HorizontalDialog(
@@ -105,60 +98,6 @@ fun FanwooriApp(
                         }
                     )
                 }
-
-                NavHost(
-                    navController = navController,
-                    modifier = Modifier.padding(innerPadding),
-                    startDestination = "로그인"
-                ) {
-
-                    navigation(
-                        route = "로그인",
-//                    startDestination = LoginNav.Login.route
-                        startDestination = LoginNav.Login.route
-                    ) {
-                        addLoginGraph(
-                            modifier = Modifier,
-                            navController = navController
-                        )
-                        addHomeGraph(
-                            onItemSelected = { id, entry ->
-                                // 각화면의 디테일 작업
-                            },
-                            votingBottomSheetState = votingBottomSheetState,
-                            navController = navController
-                        )
-                        addSignUpGraph(
-                            navController = navController,
-                            modifier = Modifier.padding(
-                                start = 24.dp,
-                                end = 24.dp
-                            )
-                        )
-
-                        addVoteBenefitsGraph(
-                            modifier = Modifier,
-                            navController = navController
-                        )
-                    }
-
-                    // 디테일 화면 눌렀을 때 이동하는 뷰
-                    composable(
-                        route = "${Destinations.DETAIL_ROUTE}}/{${DETAIL_ID_KEY}}",
-                        arguments = listOf(
-                            element = navArgument(DETAIL_ID_KEY,
-                                builder = {
-                                    type = NavType.LongType
-                                })
-                        )
-                    ) { navBackStackEntry ->
-                        val arguments = requireNotNull(navBackStackEntry.arguments)
-                        val detailId = arguments.getLong(DETAIL_ID_KEY)
-
-                    }
-                }
-
-
             }
         }
     }

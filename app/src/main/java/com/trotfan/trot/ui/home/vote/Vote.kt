@@ -41,6 +41,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Top3Benefit
 import com.trotfan.trot.model.VoteStatusBoard
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefitsNav
@@ -157,7 +158,7 @@ fun VoteHome(
                     Modifier
                         .fillMaxWidth()
                         .clickable {
-                            navController.navigate(VoteBenefitsNav.VoteBenefits.route) {
+                            navController.navigate(Route.VoteBenefits.route) {
                                 popUpTo(HomeSections.Vote.route) {
                                     saveState = true
                                 }
