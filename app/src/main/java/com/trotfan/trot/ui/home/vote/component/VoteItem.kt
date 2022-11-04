@@ -28,8 +28,9 @@ import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
 
+
 @Composable
-fun VoteItem(isAfterMakingRanking: Boolean = false, isMyStar: Boolean = false) {
+fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
 
     val strokeWidth = LocalDensity.current.run { 1.dp.toPx() }
     val margin = LocalDensity.current.run { 24.dp.toPx() }
@@ -41,7 +42,6 @@ fun VoteItem(isAfterMakingRanking: Boolean = false, isMyStar: Boolean = false) {
                 shape = RoundedCornerShape(24.dp)
             )
             .drawBehind {
-
                 val x = size.width - strokeWidth
                 val y = size.height
                 drawLine(
@@ -51,54 +51,66 @@ fun VoteItem(isAfterMakingRanking: Boolean = false, isMyStar: Boolean = false) {
                     strokeWidth = strokeWidth
                 )
             }
-            .padding(top = 16.dp, bottom = 16.dp, start = 25.dp, end = 24.dp)
+            .padding(
+                top = if (beforeRank) 12.dp else 16.dp,
+                bottom = if (beforeRank) 12.dp else 16.dp,
+                start = 25.dp,
+                end = 24.dp
+            )
     ) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(
                 Modifier.wrapContentWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "현재",
-                    color = Primary900,
-                    style = FanwooriTypography.subtitle3,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 13.sp
-                )
+                if (!beforeRank) {
+                    Text(
+                        text = "현재",
+                        color = Primary900,
+                        style = FanwooriTypography.subtitle3,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 13.sp
+                    )
+                }
 
                 Text(
-                    text = "2",
+                    text = if (beforeRank) "-" else "2",
                     color = Primary900,
                     style = FanwooriTypography.subtitle3,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 15.sp
                 )
-
             }
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://image.shutterstock.com/image-vector/sample-red-square-grunge-stamp-260nw-338250266.jpg")
+                    .data("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKf_rXYJjWAMYI2PjeXcnljkfIhnFwGQuEPLdj3xg8cYJh7GRYH9XnVM2WwJTAOiWShII&usqp=CAU")
                     .crossfade(true).build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .clip(CircleShape)
                     .padding(start = 23.5.dp, end = 12.dp)
+                    .size(if (beforeRank) 64.dp else 88.dp)
+                    .clip(CircleShape)
                     .border(
-                        width = 4.dp,
-                        brush = Brush.linearGradient(
+                        width = if (beforeRank) 1.dp else 4.dp,
+                        brush = if (beforeRank)
+                            Brush.linearGradient(1f to Color(0xFFCFD5D8), 1f to Color(0xFFCFD5D8))
+                        else Brush.linearGradient(
                             0.13f to Color(0xFF7366D9),
                             0.36f to Color(0xFFAB9FFB),
                             0.8f to Color(0xFFF7ACAE),
-                            1.0f to Color(0xFFFDEAEB)
-
+                            1.0f to Color(0xFFFDEAEB),
                         ),
                         shape = CircleShape
                     )
-                    .size(88.dp)
-                    .border(width = 8.dp, color = Color.Black, CircleShape)
+                    .border(
+                        width = if (beforeRank) 0.dp else 8.dp,
+                        color = Color.White,
+                        CircleShape
+                    )
             )
+
 
             Column(Modifier.wrapContentWidth()) {
                 if (isMyStar) {

@@ -6,10 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +41,7 @@ import com.trotfan.trot.model.VoteStatusBoard
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefitsNav
+import com.trotfan.trot.ui.home.vote.component.VoteItem
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
@@ -342,17 +340,18 @@ fun TodayRankingView(initPage: Int) {
     HorizontalPager(
         count = 2,
         state = pagerState,
-        modifier = Modifier.disabledHorizontalPointerInputScroll()
+        modifier = Modifier
+            .background(color = Color.White)
+            .disabledHorizontalPointerInputScroll()
     ) { index ->
-        Column(modifier = Modifier.height(600.dp)) {
-            Image(
-                painter = painterResource(id = R.drawable.vote_main),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(80.dp)
-                    .fillMaxWidth()
-            )
+
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            repeat(10) {
+                VoteItem()
+            }
         }
+
 
     }
 
