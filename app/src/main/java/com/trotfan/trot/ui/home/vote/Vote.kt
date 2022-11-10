@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,7 +36,7 @@ import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Top3Benefit
-import com.trotfan.trot.model.VoteStatusBoard
+import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefitsNav
@@ -67,8 +66,8 @@ fun VoteHome(
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
     val top3Info by viewModel.top3Info.collectAsState()
-    val voteStatusBoardList by viewModel.voteStatusBoardList.collectAsState()
-    val voteStatusBoardListCount by viewModel.voteStatusBoardListCount.collectAsState()
+    val voteStatusBoardList by viewModel.voteDataList.collectAsState()
+    val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val favoriteStarGender by viewModel.favoriteStarManager.favoriteStarGenderFlow.collectAsState(
         initial = 0
     )
@@ -98,7 +97,7 @@ fun VoteHome(
         CustomTopAppBarWithIcon(
             title = "투표",
             modifier = Modifier.clickable {
-                viewModel.changeVoteStatus()
+//                viewModel.changeVoteStatus()
             },
             onClickEndIcon = {
                 val sendIntent: Intent = Intent().apply {
@@ -125,7 +124,7 @@ fun VoteHome(
             )
 
             when (voteStatus) {
-                VoteStatus.VoteStar, VoteStatus.NotVoteForFiveTimes -> {
+                VoteStatus.Available, VoteStatus.NotVoteForFiveTimes -> {
                     voteToStar(
                         items = voteStatusBoardList,
                         count = voteStatusBoardListCount,
@@ -175,7 +174,7 @@ fun VoteHome(
             }
 
             when (voteStatus) {
-                VoteStatus.VoteStar, VoteStatus.NotVoteForFiveTimes -> {
+                VoteStatus.Available, VoteStatus.NotVoteForFiveTimes -> {
                     item {
                         Spacer(modifier = Modifier.height(32.dp))
                         Row(
@@ -347,8 +346,13 @@ fun TodayRankingView(initPage: Int) {
 
 
         Column(modifier = Modifier.fillMaxWidth()) {
-            repeat(10) {
-                VoteItem()
+            repeat(30) {
+                if (index == 0) {
+                    VoteItem()
+                } else {
+                    VoteItem(isMyStar = true)
+                }
+
             }
         }
 
@@ -491,12 +495,12 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun voteToStar(items: List<VoteStatusBoard>, count: Int, voteStatus: VoteStatus) {
+fun voteToStar(items: List<VoteData>, count: Int, voteStatus: VoteStatus) {
 
 
     val pagerState = rememberPagerState()
     LaunchedEffect(key1 = voteStatus, block = {
-        while (voteStatus == VoteStatus.VoteStar) {
+        while (voteStatus == VoteStatus.Available) {
             yield()
             delay(3500)
             try {
@@ -537,7 +541,7 @@ fun voteToStar(items: List<VoteStatusBoard>, count: Int, voteStatus: VoteStatus)
                     buildAnnotatedString {
 
                         when (voteStatus) {
-                            VoteStatus.VoteStar -> {
+                            VoteStatus.Available -> {
                                 append("${items[currentPage].user_name}님이")
                                 withStyle(
                                     style = SpanStyle(
@@ -577,7 +581,7 @@ fun voteToStar(items: List<VoteStatusBoard>, count: Int, voteStatus: VoteStatus)
             ) {
 
                 when (voteStatus) {
-                    VoteStatus.VoteStar -> {
+                    VoteStatus.Available -> {
                         Text(
                             text = "${items[currentPage].quantity}",
                             color = Color.White,

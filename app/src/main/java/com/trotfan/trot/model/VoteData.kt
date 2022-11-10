@@ -3,7 +3,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class VoteStatusBoard(
+data class VoteData(
     val quantity: Int,
     @SerialName("star_name")
     val star_name: String,

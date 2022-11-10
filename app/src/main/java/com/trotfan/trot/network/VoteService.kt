@@ -6,6 +6,6 @@ import com.trotfan.trot.network.response.CommonListResponse
 import com.trotfan.trot.network.response.CommonResponse
 
 interface VoteService {
-    suspend fun VoteList(
-    ): CommonListResponse<Top3Benefit>
+    suspend fun vote(
+    ): CommonResponse<Top3Benefit>
 }

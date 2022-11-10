@@ -8,7 +8,7 @@ import com.google.gson.Gson
 import com.trotfan.trot.datastore.FavoriteStarDataStore
 import com.trotfan.trot.datastore.FavoriteStarManager
 import com.trotfan.trot.model.Top3Benefit
-import com.trotfan.trot.model.VoteStatusBoard
+import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.repository.VoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
@@ -18,11 +18,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONArray
+import org.json.JSONObject
 import javax.inject.Inject
 
 enum class VoteStatus(
 ) {
-    VoteEnd, VoteStar, NotVoteForFiveTimes
+    VoteEnd, Available, NotVoteForFiveTimes
 
 }
 
@@ -42,24 +43,21 @@ class VoteHomeViewModel @Inject constructor(
     val voteStatus: StateFlow<VoteStatus>
         get() = _voteStatus
     private val _voteStatus =
-        MutableStateFlow(VoteStatus.VoteStar)
+        MutableStateFlow(VoteStatus.Available)
 
     val top3Info: StateFlow<Top3Benefit?>
         get() = _top3Info
     private val _top3Info =
         MutableStateFlow(Top3Benefit())
 
-    val voteStatusBoardList: StateFlow<ArrayList<VoteStatusBoard>>
-        get() = _voteStatusBoardList
-    private val _voteStatusBoardList =
-        MutableStateFlow(arrayListOf<VoteStatusBoard>())
+    val voteDataList: StateFlow<ArrayList<VoteData>>
+        get() = _voteDataList
+    private val _voteDataList =
+        MutableStateFlow(arrayListOf<VoteData>())
 
-    val voteStatusBoardListCount: StateFlow<Int>
-        get() = _voteStatusBoardListCount
-    private val _voteStatusBoardListCount =
-        MutableStateFlow(0)
-
-    private val sampleCount =
+    val voteDataListCount: StateFlow<Int>
+        get() = _voteDataListCount
+    private val _voteDataListCount =
         MutableStateFlow(0)
 
 
@@ -70,8 +68,8 @@ class VoteHomeViewModel @Inject constructor(
 
     fun getVoteList() {
         viewModelScope.launch {
-            val response = repository.getVoteList()
-            _top3Info.emit(response?.data?.first() ?: Top3Benefit())
+            val response = repository.getVote()
+            _top3Info.emit(response?.data ?: Top3Benefit())
         }
     }
 
@@ -80,46 +78,26 @@ class VoteHomeViewModel @Inject constructor(
         viewModelScope.launch {
             val options = IO.Options()
             options.transports = arrayOf(WebSocket.NAME)
-            mSocket = IO.socket("http://13.125.232.75:3000/", options)
+            mSocket = IO.socket("http://13.125.232.75:3000/board", options)
             mSocket.on(Socket.EVENT_CONNECT) {
                 Log.e("CONNECT", "연결됐다!!!")
             }
             mSocket.on(Socket.EVENT_CONNECT_ERROR) {
 //                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
-//                val list = arrayListOf<VoteStatusBoard>()
-////                val olderList = _voteStatusBoardList.value
-//                list.addAll(
-//                    arrayListOf(현곤
-//                        VoteStatusBoard(
-//                            quantity = System.currentTimeMillis().toInt(),
-//                            starName = "아무개",
-//                            userName = "유저네임"
-//                        ),
-//                        VoteStatusBoard(
-//                            quantity = System.currentTimeMillis().toInt(),
-//                            starName = "아무개2",
-//                            userName = "유저네임2"
-//                        ),
-//                        VoteStatusBoard(
-//                            quantity = System.currentTimeMillis().toInt(),
-//                            starName = "아무개3",
-//                            userName = "유저네임3"
-//                        )
-//                    )
-//                )
-////                _voteStatusBoardList.value = olderList
-////                _voteStatus.value = VoteStatus.VoteStar
-//                sendEvent(list)
-
             }
             mSocket.on("vote status board") {
                 if (it.isNotEmpty()) {
-                    val list = arrayListOf<VoteStatusBoard>()
-                    val jsonArray = it[0] as JSONArray
-                    for (i in 0 until jsonArray.length()) {
-                        val jsonObject = jsonArray.get(i).toString()
+                    val list = arrayListOf<VoteData>()
+                    val voteStatusData = it[0] as JSONObject
+                    val status = voteStatusData.get("vote_status").toString()
+//                    Log.e("status", status)
+                    changeVoteStatus(status)
+                    val voteDataList = voteStatusData.get("data") as JSONArray
+//                    Log.e("voteDataList", voteDataList.toString())
+                    for (i in 0 until voteDataList.length()) {
+                        val jsonObject = voteDataList.get(i).toString()
 //                        Log.e("JSONOBEJECT",jsonObject.toString())
-                        val data = Gson().fromJson(jsonObject, VoteStatusBoard::class.java)
+                        val data = Gson().fromJson(jsonObject, VoteData::class.java)
 //                        Log.e("data",data.toString())
                         list.add(data)
 //
@@ -137,12 +115,12 @@ class VoteHomeViewModel @Inject constructor(
 
     }
 
-    private fun sendEvent(list: ArrayList<VoteStatusBoard>) {
+    private fun sendEvent(list: ArrayList<VoteData>) {
         viewModelScope.launch {
-            val oldList = _voteStatusBoardList.value
+            val oldList = _voteDataList.value
             oldList.addAll(list)
-            _voteStatusBoardList.emit(oldList)
-            _voteStatusBoardListCount.emit(oldList.count())
+            _voteDataList.emit(oldList)
+            _voteDataListCount.emit(oldList.count())
         }
 
     }
@@ -156,28 +134,25 @@ class VoteHomeViewModel @Inject constructor(
         }
     }
 
-    fun changeVoteStatus() {
+    fun changeVoteStatus(status: String) {
         viewModelScope.launch {
-            when (sampleCount.value) {
-                0 -> {
-                    _voteStatus.emit(VoteStatus.VoteStar)
-                    sampleCount.value = 1
+            when (status) {
+                "available" -> {
+                    _voteStatus.emit(VoteStatus.Available)
                 }
-                1 -> {
-                    val oldList = _voteStatusBoardList.value
-                    oldList.add(VoteStatusBoard(quantity = -1, star_name = "", user_name = ""))
-                    _voteStatusBoardList.emit(oldList)
-                    _voteStatusBoardListCount.emit(oldList.count())
-                    _voteStatus.emit(VoteStatus.NotVoteForFiveTimes)
-                    sampleCount.value = 2
-                }
-                2 -> {
+
+                "counting" -> {
                     _voteStatus.emit(VoteStatus.VoteEnd)
-                    sampleCount.value = 0
+                }
+                else -> {
+                    val oldList = _voteDataList.value
+                    oldList.add(VoteData(quantity = -1, star_name = "", user_name = ""))
+                    _voteDataList.emit(oldList)
+                    _voteDataListCount.emit(oldList.count())
+                    _voteStatus.emit(VoteStatus.NotVoteForFiveTimes)
                 }
 
             }
-
         }
     }
 }

@@ -1,15 +1,23 @@
 package com.trotfan.trot.network
 
+import com.trotfan.trot.BuildConfig
+
 object HttpRoutes {
-    private const val BASE_URL = "https://fanwoori.ap.ngrok.io"
-    const val KAKAO_LOGIN = "$BASE_URL/oauth2/login/kakao"
-    const val GOOGLE_LOGIN = "$BASE_URL/oauth2/login/google"
-    const val APPLE_LOGIN = "$BASE_URL/oauth2/login/apple"
-    const val SERVER_STATE = "https://fanwoori-develop-api.services"
-    const val STAR_SEARCH = "$BASE_URL/com.trotfan.trot.model.stars"
-    const val GET_STAR_LIST = "$BASE_URL/stars"
-    const val USERS = "$BASE_URL/users"
-    const val SMS = "$BASE_URL/auth/sms"
-    const val VOTE_LIST = "$BASE_URL/votes"
-    const val POPUPS = "$BASE_URL/popups"
+    //    private const val BASE_URL = "https://fanwoori.ap.ngrok.io"
+    val BASE_URL
+        get() = if (BuildConfig.DEBUG) {
+            "https://dev.fanmaum.ap.ngrok.io"
+        } else {
+            "https://fanwoori.ap.ngrok.io"
+        }
+    val KAKAO_LOGIN = "$BASE_URL/oauth2/login/kakao"
+    val GOOGLE_LOGIN = "$BASE_URL/oauth2/login/google"
+    val APPLE_LOGIN = "$BASE_URL/oauth2/login/apple"
+    val SERVER_STATE = "https://fanwoori-develop-api.services"
+    val STAR_SEARCH = "$BASE_URL/com.trotfan.trot.model.stars"
+    val GET_STAR_LIST = "$BASE_URL/stars"
+    val USERS = "$BASE_URL/users"
+    val SMS = "$BASE_URL/auth/sms"
+    val VOTE = "$BASE_URL/votes"
+    val POPUPS = "$BASE_URL/popups"
 }
