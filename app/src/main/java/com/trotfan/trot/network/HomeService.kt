@@ -4,5 +4,5 @@ import com.trotfan.trot.model.MainPopups
 import com.trotfan.trot.network.response.CommonResponse
 
 interface HomeService {
-    suspend fun getMainPopups(): CommonResponse<MainPopups>
+    suspend fun getMainPopups(token: String): CommonResponse<MainPopups>
 }
