@@ -29,6 +29,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.trotfan.trot.R
 import com.trotfan.trot.model.FavoriteStar
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BackIcon
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.IconOutline1Button
@@ -78,11 +79,11 @@ fun SearchStarScreen(
 
     if (viewModel.onComplete.collectAsState().value) {
         LaunchedEffect(Unit) {
-            navController.navigate(SignUpSections.SettingNickName.route) {
-                popUpTo(SignUpSections.SearchStar.route) {
+            navController.navigate(Route.SettingNickname.route) {
+                popUpTo(Route.SearchStar.route) {
                     inclusive = true
                 }
-                navController.backQueue.removeIf { it.destination.route == SignUpSections.SelectStar.route }
+                navController.backQueue.removeIf { it.destination.route == Route.SelectStar.route }
             }
         }
     }

@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -19,10 +22,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.ui.components.button.Outline2Button
 import com.trotfan.trot.ui.components.chip.Chip
+import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Secondary50
@@ -32,8 +37,11 @@ import com.trotfan.trot.ui.theme.Secondary600
 @Composable
 fun AutoVotingDialog(
     modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
     onDismiss: () -> Unit
 ) {
+    val mainPopups by viewModel.mainPopups.collectAsState()
+
     Dialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -57,7 +65,7 @@ fun AutoVotingDialog(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(Secondary50),
-                    text = "양파쿵야",
+                    text = mainPopups?.autoVote?.star?.name ?: "",
                     textColor = Secondary600
                 )
 
@@ -70,7 +78,7 @@ fun AutoVotingDialog(
             }
 
             Text(
-                text = "100장 투표 완료 \uD83C\uDF89",
+                text = "${mainPopups?.autoVote?.quantity}장 투표 완료 \uD83C\uDF89",
                 style = FanwooriTypography.subtitle1,
                 color = Secondary600,
                 modifier = Modifier

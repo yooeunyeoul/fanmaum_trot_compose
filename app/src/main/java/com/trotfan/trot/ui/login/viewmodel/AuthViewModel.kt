@@ -165,7 +165,7 @@ class AuthViewModel @Inject constructor(
 
     suspend fun setUserToken(token: String) {
         context.userTokenStore.updateData {
-            Log.d("setUserToken", "setUserToken")
+            Log.d("setUserToken", token)
             it.toBuilder().setAccessToken(token).build()
         }
     }

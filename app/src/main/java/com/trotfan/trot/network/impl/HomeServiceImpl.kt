@@ -11,10 +11,14 @@ import javax.inject.Inject
 
 class HomeServiceImpl @Inject constructor(
     private val httpClient: HttpClient
-): HomeService {
-    override suspend fun getMainPopups(): CommonResponse<MainPopups> {
+) : HomeService {
+    override suspend fun getMainPopups(token: String): CommonResponse<MainPopups> {
         return httpClient.get {
             url(HttpRoutes.POPUPS)
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
         }.body()
     }
 }

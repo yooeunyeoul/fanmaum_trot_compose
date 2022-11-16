@@ -33,11 +33,14 @@ import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.KakaoTokens
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
 import com.trotfan.trot.ui.login.viewmodel.AuthViewModel
-import com.trotfan.trot.ui.signup.SignUpSections
-import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.theme.FanwooriTypography
+import com.trotfan.trot.ui.theme.Gray600
+import com.trotfan.trot.ui.theme.Gray800
+import com.trotfan.trot.ui.theme.Secondary800
 import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -156,13 +159,13 @@ fun LoginScreen(
         if (userInfo != null) {
             LaunchedEffect(userInfo) {
                 if (userInfo!!.star == null) {
-                    routeSections(navController, SignUpSections.SelectStar.route)
+                    routeSections(navController, Route.SelectStar.route)
                 } else if (userInfo!!.name == null) {
-                    routeSections(navController, SignUpSections.SettingNickName.route)
+                    routeSections(navController, Route.SettingNickname.route)
                 } else if (userInfo!!.phone_number == null) {
-                    routeSections(navController, SignUpSections.CertificationPhoneNumber.route)
+                    routeSections(navController, Route.CertificationPhoneNumber.route)
                 } else if (userInfo!!.redeem_code == null) {
-                    routeSections(navController, SignUpSections.InvitationCode.route)
+                    routeSections(navController, Route.InvitationCode.route)
                 } else {
                     routeSections(navController, HomeSections.Vote.route)
                 }
@@ -191,7 +194,7 @@ fun LoginScreen(
 
 fun routeSections(nevController: NavController, route: String) {
     nevController.navigate(route) {
-        popUpTo(LoginNav.Login.route) {
+        popUpTo(Route.Login.route) {
             inclusive = true
         }
     }

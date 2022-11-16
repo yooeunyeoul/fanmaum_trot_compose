@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.input.InputTextField
@@ -73,7 +74,7 @@ fun SettingNicknameScreen(
 //                    inputText = it
                     viewModel.checkNickNameLocal(it)
                 },
-                errorMessage = nickCheckState?.message,
+                errorMessage = nickCheckState.message,
                 modifier = Modifier,
                 successMessage = NickNameCheckStatus.AuthSuccess.message
             )
@@ -117,8 +118,8 @@ fun SettingNicknameScreen(
             enabled = nickCheckState == NickNameCheckStatus.AuthSuccess,
             modifier = Modifier.weight(1f)
         ) {
-            navController?.navigate(SignUpSections.CertificationPhoneNumber.route) {
-                popUpTo(SignUpSections.SettingNickName.route) {
+            navController.navigate(Route.CertificationPhoneNumber.route) {
+                popUpTo(Route.SettingNickname.route) {
                     inclusive = true
                 }
             }

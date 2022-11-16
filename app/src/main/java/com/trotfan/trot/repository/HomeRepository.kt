@@ -8,7 +8,7 @@ import javax.inject.Inject
 class HomeRepository @Inject constructor(
     private val homeService: HomeService
 ) {
-    suspend fun getMainPopups(): CommonResponse<MainPopups> {
-        return homeService.getMainPopups()
+    suspend fun getMainPopups(token: String): CommonResponse<MainPopups> {
+        return homeService.getMainPopups(token)
     }
 }

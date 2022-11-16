@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
@@ -121,7 +122,7 @@ fun InvitationScreen(
                 buttonOneText = "확인",
                 onDismiss = {
                     navController.navigate(HomeSections.Vote.route) {
-                        popUpTo(SignUpSections.InvitationCode.route) {
+                        popUpTo(Route.InvitationCode.route) {
                             inclusive = true
                         }
                     }
@@ -132,7 +133,7 @@ fun InvitationScreen(
         LaunchedEffect(skipState) {
             if (skipState) {
                 navController.navigate(HomeSections.Vote.route) {
-                    popUpTo(SignUpSections.InvitationCode.route) {
+                    popUpTo(Route.InvitationCode.route) {
                         inclusive = true
                     }
                 }

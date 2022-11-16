@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.Outline1Button
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
@@ -88,8 +89,8 @@ fun CertificationPhoneScreen(
                 contentText = status?.content ?: "",
                 buttonOneText = status?.buttonText ?: ""
             ) {
-                navController.navigate(SignUpSections.InvitationCode.route) {
-                    popUpTo(SignUpSections.CertificationPhoneNumber.route) {
+                navController.navigate(Route.InvitationCode.route) {
+                    popUpTo(Route.CertificationPhoneNumber.route) {
                         inclusive = true
                     }
                 }
