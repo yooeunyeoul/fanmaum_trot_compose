@@ -98,60 +98,6 @@ fun FanwooriApp(
                         }
                     )
                 }
-
-                NavHost(
-                    navController = navController,
-                    modifier = Modifier.padding(innerPadding),
-                    startDestination = "로그인"
-                ) {
-
-                    navigation(
-                        route = "로그인",
-//                    startDestination = LoginNav.Login.route
-                        startDestination = LoginNav.Login.route
-                    ) {
-                        addLoginGraph(
-                            modifier = Modifier,
-                            navController = navController
-                        )
-                        addHomeGraph(
-                            onItemSelected = { id, entry ->
-                                // 각화면의 디테일 작업
-                            },
-                            votingBottomSheetState = votingBottomSheetState,
-                            navController = navController
-                        )
-                        addSignUpGraph(
-                            navController = navController,
-                            modifier = Modifier.padding(
-                                start = 24.dp,
-                                end = 24.dp
-                            )
-                        )
-
-                        addVoteBenefitsGraph(
-                            modifier = Modifier,
-                            navController = navController
-                        )
-                    }
-
-                    // 디테일 화면 눌렀을 때 이동하는 뷰
-                    composable(
-                        route = "${Destinations.DETAIL_ROUTE}}/{${DETAIL_ID_KEY}}",
-                        arguments = listOf(
-                            element = navArgument(DETAIL_ID_KEY,
-                                builder = {
-                                    type = NavType.LongType
-                                })
-                        )
-                    ) { navBackStackEntry ->
-                        val arguments = requireNotNull(navBackStackEntry.arguments)
-                        val detailId = arguments.getLong(DETAIL_ID_KEY)
-
-                    }
-                }
-
-
             }
         }
     }

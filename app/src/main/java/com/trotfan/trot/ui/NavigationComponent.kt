@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
 import com.trotfan.trot.ui.login.LoginScreen
@@ -37,7 +38,7 @@ fun NavigationComponent(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Route.Login.route
+        startDestination = HomeSections.Vote.route
     ) {
         composable(Route.Login.route) {
             LoginScreen(
