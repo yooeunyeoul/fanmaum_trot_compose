@@ -61,7 +61,7 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
-    votingBottomSheetState: ModalBottomSheetState
+    onVotingClick: () -> Unit
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -237,7 +237,7 @@ fun VoteHome(
                         }
                     }
                     item {
-                        TodayRankingView(favoriteStarGender ?: 0)
+                        TodayRankingView(favoriteStarGender ?: 0, onVotingClick)
 
                     }
                 }
@@ -283,8 +283,9 @@ fun VoteHome(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TodayRankingView(initPage: Int) {
+fun TodayRankingView(initPage: Int, onVotingClick: () -> Unit) {
     val tabData = listOf<String>("남자스타", "여자스타")
 
     val pagerState = rememberPagerState(
@@ -348,9 +349,13 @@ fun TodayRankingView(initPage: Int) {
         Column(modifier = Modifier.fillMaxWidth()) {
             repeat(30) {
                 if (index == 0) {
-                    VoteItem()
+                    VoteItem(onVotingClick = {
+                        onVotingClick()
+                    })
                 } else {
-                    VoteItem(isMyStar = true)
+                    VoteItem(isMyStar = true, onVotingClick = {
+                        onVotingClick()
+                    })
                 }
 
             }

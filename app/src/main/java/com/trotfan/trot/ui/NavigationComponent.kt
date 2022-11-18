@@ -34,7 +34,7 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    votingBottomSheetState: ModalBottomSheetState
+    onVotingClick: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -50,7 +50,9 @@ fun NavigationComponent(
             onItemSelected = { _, _ ->
                 // 각화면의 디테일 작업
             },
-            votingBottomSheetState = votingBottomSheetState,
+            onVotingClick = {
+                onVotingClick()
+            },
             navController = navController
         )
         composable(Route.SelectStar.route) {

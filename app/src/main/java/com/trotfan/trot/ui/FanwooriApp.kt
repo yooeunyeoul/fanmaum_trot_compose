@@ -2,6 +2,7 @@ package com.trotfan.trot.ui
 
 import android.annotation.SuppressLint
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -17,6 +18,7 @@ import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 object Destinations {
     const val HOME_ROUTE = "home"
@@ -79,9 +81,18 @@ fun FanwooriApp(
                 },
                 scaffoldState = scaffoldState
             ) {
+                BackHandler(enabled = votingBottomSheetState.isVisible) {
+                    coroutineScope.launch {
+                        votingBottomSheetState.hide()
+                    }
+                }
                 NavigationComponent(
                     navController = navController,
-                    votingBottomSheetState = votingBottomSheetState
+                    onVotingClick = {
+                        coroutineScope.launch {
+                            votingBottomSheetState.show()
+                        }
+                    }
                 )
 
                 if (votingCompleteState) {

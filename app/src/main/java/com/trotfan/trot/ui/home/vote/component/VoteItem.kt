@@ -27,10 +27,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 
 
 @Composable
-fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
+fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, onVotingClick: () -> Unit) {
 
     val strokeWidth = LocalDensity.current.run { 1.dp.toPx() }
     val margin = LocalDensity.current.run { 24.dp.toPx() }
@@ -185,7 +186,11 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
             Column(
                 Modifier
                     .background(color = Primary500, shape = RoundedCornerShape(20.dp))
-                    .size(width = 72.dp, height = 40.dp),
+                    .clip(RoundedCornerShape(20.dp))
+                    .size(width = 72.dp, height = 40.dp)
+                    .clickable {
+                        onVotingClick()
+                    },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -206,5 +211,5 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
 @Preview
 @Composable
 fun PreviewVoteItem() {
-    VoteItem()
+    VoteItem(onVotingClick = {})
 }
