@@ -93,7 +93,7 @@ fun VoteHome(
             .background(color = VoteBackGround)
     ) {
         CustomTopAppBarWithIcon(
-            title = "투표",
+            title = "일일 투표",
             modifier = Modifier.clickable {
 //                viewModel.changeVoteStatus()
             },
