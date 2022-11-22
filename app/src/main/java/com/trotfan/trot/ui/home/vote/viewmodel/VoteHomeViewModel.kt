@@ -53,23 +53,28 @@ class VoteHomeViewModel @Inject constructor(
     val voteDataList: StateFlow<ArrayList<VoteData>>
         get() = _voteDataList
     private val _voteDataList =
-        MutableStateFlow(arrayListOf<VoteData>())
+        MutableStateFlow(arrayListOf(VoteData(quantity = -1, "null", user_name = "null")))
 
     val voteDataListCount: StateFlow<Int>
         get() = _voteDataListCount
     private val _voteDataListCount =
-        MutableStateFlow(0)
+        MutableStateFlow(1)
+
+    var currentPage = -1
+
+    val dummyData = VoteData(quantity = -1, star_name = "null", user_name = "null")
 
 
     init {
         getVoteList()
         favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
+        connectSocket()
     }
 
     fun getVoteList() {
         viewModelScope.launch {
-            val response = repository.getVote()
-            _top3Info.emit(response?.data ?: Top3Benefit())
+//            val response = repository.getVote()
+//            _top3Info.emit(response?.data ?: Top3Benefit())
         }
     }
 
@@ -78,7 +83,7 @@ class VoteHomeViewModel @Inject constructor(
         viewModelScope.launch {
             val options = IO.Options()
             options.transports = arrayOf(WebSocket.NAME)
-            mSocket = IO.socket("http://13.125.232.75:3000/board", options)
+            mSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/board", options)
             mSocket.on(Socket.EVENT_CONNECT) {
                 Log.e("CONNECT", "연결됐다!!!")
             }
@@ -90,7 +95,7 @@ class VoteHomeViewModel @Inject constructor(
                     val list = arrayListOf<VoteData>()
                     val voteStatusData = it[0] as JSONObject
                     val status = voteStatusData.get("vote_status").toString()
-//                    Log.e("status", status)
+                    Log.e("status", status)
                     changeVoteStatus(status)
                     val voteDataList = voteStatusData.get("data") as JSONArray
 //                    Log.e("voteDataList", voteDataList.toString())
@@ -110,7 +115,6 @@ class VoteHomeViewModel @Inject constructor(
 
             }
             mSocket.connect()
-
         }
 
     }
@@ -144,12 +148,18 @@ class VoteHomeViewModel @Inject constructor(
                 "counting" -> {
                     _voteStatus.emit(VoteStatus.VoteEnd)
                 }
-                else -> {
+                "unavailable" -> {
+//                    val oldList = _voteDataList.value
+//                    oldList.add(VoteData(quantity = -1, star_name = "", user_name = ""))
+//                    _voteDataList.emit(oldList)
+//                    _voteDataListCount.emit(oldList.count())
                     val oldList = _voteDataList.value
-                    oldList.add(VoteData(quantity = -1, star_name = "", user_name = ""))
+                    if (!oldList.contains(dummyData)) {
+                        oldList.add(dummyData)
+                    }
                     _voteDataList.emit(oldList)
                     _voteDataListCount.emit(oldList.count())
-                    _voteStatus.emit(VoteStatus.NotVoteForFiveTimes)
+                    _voteStatus.emit(VoteStatus.Available)
                 }
 
             }

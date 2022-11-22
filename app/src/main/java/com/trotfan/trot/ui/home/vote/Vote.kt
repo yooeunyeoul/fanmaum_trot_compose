@@ -81,8 +81,6 @@ fun VoteHome(
     val minute: String = (ticks.toLong() / 60 % 60).toString()
     val hour: String = (ticks.toLong() / 3600).toString()
 
-    viewModel.connectSocket()
-
     LaunchedEffect(ticks != 0) {
         while (ticks > 0) {
             delay(1.seconds)
@@ -95,7 +93,7 @@ fun VoteHome(
             .background(color = VoteBackGround)
     ) {
         CustomTopAppBarWithIcon(
-            title = "투표",
+            title = "일일 투표",
             modifier = Modifier.clickable {
 //                viewModel.changeVoteStatus()
             },
@@ -128,7 +126,8 @@ fun VoteHome(
                     voteToStar(
                         items = voteStatusBoardList,
                         count = voteStatusBoardListCount,
-                        voteStatus = voteStatus
+                        voteStatus = voteStatus,
+                        viewModel = viewModel
                     )
                 }
                 VoteStatus.VoteEnd -> {
@@ -500,32 +499,43 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun voteToStar(items: List<VoteData>, count: Int, voteStatus: VoteStatus) {
+fun voteToStar(
+    items: List<VoteData>,
+    count: Int,
+    voteStatus: VoteStatus,
+    viewModel: VoteHomeViewModel
+) {
 
 
     val pagerState = rememberPagerState()
     LaunchedEffect(key1 = voteStatus, block = {
-        while (voteStatus == VoteStatus.Available) {
+        while (items.isNotEmpty()) {
             yield()
             delay(3500)
             try {
                 Log.e("count", "${items.count()}")
+
+                if (items.count() >= pagerState.currentPage + 1) {
+                    pagerState.animateScrollToPage(
+//                        page = (pagerState.currentPage + 1) % (pagerState.pageCount)
+                        page = pagerState.currentPage + 1
+                    )
+
+                }
+                viewModel.currentPage = pagerState.currentPage
                 Log.e("pagerState.currentPage", "${pagerState.currentPage}")
-                pagerState.animateScrollToPage(
-                    page = (pagerState.currentPage + 1) % (pagerState.pageCount)
-                )
+
             } catch (_: Throwable) {
 
             }
         }
-        if (voteStatus == VoteStatus.NotVoteForFiveTimes) {
-            if (items.isNotEmpty()) {
-                pagerState.animateScrollToPage(
-                    page = items.size - 1
-                )
-            }
-
-        }
+//        if (voteStatus == VoteStatus.NotVoteForFiveTimes) {
+//            if (items.isNotEmpty()) {
+//                pagerState.animateScrollToPage(
+//                    page = items.size - 1
+//                )
+//            }
+//        }
     })
 
     VerticalPager(
@@ -547,28 +557,38 @@ fun voteToStar(items: List<VoteData>, count: Int, voteStatus: VoteStatus) {
 
                         when (voteStatus) {
                             VoteStatus.Available -> {
-                                append("${items[currentPage].user_name}님이")
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontWeight = FontWeight.Bold,
+                                if (items[currentPage].quantity == -1) {
+                                    Text(
+                                        text = "투표 진행 중",
                                         color = Color.White,
-                                        fontSize = 18.sp
+                                        style = FanwooriTypography.subtitle4,
+                                        maxLines = 1,
+                                        fontSize = 18.sp,
                                     )
-                                ) {
-                                    append(" ${items[currentPage].star_name} ")
+                                } else {
+                                    append("${items[currentPage].user_name}님이")
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.White,
+                                            fontSize = 18.sp
+                                        )
+                                    ) {
+                                        append(" ${items[currentPage].star_name} ")
+                                    }
+                                    append("님에게 투표했어요!")
                                 }
-                                append("님에게 투표했어요!")
                             }
-                            VoteStatus.NotVoteForFiveTimes -> {
-                                Text(
-                                    text = "투표 진행 중",
-                                    color = Color.White,
-                                    style = FanwooriTypography.subtitle4,
-                                    maxLines = 1,
-                                    fontSize = 18.sp,
-                                )
-
-                            }
+//                            VoteStatus.NotVoteForFiveTimes -> {
+//                                Text(
+//                                    text = "투표 진행 중",
+//                                    color = Color.White,
+//                                    style = FanwooriTypography.subtitle4,
+//                                    maxLines = 1,
+//                                    fontSize = 18.sp,
+//                                )
+//
+//                            }
                             else -> {}
                         }
 
@@ -587,35 +607,48 @@ fun voteToStar(items: List<VoteData>, count: Int, voteStatus: VoteStatus) {
 
                 when (voteStatus) {
                     VoteStatus.Available -> {
-                        Text(
-                            text = "${items[currentPage].quantity}",
-                            color = Color.White,
-                            modifier = Modifier.weight(weight = 1f, fill = false),
-                            style = FanwooriTypography.subtitle4,
-                            maxLines = 1,
-                            fontSize = 18.sp,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            text = "표",
-                            color = Color.White,
-                            style = FanwooriTypography.subtitle4,
-                            maxLines = 1,
-                            fontSize = 18.sp,
-                            overflow = TextOverflow.Visible
-                        )
+                        if (items[currentPage].quantity == -1) {
+                            Text(
+                                text = "지금 내 스타에게 투표해보세요!",
+                                color = Color.White,
+                                style = FanwooriTypography.body2,
+                                maxLines = 1,
+                                fontSize = 15.sp,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                        } else {
+                            Text(
+                                text = "${items[currentPage].quantity}",
+                                color = Color.White,
+                                modifier = Modifier.weight(weight = 1f, fill = false),
+                                style = FanwooriTypography.subtitle4,
+                                maxLines = 1,
+                                fontSize = 18.sp,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(
+                                text = "표",
+                                color = Color.White,
+                                style = FanwooriTypography.subtitle4,
+                                maxLines = 1,
+                                fontSize = 18.sp,
+                                overflow = TextOverflow.Visible
+                            )
+                        }
+
                     }
-                    VoteStatus.NotVoteForFiveTimes -> {
-                        Text(
-                            text = "지금 내 스타에게 투표해보세요!",
-                            color = Color.White,
-                            style = FanwooriTypography.body2,
-                            maxLines = 1,
-                            fontSize = 15.sp,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+//                    VoteStatus.NotVoteForFiveTimes -> {
+//                        Text(
+//                            text = "지금 내 스타에게 투표해보세요!",
+//                            color = Color.White,
+//                            style = FanwooriTypography.body2,
+//                            maxLines = 1,
+//                            fontSize = 15.sp,
+//                            overflow = TextOverflow.Ellipsis
+//                        )
+//                    }
 
                     else -> {}
                 }
