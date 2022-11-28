@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val Gray50 = Color(0XFFF9FAFA)
@@ -41,3 +42,12 @@ val SemanticPositive500 = Color(0XFF2DC4B3)
 val SemanticPositive300 = Color(0XFF81E2D7)
 val SemanticNegative500 = Color(0XFFF76C1B)
 val SemanticNegative300 = Color(0XFFFFAC7C)
+
+val TooltipTriangle = Color(0XFF6357CB)
+
+val gradient01 = Brush.linearGradient(
+    0.0f to Color(0xFF4E43B3),
+    0.37f to Color(0xFF6E61D7),
+    0.7f to Color(0xFFB1A0F6),
+    1.0f to Color(0xFFF8ADAF),
+)

@@ -96,12 +96,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
                         width = if (beforeRank) 1.dp else 4.dp,
                         brush = if (beforeRank)
                             Brush.linearGradient(1f to Color(0xFFCFD5D8), 1f to Color(0xFFCFD5D8))
-                        else Brush.linearGradient(
-                            0.13f to Color(0xFF7366D9),
-                            0.36f to Color(0xFFAB9FFB),
-                            0.8f to Color(0xFFF7ACAE),
-                            1.0f to Color(0xFFFDEAEB),
-                        ),
+                        else gradient01,
                         shape = CircleShape
                     )
                     .border(
@@ -117,13 +112,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
                     Row(
                         Modifier
                             .background(
-                                brush = Brush.linearGradient(
-                                    0.0f to Color(0xFF4E43B3),
-                                    0.37f to Color(0xFF6E61D7),
-                                    0.7f to Color(0xFFB1A0F6),
-                                    1.0f to Color(0xFFF8ADAF)
-
-                                ),
+                                brush = gradient01,
                                 shape = RoundedCornerShape(20.dp),
                             )
                             .size(width = 64.dp, height = 24.dp),

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -47,11 +49,8 @@ import com.trotfan.trot.ui.Route
 import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.HomeSections
-import com.trotfan.trot.ui.home.vote.component.HeaderEndState
-import com.trotfan.trot.ui.home.vote.component.HeaderVoteState
-import com.trotfan.trot.ui.home.vote.component.MyVote
+import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
-import com.trotfan.trot.ui.home.vote.component.VoteItem
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
@@ -190,12 +189,7 @@ fun VoteHome(
                                 .clip(CircleShape)
                                 .border(
                                     width = 8.dp,
-                                    brush = Brush.linearGradient(
-                                        0.13f to Color(0xFF7366D9),
-                                        0.36f to Color(0xFFAB9FFB),
-                                        0.8f to Color(0xFFF7ACAE),
-                                        1.0f to Color(0xFFFDEAEB),
-                                    ),
+                                    brush = gradient01,
                                     shape = CircleShape
                                 )
                                 .border(
@@ -230,52 +224,69 @@ fun VoteHome(
                         hideState = { isHide ->
                             myVoteHide = isHide
                         })
-                    Spacer(modifier = Modifier.height(32.dp))
-                    Divider(thickness = 8.dp, color = Gray100)
-
-                    Button(
-                        onClick = { /*TODO*/ },
-                        interactionSource = interactionSource,
-                        colors = ButtonDefaults.buttonColors(backgroundColor = if (isPressedLastRank) Gray50 else Color.White),
-                        modifier = Modifier
-                            .height(72.dp)
-
+                    Box(
+                        Modifier
+                            .height(112.dp)
+                            .background(color = Color.White)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .background(color = Secondary100, shape = CircleShape),
+
+                        ToolTip(modifier = Modifier.padding(start = 24.dp, top = 8.dp).zIndex(1f))
+
+
+                        Divider(
+                            thickness = 8.dp,
+                            color = Gray100,
+                            modifier = Modifier.padding(top = 32.dp)
+                        )
+
+                        Button(
+                            onClick = { /*TODO*/ },
+                            shape = RectangleShape,
+                            interactionSource = interactionSource,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = if (isPressedLastRank) Gray50 else Color.White),
+                            modifier = Modifier
+                                .height(72.dp)
+                                .offset(y = 40.dp),
+
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icon_ranking),
-                                    contentDescription = null,
-                                    modifier = Modifier.align(Alignment.Center),
-                                    tint = Secondary600
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .background(color = Secondary100, shape = CircleShape),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icon_ranking),
+                                        contentDescription = null,
+                                        modifier = Modifier.align(Alignment.Center),
+                                        tint = Secondary600
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Text(
+                                    text = "최종 순위 선정 방법",
+                                    style = FanwooriTypography.button1,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Secondary600,
+                                    fontSize = 17.sp,
+                                    modifier = Modifier.weight(1f)
                                 )
+
+                                Icon(
+                                    painter = painterResource(id = R.drawable.icon_arrow),
+                                    contentDescription = null
+                                )
+
+
                             }
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Text(
-                                text = "최종 순위 선정 방법",
-                                style = FanwooriTypography.button1,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Secondary600,
-                                fontSize = 17.sp,
-                                modifier = Modifier.weight(1f)
-                            )
-
-                            Icon(
-                                painter = painterResource(id = R.drawable.icon_arrow),
-                                contentDescription = null
-                            )
-
 
                         }
 
                     }
+
 
                 }
 
