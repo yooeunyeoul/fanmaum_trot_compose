@@ -51,7 +51,7 @@ enum class HomeSections(
     val title: String,
     val route: String
 ) {
-    Vote(title = "투표", route = "home/vote"),
+    Vote(title = "일일투표", route = "home/vote"),
     Ranking(title = "순위", route = "home/ranking"),
     Charge(title = "충전", route = "home/charge"),
     MyPage(title = "마이페이지", route = "home/mypage")
@@ -191,7 +191,7 @@ fun TrotBottomBar(
                         )
 
                 ) {
-                    Divider(thickness = 1.dp, color = Gray100)
+//                    Divider(thickness = 1.dp, color = Gray100)
                     Spacer(modifier = Modifier.height(8.dp))
                     Box(
                         modifier = Modifier
@@ -218,7 +218,7 @@ fun TrotBottomBar(
                                 painter = painterResource(id = id),
                                 modifier = Modifier.height(18.3.dp),
                                 contentDescription = null,
-                                tint = if (selectedSection.title == sections.title) Gray750 else Gray400
+                                tint = if (selectedSection.title == sections.title) Primary500 else Gray400
                             )
                         }
 
@@ -232,7 +232,7 @@ fun TrotBottomBar(
                             Text(
                                 text = sections.title,
                                 fontSize = 13.sp,
-                                color = if (selectedSection.title == sections.title) Gray800 else Gray500,
+                                color = if (selectedSection.title == sections.title) Primary700 else Gray500,
                                 style = FanwooriTypography.button2,
                                 maxLines = 1
                             )

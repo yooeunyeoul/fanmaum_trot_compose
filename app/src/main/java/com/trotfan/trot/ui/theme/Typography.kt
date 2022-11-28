@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.sp
 class Typography internal constructor(
     val h1: TextStyle,
     val h2: TextStyle,
+    val h3: TextStyle,
     val subtitle1: TextStyle,
     val subtitle2: TextStyle,
     val subtitle3: TextStyle,
@@ -38,6 +39,11 @@ class Typography internal constructor(
             fontWeight = FontWeight.Light,
             fontSize = 60.sp,
             letterSpacing = (-0.5).sp
+        ),
+        h3: TextStyle = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 30.sp,
+            letterSpacing = (-1).sp
         ),
         subtitle1: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
@@ -107,6 +113,7 @@ class Typography internal constructor(
     ) : this(
         h1 = h1.withDefaultFontFamily(defaultFontFamily),
         h2 = h2.withDefaultFontFamily(defaultFontFamily),
+        h3 = h3.withDefaultFontFamily(defaultFontFamily),
         subtitle1 = subtitle1.withDefaultFontFamily(defaultFontFamily),
         subtitle2 = subtitle2.withDefaultFontFamily(defaultFontFamily),
         subtitle3 = subtitle3.withDefaultFontFamily(defaultFontFamily),
