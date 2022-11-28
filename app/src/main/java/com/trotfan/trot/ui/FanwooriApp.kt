@@ -9,13 +9,16 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
+import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
+import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -27,11 +30,12 @@ object Destinations {
 }
 
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FanwooriApp(
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     FanwooriTheme {
         val scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -43,16 +47,15 @@ fun FanwooriApp(
                 initialValue = ModalBottomSheetValue.Hidden,
                 skipHalfExpanded = true
             )
-        var votingCompleteState by remember {
-            mutableStateOf(false)
-        }
+        val votingCompleteState by viewModel.votingCompleteState.collectAsState()
 
 
 
         ModalBottomSheetLayout(
             sheetContent = {
                 VotingBottomSheet(votingBottomSheetState) {
-                    votingCompleteState = true
+//                    votingCompleteState = true
+                    viewModel.postVoteTicket()
                 }
             },
             sheetState = votingBottomSheetState,
@@ -95,7 +98,10 @@ fun FanwooriApp(
                     }
                 )
 
-                if (votingCompleteState) {
+                if (votingCompleteState == 1) {
+                    coroutineScope.launch {
+                        votingBottomSheetState.hide()
+                    }
                     HorizontalDialog(
                         titleText = "스타이름에게 투표완료",
                         contentText = "스타이름 님에 대한\n" +
@@ -105,7 +111,9 @@ fun FanwooriApp(
                         negativeText = "완료",
                         modifier = Modifier,
                         onDismiss = {
-                            votingCompleteState = false
+                            coroutineScope.launch {
+                                viewModel.votingCompleteState.emit(0)
+                            }
                         }
                     )
                 }

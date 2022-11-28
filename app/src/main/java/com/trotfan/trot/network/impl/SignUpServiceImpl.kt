@@ -1,9 +1,7 @@
 package com.trotfan.trot.network.impl
 
-import coil.request.SuccessResult
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes
-import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.response.CommonResponse
 import io.ktor.client.*
@@ -29,7 +27,10 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         }.body()
     }
 
-    override suspend fun getStarList(cursor: String, search: String): CommonResponse<stars<FavoriteStar>> {
+    override suspend fun getStarList(
+        cursor: String,
+        search: String
+    ): CommonResponse<StarsList<FavoriteStar>> {
 
         val response = httpClient.get(HttpRoutes.GET_STAR_LIST) {
             contentType(ContentType.Application.Json)
@@ -41,7 +42,10 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         return response.body()
     }
 
-    override suspend fun starSearch(page: String, search: String): CommonResponse<stars<FavoriteStar>> {
+    override suspend fun starSearch(
+        page: String,
+        search: String
+    ): CommonResponse<StarsList<FavoriteStar>> {
 
         val response = httpClient.get(HttpRoutes.GET_STAR_LIST) {
             contentType(ContentType.Application.Json)

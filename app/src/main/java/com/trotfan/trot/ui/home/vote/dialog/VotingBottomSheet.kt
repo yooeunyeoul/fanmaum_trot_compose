@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.IconOutline3Button
+import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.addFocusCleaner
 import com.trotfan.trot.ui.utils.clickable
@@ -110,23 +111,10 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
                         .weight(1f)
                 )
 
-                Column(
+                UnderlineTextButton(
+                    text = "충전하기",
                     modifier = Modifier.padding(start = 8.dp, end = 34.dp)
-                ) {
-                    Text(
-                        text = "충전하기",
-                        style = FanwooriTypography.button1,
-                        color = Primary800,
-                        modifier = Modifier.padding(start = 2.dp)
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .background(Primary800)
-                            .width(62.dp)
-                            .height(1.dp)
-                    )
-                }
+                )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -283,7 +271,6 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
                 modifier = Modifier.padding(start = 32.dp, end = 32.dp)
             ) {
                 coroutineScope.launch {
-                    votingBottomSheetState.hide()
                     onDismiss()
                 }
             }

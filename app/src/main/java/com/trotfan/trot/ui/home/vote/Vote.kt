@@ -38,6 +38,7 @@ import com.trotfan.trot.R
 import com.trotfan.trot.model.Top3Benefit
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.model.VoteData
+import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
@@ -392,13 +393,7 @@ fun TryMission(modifier: Modifier) {
         modifier = modifier
     )
 
-    Text(
-        text = "충전하기",
-        style = FanwooriTypography.button1,
-        color = Primary800,
-        fontSize = 17.sp,
-        textDecoration = TextDecoration.Underline,
-    )
+    UnderlineTextButton(text = "충전하기")
 
 
 }

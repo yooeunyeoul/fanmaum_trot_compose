@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
@@ -119,14 +120,7 @@ fun MyVote(modifier: Modifier = Modifier) {
 
 @Composable
 fun Charging() {
-    Text(
-        text = "충전하기",
-        color = Primary800,
-        style = FanwooriTypography.button1,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 17.sp,
-        textDecoration = TextDecoration.Underline
-    )
+    UnderlineTextButton(text = "충전하기")
 
 }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.MainPopups
+import com.trotfan.trot.model.VoteTicket
 import com.trotfan.trot.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,8 @@ class HomeViewModel @Inject constructor(
     private val _mainPopups = MutableStateFlow<MainPopups?>(null)
     val mainPopups: StateFlow<MainPopups?>
         get() = _mainPopups
+
+    var votingCompleteState = MutableStateFlow(0)
 
     var updateState = MutableStateFlow(false)
         private set
@@ -68,6 +71,22 @@ class HomeViewModel @Inject constructor(
                         }
                     }
                 }.onFailure {
+                    Log.d("HomeViewModel", it.message.toString())
+                }
+            }
+        }
+    }
+
+    fun postVoteTicket() {
+        viewModelScope.launch {
+            context.userTokenStore.data.collect {
+                kotlin.runCatching {
+                    repository.postVoteTicket(VoteTicket(1, 2, 300), it.accessToken)
+                }.onSuccess {
+                    votingCompleteState.emit(1)
+                    Log.d("HomeViewModel", it.toString())
+                }.onFailure {
+                    votingCompleteState.emit(2)
                     Log.d("HomeViewModel", it.message.toString())
                 }
             }
