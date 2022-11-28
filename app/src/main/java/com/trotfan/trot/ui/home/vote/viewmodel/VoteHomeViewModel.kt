@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.trotfan.trot.datastore.FavoriteStarDataStore
 import com.trotfan.trot.datastore.FavoriteStarManager
+import com.trotfan.trot.datastore.VoteMainManager
+import com.trotfan.trot.model.Star
 import com.trotfan.trot.model.Top3Benefit
 import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.repository.VoteRepository
@@ -37,6 +39,7 @@ class VoteHomeViewModel @Inject constructor(
     lateinit var mSocket: Socket
 
     var favoriteStarManager: FavoriteStarManager
+    var voteMainManager: VoteMainManager
 
     private val context = getApplication<Application>()
 
@@ -68,6 +71,7 @@ class VoteHomeViewModel @Inject constructor(
     init {
         getVoteList()
         favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
+        voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
         connectSocket()
     }
 
@@ -165,4 +169,15 @@ class VoteHomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun saveTooltipState(isShowToolTIp: Boolean) {
+        viewModelScope.launch {
+            voteMainManager.storeTooltipState(
+                isShowToolTIp
+            )
+
+        }
+
+    }
+
 }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -19,17 +20,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -44,11 +44,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Top3Benefit
-import com.trotfan.trot.ui.Route
 import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
-import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
@@ -82,6 +79,9 @@ fun VoteHome(
     )
     val favoriteStarName by viewModel.favoriteStarManager.favoriteStarNameFlow.collectAsState(
         initial = ""
+    )
+    val isShowingToolTip by viewModel.voteMainManager.isShowingVoteMainToolTipFlow.collectAsState(
+        initial = false
     )
 
 
@@ -230,8 +230,13 @@ fun VoteHome(
                             .background(color = Color.White)
                     ) {
 
-                        ToolTip(modifier = Modifier.padding(start = 24.dp, top = 8.dp).zIndex(1f))
-
+                        if (isShowingToolTip) {
+                            ToolTip(
+                                modifier = Modifier
+                                    .padding(start = 24.dp, top = 8.dp)
+                                    .zIndex(1f)
+                            )
+                        }
 
                         Divider(
                             thickness = 8.dp,
@@ -240,7 +245,9 @@ fun VoteHome(
                         )
 
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                viewModel.saveTooltipState(false)
+                            },
                             shape = RectangleShape,
                             interactionSource = interactionSource,
                             colors = ButtonDefaults.buttonColors(backgroundColor = if (isPressedLastRank) Gray50 else Color.White),
