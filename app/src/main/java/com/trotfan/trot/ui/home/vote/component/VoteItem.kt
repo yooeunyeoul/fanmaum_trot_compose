@@ -84,7 +84,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKf_rXYJjWAMYI2PjeXcnljkfIhnFwGQuEPLdj3xg8cYJh7GRYH9XnVM2WwJTAOiWShII&usqp=CAU")
+                    .data("https://cdn.pixabay.com/photo/2018/01/27/12/29/dance-3111088_1280.jpg")
                     .crossfade(true).build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -93,14 +93,24 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
                     .size(if (beforeRank) 64.dp else 88.dp)
                     .clip(CircleShape)
                     .border(
-                        width = if (beforeRank) 1.dp else 4.dp,
+                        width = if (beforeRank || isMyStar) 1.dp else 4.dp,
                         brush = if (beforeRank)
                             Brush.linearGradient(1f to Color(0xFFCFD5D8), 1f to Color(0xFFCFD5D8))
-                        else gradient01,
+                        else {
+                            if (isMyStar) {
+                                Brush.linearGradient(
+                                    1f to Color(0xFFFDEAEB),
+                                    1f to Color(0xFFFDEAEB)
+                                )
+                            } else {
+                                gradient01
+                            }
+
+                        },
                         shape = CircleShape
                     )
                     .border(
-                        width = if (beforeRank) 0.dp else 8.dp,
+                        width = if (beforeRank || isMyStar) 0.dp else 8.dp,
                         color = Color.White,
                         CircleShape
                     )

@@ -82,6 +82,7 @@ fun VoteHome(
     )
     val isShowingToolTip by viewModel.voteMainManager.isShowingVoteMainToolTipFlow.collectAsState(
         initial = false
+
     )
 
 
