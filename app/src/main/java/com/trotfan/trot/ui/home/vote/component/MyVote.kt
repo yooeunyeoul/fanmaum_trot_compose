@@ -25,7 +25,7 @@ import com.trotfan.trot.ui.theme.*
 
 @Composable
 fun MyVote(modifier: Modifier = Modifier, isHide: Boolean, hideState: (Boolean) -> (Unit)) {
-    val textList = listOf("구매한 투표권", "소멸 예정 투표권")
+    val textList = listOf("ㄴ 유효기한 무제한", "ㄴ 오늘 소멸 예정")
     val interactionSource = remember {
         MutableInteractionSource()
     }

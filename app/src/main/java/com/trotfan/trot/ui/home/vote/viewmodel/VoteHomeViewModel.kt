@@ -11,13 +11,13 @@ import com.trotfan.trot.datastore.VoteMainManager
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.VoteRepository
+import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -37,7 +37,8 @@ class VoteHomeViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    lateinit var mSocket: Socket
+    lateinit var mBoardSocket: Socket
+    lateinit var mRankSocket: Socket
 
     var favoriteStarManager: FavoriteStarManager
     var voteMainManager: VoteMainManager
@@ -79,8 +80,10 @@ class VoteHomeViewModel @Inject constructor(
         getVoteList()
         favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
         voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
-        connectSocket()
+        connectBoardSocket()
+        connectRankSocket()
         getStarRank()
+        getTime()
     }
 
     private fun getVoteList() {
@@ -109,19 +112,41 @@ class VoteHomeViewModel @Inject constructor(
         }
     }
 
-
-    fun connectSocket() {
+    private fun connectRankSocket() {
         viewModelScope.launch {
             val options = IO.Options()
             options.transports = arrayOf(WebSocket.NAME)
-            mSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/board", options)
-            mSocket.on(Socket.EVENT_CONNECT) {
+            mRankSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/rank", options)
+            mRankSocket.on(Socket.EVENT_CONNECT) {
                 Log.e("CONNECT", "연결됐다!!!")
             }
-            mSocket.on(Socket.EVENT_CONNECT_ERROR) {
+            mRankSocket.on(Socket.EVENT_CONNECT_ERROR) {
 //                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
             }
-            mSocket.on("vote status board") {
+            mRankSocket.on("rank men status") {
+                Log.e("rank men status", "rank men status" + it.get(0).toString())
+            }
+            mRankSocket.on("rank women status") {
+                Log.e("rank women status", "rank women status" + it.get(0).toString())
+            }
+            mRankSocket.connect()
+
+        }
+    }
+
+    fun connectBoardSocket() {
+        viewModelScope.launch {
+            val options = IO.Options()
+            options.transports = arrayOf(WebSocket.NAME)
+            mBoardSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/board", options)
+
+            mBoardSocket.on(Socket.EVENT_CONNECT) {
+                Log.e("CONNECT", "연결됐다!!!")
+            }
+            mBoardSocket.on(Socket.EVENT_CONNECT_ERROR) {
+//                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
+            }
+            mBoardSocket.on("vote status board") {
                 if (it.isNotEmpty()) {
                     val list = arrayListOf<VoteData>()
                     val voteStatusData = it[0] as JSONObject
@@ -145,7 +170,7 @@ class VoteHomeViewModel @Inject constructor(
 
 
             }
-            mSocket.connect()
+            mBoardSocket.connect()
         }
 
     }
@@ -163,10 +188,13 @@ class VoteHomeViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        if (mSocket.connected()) {
-            Log.e("disconnect", "disconnect!!!")
-            mSocket.disconnect()
+        if (mBoardSocket.connected()) {
+            mBoardSocket.disconnect()
         }
+        if (mRankSocket.connected()) {
+            mRankSocket.disconnect()
+        }
+
     }
 
     fun changeVoteStatus(status: String) {

@@ -42,8 +42,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
+import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteData
-import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.model.VoteMainStars
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.vote.component.*
@@ -53,6 +53,7 @@ import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
 import com.trotfan.trot.ui.utils.disabledVerticalPointerInputScroll
+import com.trotfan.trot.ui.utils.getTime
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -88,7 +89,8 @@ fun VoteHome(
     )
 
 
-    var ticks by remember { mutableStateOf(7200) }
+
+    var ticks by remember { mutableStateOf(getTime()) }
     val second: String = (ticks.toLong() % 60).toString()
     val minute: String = (ticks.toLong() / 60 % 60).toString()
     val hour: String = (ticks.toLong() / 3600).toString()
@@ -213,7 +215,7 @@ fun VoteHome(
                         }
                         VoteStatus.Available, VoteStatus.NotVoteForFiveTimes -> {
                             HeaderVoteState(
-                                myStarName = favoriteStar.name ?: "",
+                                myStarName = favoriteStar.name ?: "-",
                                 dayRank = favoriteStar.rank?.daily ?: -1,
                                 monthRank = favoriteStar.rank?.monthly ?: -1,
                                 month = LocalDate.now().month.value
@@ -361,7 +363,7 @@ fun VoteHome(
                             }
                         }
                         item {
-                            TodayRankingView(favoriteStarGender ?: 0, stars)
+                            TodayRankingView(favoriteStarGender ?: 0, stars, favoriteStar)
 
                         }
                     }
@@ -412,7 +414,7 @@ fun VoteHome(
 }
 
 @Composable
-fun TodayRankingView(initPage: Int, stars: VoteMainStars?) {
+fun TodayRankingView(initPage: Int, stars: VoteMainStars?, favoriteStar: FavoriteStarInfo) {
     val tabData = listOf<String>("남자스타", "여자스타")
 
     val pagerState = rememberPagerState(
@@ -475,7 +477,11 @@ fun TodayRankingView(initPage: Int, stars: VoteMainStars?) {
             0 -> {
                 Column(Modifier.fillMaxWidth()) {
                     repeat(stars?.men?.size ?: 0) {
-                        VoteItem(star = stars?.men?.get(it))
+                        val star = stars?.men?.get(it)
+                        VoteItem(
+                            star = star,
+                            isMyStar = star?.id == favoriteStar.id
+                        )
                     }
                 }
 
@@ -483,7 +489,11 @@ fun TodayRankingView(initPage: Int, stars: VoteMainStars?) {
             1 -> {
                 Column(Modifier.fillMaxWidth()) {
                     repeat(stars?.women?.size ?: 0) {
-                        VoteItem(star = stars?.women?.get(it))
+                        val star = stars?.women?.get(it)
+                        VoteItem(
+                            star = star,
+                            isMyStar = star?.id == favoriteStar.id
+                        )
                     }
                 }
             }
