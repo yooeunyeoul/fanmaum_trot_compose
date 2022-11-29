@@ -26,11 +26,12 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
+import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.theme.*
 
 
 @Composable
-fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
+fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, star: VoteMainStar?) {
 
     val strokeWidth = LocalDensity.current.run { 1.dp.toPx() }
     val margin = LocalDensity.current.run { 24.dp.toPx() }
@@ -74,7 +75,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
                 }
 
                 Text(
-                    text = if (beforeRank) "-" else "2",
+                    text = if (beforeRank) "-" else "${star?.rank}",
                     color = Primary900,
                     style = FanwooriTypography.subtitle3,
                     fontWeight = FontWeight.SemiBold,
@@ -84,7 +85,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://cdn.pixabay.com/photo/2018/01/27/12/29/dance-3111088_1280.jpg")
+                    .data("${star?.image}")
                     .crossfade(true).build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -148,7 +149,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
                 }
 
                 Text(
-                    text = "임영웅",
+                    text = star?.name ?: "",
                     color = Gray800,
                     style = FanwooriTypography.subtitle1,
                     fontWeight = FontWeight.SemiBold,
@@ -156,7 +157,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
                 )
 
                 Text(
-                    text = "10,876,287,000 표",
+                    text = "${star?.votes} 표",
                     color = Gray800,
                     style = FanwooriTypography.body5,
                     fontSize = 17.sp
@@ -205,5 +206,5 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false) {
 @Preview
 @Composable
 fun PreviewVoteItem() {
-    VoteItem()
+//    VoteItem()
 }

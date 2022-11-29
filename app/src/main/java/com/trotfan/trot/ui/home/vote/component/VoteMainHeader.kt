@@ -75,7 +75,7 @@ fun HeaderVoteState(myStarName: String, dayRank: Int, monthRank: Int, month: Int
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "${dayRank}위",
+                    text = if (dayRank == -1) "-" else "${dayRank}위",
                     style = FanwooriTypography.h2,
                     color = Gray800,
                     fontSize = 22.sp,
@@ -104,7 +104,7 @@ fun HeaderVoteState(myStarName: String, dayRank: Int, monthRank: Int, month: Int
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "${monthRank}위",
+                    text = if (monthRank == -1) "-" else "${monthRank}위",
                     style = FanwooriTypography.h2,
                     color = Gray800,
                     fontSize = 22.sp,

@@ -5,11 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Top3Benefit(
-    val content: String = "",
-    @SerialName("ended_at")
-    val endedAt: String = "",
     val id: Int = -1,
+    val title: String = "",
+    val content: String = "",
     @SerialName("started_at")
     val startedAt: String = "",
-    val title: String = ""
+    @SerialName("ended_at")
+    val endedAt: String = "",
+    @SerialName("stars")
+    val voteMainStars: VoteMainStars ?=null,
 )

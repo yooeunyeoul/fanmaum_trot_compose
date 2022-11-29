@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -23,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -45,6 +43,8 @@ import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.VoteData
+import com.trotfan.trot.model.VoteMainStar
+import com.trotfan.trot.model.VoteMainStars
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
@@ -56,10 +56,11 @@ import com.trotfan.trot.ui.utils.disabledVerticalPointerInputScroll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
+import java.time.LocalDate
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VoteHome(
@@ -71,9 +72,10 @@ fun VoteHome(
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
-    val top3Info by viewModel.top3Info.collectAsState()
+    val stars by viewModel.stars.collectAsState()
     val voteStatusBoardList by viewModel.voteDataList.collectAsState()
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
+    val favoriteStar by viewModel.favoriteStar.collectAsState()
     val favoriteStarGender by viewModel.favoriteStarManager.favoriteStarGenderFlow.collectAsState(
         initial = 0
     )
@@ -181,7 +183,7 @@ fun VoteHome(
 
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKf_rXYJjWAMYI2PjeXcnljkfIhnFwGQuEPLdj3xg8cYJh7GRYH9XnVM2WwJTAOiWShII&usqp=CAU")
+                                .data(favoriteStar.image)
                                 .crossfade(true).build(),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
@@ -207,14 +209,14 @@ fun VoteHome(
 
                     when (voteStatus) {
                         VoteStatus.VoteEnd -> {
-                            HeaderEndState(myStarName = "이찬원")
+                            HeaderEndState(myStarName = favoriteStar.name ?: "")
                         }
                         VoteStatus.Available, VoteStatus.NotVoteForFiveTimes -> {
                             HeaderVoteState(
-                                myStarName = "이찬원",
-                                dayRank = 5,
-                                monthRank = 9,
-                                month = 12
+                                myStarName = favoriteStar.name ?: "",
+                                dayRank = favoriteStar.rank?.daily ?: -1,
+                                monthRank = favoriteStar.rank?.monthly ?: -1,
+                                month = LocalDate.now().month.value
                             )
                         }
                     }
@@ -359,7 +361,7 @@ fun VoteHome(
                             }
                         }
                         item {
-                            TodayRankingView(favoriteStarGender ?: 0)
+                            TodayRankingView(favoriteStarGender ?: 0, stars)
 
                         }
                     }
@@ -410,7 +412,7 @@ fun VoteHome(
 }
 
 @Composable
-fun TodayRankingView(initPage: Int) {
+fun TodayRankingView(initPage: Int, stars: VoteMainStars?) {
     val tabData = listOf<String>("남자스타", "여자스타")
 
     val pagerState = rememberPagerState(
@@ -468,20 +470,24 @@ fun TodayRankingView(initPage: Int) {
         modifier = Modifier
             .background(color = Color.White)
             .disabledHorizontalPointerInputScroll()
-    ) { index ->
-
-
-        Column(modifier = Modifier.fillMaxWidth()) {
-            repeat(5) {
-                if (index == 0) {
-                    VoteItem()
-                } else {
-                    VoteItem(isMyStar = true)
+    ) { page ->
+        when (page) {
+            0 -> {
+                Column(Modifier.fillMaxWidth()) {
+                    repeat(stars?.men?.size ?: 0) {
+                        VoteItem(star = stars?.men?.get(it))
+                    }
                 }
 
             }
+            1 -> {
+                Column(Modifier.fillMaxWidth()) {
+                    repeat(stars?.women?.size ?: 0) {
+                        VoteItem(star = stars?.women?.get(it))
+                    }
+                }
+            }
         }
-
 
     }
 

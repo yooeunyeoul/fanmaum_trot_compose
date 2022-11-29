@@ -8,9 +8,8 @@ import com.google.gson.Gson
 import com.trotfan.trot.datastore.FavoriteStarDataStore
 import com.trotfan.trot.datastore.FavoriteStarManager
 import com.trotfan.trot.datastore.VoteMainManager
-import com.trotfan.trot.model.Star
-import com.trotfan.trot.model.Top3Benefit
-import com.trotfan.trot.model.VoteData
+import com.trotfan.trot.model.*
+import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.VoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
@@ -18,6 +17,8 @@ import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -48,10 +49,16 @@ class VoteHomeViewModel @Inject constructor(
     private val _voteStatus =
         MutableStateFlow(VoteStatus.Available)
 
-    val top3Info: StateFlow<Top3Benefit?>
-        get() = _top3Info
-    private val _top3Info =
-        MutableStateFlow(Top3Benefit())
+    val stars: StateFlow<VoteMainStars>
+        get() = _stars
+    private val _stars =
+        MutableStateFlow(VoteMainStars())
+
+    val favoriteStar: StateFlow<FavoriteStarInfo>
+        get() = _favoriteStar
+    private val _favoriteStar =
+        MutableStateFlow(FavoriteStarInfo())
+
 
     val voteDataList: StateFlow<ArrayList<VoteData>>
         get() = _voteDataList
@@ -73,12 +80,32 @@ class VoteHomeViewModel @Inject constructor(
         favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
         voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
         connectSocket()
+        getStarRank()
     }
 
-    fun getVoteList() {
+    private fun getVoteList() {
         viewModelScope.launch {
-//            val response = repository.getVote()
-//            _top3Info.emit(response?.data ?: Top3Benefit())
+            val response = repository.getVote()
+            _stars.emit(response?.data?.voteMainStars ?: VoteMainStars())
+            Log.d("TOP3Benefit", response?.data?.voteMainStars.toString())
+        }
+    }
+
+    private fun getStarRank() {
+        viewModelScope.launch {
+            favoriteStarManager.favoriteStarIdFlow.collectLatest {
+                val response = repository.getStarRank(it ?: 2)
+                when (response.result.code) {
+                    ResultCodeStatus.StarRankNoResult.code -> {
+                        _favoriteStar.emit(FavoriteStarInfo())
+                    }
+                    ResultCodeStatus.Success.code -> {
+                        _favoriteStar.emit(response.data ?: FavoriteStarInfo())
+                    }
+                }
+
+
+            }
         }
     }
 
