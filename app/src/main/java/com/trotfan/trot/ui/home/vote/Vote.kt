@@ -4,7 +4,6 @@ package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -44,7 +43,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteData
-import com.trotfan.trot.model.VoteMainStars
+import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
@@ -73,7 +72,8 @@ fun VoteHome(
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
-    val stars by viewModel.stars.collectAsState()
+    val menList by viewModel.men.collectAsState()
+    val womenList by viewModel.women.collectAsState()
     val voteStatusBoardList by viewModel.voteDataList.collectAsState()
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
@@ -148,7 +148,7 @@ fun VoteHome(
                 )
 
                 when (voteStatus) {
-                    VoteStatus.Available, VoteStatus.NotVoteForFiveTimes -> {
+                    VoteStatus.Available -> {
                         voteToStar(
                             items = voteStatusBoardList,
                             count = voteStatusBoardListCount,
@@ -159,9 +159,6 @@ fun VoteHome(
                     VoteStatus.VoteEnd -> {
                         voteEndHeader()
                     }
-//                VoteStatus.NotVoteForFiveTimes -> {
-//                    voteIng()
-//                }
                 }
             }
 
@@ -212,7 +209,7 @@ fun VoteHome(
                         VoteStatus.VoteEnd -> {
                             HeaderEndState(myStarName = favoriteStar.name ?: "")
                         }
-                        VoteStatus.Available, VoteStatus.NotVoteForFiveTimes -> {
+                        VoteStatus.Available -> {
                             HeaderVoteState(
                                 myStarName = favoriteStar.name ?: "-",
                                 dayRank = favoriteStar.rank?.daily ?: -1,
@@ -302,7 +299,7 @@ fun VoteHome(
                 }
 
                 when (voteStatus) {
-                    VoteStatus.Available, VoteStatus.NotVoteForFiveTimes -> {
+                    VoteStatus.Available -> {
                         item {
                             Divider(thickness = 8.dp, color = Gray100)
                         }
@@ -362,7 +359,12 @@ fun VoteHome(
                             }
                         }
                         item {
-                            TodayRankingView(favoriteStarGender ?: 0, stars, favoriteStar)
+                            TodayRankingView(
+                                favoriteStarGender ?: 0,
+                                menList = menList,
+                                womenList = womenList,
+                                favoriteStar = favoriteStar
+                            )
 
                         }
                     }
@@ -413,7 +415,12 @@ fun VoteHome(
 }
 
 @Composable
-fun TodayRankingView(initPage: Int, stars: VoteMainStars?, favoriteStar: FavoriteStarInfo) {
+fun TodayRankingView(
+    initPage: Int,
+    menList: List<VoteMainStar>,
+    womenList: List<VoteMainStar>,
+    favoriteStar: FavoriteStarInfo
+) {
     val tabData = listOf<String>("남자스타", "여자스타")
 
     val pagerState = rememberPagerState(
@@ -475,11 +482,11 @@ fun TodayRankingView(initPage: Int, stars: VoteMainStars?, favoriteStar: Favorit
         when (page) {
             0 -> {
                 Column(Modifier.fillMaxWidth()) {
-                    repeat(stars?.men?.size ?: 0) {
-                        val star = stars?.men?.get(it)
+                    repeat(menList.size ?: 0) {
+                        val star = menList[it]
                         VoteItem(
                             star = star,
-                            isMyStar = star?.id == favoriteStar.id
+                            isMyStar = star.id == favoriteStar.id
                         )
                     }
                 }
@@ -487,11 +494,11 @@ fun TodayRankingView(initPage: Int, stars: VoteMainStars?, favoriteStar: Favorit
             }
             1 -> {
                 Column(Modifier.fillMaxWidth()) {
-                    repeat(stars?.women?.size ?: 0) {
-                        val star = stars?.women?.get(it)
+                    repeat(womenList.size ?: 0) {
+                        val star = womenList[it]
                         VoteItem(
                             star = star,
-                            isMyStar = star?.id == favoriteStar.id
+                            isMyStar = star.id == favoriteStar.id
                         )
                     }
                 }
@@ -534,7 +541,7 @@ fun voteToStar(
             yield()
             delay(3500)
             try {
-                Log.e("count", "${items.count()}")
+//                Log.e("count", "${items.count()}")
 
                 if (items.count() > pagerState.currentPage + 1) {
                     pagerState.animateScrollToPage(
@@ -544,7 +551,6 @@ fun voteToStar(
                 } else {
                     viewModel.clearDataAndAddDummyData()
                 }
-                viewModel.currentPage = pagerState.currentPage
 //                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
 
             } catch (_: Throwable) {

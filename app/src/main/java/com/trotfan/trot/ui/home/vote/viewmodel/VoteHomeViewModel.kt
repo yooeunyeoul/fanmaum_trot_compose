@@ -26,8 +26,7 @@ import javax.inject.Inject
 
 enum class VoteStatus(
 ) {
-    VoteEnd, Available, NotVoteForFiveTimes
-
+    VoteEnd, Available
 }
 
 
@@ -50,16 +49,20 @@ class VoteHomeViewModel @Inject constructor(
     private val _voteStatus =
         MutableStateFlow(VoteStatus.Available)
 
-    val stars: StateFlow<VoteMainStars>
-        get() = _stars
-    private val _stars =
-        MutableStateFlow(VoteMainStars())
+    val men: StateFlow<List<VoteMainStar>>
+        get() = _men
+    private val _men =
+        MutableStateFlow(listOf<VoteMainStar>())
+
+    val women: StateFlow<List<VoteMainStar>>
+        get() = _women
+    private val _women =
+        MutableStateFlow(listOf<VoteMainStar>())
 
     val favoriteStar: StateFlow<FavoriteStarInfo>
         get() = _favoriteStar
     private val _favoriteStar =
         MutableStateFlow(FavoriteStarInfo())
-
 
     val voteDataList: StateFlow<ArrayList<VoteData>>
         get() = _voteDataList
@@ -71,9 +74,7 @@ class VoteHomeViewModel @Inject constructor(
     private val _voteDataListCount =
         MutableStateFlow(1)
 
-    var currentPage = -1
-
-    val dummyData = VoteData(quantity = -1, star_name = "null", user_name = "null")
+    private val dummyData = VoteData(quantity = -1, star_name = "null", user_name = "null")
 
 
     init {
@@ -89,7 +90,8 @@ class VoteHomeViewModel @Inject constructor(
     private fun getVoteList() {
         viewModelScope.launch {
             val response = repository.getVote()
-            _stars.emit(response?.data?.voteMainStars ?: VoteMainStars())
+            _men.emit(response?.data?.voteMainStars?.men ?: listOf())
+            _women.emit(response?.data?.voteMainStars?.women ?: listOf())
             Log.d("TOP3Benefit", response?.data?.voteMainStars.toString())
         }
     }
@@ -124,7 +126,7 @@ class VoteHomeViewModel @Inject constructor(
 //                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
             }
             mRankSocket.on("rank men status") {
-//                Log.e("rank men status", "rank men status" + it.get(0).toString())
+                Log.e("rank men status", "rank men status" + it[0].toString())
             }
             mRankSocket.on("rank women status") {
 //                Log.e("rank women status", "rank women status" + it.get(0).toString())
@@ -177,10 +179,10 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun sendEvent(list: ArrayList<VoteData>) {
         viewModelScope.launch {
-            val oldList = _voteDataList.value
-            oldList.addAll(list)
-            _voteDataList.emit(oldList)
-            _voteDataListCount.emit(oldList.count())
+            val voteData = _voteDataList.value
+            voteData.addAll(list)
+            _voteDataList.emit(voteData)
+            _voteDataListCount.emit(voteData.count())
         }
 
     }
@@ -227,12 +229,12 @@ class VoteHomeViewModel @Inject constructor(
 
     fun clearDataAndAddDummyData() {
         viewModelScope.launch {
-            val oldList = _voteDataList.value
-            oldList.clear()
-            if (oldList.lastOrNull() != dummyData) {
-                oldList.add(dummyData)
-                _voteDataList.emit(oldList)
-                _voteDataListCount.emit(oldList.count())
+            val voteData = _voteDataList.value
+            voteData.clear()
+            if (voteData.lastOrNull() != dummyData) {
+                voteData.add(dummyData)
+                _voteDataList.emit(voteData)
+                _voteDataListCount.emit(voteData.count())
             }
         }
 
