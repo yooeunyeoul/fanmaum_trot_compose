@@ -124,10 +124,10 @@ class VoteHomeViewModel @Inject constructor(
 //                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
             }
             mRankSocket.on("rank men status") {
-                Log.e("rank men status", "rank men status" + it.get(0).toString())
+//                Log.e("rank men status", "rank men status" + it.get(0).toString())
             }
             mRankSocket.on("rank women status") {
-                Log.e("rank women status", "rank women status" + it.get(0).toString())
+//                Log.e("rank women status", "rank women status" + it.get(0).toString())
             }
             mRankSocket.connect()
 
@@ -151,7 +151,7 @@ class VoteHomeViewModel @Inject constructor(
                     val list = arrayListOf<VoteData>()
                     val voteStatusData = it[0] as JSONObject
                     val status = voteStatusData.get("vote_status").toString()
-                    Log.e("status", status)
+//                    Log.e("status", status)
                     changeVoteStatus(status)
                     val voteDataList = voteStatusData.get("data") as JSONArray
 //                    Log.e("voteDataList", voteDataList.toString())
@@ -208,17 +208,7 @@ class VoteHomeViewModel @Inject constructor(
                     _voteStatus.emit(VoteStatus.VoteEnd)
                 }
                 "unavailable" -> {
-//                    val oldList = _voteDataList.value
-//                    oldList.add(VoteData(quantity = -1, star_name = "", user_name = ""))
-//                    _voteDataList.emit(oldList)
-//                    _voteDataListCount.emit(oldList.count())
-                    val oldList = _voteDataList.value
-                    if (!oldList.contains(dummyData)) {
-                        oldList.add(dummyData)
-                    }
-                    _voteDataList.emit(oldList)
-                    _voteDataListCount.emit(oldList.count())
-                    _voteStatus.emit(VoteStatus.Available)
+
                 }
 
             }
@@ -231,6 +221,19 @@ class VoteHomeViewModel @Inject constructor(
                 isShowToolTIp
             )
 
+        }
+
+    }
+
+    fun clearDataAndAddDummyData() {
+        viewModelScope.launch {
+            val oldList = _voteDataList.value
+            oldList.clear()
+            if (oldList.lastOrNull() != dummyData) {
+                oldList.add(dummyData)
+                _voteDataList.emit(oldList)
+                _voteDataListCount.emit(oldList.count())
+            }
         }
 
     }

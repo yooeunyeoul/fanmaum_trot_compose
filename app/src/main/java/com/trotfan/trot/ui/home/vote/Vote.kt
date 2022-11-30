@@ -89,7 +89,6 @@ fun VoteHome(
     )
 
 
-
     var ticks by remember { mutableStateOf(getTime()) }
     val second: String = (ticks.toLong() % 60).toString()
     val minute: String = (ticks.toLong() / 60 % 60).toString()
@@ -537,27 +536,21 @@ fun voteToStar(
             try {
                 Log.e("count", "${items.count()}")
 
-                if (items.count() >= pagerState.currentPage + 1) {
+                if (items.count() > pagerState.currentPage + 1) {
                     pagerState.animateScrollToPage(
-//                        page = (pagerState.currentPage + 1) % (pagerState.pageCount)
                         page = pagerState.currentPage + 1
                     )
 
+                } else {
+                    viewModel.clearDataAndAddDummyData()
                 }
                 viewModel.currentPage = pagerState.currentPage
-                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
+//                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
 
             } catch (_: Throwable) {
 
             }
         }
-//        if (voteStatus == VoteStatus.NotVoteForFiveTimes) {
-//            if (items.isNotEmpty()) {
-//                pagerState.animateScrollToPage(
-//                    page = items.size - 1
-//                )
-//            }
-//        }
     })
 
     VerticalPager(
@@ -601,16 +594,6 @@ fun voteToStar(
                                     append("님에게 투표했어요!")
                                 }
                             }
-//                            VoteStatus.NotVoteForFiveTimes -> {
-//                                Text(
-//                                    text = "투표 진행 중",
-//                                    color = Color.White,
-//                                    style = FanwooriTypography.subtitle4,
-//                                    maxLines = 1,
-//                                    fontSize = 18.sp,
-//                                )
-//
-//                            }
                             else -> {}
                         }
 
@@ -661,17 +644,6 @@ fun voteToStar(
                         }
 
                     }
-//                    VoteStatus.NotVoteForFiveTimes -> {
-//                        Text(
-//                            text = "지금 내 스타에게 투표해보세요!",
-//                            color = Color.White,
-//                            style = FanwooriTypography.body2,
-//                            maxLines = 1,
-//                            fontSize = 15.sp,
-//                            overflow = TextOverflow.Ellipsis
-//                        )
-//                    }
-
                     else -> {}
                 }
 
