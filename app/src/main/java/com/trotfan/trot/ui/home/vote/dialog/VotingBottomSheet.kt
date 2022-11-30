@@ -18,7 +18,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -29,10 +28,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.IconOutline3Button
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
+import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.addFocusCleaner
 import com.trotfan.trot.ui.utils.clickable
@@ -41,11 +42,15 @@ import java.text.DecimalFormat
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: () -> Unit) {
+fun VotingBottomSheet(
+    votingBottomSheetState: ModalBottomSheetState,
+    viewModel: HomeViewModel = hiltViewModel(),
+    onDismiss: (starId: Int?, quantity: Long?) -> Unit
+) {
     val context = LocalContext.current
     val decimal = DecimalFormat("#,###")
-    val myVoteCnt by remember { mutableStateOf(14000000) }
-    var voteCnt by remember { mutableStateOf(TextFieldValue("")) }
+    val myVoteCnt by viewModel.myVoteCnt.collectAsState()
+    val voteCnt by viewModel.voteCnt.collectAsState()
     val scrollState = rememberScrollState()
     var voteBtnState by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -54,6 +59,7 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
     val keyboardController = LocalSoftwareKeyboardController.current
     var isTextFieldFocused = false
     var placeholder by remember { mutableStateOf("얼마나 투표할까요?") }
+    val star by viewModel.voteStar.collectAsState()
 
     Column(
         modifier = Modifier
@@ -160,7 +166,7 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
             }
 
             Text(
-                text = "스타이름 님에게",
+                text = "${star?.name} 님에게",
                 style = FanwooriTypography.subtitle1,
                 color = Gray800,
                 modifier = Modifier
@@ -181,26 +187,30 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
                     value = voteCnt,
                     maxLines = 1,
                     onValueChange = { cnt ->
-                        voteCnt = if (cnt.text.isBlank().not()) {
-                            var decimalCnt = cnt.text.replace(",", "")
-                            try {
-                                if (decimalCnt.toLong() >= myVoteCnt) {
-                                    decimalCnt = myVoteCnt.toString()
-                                }
-                                val formatText = decimal.format(decimalCnt.toLong())
-                                TextFieldValue(
-                                    formatText,
-                                    selection = TextRange(formatText.length)
-                                )
-                            } catch (e: NumberFormatException) {
-                                TextFieldValue(
-                                    cnt.text.substring(0, cnt.text.length - 1),
-                                    selection = TextRange(cnt.text.length - 1)
-                                )
-                            }
+                        coroutineScope.launch {
+                            viewModel.voteCnt.emit(
+                                if (cnt.text.isBlank().not()) {
+                                    var decimalCnt = cnt.text.replace(",", "")
+                                    try {
+                                        if (decimalCnt.toLong() >= myVoteCnt) {
+                                            decimalCnt = myVoteCnt.toString()
+                                        }
+                                        val formatText = decimal.format(decimalCnt.toLong())
+                                        TextFieldValue(
+                                            formatText,
+                                            selection = TextRange(formatText.length)
+                                        )
+                                    } catch (e: NumberFormatException) {
+                                        TextFieldValue(
+                                            cnt.text.substring(0, cnt.text.length - 1),
+                                            selection = TextRange(cnt.text.length - 1)
+                                        )
+                                    }
 
-                        } else {
-                            TextFieldValue("")
+                                } else {
+                                    TextFieldValue("")
+                                }
+                            )
                         }
                     },
                     placeholder = {
@@ -246,7 +256,9 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
                             .align(CenterEnd)
                             .padding(end = 24.dp)
                             .clickable {
-                                voteCnt = TextFieldValue("")
+                                coroutineScope.launch {
+                                    viewModel.voteCnt.emit(TextFieldValue(""))
+                                }
                             })
                 }
             }
@@ -256,8 +268,10 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
             IconOutline3Button(
                 text = "모두사용",
                 onClick = {
-                    voteCnt = TextFieldValue(decimal.format(myVoteCnt))
-                    focusManager.clearFocus()
+                    coroutineScope.launch {
+                        viewModel.voteCnt.emit(TextFieldValue(decimal.format(myVoteCnt)))
+                        focusManager.clearFocus()
+                    }
                 },
                 icon = R.drawable.ic_vote_iconcolored,
                 modifier = Modifier.align(CenterHorizontally)
@@ -271,7 +285,7 @@ fun VotingBottomSheet(votingBottomSheetState: ModalBottomSheetState, onDismiss: 
                 modifier = Modifier.padding(start = 32.dp, end = 32.dp)
             ) {
                 coroutineScope.launch {
-                    onDismiss()
+                    onDismiss(star?.id, voteCnt.text.replace(",", "").toLong())
                 }
             }
 
@@ -295,8 +309,9 @@ fun VotingBottomSheetPreview() {
             votingBottomSheetState = rememberModalBottomSheetState(
                 initialValue = ModalBottomSheetValue.Hidden,
                 skipHalfExpanded = true
-            )
-        ) {
+            ),
+            viewModel = hiltViewModel()
+        ) { _: Int?, _: Long? ->
         }
     }
 }

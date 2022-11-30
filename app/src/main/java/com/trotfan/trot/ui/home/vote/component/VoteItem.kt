@@ -26,13 +26,19 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
+import com.trotfan.trot.model.Star
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
 
 @Composable
-fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, star: VoteMainStar?, onVotingClick: () -> Unit) {
+fun VoteItem(
+    beforeRank: Boolean = false,
+    isMyStar: Boolean = false,
+    star: VoteMainStar?,
+    onVotingClick: (star: VoteMainStar?) -> Unit
+) {
 
     val strokeWidth = LocalDensity.current.run { 1.dp.toPx() }
     val margin = LocalDensity.current.run { 24.dp.toPx() }
@@ -189,7 +195,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, star: VoteM
                     .clip(RoundedCornerShape(20.dp))
                     .size(width = 72.dp, height = 40.dp)
                     .clickable {
-                        onVotingClick()
+                        onVotingClick(star)
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -211,5 +217,9 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, star: VoteM
 @Preview
 @Composable
 fun PreviewVoteItem() {
-    VoteItem(onVotingClick = {})
+    FanwooriTheme {
+        VoteItem(
+            star = VoteMainStar(id = 1, name = "임영웅", rank = 1, votes = 3000),
+            onVotingClick = {})
+    }
 }

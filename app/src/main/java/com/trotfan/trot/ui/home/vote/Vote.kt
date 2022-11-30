@@ -42,10 +42,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
-import com.trotfan.trot.model.FavoriteStarInfo
-import com.trotfan.trot.model.VoteData
+import com.trotfan.trot.model.*
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
-import com.trotfan.trot.model.VoteMainStars
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
@@ -70,7 +68,7 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
-    onVotingClick: () -> Unit
+    onVotingClick: (star: VoteMainStar?) -> Unit
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -88,7 +86,6 @@ fun VoteHome(
         initial = false
 
     )
-
 
 
     var ticks by remember { mutableStateOf(getTime()) }
@@ -224,12 +221,12 @@ fun VoteHome(
                         }
                     }
 
-                    MyVote(
-                        modifier = Modifier.padding(start = 24.dp, end = 24.dp),
-                        isHide = myVoteHide,
-                        hideState = { isHide ->
-                            myVoteHide = isHide
-                        })
+//                    MyVote(
+//                        modifier = Modifier.padding(start = 24.dp, end = 24.dp),
+//                        isHide = myVoteHide,
+//                        hideState = { isHide ->
+//                            myVoteHide = isHide
+//                        })
                     Box(
                         Modifier
                             .height(112.dp)
@@ -364,8 +361,11 @@ fun VoteHome(
                             }
                         }
                         item {
-                            TodayRankingView(favoriteStarGender ?: 0, stars, favoriteStar)
-
+                            TodayRankingView(
+                                favoriteStarGender ?: 0, stars, favoriteStar
+                            ) {
+                                onVotingClick(it)
+                            }
                         }
                     }
                     VoteStatus.VoteEnd -> {
@@ -416,7 +416,12 @@ fun VoteHome(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TodayRankingView(initPage: Int, stars: VoteMainStars?, favoriteStar: FavoriteStarInfo, onVotingClick: () -> Unit) {
+fun TodayRankingView(
+    initPage: Int,
+    stars: VoteMainStars?,
+    favoriteStar: FavoriteStarInfo,
+    onVotingClick: (star: VoteMainStar?) -> Unit
+) {
     val tabData = listOf<String>("남자스타", "여자스타")
 
     val pagerState = rememberPagerState(
@@ -483,7 +488,9 @@ fun TodayRankingView(initPage: Int, stars: VoteMainStars?, favoriteStar: Favorit
                         VoteItem(
                             star = star,
                             isMyStar = star?.id == favoriteStar.id
-                        )
+                        ) {
+                            onVotingClick(it)
+                        }
                     }
                 }
 
@@ -496,7 +503,7 @@ fun TodayRankingView(initPage: Int, stars: VoteMainStars?, favoriteStar: Favorit
                             star = star,
                             isMyStar = star?.id == favoriteStar.id,
                             onVotingClick = {
-                                onVotingClick()
+                                onVotingClick(it)
                             }
                         )
                     }

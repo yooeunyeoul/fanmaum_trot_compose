@@ -7,18 +7,22 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
+import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
-import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -31,7 +35,7 @@ object Destinations {
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FanwooriApp(
@@ -47,15 +51,20 @@ fun FanwooriApp(
                 initialValue = ModalBottomSheetValue.Hidden,
                 skipHalfExpanded = true
             )
+        val star: VoteMainStar? by viewModel.voteStar.collectAsState()
         val votingCompleteState by viewModel.votingCompleteState.collectAsState()
+        val keyboardController = LocalSoftwareKeyboardController.current
 
-
+        if (votingBottomSheetState.isVisible.not()) {
+            keyboardController?.hide()
+        }
 
         ModalBottomSheetLayout(
             sheetContent = {
-                VotingBottomSheet(votingBottomSheetState) {
-//                    votingCompleteState = true
-                    viewModel.postVoteTicket()
+                VotingBottomSheet(votingBottomSheetState) { i: Int?, l: Long? ->
+                    i?.let {
+                        viewModel.postVoteTicket(1, i, l!!)
+                    }
                 }
             },
             sheetState = votingBottomSheetState,
@@ -93,7 +102,11 @@ fun FanwooriApp(
                     navController = navController,
                     onVotingClick = {
                         coroutineScope.launch {
-                            votingBottomSheetState.show()
+                            it?.let {
+                                viewModel.voteStar.emit(it)
+                                viewModel.voteCnt.emit(TextFieldValue(""))
+                                votingBottomSheetState.show()
+                            }
                         }
                     }
                 )
@@ -103,8 +116,8 @@ fun FanwooriApp(
                         votingBottomSheetState.hide()
                     }
                     HorizontalDialog(
-                        titleText = "스타이름에게 투표완료",
-                        contentText = "스타이름 님에 대한\n" +
+                        titleText = "${star?.name}에게 투표완료",
+                        contentText = "${star?.name} 님에 대한\n" +
                                 "나의 투표 기여도를 공유하고,\n" +
                                 "더 많은 친구들과 응원해보세요!",
                         positiveText = "공유하기",
@@ -116,6 +129,19 @@ fun FanwooriApp(
                             }
                         }
                     )
+                } else if (votingCompleteState == 2) {
+                    coroutineScope.launch {
+                        votingBottomSheetState.hide()
+                    }
+                    VerticalDialog(
+                        contentText = "지금은 집계 시간이에요!\n" +
+                                "집계 중에는 투표할 수 없어요.\n" +
+                                "23:30:00 ~ 23:59:59", buttonOneText = "확인"
+                    ) {
+                        coroutineScope.launch {
+                            viewModel.votingCompleteState.emit(0)
+                        }
+                    }
                 }
             }
         }
