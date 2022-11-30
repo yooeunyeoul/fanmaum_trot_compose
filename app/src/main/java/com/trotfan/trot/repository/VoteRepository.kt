@@ -11,4 +11,6 @@ class VoteRepository @Inject constructor(
     suspend fun getVote(): CommonResponse<Top3Benefit>? =
         voteService.vote()
 
+    suspend fun getStarRank(starId: Int): CommonResponse<FavoriteStarInfo> =
+        voteService.starRank(starId)
 }

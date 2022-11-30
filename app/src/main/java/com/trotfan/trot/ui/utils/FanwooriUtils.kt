@@ -14,22 +14,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Velocity
+import androidx.compose.ui.unit.dp
 import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
+import java.util.*
+import kotlin.math.abs
 
 
 inline fun Modifier.clickable(crossinline onClick: () -> Unit): Modifier = composed {
@@ -144,6 +146,14 @@ fun Modifier.disabledHorizontalPointerInputScroll(disabled: Boolean = true) =
 
 fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean = true) =
     if (disabled) this.nestedScroll(VerticalScrollConsumer) else this
+
+fun getTime(): Int {
+    val cal = Calendar.getInstance()
+    cal.set(Calendar.HOUR_OF_DAY, 23)
+    cal.set(Calendar.MINUTE, 30)
+    val diff = abs(cal.timeInMillis - System.currentTimeMillis()) / 1000;
+    return diff.toInt()
+}
 
 internal interface MultipleEventsCutter {
     fun processEvent(event: () -> Unit)

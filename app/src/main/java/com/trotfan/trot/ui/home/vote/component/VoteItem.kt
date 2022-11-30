@@ -26,12 +26,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
+import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
 
 @Composable
-fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, onVotingClick: () -> Unit) {
+fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, star: VoteMainStar?, onVotingClick: () -> Unit) {
 
     val strokeWidth = LocalDensity.current.run { 1.dp.toPx() }
     val margin = LocalDensity.current.run { 24.dp.toPx() }
@@ -75,7 +76,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, onVotingCli
                 }
 
                 Text(
-                    text = if (beforeRank) "-" else "2",
+                    text = if (beforeRank) "-" else "${star?.rank}",
                     color = Primary900,
                     style = FanwooriTypography.subtitle3,
                     fontWeight = FontWeight.SemiBold,
@@ -85,7 +86,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, onVotingCli
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKf_rXYJjWAMYI2PjeXcnljkfIhnFwGQuEPLdj3xg8cYJh7GRYH9XnVM2WwJTAOiWShII&usqp=CAU")
+                    .data("${star?.image}")
                     .crossfade(true).build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -94,19 +95,24 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, onVotingCli
                     .size(if (beforeRank) 64.dp else 88.dp)
                     .clip(CircleShape)
                     .border(
-                        width = if (beforeRank) 1.dp else 4.dp,
+                        width = if (beforeRank || isMyStar) 1.dp else 4.dp,
                         brush = if (beforeRank)
                             Brush.linearGradient(1f to Color(0xFFCFD5D8), 1f to Color(0xFFCFD5D8))
-                        else Brush.linearGradient(
-                            0.13f to Color(0xFF7366D9),
-                            0.36f to Color(0xFFAB9FFB),
-                            0.8f to Color(0xFFF7ACAE),
-                            1.0f to Color(0xFFFDEAEB),
-                        ),
+                        else {
+                            if (isMyStar) {
+                                Brush.linearGradient(
+                                    1f to Color(0xFFFDEAEB),
+                                    1f to Color(0xFFFDEAEB)
+                                )
+                            } else {
+                                gradient01
+                            }
+
+                        },
                         shape = CircleShape
                     )
                     .border(
-                        width = if (beforeRank) 0.dp else 8.dp,
+                        width = if (beforeRank || isMyStar) 0.dp else 8.dp,
                         color = Color.White,
                         CircleShape
                     )
@@ -118,13 +124,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, onVotingCli
                     Row(
                         Modifier
                             .background(
-                                brush = Brush.linearGradient(
-                                    0.0f to Color(0xFF4E43B3),
-                                    0.37f to Color(0xFF6E61D7),
-                                    0.7f to Color(0xFFB1A0F6),
-                                    1.0f to Color(0xFFF8ADAF)
-
-                                ),
+                                brush = gradient01,
                                 shape = RoundedCornerShape(20.dp),
                             )
                             .size(width = 64.dp, height = 24.dp),
@@ -150,7 +150,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, onVotingCli
                 }
 
                 Text(
-                    text = "임영웅",
+                    text = star?.name ?: "",
                     color = Gray800,
                     style = FanwooriTypography.subtitle1,
                     fontWeight = FontWeight.SemiBold,
@@ -158,7 +158,7 @@ fun VoteItem(beforeRank: Boolean = false, isMyStar: Boolean = false, onVotingCli
                 )
 
                 Text(
-                    text = "10,876,287,000 표",
+                    text = "${star?.votes} 표",
                     color = Gray800,
                     style = FanwooriTypography.body5,
                     fontSize = 17.sp

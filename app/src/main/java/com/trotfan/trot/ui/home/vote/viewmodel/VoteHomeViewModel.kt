@@ -7,15 +7,18 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.trotfan.trot.datastore.FavoriteStarDataStore
 import com.trotfan.trot.datastore.FavoriteStarManager
-import com.trotfan.trot.model.Top3Benefit
-import com.trotfan.trot.model.VoteData
+import com.trotfan.trot.datastore.VoteMainManager
+import com.trotfan.trot.model.*
+import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.VoteRepository
+import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -34,9 +37,11 @@ class VoteHomeViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    lateinit var mSocket: Socket
+    lateinit var mBoardSocket: Socket
+    lateinit var mRankSocket: Socket
 
     var favoriteStarManager: FavoriteStarManager
+    var voteMainManager: VoteMainManager
 
     private val context = getApplication<Application>()
 
@@ -45,10 +50,16 @@ class VoteHomeViewModel @Inject constructor(
     private val _voteStatus =
         MutableStateFlow(VoteStatus.Available)
 
-    val top3Info: StateFlow<Top3Benefit?>
-        get() = _top3Info
-    private val _top3Info =
-        MutableStateFlow(Top3Benefit())
+    val stars: StateFlow<VoteMainStars>
+        get() = _stars
+    private val _stars =
+        MutableStateFlow(VoteMainStars())
+
+    val favoriteStar: StateFlow<FavoriteStarInfo>
+        get() = _favoriteStar
+    private val _favoriteStar =
+        MutableStateFlow(FavoriteStarInfo())
+
 
     val voteDataList: StateFlow<ArrayList<VoteData>>
         get() = _voteDataList
@@ -68,29 +79,74 @@ class VoteHomeViewModel @Inject constructor(
     init {
         getVoteList()
         favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
-        connectSocket()
+        voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
+        connectBoardSocket()
+        connectRankSocket()
+        getStarRank()
+        getTime()
     }
 
-    fun getVoteList() {
+    private fun getVoteList() {
         viewModelScope.launch {
-//            val response = repository.getVote()
-//            _top3Info.emit(response?.data ?: Top3Benefit())
+            val response = repository.getVote()
+            _stars.emit(response?.data?.voteMainStars ?: VoteMainStars())
+            Log.d("TOP3Benefit", response?.data?.voteMainStars.toString())
         }
     }
 
+    private fun getStarRank() {
+        viewModelScope.launch {
+            favoriteStarManager.favoriteStarIdFlow.collectLatest {
+                val response = repository.getStarRank(it ?: 2)
+                when (response.result.code) {
+                    ResultCodeStatus.StarRankNoResult.code -> {
+                        _favoriteStar.emit(FavoriteStarInfo())
+                    }
+                    ResultCodeStatus.Success.code -> {
+                        _favoriteStar.emit(response.data ?: FavoriteStarInfo())
+                    }
+                }
 
-    fun connectSocket() {
+
+            }
+        }
+    }
+
+    private fun connectRankSocket() {
         viewModelScope.launch {
             val options = IO.Options()
             options.transports = arrayOf(WebSocket.NAME)
-            mSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/board", options)
-            mSocket.on(Socket.EVENT_CONNECT) {
+            mRankSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/rank", options)
+            mRankSocket.on(Socket.EVENT_CONNECT) {
                 Log.e("CONNECT", "연결됐다!!!")
             }
-            mSocket.on(Socket.EVENT_CONNECT_ERROR) {
+            mRankSocket.on(Socket.EVENT_CONNECT_ERROR) {
 //                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
             }
-            mSocket.on("vote status board") {
+            mRankSocket.on("rank men status") {
+                Log.e("rank men status", "rank men status" + it.get(0).toString())
+            }
+            mRankSocket.on("rank women status") {
+                Log.e("rank women status", "rank women status" + it.get(0).toString())
+            }
+            mRankSocket.connect()
+
+        }
+    }
+
+    fun connectBoardSocket() {
+        viewModelScope.launch {
+            val options = IO.Options()
+            options.transports = arrayOf(WebSocket.NAME)
+            mBoardSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/board", options)
+
+            mBoardSocket.on(Socket.EVENT_CONNECT) {
+                Log.e("CONNECT", "연결됐다!!!")
+            }
+            mBoardSocket.on(Socket.EVENT_CONNECT_ERROR) {
+//                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
+            }
+            mBoardSocket.on("vote status board") {
                 if (it.isNotEmpty()) {
                     val list = arrayListOf<VoteData>()
                     val voteStatusData = it[0] as JSONObject
@@ -114,7 +170,7 @@ class VoteHomeViewModel @Inject constructor(
 
 
             }
-            mSocket.connect()
+            mBoardSocket.connect()
         }
 
     }
@@ -132,10 +188,13 @@ class VoteHomeViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        if (mSocket.connected()) {
-            Log.e("disconnect", "disconnect!!!")
-            mSocket.disconnect()
+        if (mBoardSocket.connected()) {
+            mBoardSocket.disconnect()
         }
+        if (mRankSocket.connected()) {
+            mRankSocket.disconnect()
+        }
+
     }
 
     fun changeVoteStatus(status: String) {
@@ -165,4 +224,15 @@ class VoteHomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun saveTooltipState(isShowToolTIp: Boolean) {
+        viewModelScope.launch {
+            voteMainManager.storeTooltipState(
+                isShowToolTIp
+            )
+
+        }
+
+    }
+
 }
