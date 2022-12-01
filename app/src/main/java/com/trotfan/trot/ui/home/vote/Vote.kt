@@ -4,7 +4,6 @@ package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,8 +18,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -45,18 +48,12 @@ import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.*
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
-import com.trotfan.trot.model.FavoriteStarInfo
-import com.trotfan.trot.model.VoteData
-import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
-import com.trotfan.trot.ui.utils.clickable
-import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
-import com.trotfan.trot.ui.utils.disabledVerticalPointerInputScroll
-import com.trotfan.trot.ui.utils.getTime
+import com.trotfan.trot.ui.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -211,15 +208,17 @@ fun VoteHome(
 
                     when (voteStatus) {
                         VoteStatus.Available -> {
-                            voteToStar(
+                            VoteToStar(
                                 items = voteStatusBoardList,
                                 count = voteStatusBoardListCount,
                                 voteStatus = voteStatus,
                                 viewModel = viewModel
                             )
+
                         }
                         VoteStatus.VoteEnd -> {
-                            voteEndHeader()
+                            VoteEndHeader()
+
                         }
                     }
                 }
@@ -429,6 +428,7 @@ fun VoteHome(
                                     hashmapMenList = hashmapMenList,
                                     hashmapWomenList = hashmapWomenList,
                                     favoriteStar = favoriteStar,
+                                    voteId = voteId
                                 ) { _: Int, star: VoteMainStar? ->
                                     onVotingClick(voteId, star)
                                 }
@@ -564,7 +564,10 @@ fun TodayRankingView(
                                         action = Intent.ACTION_SEND
                                         putExtra(
                                             Intent.EXTRA_TEXT,
-                                            voteShareText(stars?.men!!, it)
+                                            voteShareText(
+                                                menList.flatMap { listOf(it.second) },
+                                                men.second.rank ?: 0
+                                            )
                                         )
 
                                         type = "text/plain"
@@ -595,7 +598,10 @@ fun TodayRankingView(
                                         action = Intent.ACTION_SEND
                                         putExtra(
                                             Intent.EXTRA_TEXT,
-                                            voteShareText(stars?.men!!, it)
+                                            voteShareText(
+                                                womenList.flatMap { listOf(it.second) },
+                                                women.second.rank ?: 0
+                                            )
                                         )
 
                                         type = "text/plain"
