@@ -27,8 +27,8 @@ data class VoteMainStar(
     val id: Int? = null,
     val image: String? = null,
     val name: String? = null,
-    val rank: Int? = null,
-    val votes: Int? = null
+    var rank: Int? = null,
+    var votes: Int? = null
 )
 
 @Serializable
@@ -45,5 +45,7 @@ data class FavoriteStarInfo(
         val monthly: Int? = null
     )
 }
+
+
 
 

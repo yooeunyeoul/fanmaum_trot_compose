@@ -58,6 +58,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -72,8 +73,8 @@ fun VoteHome(
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
-    val menList by viewModel.men.collectAsState()
-    val womenList by viewModel.women.collectAsState()
+    val hashmapMenList by viewModel.menHashMap.collectAsState()
+    val hashmapWomenList by viewModel.womenHashMap.collectAsState()
     val voteStatusBoardList by viewModel.voteDataList.collectAsState()
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
@@ -342,7 +343,7 @@ fun VoteHome(
                                         color = Primary500,
                                         fontSize = 17.sp,
                                         fontWeight = FontWeight.SemiBold,
-                                        modifier = Modifier.width(71.dp),
+                                        modifier = Modifier.width(75.dp),
                                         textAlign = TextAlign.Center
                                     )
                                     Spacer(modifier = Modifier.width(7.dp))
@@ -360,10 +361,9 @@ fun VoteHome(
                         }
                         item {
                             TodayRankingView(
-                                favoriteStarGender ?: 0,
-                                menList = menList,
-                                womenList = womenList,
-                                favoriteStar = favoriteStar
+                                hashmapMenList = hashmapMenList,
+                                hashmapWomenList = hashmapWomenList,
+                                favoriteStar = favoriteStar,
                             )
 
                         }
@@ -416,9 +416,8 @@ fun VoteHome(
 
 @Composable
 fun TodayRankingView(
-    initPage: Int,
-    menList: List<VoteMainStar>,
-    womenList: List<VoteMainStar>,
+    hashmapMenList: HashMap<Int?, VoteMainStar>,
+    hashmapWomenList: HashMap<Int?, VoteMainStar>,
     favoriteStar: FavoriteStarInfo
 ) {
     val tabData = listOf<String>("남자스타", "여자스타")
@@ -482,24 +481,29 @@ fun TodayRankingView(
         when (page) {
             0 -> {
                 Column(Modifier.fillMaxWidth()) {
-                    repeat(menList.size ?: 0) {
-                        val star = menList[it]
-                        VoteItem(
-                            star = star,
-                            isMyStar = star.id == favoriteStar.id
-                        )
+                    val menList = hashmapMenList.toList().sortedBy { (key, value) -> value.rank }
+                    for (men in menList) {
+                        key(men.first) {
+                            VoteItem(
+                                star = men.second,
+                                isMyStar = men.first == favoriteStar.id
+                            )
+                        }
                     }
                 }
-
             }
             1 -> {
                 Column(Modifier.fillMaxWidth()) {
-                    repeat(womenList.size ?: 0) {
-                        val star = womenList[it]
-                        VoteItem(
-                            star = star,
-                            isMyStar = star.id == favoriteStar.id
-                        )
+                    val womenList =
+//                        hashmapWomenList.toList().sortedBy { (key, value) -> value.rank }
+                        hashmapWomenList.toList().shuffled()
+                    for (women in womenList) {
+                        key(women.first) {
+                            VoteItem(
+                                star = women.second,
+                                isMyStar = women.first == favoriteStar.id
+                            )
+                        }
                     }
                 }
             }

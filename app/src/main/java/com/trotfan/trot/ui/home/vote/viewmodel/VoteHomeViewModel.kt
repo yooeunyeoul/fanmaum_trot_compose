@@ -2,6 +2,7 @@ package com.trotfan.trot.ui.home.vote.viewmodel
 
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.key
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -13,6 +14,7 @@ import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.VoteRepository
 import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.ktor.util.*
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
@@ -29,6 +31,9 @@ enum class VoteStatus(
     VoteEnd, Available
 }
 
+enum class Gender {
+    MEN, WOMEN
+}
 
 @HiltViewModel
 class VoteHomeViewModel @Inject constructor(
@@ -49,15 +54,15 @@ class VoteHomeViewModel @Inject constructor(
     private val _voteStatus =
         MutableStateFlow(VoteStatus.Available)
 
-    val men: StateFlow<List<VoteMainStar>>
-        get() = _men
-    private val _men =
-        MutableStateFlow(listOf<VoteMainStar>())
+    val menHashMap: StateFlow<LinkedHashMap<Int?, VoteMainStar>>
+        get() = _menHashMap
+    private val _menHashMap =
+        MutableStateFlow(LinkedHashMap<Int?, VoteMainStar>())
 
-    val women: StateFlow<List<VoteMainStar>>
-        get() = _women
-    private val _women =
-        MutableStateFlow(listOf<VoteMainStar>())
+    val womenHashMap: StateFlow<LinkedHashMap<Int?, VoteMainStar>>
+        get() = _womenHashMap
+    private val _womenHashMap =
+        MutableStateFlow(LinkedHashMap<Int?, VoteMainStar>())
 
     val favoriteStar: StateFlow<FavoriteStarInfo>
         get() = _favoriteStar
@@ -90,8 +95,14 @@ class VoteHomeViewModel @Inject constructor(
     private fun getVoteList() {
         viewModelScope.launch {
             val response = repository.getVote()
-            _men.emit(response?.data?.voteMainStars?.men ?: listOf())
-            _women.emit(response?.data?.voteMainStars?.women ?: listOf())
+            val voteMainStars = response?.data?.voteMainStars
+            val menHashMap =
+                voteMainStars?.men?.associate { it.id to it } as LinkedHashMap
+            val womenHashMap =
+                voteMainStars?.women?.associate { it.id to it } as LinkedHashMap
+            _menHashMap.emit(menHashMap)
+            _womenHashMap.emit(womenHashMap)
+
             Log.d("TOP3Benefit", response?.data?.voteMainStars.toString())
         }
     }
@@ -125,16 +136,54 @@ class VoteHomeViewModel @Inject constructor(
             mRankSocket.on(Socket.EVENT_CONNECT_ERROR) {
 //                Log.e("CONNECT ERROR", "에러났다" + it.get(0).toString())
             }
-            mRankSocket.on("rank men status") {
-                Log.e("rank men status", "rank men status" + it[0].toString())
+            mRankSocket.on("rank men status") { result ->
+//                Log.e("rank men status", "rank men status" + result[0].toString())
+                updateRankList(result, Gender.MEN)
+
             }
-            mRankSocket.on("rank women status") {
+            mRankSocket.on("rank women status") { result ->
 //                Log.e("rank women status", "rank women status" + it.get(0).toString())
+                updateRankList(result, Gender.WOMEN)
             }
             mRankSocket.connect()
 
         }
     }
+
+    private fun updateRankList(result: Array<Any>, gender: Gender) {
+        viewModelScope.launch {
+            if (result.isNotEmpty()) {
+                val starData = result[0] as JSONObject
+                val starList = starData.get("data") as JSONArray
+                var starHashMap: HashMap<Int?, VoteMainStar>? = null
+                starHashMap = when (gender) {
+                    Gender.MEN -> {
+                        _menHashMap.value
+                    }
+                    Gender.WOMEN -> {
+                        _womenHashMap.value
+                    }
+                }
+                for (i in 0 until starList.length()) {
+                    val jsonObject = starList.get(i).toString()
+                    val data = Gson().fromJson(jsonObject, VoteMainStar::class.java)
+                    starHashMap[data.id]?.run {
+                        this.rank = data.rank
+                        this.votes = data.votes
+                    }
+                }
+                when (gender) {
+                    Gender.MEN -> {
+                        _menHashMap.emit(starHashMap)
+                    }
+                    Gender.WOMEN -> {
+                        _womenHashMap.emit(starHashMap)
+                    }
+                }
+            }
+        }
+    }
+
 
     fun connectBoardSocket() {
         viewModelScope.launch {
@@ -239,5 +288,4 @@ class VoteHomeViewModel @Inject constructor(
         }
 
     }
-
 }
