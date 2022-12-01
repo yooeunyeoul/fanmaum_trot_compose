@@ -12,6 +12,7 @@ class VoteMainManager(
 ) {
     companion object {
         val VOTE_MAIN_TOOL_TIP = booleanPreferencesKey("VOTE_MAIN_TOOL_TIP")
+        val VOTE_MAIN_SCROLL_TOOL_TIP = booleanPreferencesKey("VOTE_MAIN_SCROLL_TOOL_TIP")
     }
 
     suspend fun storeTooltipState(
@@ -22,8 +23,20 @@ class VoteMainManager(
         }
     }
 
+    suspend fun storeScrollTooltipState(
+        isShowing: Boolean
+    ) {
+        dataStore.edit {
+            it[VOTE_MAIN_SCROLL_TOOL_TIP] = isShowing
+        }
+    }
+
     val isShowingVoteMainToolTipFlow: Flow<Boolean> = dataStore.data.map {
         it[VOTE_MAIN_TOOL_TIP] ?: true
+    }
+
+    val isShowingVoteMainScrollToolTipFlow: Flow<Boolean> = dataStore.data.map {
+        it[VOTE_MAIN_SCROLL_TOOL_TIP] ?: true
     }
 
 }

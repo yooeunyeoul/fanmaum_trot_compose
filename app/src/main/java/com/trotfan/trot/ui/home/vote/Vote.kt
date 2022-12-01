@@ -4,6 +4,7 @@ package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,10 +19,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -29,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -36,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
@@ -58,7 +66,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.time.LocalDate
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -86,9 +93,13 @@ fun VoteHome(
     )
     val isShowingToolTip by viewModel.voteMainManager.isShowingVoteMainToolTipFlow.collectAsState(
         initial = false
-
+    )
+    val isShowingScrollToolTip by viewModel.voteMainManager.isShowingVoteMainScrollToolTipFlow.collectAsState(
+        initial = false
     )
 
+
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ranking_arrow))
 
     var ticks by remember { mutableStateOf(getTime()) }
     val second: String = (ticks.toLong() % 60).toString()
@@ -103,8 +114,6 @@ fun VoteHome(
     }
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
 
-
-
     LaunchedEffect(ticks != 0) {
         while (ticks > 0) {
             delay(1.seconds)
@@ -112,303 +121,358 @@ fun VoteHome(
         }
     }
 
+    val fabHeight = 72.dp //FabSize+Padding
+    val fabHeightPx = with(LocalDensity.current) { fabHeight.roundToPx().toFloat() }
+    val fabOffsetHeightPx = remember { mutableStateOf(0f) }
+
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-        Column(
-            modifier = Modifier
+
+        Box(
+            Modifier
                 .fillMaxSize()
-                .background(color = Color.White)
-                .padding(bottom = 56.dp)
         ) {
-            CustomTopAppBarWithIcon(
-                title = "일일 투표",
-                modifier = Modifier.clickable {
-//                viewModel.changeVoteStatus()
-                },
-                onClickEndIcon = {
-                    val sendIntent: Intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(
-                            Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName)
+
+            if (isShowingScrollToolTip) {
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = Color.White,
+                    elevation = 3.dp,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 88.dp)
+                        .zIndex(2f)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "화면을 내려보세요",
+                            color = Gray750,
+                            fontSize = 15.sp,
+                            style = FanwooriTypography.body2,
+                            fontWeight = FontWeight.Medium
                         )
 
-                        type = "text/plain"
+                        LottieAnimation(
+                            composition = composition,
+                            iterations = LottieConstants.IterateForever,
+                            modifier = Modifier.size(40.dp)
+                        )
                     }
-                    val shareIntent = Intent.createChooser(sendIntent, null)
-                    context.startActivity(shareIntent)
                 }
-            )
+            }
+            Column(
+                modifier = Modifier
+                    .nestedScroll(
+                        connection = object : NestedScrollConnection {
+                            override fun onPreScroll(
+                                available: Offset,
+                                source: NestedScrollSource
+                            ): Offset {
+                                val delta = available.y
+                                if (isShowingScrollToolTip) {
+                                    if (delta < 0) {
+                                        viewModel.saveScrollTooltipState(false)
+                                    }
+                                }
+                                return super.onPreScroll(available, source)
+                            }
+                        }
+                    )
+                    .fillMaxSize()
+                    .background(color = Color.White)
+                    .padding(bottom = 56.dp)
+            ) {
+                CustomTopAppBarWithIcon(
+                    title = "일일 투표",
+                    modifier = Modifier.clickable {
+//                viewModel.changeVoteStatus()
+                    },
+                    onClickEndIcon = {
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(
+                                Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName)
+                            )
 
-            Box(modifier = Modifier.height(80.dp)) {
-                Image(
-                    painter = painterResource(id = R.drawable.board_upper),
-                    contentScale = ContentScale.FillHeight,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(height = 80.dp)
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        context.startActivity(shareIntent)
+                    }
                 )
 
-                when (voteStatus) {
-                    VoteStatus.Available -> {
-                        voteToStar(
-                            items = voteStatusBoardList,
-                            count = voteStatusBoardListCount,
-                            voteStatus = voteStatus,
-                            viewModel = viewModel
-                        )
-                    }
-                    VoteStatus.VoteEnd -> {
-                        voteEndHeader()
-                    }
-                }
-            }
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                item {
-                    Box(modifier = Modifier) {
-                        Image(
-                            painter = painterResource(id = R.drawable.board_lower),
-                            contentScale = ContentScale.FillHeight,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(height = 80.dp)
-                        )
-
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(favoriteStar.image)
-                                .crossfade(true).build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(112.dp)
-                                .clip(CircleShape)
-                                .border(
-                                    width = 8.dp,
-                                    brush = gradient01,
-                                    shape = CircleShape
-                                )
-                                .border(
-                                    width = 12.dp,
-                                    color = Color.White,
-                                    CircleShape
-                                )
-                                .align(Alignment.Center)
-                        )
-                    }
-                }
-
-                item {
+                Box(modifier = Modifier.height(80.dp)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.board_upper),
+                        contentScale = ContentScale.FillHeight,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(height = 80.dp)
+                    )
 
                     when (voteStatus) {
-                        VoteStatus.VoteEnd -> {
-                            HeaderEndState(myStarName = favoriteStar.name ?: "")
-                        }
                         VoteStatus.Available -> {
-                            HeaderVoteState(
-                                myStarName = favoriteStar.name ?: "-",
-                                dayRank = favoriteStar.rank?.daily ?: -1,
-                                monthRank = favoriteStar.rank?.monthly ?: -1,
-                                month = LocalDate.now().month.value
+                            voteToStar(
+                                items = voteStatusBoardList,
+                                count = voteStatusBoardListCount,
+                                voteStatus = voteStatus,
+                                viewModel = viewModel
+                            )
+                        }
+                        VoteStatus.VoteEnd -> {
+                            voteEndHeader()
+                        }
+                    }
+                }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        Box(modifier = Modifier) {
+                            Image(
+                                painter = painterResource(id = R.drawable.board_lower),
+                                contentScale = ContentScale.FillHeight,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(height = 80.dp)
+                            )
+
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(favoriteStar.image)
+                                    .crossfade(true).build(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(112.dp)
+                                    .clip(CircleShape)
+                                    .border(
+                                        width = 8.dp,
+                                        brush = gradient01,
+                                        shape = CircleShape
+                                    )
+                                    .border(
+                                        width = 12.dp,
+                                        color = Color.White,
+                                        CircleShape
+                                    )
+                                    .align(Alignment.Center)
                             )
                         }
                     }
 
-                    MyVote(
-                        modifier = Modifier.padding(start = 24.dp, end = 24.dp),
-                        isHide = myVoteHide,
-                        hideState = { isHide ->
-                            myVoteHide = isHide
-                        })
-                    Box(
-                        Modifier
-                            .height(112.dp)
-                            .background(color = Color.White)
-                    ) {
+                    item {
 
-                        if (isShowingToolTip) {
-                            ToolTip(
-                                modifier = Modifier
-                                    .padding(start = 24.dp, top = 8.dp)
-                                    .zIndex(1f)
-                            )
+                        when (voteStatus) {
+                            VoteStatus.VoteEnd -> {
+                                HeaderEndState(myStarName = favoriteStar.name ?: "")
+                            }
+                            VoteStatus.Available -> {
+                                HeaderVoteState(
+                                    myStarName = favoriteStar.name ?: "-",
+                                    dayRank = favoriteStar.rank?.daily ?: -1,
+                                    monthRank = favoriteStar.rank?.monthly ?: -1,
+                                    month = LocalDate.now().month.value
+                                )
+                            }
                         }
 
-                        Divider(
-                            thickness = 8.dp,
-                            color = Gray100,
-                            modifier = Modifier.padding(top = 32.dp)
-                        )
+                        MyVote(
+                            modifier = Modifier.padding(start = 24.dp, end = 24.dp),
+                            isHide = myVoteHide,
+                            hideState = { isHide ->
+                                myVoteHide = isHide
+                            })
+                        Box(
+                            Modifier
+                                .height(112.dp)
+                                .background(color = Color.White)
+                        ) {
 
-                        Button(
-                            onClick = {
-                                viewModel.saveTooltipState(false)
-                            },
-                            shape = RectangleShape,
-                            interactionSource = interactionSource,
-                            colors = ButtonDefaults.buttonColors(backgroundColor = if (isPressedLastRank) Gray50 else Color.White),
-                            modifier = Modifier
-                                .height(72.dp)
-                                .offset(y = 40.dp),
-
-                            ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
+                            if (isShowingToolTip) {
+                                ToolTip(
                                     modifier = Modifier
-                                        .size(40.dp)
-                                        .background(color = Secondary100, shape = CircleShape),
+                                        .padding(start = 24.dp, top = 8.dp)
+                                        .zIndex(1f)
+                                )
+                            }
+
+                            Divider(
+                                thickness = 8.dp,
+                                color = Gray100,
+                                modifier = Modifier.padding(top = 32.dp)
+                            )
+
+                            Button(
+                                onClick = {
+                                    viewModel.saveTooltipState(false)
+                                },
+                                shape = RectangleShape,
+                                interactionSource = interactionSource,
+                                colors = ButtonDefaults.buttonColors(backgroundColor = if (isPressedLastRank) Gray50 else Color.White),
+                                modifier = Modifier
+                                    .height(72.dp)
+                                    .offset(y = 40.dp),
+
                                 ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.icon_ranking),
-                                        contentDescription = null,
-                                        modifier = Modifier.align(Alignment.Center),
-                                        tint = Secondary600
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .background(color = Secondary100, shape = CircleShape),
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.icon_ranking),
+                                            contentDescription = null,
+                                            modifier = Modifier.align(Alignment.Center),
+                                            tint = Secondary600
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    Text(
+                                        text = "최종 순위 선정 방법",
+                                        style = FanwooriTypography.button1,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Secondary600,
+                                        fontSize = 17.sp,
+                                        modifier = Modifier.weight(1f)
                                     )
+
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icon_arrow),
+                                        contentDescription = null
+                                    )
+
+
                                 }
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                Text(
-                                    text = "최종 순위 선정 방법",
-                                    style = FanwooriTypography.button1,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Secondary600,
-                                    fontSize = 17.sp,
-                                    modifier = Modifier.weight(1f)
-                                )
-
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icon_arrow),
-                                    contentDescription = null
-                                )
-
 
                             }
 
                         }
 
+
                     }
 
-
-                }
-
-                when (voteStatus) {
-                    VoteStatus.Available -> {
-                        item {
-                            Divider(thickness = 8.dp, color = Gray100)
-                        }
-                        stickyHeader {
-                            Column(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .background(color = Color.White)
-                                    .padding(top = 24.dp, bottom = 16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-
-                                Text(
-                                    text = "일일투표 순위",
-                                    style = FanwooriTypography.h2,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Gray800,
-                                    fontSize = 22.sp
-                                )
-                                Spacer(modifier = Modifier.height(17.dp))
-
-                                Row(
+                    when (voteStatus) {
+                        VoteStatus.Available -> {
+                            item {
+                                Divider(thickness = 8.dp, color = Gray100)
+                            }
+                            stickyHeader {
+                                Column(
                                     Modifier
-                                        .padding(start = 24.dp, end = 24.dp)
-                                        .fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
+                                        .fillMaxWidth()
+                                        .background(color = Color.White)
+                                        .padding(top = 24.dp, bottom = 16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
+
                                     Text(
-                                        text = "마감까지",
-                                        style = FanwooriTypography.body2,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Gray700,
-                                        fontSize = 15.sp
-                                    )
-                                    Spacer(modifier = Modifier.width(7.dp))
-                                    Text(
-                                        text = "${if (hour.toInt() < 10) "0${hour}" else hour}:${if (minute.toInt() < 10) "0${minute}" else minute}:${if (second.toInt() < 10) "0${second}" else second}",
-                                        style = FanwooriTypography.button1,
-                                        color = Primary500,
-                                        fontSize = 17.sp,
+                                        text = "일일투표 순위",
+                                        style = FanwooriTypography.h2,
                                         fontWeight = FontWeight.SemiBold,
-                                        modifier = Modifier.width(75.dp),
+                                        color = Gray800,
+                                        fontSize = 22.sp
+                                    )
+                                    Spacer(modifier = Modifier.height(17.dp))
+
+                                    Row(
+                                        Modifier
+                                            .padding(start = 24.dp, end = 24.dp)
+                                            .fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = "마감까지",
+                                            style = FanwooriTypography.body2,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Gray700,
+                                            fontSize = 15.sp
+                                        )
+                                        Spacer(modifier = Modifier.width(7.dp))
+                                        Text(
+                                            text = "${if (hour.toInt() < 10) "0${hour}" else hour}:${if (minute.toInt() < 10) "0${minute}" else minute}:${if (second.toInt() < 10) "0${second}" else second}",
+                                            style = FanwooriTypography.button1,
+                                            color = Primary500,
+                                            fontSize = 17.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            modifier = Modifier.width(75.dp),
+                                            textAlign = TextAlign.Center
+                                        )
+                                        Spacer(modifier = Modifier.width(7.dp))
+                                        Text(
+                                            text = "남았습니다",
+                                            style = FanwooriTypography.body2,
+                                            fontWeight = FontWeight.Medium,
+                                            color = Gray700,
+                                            fontSize = 15.sp
+                                        )
+
+
+                                    }
+                                }
+                            }
+                            item {
+                                TodayRankingView(
+                                    hashmapMenList = hashmapMenList,
+                                    hashmapWomenList = hashmapWomenList,
+                                    favoriteStar = favoriteStar,
+                                )
+
+                            }
+                        }
+                        VoteStatus.VoteEnd -> {
+                            item {
+                                Column(
+                                    modifier
+                                        .fillMaxWidth()
+                                        .background(color = Gray100)
+                                        .padding(top = 32.dp, bottom = 32.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.vote_counting),
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.height(17.2.dp))
+                                    Text(
+                                        text = "일일투표 집계 중",
+                                        style = FanwooriTypography.subtitle2,
+                                        color = Gray700,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 18.sp
+                                    )
+                                    Spacer(modifier = Modifier.height(11.dp))
+                                    Text(
+                                        text = "투표 결과는 자정 이후\n" +
+                                                "순위에서 확인할 수 있어요.",
+                                        style = FanwooriTypography.caption1,
+                                        color = Gray600,
+                                        fontSize = 15.sp,
                                         textAlign = TextAlign.Center
                                     )
-                                    Spacer(modifier = Modifier.width(7.dp))
-                                    Text(
-                                        text = "남았습니다",
-                                        style = FanwooriTypography.body2,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Gray700,
-                                        fontSize = 15.sp
-                                    )
 
 
                                 }
                             }
-                        }
-                        item {
-                            TodayRankingView(
-                                hashmapMenList = hashmapMenList,
-                                hashmapWomenList = hashmapWomenList,
-                                favoriteStar = favoriteStar,
-                            )
 
                         }
-                    }
-                    VoteStatus.VoteEnd -> {
-                        item {
-                            Column(
-                                modifier
-                                    .fillMaxWidth()
-                                    .background(color = Gray100)
-                                    .padding(top = 32.dp, bottom = 32.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.vote_counting),
-                                    contentDescription = null
-                                )
-                                Spacer(modifier = Modifier.height(17.2.dp))
-                                Text(
-                                    text = "일일투표 집계 중",
-                                    style = FanwooriTypography.subtitle2,
-                                    color = Gray700,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 18.sp
-                                )
-                                Spacer(modifier = Modifier.height(11.dp))
-                                Text(
-                                    text = "투표 결과는 자정 이후\n" +
-                                            "순위에서 확인할 수 있어요.",
-                                    style = FanwooriTypography.caption1,
-                                    color = Gray600,
-                                    fontSize = 15.sp,
-                                    textAlign = TextAlign.Center
-                                )
-
-
-                            }
-                        }
-
                     }
                 }
-
-
             }
-
         }
 
     }

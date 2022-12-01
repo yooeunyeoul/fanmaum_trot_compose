@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.TooltipTriangle
 import com.trotfan.trot.ui.theme.gradient01
@@ -40,31 +42,47 @@ fun ToolTip(modifier: Modifier = Modifier) {
     LaunchedEffect(true) {
         tooltipState = ToolTipPosition.Finish
     }
+//        Surface(
+//            shape = RoundedCornerShape(20.dp),
+//            elevation = 3.dp,
+//            modifier = Modifier
+//        ) {
+//
+//        }
+
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .absoluteOffset(y = offsetAnimation)
     ) {
-        Box(
-            Modifier
-                .height(40.dp)
-                .background(
-                    brush = gradient01,
-                    shape = RoundedCornerShape(20.dp),
-                )
-                .padding(start = 16.dp, end = 16.dp)
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            elevation = 3.dp,
+            modifier = Modifier
         ) {
-            Text(
-                text = "최종 순위는 어떻게 선정되나요?",
-                style = FanwooriTypography.button1,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White,
-                fontSize = 17.sp,
-                modifier = Modifier.align(Alignment.Center)
-            )
+            Box(
+                Modifier
+                    .height(40.dp)
+                    .background(
+                        brush = gradient01,
+                        shape = RoundedCornerShape(20.dp),
+                    )
+                    .padding(start = 16.dp, end = 16.dp)
+            ) {
+                Text(
+                    text = "최종 순위는 어떻게 선정되나요?",
+                    style = FanwooriTypography.button1,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    fontSize = 17.sp,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+
+            }
 
         }
+
         Box(
             Modifier
                 .padding(start = 20.dp)

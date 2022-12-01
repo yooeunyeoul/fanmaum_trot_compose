@@ -271,9 +271,15 @@ class VoteHomeViewModel @Inject constructor(
             voteMainManager.storeTooltipState(
                 isShowToolTIp
             )
-
         }
+    }
 
+    fun saveScrollTooltipState(isShowToolTIp: Boolean) {
+        viewModelScope.launch {
+            voteMainManager.storeScrollTooltipState(
+                isShowToolTIp
+            )
+        }
     }
 
     fun clearDataAndAddDummyData() {
