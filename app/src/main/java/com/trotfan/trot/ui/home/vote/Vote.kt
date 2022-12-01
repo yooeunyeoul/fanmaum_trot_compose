@@ -49,10 +49,7 @@ import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
-import com.trotfan.trot.ui.utils.clickable
-import com.trotfan.trot.ui.utils.disabledHorizontalPointerInputScroll
-import com.trotfan.trot.ui.utils.disabledVerticalPointerInputScroll
-import com.trotfan.trot.ui.utils.getTime
+import com.trotfan.trot.ui.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -68,11 +65,12 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
-    onVotingClick: (star: VoteMainStar?) -> Unit
+    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
     val stars by viewModel.stars.collectAsState()
+    val voteId by viewModel.voteId.collectAsState()
     val voteStatusBoardList by viewModel.voteDataList.collectAsState()
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
@@ -148,7 +146,7 @@ fun VoteHome(
 
                 when (voteStatus) {
                     VoteStatus.Available, VoteStatus.NotVoteForFiveTimes -> {
-                        voteToStar(
+                        VoteToStar(
                             items = voteStatusBoardList,
                             count = voteStatusBoardListCount,
                             voteStatus = voteStatus,
@@ -156,7 +154,7 @@ fun VoteHome(
                         )
                     }
                     VoteStatus.VoteEnd -> {
-                        voteEndHeader()
+                        VoteEndHeader()
                     }
 //                VoteStatus.NotVoteForFiveTimes -> {
 //                    voteIng()
@@ -217,7 +215,12 @@ fun VoteHome(
                                 dayRank = favoriteStar.rank?.daily ?: -1,
                                 monthRank = favoriteStar.rank?.monthly ?: -1,
                                 month = LocalDate.now().month.value
-                            )
+                            ) {
+                                onVotingClick(
+                                    voteId,
+                                    VoteMainStar(id = favoriteStar.id, name = favoriteStarName)
+                                )
+                            }
                         }
                     }
 
@@ -362,9 +365,12 @@ fun VoteHome(
                         }
                         item {
                             TodayRankingView(
-                                favoriteStarGender ?: 0, stars, favoriteStar
-                            ) {
-                                onVotingClick(it)
+                                initPage = favoriteStarGender ?: 0,
+                                stars,
+                                voteId = voteId,
+                                favoriteStar = favoriteStar
+                            ) { _: Int, star: VoteMainStar? ->
+                                onVotingClick(voteId, star)
                             }
                         }
                     }
@@ -420,9 +426,11 @@ fun TodayRankingView(
     initPage: Int,
     stars: VoteMainStars?,
     favoriteStar: FavoriteStarInfo,
-    onVotingClick: (star: VoteMainStar?) -> Unit
+    voteId: Int,
+    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
 ) {
     val tabData = listOf<String>("남자스타", "여자스타")
+    val context = LocalContext.current
 
     val pagerState = rememberPagerState(
         initialPage = 1
@@ -485,12 +493,30 @@ fun TodayRankingView(
                 Column(Modifier.fillMaxWidth()) {
                     repeat(stars?.men?.size ?: 0) {
                         val star = stars?.men?.get(it)
+                        var preStar: VoteMainStar? = null
+                        if (it > 0) {
+                            preStar = stars?.men?.get(it - 1)
+                        }
                         VoteItem(
                             star = star,
-                            isMyStar = star?.id == favoriteStar.id
-                        ) {
-                            onVotingClick(it)
-                        }
+                            isMyStar = star?.id == favoriteStar.id,
+                            onVotingClick = { mainStar ->
+                                onVotingClick(voteId, mainStar)
+                            },
+                            onSharedClick = {
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        voteShareText(stars?.men!!, it)
+                                    )
+
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                context.startActivity(shareIntent)
+                            }
+                        )
                     }
                 }
 
@@ -499,11 +525,28 @@ fun TodayRankingView(
                 Column(Modifier.fillMaxWidth()) {
                     repeat(stars?.women?.size ?: 0) {
                         val star = stars?.women?.get(it)
+                        var preStar: VoteMainStar? = null
+                        if (it > 0) {
+                            preStar = stars?.women?.get(it - 1)
+                        }
                         VoteItem(
                             star = star,
                             isMyStar = star?.id == favoriteStar.id,
-                            onVotingClick = {
-                                onVotingClick(it)
+                            onVotingClick = { mainStar ->
+                                onVotingClick(voteId, mainStar)
+                            },
+                            onSharedClick = {
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        voteShareText(stars?.women!!, it)
+                                    )
+
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                context.startActivity(shareIntent)
                             }
                         )
                     }
@@ -529,6 +572,38 @@ fun voteTopShareText(favoriteStarName: String?): String {
             "\uD83D\uDD3B실시간 순위 보러 가기\uD83D\uDD3B\n" +
             "\n" +
             "투표 링크(딥링크)"
+}
+
+fun voteShareText(stars: List<VoteMainStar>, rank: Int): String {
+    val ticks = getTime()
+    val minute: String = (ticks.toLong() / 60 % 60).toString()
+    val hour: String = (ticks.toLong() / 3600).toString()
+    if (rank == 0) {
+        val nextStar = stars[1]
+        var nextStarCho: String? = ""
+        for (i in 0 until nextStar.name!!.length) {
+            nextStarCho += getShareChar(nextStar.name[i])
+        }
+        return "#팬마음 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 실시간 순위\n" +
+                "\uD83D\uDEA8투표 마감 ${hour}시간 ${minute}분전\uD83D\uDEA8\n" +
+                "1위 #${stars[0].name} \uD83C\uDFC6\n" +
+                "2위 ${nextStarCho}\n\n" +
+                "단, ${stars[0].votes?.minus(nextStar.votes!!)}표 차이 \uD83D\uDC40\n\n" +
+                "지금 바로 #팬마음 에서 #${stars[0].name} 에게 투표하세요 ✊\uD83C\uDFFB✊\uD83C\uDFFB\n\n" +
+                "투표 링크(딥링크)"
+    } else {
+        val preStar = stars[rank - 1]
+        var preStarCho: String? = ""
+        for (i in 0 until preStar.name!!.length) {
+            preStarCho += getShareChar(preStar.name[i])
+        }
+        return "#팬마음 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 실시간 순위\n" +
+                "\uD83D\uDEA8투표 마감 ${hour}시간 ${minute}분전\uD83D\uDEA8\n" +
+                "#${stars[rank].name} 현재 ${rank + 1}위 \uD83C\uDFC6\n" +
+                "* ${rank}위 ${preStarCho}과 ${preStar.votes?.minus(stars[rank].votes!!)}표 차이\n\n" +
+                "지금 바로 #팬마음 에서 #${stars[rank].name} 에게 투표하세요 ✊\uD83C\uDFFB✊\uD83C\uDFFB\n\n" +
+                "투표 링크(딥링크)"
+    }
 }
 
 @Composable
@@ -643,7 +718,7 @@ fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun voteToStar(
+fun VoteToStar(
     items: List<VoteData>,
     count: Int,
     voteStatus: VoteStatus,
@@ -808,7 +883,7 @@ fun voteToStar(
 }
 
 @Composable
-fun voteIng() {
+fun VoteIng() {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -839,7 +914,7 @@ fun voteIng() {
 }
 
 @Composable
-fun voteEndHeader() {
+fun VoteEndHeader() {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

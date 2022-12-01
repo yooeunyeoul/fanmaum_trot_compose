@@ -35,7 +35,7 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    onVotingClick: (star: VoteMainStar?) -> Unit
+    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -51,8 +51,8 @@ fun NavigationComponent(
             onItemSelected = { _, _ ->
                 // 각화면의 디테일 작업
             },
-            onVotingClick = {
-                onVotingClick(it)
+            onVotingClick = { voteId: Int, star: VoteMainStar? ->
+                onVotingClick(voteId, star)
             },
             navController = navController
         )

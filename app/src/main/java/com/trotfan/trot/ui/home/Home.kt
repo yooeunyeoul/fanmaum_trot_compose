@@ -255,7 +255,7 @@ fun TrotBottomBar(
 fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     modifier: Modifier = Modifier,
-    onVotingClick: (star: VoteMainStar?) -> Unit,
+    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit,
     navController: NavController
 ) {
     composable(HomeSections.Vote.route) { from ->
@@ -265,8 +265,8 @@ fun NavGraphBuilder.addHomeGraph(
             },
             navController = navController,
             modifier = modifier,
-            onVotingClick = {
-                onVotingClick(it)
+            onVotingClick = { voteId: Int, star: VoteMainStar? ->
+                onVotingClick(voteId, star)
             }
         )
     }

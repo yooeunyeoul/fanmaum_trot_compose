@@ -1,5 +1,7 @@
 package com.trotfan.trot.ui.home.vote.component
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -28,8 +30,11 @@ import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Star
 import com.trotfan.trot.model.VoteMainStar
+import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.clickableSingle
+import com.trotfan.trot.ui.utils.getShareChar
 
 
 @Composable
@@ -37,6 +42,7 @@ fun VoteItem(
     beforeRank: Boolean = false,
     isMyStar: Boolean = false,
     star: VoteMainStar?,
+    onSharedClick: () -> Unit,
     onVotingClick: (star: VoteMainStar?) -> Unit
 ) {
 
@@ -179,7 +185,10 @@ fun VoteItem(
             Column(
                 Modifier
                     .background(color = Gray100, shape = RoundedCornerShape(20.dp))
-                    .size(width = 56.dp, height = 40.dp),
+                    .size(width = 56.dp, height = 40.dp)
+                    .clickableSingle {
+                        onSharedClick()
+                    },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -220,6 +229,7 @@ fun PreviewVoteItem() {
     FanwooriTheme {
         VoteItem(
             star = VoteMainStar(id = 1, name = "임영웅", rank = 1, votes = 3000),
-            onVotingClick = {})
+            onVotingClick = {},
+            onSharedClick = {})
     }
 }

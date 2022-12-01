@@ -61,6 +61,11 @@ fun VotingBottomSheet(
     var placeholder by remember { mutableStateOf("얼마나 투표할까요?") }
     val star by viewModel.voteStar.collectAsState()
 
+
+    if (votingBottomSheetState.isVisible.not()) {
+        keyboardController?.hide()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()

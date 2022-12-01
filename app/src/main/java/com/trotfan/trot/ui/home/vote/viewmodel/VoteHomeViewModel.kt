@@ -50,6 +50,11 @@ class VoteHomeViewModel @Inject constructor(
     private val _voteStatus =
         MutableStateFlow(VoteStatus.Available)
 
+    val voteId: StateFlow<Int>
+        get() = _voteId
+    private val _voteId =
+        MutableStateFlow(0)
+
     val stars: StateFlow<VoteMainStars>
         get() = _stars
     private val _stars =
