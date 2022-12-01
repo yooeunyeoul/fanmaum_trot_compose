@@ -1,7 +1,6 @@
 package com.trotfan.trot.network
 
 import com.trotfan.trot.model.*
-import com.trotfan.trot.network.response.CommonListResponse
 import com.trotfan.trot.network.response.CommonResponse
 
 interface SignUpService {
@@ -12,12 +11,12 @@ interface SignUpService {
     suspend fun getStarList(
         cursor: String,
         search: String
-    ): CommonResponse<stars<FavoriteStar>>
+    ): CommonResponse<StarsList<FavoriteStar>>
 
     suspend fun starSearch(
         cursor: String,
         name: String
-    ): CommonResponse<stars<FavoriteStar>>
+    ): CommonResponse<StarsList<FavoriteStar>>
 
     suspend fun updateUser(
         userId: Int,

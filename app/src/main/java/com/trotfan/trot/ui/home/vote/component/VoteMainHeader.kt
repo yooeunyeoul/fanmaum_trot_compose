@@ -13,14 +13,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
-fun HeaderVoteState(myStarName: String, dayRank: Int, monthRank: Int, month: Int) {
+fun HeaderVoteState(
+    myStarName: String,
+    dayRank: Int,
+    monthRank: Int,
+    month: Int,
+    onVotingClick: () -> Unit
+) {
     Column(Modifier.fillMaxWidth()) {
 
         Spacer(modifier = Modifier.height(23.dp))
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier.fillMaxWidth().clickableSingle {
+                onVotingClick()
+            },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {

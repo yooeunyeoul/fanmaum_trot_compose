@@ -32,6 +32,7 @@ import androidx.navigation.compose.composable
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.dateManager
+import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.home.charge.ChargeHome
 import com.trotfan.trot.ui.home.dialog.AutoVotingDialog
@@ -254,7 +255,7 @@ fun TrotBottomBar(
 fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     modifier: Modifier = Modifier,
-    votingBottomSheetState: ModalBottomSheetState,
+    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit,
     navController: NavController
 ) {
     composable(HomeSections.Vote.route) { from ->
@@ -264,7 +265,9 @@ fun NavGraphBuilder.addHomeGraph(
             },
             navController = navController,
             modifier = modifier,
-            votingBottomSheetState = votingBottomSheetState
+            onVotingClick = { voteId: Int, star: VoteMainStar? ->
+                onVotingClick(voteId, star)
+            }
         )
     }
     composable(HomeSections.MyPage.route) { from ->

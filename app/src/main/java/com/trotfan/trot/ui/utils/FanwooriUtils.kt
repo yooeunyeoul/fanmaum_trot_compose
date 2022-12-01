@@ -3,10 +3,13 @@ package com.trotfan.trot.ui.utils
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.compiler.plugins.kotlin.ComposeFqNames.remember
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
@@ -20,6 +23,8 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.platform.debugInspectorInfo
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.google.firebase.dynamiclinks.ShortDynamicLink
@@ -36,6 +41,31 @@ inline fun Modifier.clickable(crossinline onClick: () -> Unit): Modifier = compo
     ) {
         onClick()
     }
+}
+
+fun Modifier.clickableSingle(
+    enabled: Boolean = true,
+    onClickLabel: String? = null,
+    role: Role? = null,
+    onClick: () -> Unit
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "clickable"
+        properties["enabled"] = enabled
+        properties["onClickLabel"] = onClickLabel
+        properties["role"] = role
+        properties["onClick"] = onClick
+    }
+) {
+    val multipleEventsCutter = remember { MultipleEventsCutter.get() }
+    Modifier.clickable(
+        enabled = enabled,
+        onClickLabel = onClickLabel,
+        onClick = { multipleEventsCutter.processEvent { onClick() } },
+        role = role,
+        indication = LocalIndication.current,
+        interactionSource = remember { MutableInteractionSource() }
+    )
 }
 
 fun addDynamicLink(
@@ -123,4 +153,35 @@ fun getTime(): Int {
     cal.set(Calendar.MINUTE, 30)
     val diff = abs(cal.timeInMillis - System.currentTimeMillis()) / 1000;
     return diff.toInt()
+}
+
+val CHO = listOf("ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ")
+
+fun getShareChar(char: Char): String {
+    val uniVal: Int = char.code - 0xAC00
+    val cho = ((uniVal - (uniVal % 28)) / 28) / 21
+    return CHO[cho]
+}
+
+internal interface MultipleEventsCutter {
+    fun processEvent(event: () -> Unit)
+
+    companion object
+}
+
+internal fun MultipleEventsCutter.Companion.get(): MultipleEventsCutter =
+    MultipleEventsCutterImpl()
+
+private class MultipleEventsCutterImpl : MultipleEventsCutter {
+    private val now: Long
+        get() = System.currentTimeMillis()
+
+    private var lastEventTimeMs: Long = 0
+
+    override fun processEvent(event: () -> Unit) {
+        if (now - lastEventTimeMs >= 1000L) {
+            event.invoke()
+        }
+        lastEventTimeMs = now
+    }
 }

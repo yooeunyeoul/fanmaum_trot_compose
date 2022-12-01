@@ -19,15 +19,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -35,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -49,6 +43,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
+import com.trotfan.trot.model.*
+import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.model.VoteMainStar
@@ -76,10 +72,12 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
-    votingBottomSheetState: ModalBottomSheetState
+    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
+    val stars by viewModel.stars.collectAsState()
+    val voteId by viewModel.voteId.collectAsState()
     val hashmapMenList by viewModel.menHashMap.collectAsState()
     val hashmapWomenList by viewModel.womenHashMap.collectAsState()
     val voteStatusBoardList by viewModel.voteDataList.collectAsState()
@@ -120,10 +118,6 @@ fun VoteHome(
             ticks--
         }
     }
-
-    val fabHeight = 72.dp //FabSize+Padding
-    val fabHeightPx = with(LocalDensity.current) { fabHeight.roundToPx().toFloat() }
-    val fabOffsetHeightPx = remember { mutableStateOf(0f) }
 
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
 
@@ -282,7 +276,12 @@ fun VoteHome(
                                     dayRank = favoriteStar.rank?.daily ?: -1,
                                     monthRank = favoriteStar.rank?.monthly ?: -1,
                                     month = LocalDate.now().month.value
-                                )
+                                ) {
+                                    onVotingClick(
+                                        voteId,
+                                        VoteMainStar(id = favoriteStar.id, name = favoriteStarName)
+                                    )
+                                }
                             }
                         }
 
@@ -430,8 +429,9 @@ fun VoteHome(
                                     hashmapMenList = hashmapMenList,
                                     hashmapWomenList = hashmapWomenList,
                                     favoriteStar = favoriteStar,
-                                )
-
+                                ) { _: Int, star: VoteMainStar? ->
+                                    onVotingClick(voteId, star)
+                                }
                             }
                         }
                         VoteStatus.VoteEnd -> {
@@ -478,13 +478,17 @@ fun VoteHome(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TodayRankingView(
     hashmapMenList: HashMap<Int?, VoteMainStar>,
     hashmapWomenList: HashMap<Int?, VoteMainStar>,
-    favoriteStar: FavoriteStarInfo
+    favoriteStar: FavoriteStarInfo,
+    voteId: Int,
+    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
 ) {
     val tabData = listOf<String>("남자스타", "여자스타")
+    val context = LocalContext.current
 
     val pagerState = rememberPagerState(
         initialPage = 1
@@ -545,12 +549,29 @@ fun TodayRankingView(
         when (page) {
             0 -> {
                 Column(Modifier.fillMaxWidth()) {
-                    val menList = hashmapMenList.toList().sortedBy { (key, value) -> value.rank }
+                    val menList =
+                        hashmapMenList.toList().sortedBy { (key, value) -> value.rank }
                     for (men in menList) {
                         key(men.first) {
                             VoteItem(
                                 star = men.second,
-                                isMyStar = men.first == favoriteStar.id
+                                isMyStar = men.first == favoriteStar.id,
+                                onVotingClick = { mainStar ->
+                                    onVotingClick(voteId, mainStar)
+                                },
+                                onSharedClick = {
+                                    val sendIntent: Intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(
+                                            Intent.EXTRA_TEXT,
+                                            voteShareText(stars?.men!!, it)
+                                        )
+
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(sendIntent, null)
+                                    context.startActivity(shareIntent)
+                                }
                             )
                         }
                     }
@@ -565,7 +586,23 @@ fun TodayRankingView(
                         key(women.first) {
                             VoteItem(
                                 star = women.second,
-                                isMyStar = women.first == favoriteStar.id
+                                isMyStar = women.first == favoriteStar.id,
+                                onVotingClick = { mainStar ->
+                                    onVotingClick(voteId, mainStar)
+                                },
+                                onSharedClick = {
+                                    val sendIntent: Intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(
+                                            Intent.EXTRA_TEXT,
+                                            voteShareText(stars?.men!!, it)
+                                        )
+
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(sendIntent, null)
+                                    context.startActivity(shareIntent)
+                                }
                             )
                         }
                     }
@@ -593,9 +630,151 @@ fun voteTopShareText(favoriteStarName: String?): String {
             "투표 링크(딥링크)"
 }
 
+fun voteShareText(stars: List<VoteMainStar>, rank: Int): String {
+    val ticks = getTime()
+    val minute: String = (ticks.toLong() / 60 % 60).toString()
+    val hour: String = (ticks.toLong() / 3600).toString()
+    if (rank == 0) {
+        val nextStar = stars[1]
+        var nextStarCho: String? = ""
+        for (i in 0 until nextStar.name!!.length) {
+            nextStarCho += getShareChar(nextStar.name[i])
+        }
+        return "#팬마음 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 실시간 순위\n" +
+                "\uD83D\uDEA8투표 마감 ${hour}시간 ${minute}분전\uD83D\uDEA8\n" +
+                "1위 #${stars[0].name} \uD83C\uDFC6\n" +
+                "2위 ${nextStarCho}\n\n" +
+                "단, ${stars[0].votes?.minus(nextStar.votes!!)}표 차이 \uD83D\uDC40\n\n" +
+                "지금 바로 #팬마음 에서 #${stars[0].name} 에게 투표하세요 ✊\uD83C\uDFFB✊\uD83C\uDFFB\n\n" +
+                "투표 링크(딥링크)"
+    } else {
+        val preStar = stars[rank - 1]
+        var preStarCho: String? = ""
+        for (i in 0 until preStar.name!!.length) {
+            preStarCho += getShareChar(preStar.name[i])
+        }
+        return "#팬마음 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 실시간 순위\n" +
+                "\uD83D\uDEA8투표 마감 ${hour}시간 ${minute}분전\uD83D\uDEA8\n" +
+                "#${stars[rank].name} 현재 ${rank + 1}위 \uD83C\uDFC6\n" +
+                "* ${rank}위 ${preStarCho}과 ${preStar.votes?.minus(stars[rank].votes!!)}표 차이\n\n" +
+                "지금 바로 #팬마음 에서 #${stars[rank].name} 에게 투표하세요 ✊\uD83C\uDFFB✊\uD83C\uDFFB\n\n" +
+                "투표 링크(딥링크)"
+    }
+}
+
+@Composable
+fun TryMission(modifier: Modifier) {
+
+    Text(
+        text = "미션을 수행하고 투표권을 모아보세요!",
+        style = FanwooriTypography.body2,
+        color = Primary800,
+        fontSize = 15.sp,
+        modifier = modifier
+    )
+
+    UnderlineTextButton(text = "충전하기")
+
+
+}
+
+@Composable
+fun ScheduledToDisappear() {
+    Text(
+        text = "오늘 소멸 예정",
+        style = FanwooriTypography.body2,
+        color = Primary800,
+        fontSize = 15.sp
+    )
+    Spacer(modifier = Modifier.width(6.4.dp))
+    Image(
+        painter = painterResource(id = R.drawable.icon_vote),
+        contentDescription = null
+    )
+    Text(
+        text = "4,000",
+        style = FanwooriTypography.subtitle3,
+        color = Primary800,
+        fontSize = 15.sp
+    )
+
+}
+
+
+@Composable
+fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp),
+        backgroundColor = Color.White,
+        shape = RoundedCornerShape(32.dp),
+        elevation = 4.dp
+    ) {
+
+        Column(
+            modifier = modifier
+                .padding(bottom = 32.dp, top = 16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = top3Benefit?.title ?: "",
+                style = FanwooriTypography.subtitle1,
+                fontSize = 20.sp,
+                color = Gray800
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = top3Benefit?.content ?: "",
+                style = FanwooriTypography.body3,
+                fontSize = 17.sp,
+                color = Gray600,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(
+                        color = Gray800,
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                    .height(40.dp)
+                    .padding(start = 15.dp, end = 15.dp)
+            ) {
+                Text(
+                    text = "TOP3 혜택 자세히보기",
+                    fontSize = 15.sp,
+                    style = FanwooriTypography.subtitle3,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_arrow),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+
+
+        }
+
+
+    }
+    Surface(
+        color = Color.White,
+        modifier = Modifier.fillMaxSize()
+    ) {
+    }
+
+
+}
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun voteToStar(
+fun VoteToStar(
     items: List<VoteData>,
     count: Int,
     voteStatus: VoteStatus,
@@ -732,7 +911,7 @@ fun voteToStar(
 }
 
 @Composable
-fun voteIng() {
+fun VoteIng() {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -763,7 +942,7 @@ fun voteIng() {
 }
 
 @Composable
-fun voteEndHeader() {
+fun VoteEndHeader() {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

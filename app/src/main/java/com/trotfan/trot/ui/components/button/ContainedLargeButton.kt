@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
 fun ContainedLargeButton(
@@ -35,10 +36,7 @@ fun ContainedLargeButton(
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(28.dp))
-            .clickable(
-                indication = null,
-                interactionSource = interactionSource
-            ) {
+            .clickableSingle {
                 if (enabled) {
                     onClick()
                 }

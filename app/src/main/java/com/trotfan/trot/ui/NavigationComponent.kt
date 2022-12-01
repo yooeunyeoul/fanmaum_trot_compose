@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
@@ -34,11 +35,11 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    votingBottomSheetState: ModalBottomSheetState
+    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
 ) {
     NavHost(
         navController = navController,
-        startDestination = HomeSections.Vote.route
+        startDestination = Route.Login.route
     ) {
         composable(Route.Login.route) {
             LoginScreen(
@@ -50,7 +51,9 @@ fun NavigationComponent(
             onItemSelected = { _, _ ->
                 // 각화면의 디테일 작업
             },
-            votingBottomSheetState = votingBottomSheetState,
+            onVotingClick = { voteId: Int, star: VoteMainStar? ->
+                onVotingClick(voteId, star)
+            },
             navController = navController
         )
         composable(Route.SelectStar.route) {

@@ -63,6 +63,15 @@ class VoteHomeViewModel @Inject constructor(
         get() = _womenHashMap
     private val _womenHashMap =
         MutableStateFlow(LinkedHashMap<Int?, VoteMainStar>())
+    val voteId: StateFlow<Int>
+        get() = _voteId
+    private val _voteId =
+        MutableStateFlow(0)
+
+    val stars: StateFlow<VoteMainStars>
+        get() = _stars
+    private val _stars =
+        MutableStateFlow(VoteMainStars())
 
     val favoriteStar: StateFlow<FavoriteStarInfo>
         get() = _favoriteStar
