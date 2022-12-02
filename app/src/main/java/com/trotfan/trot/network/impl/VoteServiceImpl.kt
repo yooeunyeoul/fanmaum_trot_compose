@@ -1,8 +1,8 @@
 package com.trotfan.trot.network.impl
 
 import com.trotfan.trot.model.FavoriteStarInfo
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.Top3Benefit
-import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.VoteService
 import com.trotfan.trot.network.response.CommonResponse
@@ -27,4 +27,13 @@ class VoteServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
         }
         return response.body()
     }
+
+    override suspend fun voteTickets(userId: Long): CommonResponse<Tickets> {
+        val response = httpClient.get(HttpRoutes.USERS + "/${userId}/tickets") {
+            contentType(ContentType.Application.Json)
+        }
+        return response.body()
+    }
+
+
 }

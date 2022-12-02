@@ -28,6 +28,7 @@ import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.clickableSingle
 
@@ -166,7 +167,7 @@ fun VoteItem(
                 )
 
                 Text(
-                    text = "${star?.votes} 표",
+                    text = "${NumberComma.decimalFormat.format(star?.votes)} 표",
                     color = Gray800,
                     style = FanwooriTypography.body5,
                     fontSize = 17.sp
@@ -226,6 +227,7 @@ fun PreviewVoteItem() {
         VoteItem(
             star = VoteMainStar(id = 1, name = "임영웅", rank = 1, votes = 3000),
             onVotingClick = {},
-            onSharedClick = {}, isTop3 = false)
+            onSharedClick = {}, isTop3 = false
+        )
     }
 }

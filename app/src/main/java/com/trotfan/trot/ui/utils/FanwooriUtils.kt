@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
+import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.abs
 
@@ -184,4 +185,8 @@ private class MultipleEventsCutterImpl : MultipleEventsCutter {
         }
         lastEventTimeMs = now
     }
+}
+
+object NumberComma {
+    val decimalFormat = DecimalFormat("#,###")
 }

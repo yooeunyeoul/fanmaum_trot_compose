@@ -2,19 +2,22 @@ package com.trotfan.trot.ui.home.vote.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.key
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.datastore.FavoriteStarDataStore
 import com.trotfan.trot.datastore.FavoriteStarManager
 import com.trotfan.trot.datastore.VoteMainManager
-import com.trotfan.trot.model.*
+import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.model.Expired
+import com.trotfan.trot.model.FavoriteStarInfo
+import com.trotfan.trot.model.VoteData
+import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.VoteRepository
 import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.ktor.util.*
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
@@ -68,11 +71,6 @@ class VoteHomeViewModel @Inject constructor(
     private val _voteId =
         MutableStateFlow(0)
 
-    val stars: StateFlow<VoteMainStars>
-        get() = _stars
-    private val _stars =
-        MutableStateFlow(VoteMainStars())
-
     val favoriteStar: StateFlow<FavoriteStarInfo>
         get() = _favoriteStar
     private val _favoriteStar =
@@ -90,9 +88,15 @@ class VoteHomeViewModel @Inject constructor(
 
     private val dummyData = VoteData(quantity = -1, star_name = "null", user_name = "null")
 
+    val tickets: StateFlow<Expired>
+        get() = _tickets
+    private val _tickets =
+        MutableStateFlow(Expired())
+
 
     init {
         getVoteList()
+        getVoteTickets()
         favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
         voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
         connectBoardSocket()
@@ -128,8 +132,30 @@ class VoteHomeViewModel @Inject constructor(
                         _favoriteStar.emit(response.data ?: FavoriteStarInfo())
                     }
                 }
+            }
+        }
+    }
 
+    private fun getVoteTickets() {
+        viewModelScope.launch {
+            context.userIdStore.data.collect {
+                kotlin.runCatching {
+                    repository.getVoteTickets(
+                        userId = if(BuildConfig.DEBUG) 1 else it.userId
+                    )
 
+                }.onSuccess { response ->
+                    when (response.result.code) {
+                        ResultCodeStatus.Success.code -> {
+                            _tickets.emit(response.data?.expired ?: Expired())
+                        }
+                        ResultCodeStatus.Fail.code -> {
+                            Log.e("VoteHomeViewModel", response.result.message.toString())
+                        }
+                    }
+                }.onFailure {
+                    Log.e("VoteHomeViewModel", it.message.toString())
+                }
             }
         }
     }

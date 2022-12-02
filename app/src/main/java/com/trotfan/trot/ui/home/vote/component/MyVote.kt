@@ -16,16 +16,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
+import com.trotfan.trot.model.Expired
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
-import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.theme.FanwooriTypography
+import com.trotfan.trot.ui.theme.Gray100
+import com.trotfan.trot.ui.theme.Gray900
+import com.trotfan.trot.ui.theme.Primary900
+import com.trotfan.trot.ui.utils.NumberComma
+import java.text.DecimalFormat
 
 @Composable
-fun MyVote(modifier: Modifier = Modifier, isHide: Boolean, hideState: (Boolean) -> (Unit)) {
+fun MyVote(
+    modifier: Modifier = Modifier,
+    isHide: Boolean,
+    hideState: (Boolean) -> (Unit),
+    tickets: Expired
+) {
     val textList = listOf("ㄴ 유효기한 무제한", "ㄴ 오늘 소멸 예정")
     val interactionSource = remember {
         MutableInteractionSource()
@@ -66,8 +76,12 @@ fun MyVote(modifier: Modifier = Modifier, isHide: Boolean, hideState: (Boolean) 
             )
 
             Text(
-                text = "129,239,000",
-                color = Primary900,
+                text = NumberComma.decimalFormat.format(
+                    tickets.today?.plus(
+                        tickets.unlimited ?: 0
+                    )
+                ),
+                color = Gray900,
                 style = FanwooriTypography.button1,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 17.sp
@@ -102,7 +116,9 @@ fun MyVote(modifier: Modifier = Modifier, isHide: Boolean, hideState: (Boolean) 
                         )
 
                         Text(
-                            text = "200",
+                            text = if (it == 0) NumberComma.decimalFormat.format(tickets.unlimited) else NumberComma.decimalFormat.format(
+                                tickets.today
+                            ),
                             color = Gray900,
                             style = FanwooriTypography.button1,
                             fontWeight = FontWeight.SemiBold,
@@ -129,5 +145,5 @@ fun Charging() {
 @Preview
 @Composable
 fun PreviewMyVote() {
-    MyVote(isHide = true, hideState = {})
+    MyVote(isHide = true, hideState = {}, tickets = Expired())
 }

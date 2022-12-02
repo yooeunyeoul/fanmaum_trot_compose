@@ -75,12 +75,12 @@ fun VoteHome(
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
-    val stars by viewModel.stars.collectAsState()
     val voteId by viewModel.voteId.collectAsState()
     val hashmapMenList by viewModel.menHashMap.collectAsState()
     val hashmapWomenList by viewModel.womenHashMap.collectAsState()
     val voteStatusBoardList by viewModel.voteDataList.collectAsState()
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
+    val tickets by viewModel.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
     val favoriteStarGender by viewModel.favoriteStarManager.favoriteStarGenderFlow.collectAsState(
         initial = 0
@@ -291,7 +291,8 @@ fun VoteHome(
                             isHide = myVoteHide,
                             hideState = { isHide ->
                                 myVoteHide = isHide
-                            })
+                            }, tickets = tickets
+                        )
                         Box(
                             Modifier
                                 .height(112.dp)
@@ -797,7 +798,7 @@ fun VoteToStar(
             yield()
             delay(3500)
             try {
-                Log.e("count", "${items.count()}")
+//                Log.e("count", "${items.count()}")
 
                 if (items.count() > pagerState.currentPage + 1) {
                     pagerState.animateScrollToPage(
@@ -807,7 +808,7 @@ fun VoteToStar(
                 } else {
                     viewModel.clearDataAndAddDummyData()
                 }
-                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
+//                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
 
             } catch (_: Throwable) {
 

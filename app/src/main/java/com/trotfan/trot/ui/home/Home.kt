@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -192,7 +193,7 @@ fun TrotBottomBar(
                         )
 
                 ) {
-//                    Divider(thickness = 1.dp, color = Gray100)
+                    Divider(thickness = 1.dp, color = Gray100)
                     Spacer(modifier = Modifier.height(8.dp))
                     Box(
                         modifier = Modifier
@@ -219,12 +220,12 @@ fun TrotBottomBar(
                                 painter = painterResource(id = id),
                                 modifier = Modifier.height(18.3.dp),
                                 contentDescription = null,
-                                tint = if (selectedSection.title == sections.title) Primary500 else Gray400
+                                tint = if (selectedSection.title == sections.title) Primary500 else Gray500
                             )
                         }
 
                     )
-                    Spacer(modifier = Modifier.height(2.9.dp))
+                    Spacer(modifier = Modifier.height(2.5.dp))
                     Box(
                         modifier = Modifier
                             .layoutId("text")
@@ -232,9 +233,10 @@ fun TrotBottomBar(
                         content = {
                             Text(
                                 text = sections.title,
-                                fontSize = 13.sp,
-                                color = if (selectedSection.title == sections.title) Primary700 else Gray500,
-                                style = FanwooriTypography.button2,
+                                fontSize = 15.sp,
+                                color = if (selectedSection.title == sections.title) Primary500 else Gray500,
+                                style = FanwooriTypography.body2,
+                                fontWeight = FontWeight.Medium,
                                 maxLines = 1
                             )
                         }
