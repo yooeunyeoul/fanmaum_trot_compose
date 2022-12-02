@@ -1,7 +1,5 @@
 package com.trotfan.trot.ui.home.vote.component
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -28,19 +26,17 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Star
 import com.trotfan.trot.model.VoteMainStar
-import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.clickableSingle
-import com.trotfan.trot.ui.utils.getShareChar
 
 
 @Composable
 fun VoteItem(
     beforeRank: Boolean = false,
     isMyStar: Boolean = false,
+    isTop3: Boolean,
     star: VoteMainStar?,
     onSharedClick: () -> Unit,
     onVotingClick: (star: VoteMainStar?) -> Unit
@@ -66,8 +62,8 @@ fun VoteItem(
                 )
             }
             .padding(
-                top = if (beforeRank) 12.dp else 16.dp,
-                bottom = if (beforeRank) 12.dp else 16.dp,
+                top = if (beforeRank || !isTop3) 12.dp else 16.dp,
+                bottom = if (beforeRank || !isTop3) 12.dp else 16.dp,
                 start = 25.dp,
                 end = 24.dp
             )
@@ -104,11 +100,11 @@ fun VoteItem(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .padding(start = 23.5.dp, end = 12.dp)
-                    .size(if (beforeRank) 64.dp else 88.dp)
+                    .size(if (beforeRank || !isTop3) 64.dp else 88.dp)
                     .clip(CircleShape)
                     .border(
-                        width = if (beforeRank || isMyStar) 1.dp else 4.dp,
-                        brush = if (beforeRank)
+                        width = if (beforeRank || isMyStar || !isTop3) 1.dp else 4.dp,
+                        brush = if (beforeRank || !isTop3)
                             Brush.linearGradient(1f to Color(0xFFCFD5D8), 1f to Color(0xFFCFD5D8))
                         else {
                             if (isMyStar) {
@@ -124,7 +120,7 @@ fun VoteItem(
                         shape = CircleShape
                     )
                     .border(
-                        width = if (beforeRank || isMyStar) 0.dp else 8.dp,
+                        width = if (beforeRank || isMyStar || !isTop3) 0.dp else 8.dp,
                         color = Color.White,
                         CircleShape
                     )
@@ -230,6 +226,6 @@ fun PreviewVoteItem() {
         VoteItem(
             star = VoteMainStar(id = 1, name = "임영웅", rank = 1, votes = 3000),
             onVotingClick = {},
-            onSharedClick = {})
+            onSharedClick = {}, isTop3 = false)
     }
 }

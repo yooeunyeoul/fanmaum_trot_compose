@@ -58,7 +58,7 @@ enum class HomeSections(
     MyPage(title = "마이페이지", route = "home/mypage")
 }
 
-private val BottomNavHeight = 56.dp
+val BottomNavHeight = 56.dp
 private val TextIconSpacing = 2.dp
 
 @RequiresApi(Build.VERSION_CODES.O)

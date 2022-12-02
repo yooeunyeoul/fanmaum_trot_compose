@@ -4,6 +4,7 @@ package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -49,6 +50,7 @@ import com.trotfan.trot.R
 import com.trotfan.trot.model.*
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
+import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
@@ -130,7 +132,7 @@ fun VoteHome(
                     elevation = 3.dp,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 88.dp)
+                        .padding(bottom = BottomNavHeight.plus(32.dp))
                         .zIndex(2f)
                 ) {
                     Row(
@@ -175,7 +177,7 @@ fun VoteHome(
                     )
                     .fillMaxSize()
                     .background(color = Color.White)
-                    .padding(bottom = 56.dp)
+                    .padding(bottom = BottomNavHeight)
             ) {
                 CustomTopAppBarWithIcon(
                     title = "일일 투표",
@@ -574,7 +576,8 @@ fun TodayRankingView(
                                     }
                                     val shareIntent = Intent.createChooser(sendIntent, null)
                                     context.startActivity(shareIntent)
-                                }
+                                }, isTop3 = (men.second.rank ?: 0) < 4,
+                                beforeRank = men.second.rank == -1
                             )
                         }
                     }
@@ -583,8 +586,8 @@ fun TodayRankingView(
             1 -> {
                 Column(Modifier.fillMaxWidth()) {
                     val womenList =
-//                        hashmapWomenList.toList().sortedBy { (key, value) -> value.rank }
-                        hashmapWomenList.toList().shuffled()
+                        hashmapWomenList.toList().sortedBy { (key, value) -> value.rank }
+//                        hashmapWomenList.toList().shuffled()
                     for (women in womenList) {
                         key(women.first) {
                             VoteItem(
@@ -608,7 +611,7 @@ fun TodayRankingView(
                                     }
                                     val shareIntent = Intent.createChooser(sendIntent, null)
                                     context.startActivity(shareIntent)
-                                }
+                                }, isTop3 = (women.second.rank ?: 0) < 4
                             )
                         }
                     }
@@ -794,7 +797,7 @@ fun VoteToStar(
             yield()
             delay(3500)
             try {
-//                Log.e("count", "${items.count()}")
+                Log.e("count", "${items.count()}")
 
                 if (items.count() > pagerState.currentPage + 1) {
                     pagerState.animateScrollToPage(
@@ -804,7 +807,7 @@ fun VoteToStar(
                 } else {
                     viewModel.clearDataAndAddDummyData()
                 }
-//                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
+                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
 
             } catch (_: Throwable) {
 
