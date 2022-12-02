@@ -25,11 +25,13 @@ fun HeaderVoteState(
 ) {
     Column(Modifier.fillMaxWidth()) {
 
-        Spacer(modifier = Modifier.height(23.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
-            Modifier.fillMaxWidth().clickableSingle {
-                onVotingClick()
-            },
+            Modifier
+                .fillMaxWidth()
+                .clickableSingle {
+                    onVotingClick()
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -63,7 +65,7 @@ fun HeaderVoteState(
                 tint = Secondary600
             )
         }
-
+        Spacer(modifier = Modifier.height(23.dp))
         Row(
             Modifier
                 .fillMaxWidth()
