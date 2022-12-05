@@ -76,7 +76,7 @@ fun VoteItem(
             ) {
                 if (!beforeRank) {
                     Text(
-                        text = "현재",
+                        text = if (star?.rank == 1) "현재" else "",
                         color = Primary900,
                         style = FanwooriTypography.subtitle3,
                         fontWeight = FontWeight.SemiBold,

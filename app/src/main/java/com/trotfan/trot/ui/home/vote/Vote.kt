@@ -4,7 +4,6 @@ package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -431,7 +430,8 @@ fun VoteHome(
                                     hashmapMenList = hashmapMenList,
                                     hashmapWomenList = hashmapWomenList,
                                     favoriteStar = favoriteStar,
-                                    voteId = voteId
+                                    voteId = voteId,
+                                    favoriteStarGender = favoriteStarGender ?: 0
                                 ) { _: Int, star: VoteMainStar? ->
                                     onVotingClick(voteId, star)
                                 }
@@ -488,13 +488,14 @@ fun TodayRankingView(
     hashmapWomenList: HashMap<Int?, VoteMainStar>,
     favoriteStar: FavoriteStarInfo,
     voteId: Int,
+    favoriteStarGender: Int,
     onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
 ) {
     val tabData = listOf<String>("남자스타", "여자스타")
     val context = LocalContext.current
 
     val pagerState = rememberPagerState(
-        initialPage = 1
+        initialPage = favoriteStarGender
     )
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
