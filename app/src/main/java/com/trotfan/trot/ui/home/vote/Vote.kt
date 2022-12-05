@@ -72,7 +72,7 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
-    onVotingClick: (vote_id: Int, vote_ticket:Expired, star: VoteMainStar?) -> Unit
+    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?) -> Unit
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -891,7 +891,7 @@ fun VoteToStar(
 
                         } else {
                             Text(
-                                text = "${items[currentPage].quantity}",
+                                text = NumberComma.decimalFormat.format(items[currentPage].quantity),
                                 color = Color.White,
                                 modifier = Modifier.weight(weight = 1f, fill = false),
                                 style = FanwooriTypography.subtitle4,

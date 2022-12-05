@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.vote.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
