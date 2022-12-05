@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FavoriteStar(
-    val gender: Int,
     val id: Int,
     val image: String,
     val name: String,
