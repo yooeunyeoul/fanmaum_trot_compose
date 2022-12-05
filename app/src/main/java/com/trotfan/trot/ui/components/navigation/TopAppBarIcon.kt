@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray800
+import com.trotfan.trot.ui.theme.Gray900
 
 @Composable
 fun CustomTopAppBarWithIcon(
@@ -39,35 +40,37 @@ fun CustomTopAppBarWithIcon(
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         Text(
-            fontSize = 20.sp,
+            fontSize = 22.sp,
             modifier = Modifier
                 .padding(start = 16.dp)
                 .weight(1f),
             text = title,
             textAlign = TextAlign.Start,
-            color = Gray800,
+            color = Gray900,
             fontWeight = FontWeight.SemiBold,
-            style = FanwooriTypography.subtitle1,
+            style = FanwooriTypography.h2,
         )
 
         Icon(
             painter = painterResource(id = startIcon),
             contentDescription = null,
             modifier = Modifier
-                .padding(end = 28.3.dp)
+                .size(32.dp)
                 .clickable {
                     onClickStartIcon.invoke()
                 }
         )
+        Spacer(modifier = Modifier.width(20.dp))
 
         Icon(
             painter = painterResource(id = endIcon),
             contentDescription = null,
             modifier = Modifier
-                .padding(end = 16.dp)
+                .size(32.dp)
                 .clickable {
                     onClickEndIcon.invoke()
                 }
         )
+        Spacer(modifier = Modifier.width(16.dp))
     }
 }

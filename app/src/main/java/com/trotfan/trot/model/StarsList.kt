@@ -36,12 +36,12 @@ data class FavoriteStarInfo(
     val id: Int? = null,
     val image: String? = null,
     val name: String? = null,
-    val rank: Rank? = null,
+    var rank: Rank? = null,
     val votes: Int? = null
 ) {
     @Serializable
     data class Rank(
-        val daily: Int? = null,
+        var daily: Int? = null,
         val monthly: Int? = null
     )
 }
