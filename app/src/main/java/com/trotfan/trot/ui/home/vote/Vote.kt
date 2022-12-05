@@ -4,6 +4,7 @@ package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -81,18 +82,19 @@ fun VoteHome(
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val tickets by viewModel.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
-    val favoriteStarGender by viewModel.favoriteStarManager.favoriteStarGenderFlow.collectAsState(
+    val favoriteStarGender = viewModel.favoriteStarManager?.favoriteStarGenderFlow?.collectAsState(
         initial = 0
     )
-    val favoriteStarName by viewModel.favoriteStarManager.favoriteStarNameFlow.collectAsState(
+    val favoriteStarName = viewModel.favoriteStarManager?.favoriteStarNameFlow?.collectAsState(
         initial = ""
     )
-    val isShowingToolTip by viewModel.voteMainManager.isShowingVoteMainToolTipFlow.collectAsState(
+    val isShowingToolTip = viewModel.voteMainManager?.isShowingVoteMainToolTipFlow?.collectAsState(
         initial = false
     )
-    val isShowingScrollToolTip by viewModel.voteMainManager.isShowingVoteMainScrollToolTipFlow.collectAsState(
-        initial = false
-    )
+    val isShowingScrollToolTip =
+        viewModel.voteMainManager?.isShowingVoteMainScrollToolTipFlow?.collectAsState(
+            initial = false
+        )
 
 
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ranking_arrow))
@@ -110,6 +112,11 @@ fun VoteHome(
     }
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
 
+    LaunchedEffect(Unit) {
+        Log.e("asdfasdfasfaadssadasfadsfdasf", "asdfasdfasdfsaassaasdfasf")
+        viewModel.initialCall()
+    }
+
     LaunchedEffect(ticks != 0) {
         while (ticks > 0) {
             delay(1.seconds)
@@ -124,7 +131,7 @@ fun VoteHome(
                 .fillMaxSize()
         ) {
 
-            if (isShowingScrollToolTip) {
+            if (isShowingScrollToolTip?.value == true) {
                 Surface(
                     shape = RoundedCornerShape(20.dp),
                     color = Color.White,
@@ -165,7 +172,7 @@ fun VoteHome(
                                 source: NestedScrollSource
                             ): Offset {
                                 val delta = available.y
-                                if (isShowingScrollToolTip) {
+                                if (isShowingScrollToolTip?.value == true) {
                                     if (delta < 0) {
                                         viewModel.saveScrollTooltipState(false)
                                     }
@@ -187,7 +194,7 @@ fun VoteHome(
                         val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
                             putExtra(
-                                Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName)
+                                Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName?.value)
                             )
 
                             type = "text/plain"
@@ -279,7 +286,7 @@ fun VoteHome(
                                 ) {
                                     onVotingClick(
                                         voteId,
-                                        VoteMainStar(id = favoriteStar.id, name = favoriteStarName)
+                                        VoteMainStar(id = favoriteStar.id, name = favoriteStarName?.value)
                                     )
                                 }
                             }
@@ -298,7 +305,7 @@ fun VoteHome(
                                 .background(color = Color.White)
                         ) {
 
-                            if (isShowingToolTip) {
+                            if (isShowingToolTip?.value == true) {
                                 ToolTip(
                                     modifier = Modifier
                                         .padding(start = 24.dp, top = 8.dp)
@@ -431,7 +438,7 @@ fun VoteHome(
                                     hashmapWomenList = hashmapWomenList,
                                     favoriteStar = favoriteStar,
                                     voteId = voteId,
-                                    favoriteStarGender = favoriteStarGender ?: 0
+                                    favoriteStarGender = favoriteStarGender?.value ?: 0
                                 ) { _: Int, star: VoteMainStar? ->
                                     onVotingClick(voteId, star)
                                 }

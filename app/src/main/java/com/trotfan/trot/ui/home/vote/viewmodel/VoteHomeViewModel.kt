@@ -47,8 +47,8 @@ class VoteHomeViewModel @Inject constructor(
     lateinit var mBoardSocket: Socket
     lateinit var mRankSocket: Socket
 
-    var favoriteStarManager: FavoriteStarManager
-    var voteMainManager: VoteMainManager
+    var favoriteStarManager: FavoriteStarManager? = null
+    var voteMainManager: VoteMainManager? = null
 
     private val context = getApplication<Application>()
 
@@ -94,11 +94,13 @@ class VoteHomeViewModel @Inject constructor(
         MutableStateFlow(Expired())
 
 
-    init {
-        getVoteList()
-        getVoteTickets()
+    fun initialCall() {
         favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
         voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
+        getVoteList()
+        getVoteTickets()
+//        favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
+//        voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
         connectBoardSocket()
         connectRankSocket()
         getStarRank()
@@ -122,7 +124,7 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun getStarRank() {
         viewModelScope.launch {
-            favoriteStarManager.favoriteStarIdFlow.collectLatest {
+            favoriteStarManager?.favoriteStarIdFlow?.collectLatest {
                 val response = repository.getStarRank(it ?: 2)
                 when (response.result.code) {
                     ResultCodeStatus.StarRankNoResult.code -> {
@@ -141,7 +143,7 @@ class VoteHomeViewModel @Inject constructor(
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
-                        userId = if(BuildConfig.DEBUG) 1 else it.userId
+                        userId = if (BuildConfig.DEBUG) 1 else it.userId
                     )
 
                 }.onSuccess { response ->
@@ -303,7 +305,7 @@ class VoteHomeViewModel @Inject constructor(
 
     fun saveTooltipState(isShowToolTIp: Boolean) {
         viewModelScope.launch {
-            voteMainManager.storeTooltipState(
+            voteMainManager?.storeTooltipState(
                 isShowToolTIp
             )
         }
@@ -311,7 +313,7 @@ class VoteHomeViewModel @Inject constructor(
 
     fun saveScrollTooltipState(isShowToolTIp: Boolean) {
         viewModelScope.launch {
-            voteMainManager.storeScrollTooltipState(
+            voteMainManager?.storeScrollTooltipState(
                 isShowToolTIp
             )
         }
