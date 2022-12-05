@@ -49,7 +49,7 @@ fun SettingNicknameScreen(
         Text(
             modifier = Modifier
                 .padding(top = 8.dp),
-            text = "팬우리에서 사용할\n" +
+            text = "팬마음에서 사용할\n" +
                     "닉네임을 정해볼까요?",
             color = Gray700,
             style = FanwooriTypography.h1

@@ -87,7 +87,7 @@ fun AutoVotingDialog(
             )
 
             Text(
-                text = "팬우리에 매일 출석만 해도,\n" +
+                text = "팬마음에 매일 출석만 해도,\n" +
                         "내 스타에게 자동으로 투표가 돼요!",
                 style = FanwooriTypography.body1,
                 color = Gray500,
