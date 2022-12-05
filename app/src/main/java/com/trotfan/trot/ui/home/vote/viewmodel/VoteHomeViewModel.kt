@@ -47,8 +47,8 @@ class VoteHomeViewModel @Inject constructor(
     lateinit var mBoardSocket: Socket
     lateinit var mRankSocket: Socket
 
-    var favoriteStarManager: FavoriteStarManager? = null
-    var voteMainManager: VoteMainManager? = null
+    var favoriteStarManager: FavoriteStarManager
+    var voteMainManager: VoteMainManager
 
     private val context = getApplication<Application>()
 
@@ -94,13 +94,11 @@ class VoteHomeViewModel @Inject constructor(
         MutableStateFlow(Expired())
 
 
-    fun initialCall() {
-        favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
-        voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
+    init {
         getVoteList()
         getVoteTickets()
-//        favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
-//        voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
+        favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
+        voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
         connectBoardSocket()
         connectRankSocket()
         getStarRank()

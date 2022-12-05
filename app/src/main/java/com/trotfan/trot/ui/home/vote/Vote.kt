@@ -83,19 +83,18 @@ fun VoteHome(
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val tickets by viewModel.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
-    val favoriteStarGender = viewModel.favoriteStarManager?.favoriteStarGenderFlow?.collectAsState(
+    val favoriteStarGender by viewModel.favoriteStarManager.favoriteStarGenderFlow.collectAsState(
         initial = Gender.MEN
     )
-    val favoriteStarName = viewModel.favoriteStarManager?.favoriteStarNameFlow?.collectAsState(
+    val favoriteStarName by viewModel.favoriteStarManager.favoriteStarNameFlow.collectAsState(
         initial = ""
     )
-    val isShowingToolTip = viewModel.voteMainManager?.isShowingVoteMainToolTipFlow?.collectAsState(
+    val isShowingToolTip by viewModel.voteMainManager.isShowingVoteMainToolTipFlow.collectAsState(
         initial = false
     )
-    val isShowingScrollToolTip =
-        viewModel.voteMainManager?.isShowingVoteMainScrollToolTipFlow?.collectAsState(
-            initial = false
-        )
+    val isShowingScrollToolTip by viewModel.voteMainManager.isShowingVoteMainScrollToolTipFlow.collectAsState(
+        initial = false
+    )
 
 
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ranking_arrow))
@@ -113,11 +112,6 @@ fun VoteHome(
     }
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
 
-    LaunchedEffect(Unit) {
-        Log.e("asdfasdfasfaadssadasfadsfdasf", "asdfasdfasdfsaassaasdfasf")
-        viewModel.initialCall()
-    }
-
     LaunchedEffect(ticks != 0) {
         while (ticks > 0) {
             delay(1.seconds)
@@ -132,7 +126,7 @@ fun VoteHome(
                 .fillMaxSize()
         ) {
 
-            if (isShowingScrollToolTip?.value == true) {
+            if (isShowingScrollToolTip) {
                 Surface(
                     shape = RoundedCornerShape(20.dp),
                     color = Color.White,
@@ -173,7 +167,7 @@ fun VoteHome(
                                 source: NestedScrollSource
                             ): Offset {
                                 val delta = available.y
-                                if (isShowingScrollToolTip?.value == true) {
+                                if (isShowingScrollToolTip) {
                                     if (delta < 0) {
                                         viewModel.saveScrollTooltipState(false)
                                     }
@@ -195,7 +189,7 @@ fun VoteHome(
                         val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
                             putExtra(
-                                Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName?.value)
+                                Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName)
                             )
 
                             type = "text/plain"
@@ -288,7 +282,7 @@ fun VoteHome(
                                     onVotingClick(
                                         voteId,
                                         tickets,
-                                        VoteMainStar(id = favoriteStar.id, name = favoriteStarName?.value)
+                                        VoteMainStar(id = favoriteStar.id, name = favoriteStarName)
                                     )
                                 }
                             }
@@ -307,7 +301,7 @@ fun VoteHome(
                                 .background(color = Color.White)
                         ) {
 
-                            if (isShowingToolTip?.value == true) {
+                            if (isShowingToolTip) {
                                 ToolTip(
                                     modifier = Modifier
                                         .padding(start = 24.dp, top = 8.dp)
@@ -440,7 +434,7 @@ fun VoteHome(
                                     hashmapWomenList = hashmapWomenList,
                                     favoriteStar = favoriteStar,
                                     voteId = voteId,
-                                    favoriteStarGender = favoriteStarGender?.value?:Gender.MEN
+                                    favoriteStarGender = favoriteStarGender ?: Gender.MEN
                                 ) { _: Int, star: VoteMainStar? ->
                                     onVotingClick(voteId, tickets, star)
                                 }
