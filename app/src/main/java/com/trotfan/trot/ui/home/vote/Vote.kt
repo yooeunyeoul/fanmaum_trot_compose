@@ -250,6 +250,13 @@ fun VoteHome(
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(112.dp)
+                                    .clickableSingle {
+                                        onVotingClick(
+                                            voteId,
+                                            tickets,
+                                            VoteMainStar(id = favoriteStar.id, name = favoriteStarName)
+                                        )
+                                    }
                                     .clip(CircleShape)
                                     .border(
                                         width = 8.dp,
