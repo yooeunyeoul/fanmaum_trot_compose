@@ -188,6 +188,7 @@ fun VotingBottomSheet(
                     .align(CenterHorizontally)
                     .fillMaxWidth()
                     .padding(start = 32.dp, end = 32.dp, top = 16.dp)
+                    .clip(RoundedCornerShape(12.dp))
                     .background(Gray50)
             ) {
                 TextField(
@@ -229,7 +230,6 @@ fun VotingBottomSheet(
                             textAlign = TextAlign.Center
                         )
                     },
-                    shape = RoundedCornerShape(12.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         placeholderColor = Gray400,
                         textColor = Gray900,
@@ -261,8 +261,9 @@ fun VotingBottomSheet(
                         painter = painterResource(id = R.drawable.input_clear),
                         contentDescription = null,
                         modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(32.dp, 32.dp)
                             .align(CenterEnd)
-                            .padding(end = 24.dp)
                             .clickable {
                                 coroutineScope.launch {
                                     homeViewModel.voteCnt.emit(TextFieldValue(""))
