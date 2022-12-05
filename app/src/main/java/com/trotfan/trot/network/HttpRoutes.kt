@@ -4,12 +4,8 @@ import com.trotfan.trot.BuildConfig
 
 object HttpRoutes {
     //    private const val BASE_URL = "https://fanwoori.ap.ngrok.io"
-    val BASE_URL
-        get() = if (BuildConfig.DEBUG) {
-            "https://dev.fanmaum.ap.ngrok.io"
-        } else {
-            "https://fanwoori.ap.ngrok.io"
-        }
+    val BASE_URL = "https://dev.fanmaum.ap.ngrok.io"
+
     val KAKAO_LOGIN = "$BASE_URL/auth/login/kakao"
     val GOOGLE_LOGIN = "$BASE_URL/auth/login/google"
     val APPLE_LOGIN = "$BASE_URL/auth/login/apple"
