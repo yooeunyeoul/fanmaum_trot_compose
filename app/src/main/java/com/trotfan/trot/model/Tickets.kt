@@ -10,8 +10,8 @@ data class Tickets(
 
 @Serializable
 data class Expired(
-    val today: Int? = 0,
-    val unlimited: Int? = 0
+    val today: Long = 0,
+    val unlimited: Long = 0
 )
 
 @Serializable
@@ -19,8 +19,8 @@ data class Unlimited(
     val createdAt: String,
     val expiredAt: String?,
     val id: Int,
-    val quantity: Int,
-    val statusId: Int,
+    val quantity: Long,
+    val statusId: Long,
     val typeId: Int,
     val userId: Int
 )

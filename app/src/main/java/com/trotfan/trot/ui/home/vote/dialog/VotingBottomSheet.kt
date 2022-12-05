@@ -34,6 +34,7 @@ import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.IconOutline3Button
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
+import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.addFocusCleaner
 import com.trotfan.trot.ui.utils.clickable
@@ -44,13 +45,13 @@ import java.text.DecimalFormat
 @Composable
 fun VotingBottomSheet(
     votingBottomSheetState: ModalBottomSheetState,
-    viewModel: HomeViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    voteViewModel: VoteHomeViewModel = hiltViewModel(),
     onDismiss: (starId: Int?, quantity: Long?) -> Unit
 ) {
     val context = LocalContext.current
     val decimal = DecimalFormat("#,###")
-    val myVoteCnt by viewModel.myVoteCnt.collectAsState()
-    val voteCnt by viewModel.voteCnt.collectAsState()
+    val voteCnt by homeViewModel.voteCnt.collectAsState()
     val scrollState = rememberScrollState()
     var voteBtnState by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -59,7 +60,8 @@ fun VotingBottomSheet(
     val keyboardController = LocalSoftwareKeyboardController.current
     var isTextFieldFocused = false
     var placeholder by remember { mutableStateOf("얼마나 투표할까요?") }
-    val star by viewModel.voteStar.collectAsState()
+    val star by homeViewModel.voteStar.collectAsState()
+    val tickets by voteViewModel.tickets.collectAsState()
 
 
     if (votingBottomSheetState.isVisible.not()) {
@@ -114,7 +116,7 @@ fun VotingBottomSheet(
                     .padding(top = 8.dp)
             ) {
                 Text(
-                    text = decimal.format(myVoteCnt),
+                    text = decimal.format(tickets.today + tickets.unlimited),
                     style = FanwooriTypography.subtitle2,
                     color = Gray800,
                     modifier = Modifier
@@ -162,7 +164,7 @@ fun VotingBottomSheet(
                     )
 
                     Text(
-                        text = "400",
+                        text = decimal.format(tickets.today),
                         style = FanwooriTypography.subtitle3,
                         color = Primary800,
                         modifier = Modifier.padding(start = 2.dp)
@@ -193,10 +195,11 @@ fun VotingBottomSheet(
                     maxLines = 1,
                     onValueChange = { cnt ->
                         coroutineScope.launch {
-                            viewModel.voteCnt.emit(
+                            homeViewModel.voteCnt.emit(
                                 if (cnt.text.isBlank().not()) {
                                     var decimalCnt = cnt.text.replace(",", "")
                                     try {
+                                        val myVoteCnt = tickets.today + tickets.unlimited
                                         if (decimalCnt.toLong() >= myVoteCnt) {
                                             decimalCnt = myVoteCnt.toString()
                                         }
@@ -262,7 +265,7 @@ fun VotingBottomSheet(
                             .padding(end = 24.dp)
                             .clickable {
                                 coroutineScope.launch {
-                                    viewModel.voteCnt.emit(TextFieldValue(""))
+                                    homeViewModel.voteCnt.emit(TextFieldValue(""))
                                 }
                             })
                 }
@@ -274,7 +277,7 @@ fun VotingBottomSheet(
                 text = "모두사용",
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.voteCnt.emit(TextFieldValue(decimal.format(myVoteCnt)))
+                        homeViewModel.voteCnt.emit(TextFieldValue(decimal.format(tickets.today + tickets.unlimited)))
                         focusManager.clearFocus()
                     }
                 },
@@ -315,7 +318,7 @@ fun VotingBottomSheetPreview() {
                 initialValue = ModalBottomSheetValue.Hidden,
                 skipHalfExpanded = true
             ),
-            viewModel = hiltViewModel()
+            homeViewModel = hiltViewModel()
         ) { _: Int?, _: Long? ->
         }
     }
