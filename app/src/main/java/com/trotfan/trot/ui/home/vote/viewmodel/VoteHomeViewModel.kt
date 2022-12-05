@@ -115,6 +115,7 @@ class VoteHomeViewModel @Inject constructor(
                 voteMainStars?.men?.associate { it.id to it } as LinkedHashMap
             val womenHashMap =
                 voteMainStars?.women?.associate { it.id to it } as LinkedHashMap
+            _voteId.emit(response.data.id)
             _menHashMap.emit(menHashMap)
             _womenHashMap.emit(womenHashMap)
 

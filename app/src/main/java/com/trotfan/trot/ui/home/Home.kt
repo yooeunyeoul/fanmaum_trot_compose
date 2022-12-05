@@ -268,7 +268,7 @@ fun NavGraphBuilder.addHomeGraph(
             },
             navController = navController,
             modifier = modifier,
-            onVotingClick = { voteId: Int, voteTicket: Expired,star: VoteMainStar? ->
+            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
                 onVotingClick(voteId, voteTicket, star)
             }
         )
