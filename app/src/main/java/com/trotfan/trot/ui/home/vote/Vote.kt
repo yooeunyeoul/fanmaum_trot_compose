@@ -71,7 +71,7 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
-    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
+    onVotingClick: (vote_id: Int, vote_ticket:Expired, star: VoteMainStar?) -> Unit
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -286,6 +286,7 @@ fun VoteHome(
                                 ) {
                                     onVotingClick(
                                         voteId,
+                                        tickets,
                                         VoteMainStar(id = favoriteStar.id, name = favoriteStarName?.value)
                                     )
                                 }
@@ -440,7 +441,7 @@ fun VoteHome(
                                     voteId = voteId,
                                     favoriteStarGender = favoriteStarGender?.value ?: 0
                                 ) { _: Int, star: VoteMainStar? ->
-                                    onVotingClick(voteId, star)
+                                    onVotingClick(voteId, tickets, star)
                                 }
                             }
                         }

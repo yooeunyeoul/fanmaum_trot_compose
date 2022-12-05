@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
@@ -61,7 +62,10 @@ fun FanwooriApp(
 
         ModalBottomSheetLayout(
             sheetContent = {
-                VotingBottomSheet(votingBottomSheetState) { star_id: Int?, quantity: Long? ->
+                VotingBottomSheet(
+                    votingBottomSheetState,
+                    homeViewModel = viewModel
+                ) { star_id: Int?, quantity: Long? ->
                     star_id?.let {
                         viewModel.postVoteTicket(voteId = voteId, star_id, quantity!!)
                     }
@@ -100,9 +104,10 @@ fun FanwooriApp(
                 }
                 NavigationComponent(
                     navController = navController,
-                    onVotingClick = { voteId: Int, star: VoteMainStar? ->
+                    onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
                         coroutineScope.launch {
                             star?.let {
+                                viewModel.voteTicket.emit(voteTicket)
                                 viewModel.voteStar.emit(star)
                                 viewModel.voteId.emit(voteId)
                                 viewModel.voteCnt.emit(TextFieldValue(""))

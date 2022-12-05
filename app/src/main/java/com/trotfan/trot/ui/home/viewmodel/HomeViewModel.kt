@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.datastore.userTokenStore
+import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.MainPopups
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.model.VoteTicket
@@ -31,6 +32,7 @@ class HomeViewModel @Inject constructor(
     var votingCompleteState = MutableStateFlow(0)
     var voteStar = MutableStateFlow<VoteMainStar?>(null)
     var voteId = MutableStateFlow(0)
+    var voteTicket = MutableStateFlow<Expired>(Expired(0, 0))
 
     var myVoteCnt = MutableStateFlow(1000L)
     var voteCnt = MutableStateFlow(TextFieldValue(""))

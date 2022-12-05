@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.trotfan.trot.R
+import com.trotfan.trot.model.Expired
 import com.trotfan.trot.ui.components.button.ContainedLargeButton
 import com.trotfan.trot.ui.components.button.IconOutline3Button
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
@@ -45,8 +46,7 @@ import java.text.DecimalFormat
 @Composable
 fun VotingBottomSheet(
     votingBottomSheetState: ModalBottomSheetState,
-    homeViewModel: HomeViewModel = hiltViewModel(),
-    voteViewModel: VoteHomeViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel,
     onDismiss: (starId: Int?, quantity: Long?) -> Unit
 ) {
     val context = LocalContext.current
@@ -61,7 +61,7 @@ fun VotingBottomSheet(
     var isTextFieldFocused = false
     var placeholder by remember { mutableStateOf("얼마나 투표할까요?") }
     val star by homeViewModel.voteStar.collectAsState()
-    val tickets by voteViewModel.tickets.collectAsState()
+    val tickets by homeViewModel.voteTicket.collectAsState()
 
 
     if (votingBottomSheetState.isVisible.not()) {
@@ -116,7 +116,7 @@ fun VotingBottomSheet(
                     .padding(top = 8.dp)
             ) {
                 Text(
-                    text = decimal.format(tickets.today + tickets.unlimited),
+                    text = decimal.format((tickets.today + tickets.unlimited) ?: 0),
                     style = FanwooriTypography.subtitle2,
                     color = Gray800,
                     modifier = Modifier

@@ -10,7 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
+import com.trotfan.trot.model.VoteTicket
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
@@ -35,7 +37,7 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
+    onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -51,8 +53,8 @@ fun NavigationComponent(
             onItemSelected = { _, _ ->
                 // 각화면의 디테일 작업
             },
-            onVotingClick = { voteId: Int, star: VoteMainStar? ->
-                onVotingClick(voteId, star)
+            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
+                onVotingClick(voteId, voteTicket, star)
             },
             navController = navController
         )
