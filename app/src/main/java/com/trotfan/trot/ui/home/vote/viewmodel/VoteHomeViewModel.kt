@@ -207,6 +207,9 @@ class VoteHomeViewModel @Inject constructor(
                         this.rank = data.rank
                         this.votes = data.votes
                     }
+                    if (_favoriteStar.value.id == data.id) {
+                        _favoriteStar.value.rank?.daily = data.rank ?: 0
+                    }
                 }
                 when (gender) {
                     Gender.MEN -> {
