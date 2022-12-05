@@ -52,6 +52,7 @@ import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.vote.component.*
+import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
@@ -83,7 +84,7 @@ fun VoteHome(
     val tickets by viewModel.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
     val favoriteStarGender = viewModel.favoriteStarManager?.favoriteStarGenderFlow?.collectAsState(
-        initial = 0
+        initial = Gender.MEN
     )
     val favoriteStarName = viewModel.favoriteStarManager?.favoriteStarNameFlow?.collectAsState(
         initial = ""
@@ -286,7 +287,10 @@ fun VoteHome(
                                 ) {
                                     onVotingClick(
                                         voteId,
-                                        VoteMainStar(id = favoriteStar.id, name = favoriteStarName?.value)
+                                        VoteMainStar(
+                                            id = favoriteStar.id,
+                                            name = favoriteStarName?.value
+                                        )
                                     )
                                 }
                             }
@@ -438,7 +442,7 @@ fun VoteHome(
                                     hashmapWomenList = hashmapWomenList,
                                     favoriteStar = favoriteStar,
                                     voteId = voteId,
-                                    favoriteStarGender = favoriteStarGender?.value ?: 0
+                                    favoriteStarGender = favoriteStarGender?.value?:Gender.MEN
                                 ) { _: Int, star: VoteMainStar? ->
                                     onVotingClick(voteId, star)
                                 }
@@ -495,14 +499,14 @@ fun TodayRankingView(
     hashmapWomenList: HashMap<Int?, VoteMainStar>,
     favoriteStar: FavoriteStarInfo,
     voteId: Int,
-    favoriteStarGender: Int,
+    favoriteStarGender: Gender,
     onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
 ) {
     val tabData = listOf<String>("남자스타", "여자스타")
     val context = LocalContext.current
 
     val pagerState = rememberPagerState(
-        initialPage = favoriteStarGender
+        initialPage = if (favoriteStarGender == Gender.MEN) 0 else 1
     )
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -34,8 +35,8 @@ class FavoriteStarManager(
     val favoriteStarIdFlow: Flow<Int?> = dataStore.data.map {
         it[FAVORITE_STAR_ID]
     }
-    val favoriteStarGenderFlow: Flow<Int?> = dataStore.data.map {
-        it[FAVORITE_STAR_GENDER]
+    val favoriteStarGenderFlow: Flow<Gender?> = dataStore.data.map {
+        if (it[FAVORITE_STAR_GENDER] == 1) Gender.MEN else Gender.WOMEN
     }
     val favoriteStarNameFlow: Flow<String?> = dataStore.data.map {
         it[FAVORITE_STAR_NAME]
@@ -45,6 +46,7 @@ class FavoriteStarManager(
     }
 
 }
+
 val Context.FavoriteStarDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "favorite_star_prefs"
 )
