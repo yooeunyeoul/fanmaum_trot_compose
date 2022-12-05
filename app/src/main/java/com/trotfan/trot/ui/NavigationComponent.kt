@@ -3,10 +3,12 @@ package com.trotfan.trot.ui
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -61,31 +63,31 @@ fun NavigationComponent(
         composable(Route.SelectStar.route) {
             SelectStarScreen(
                 navController = navController,
-                modifier = Modifier
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp)
             )
         }
         composable(Route.SearchStar.route) {
             SearchStarScreen(
                 navController = navController,
-                modifier = Modifier
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp)
             )
         }
         composable(Route.CertificationPhoneNumber.route) {
             CertificationPhoneScreen(
                 navController = navController,
-                modifier = Modifier
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp)
             )
         }
         composable(Route.SettingNickname.route) {
             SettingNicknameScreen(
                 navController = navController,
-                modifier = Modifier
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp)
             )
         }
         composable(Route.InvitationCode.route) {
             InvitationScreen(
                 navController = navController,
-                modifier = Modifier
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp)
             )
         }
         composable(Route.VoteBenefits.route) {
