@@ -1,5 +1,7 @@
 package com.trotfan.trot.network.impl
 
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.SignUpService
@@ -10,6 +12,7 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.*
+import org.json.JSONObject
 import javax.inject.Inject
 
 
@@ -57,6 +60,7 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         return response.body()
     }
 
+    @OptIn(InternalAPI::class)
     override suspend fun updateUser(
         userId: Int,
         nickName: String?,
@@ -64,30 +68,23 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         phoneNumber: String?,
         redeemCode: String?
     ): CommonResponse<Unit> {
-        return httpClient.request(HttpRoutes.USERS + "/${userId}") {
-            method = HttpMethod.Patch
+        return httpClient.patch(HttpRoutes.USERS + "/${userId}") {
             contentType(ContentType.Application.Json)
-            headers {
-                append(
-                    name = "X-Requested-With",
-                    value = "XMLHttpRequest"
-                )
+            val json = JSONObject()
+            if (nickName != null) {
+                json.put("name", nickName)
             }
-            setBody(FormDataContent(Parameters.build {
-                if (nickName != null) {
-                    append("name", nickName)
-                }
-                if (starId != null) {
-                    append("star_id", starId.toString())
-                }
-                if (phoneNumber != null) {
-                    append("phone_number", phoneNumber)
-                }
-                if (redeemCode != null) {
-                    append("redeem_code", redeemCode)
-                }
-            }))
-
+            if (starId != null) {
+                json.put("star_id", starId.toString())
+            }
+            if (phoneNumber != null) {
+                json.put("phone_number", phoneNumber)
+            }
+            if (redeemCode != null) {
+                json.put("redeem_code", redeemCode)
+            }
+            body = (json.toString())
         }.body()
     }
 }
+
