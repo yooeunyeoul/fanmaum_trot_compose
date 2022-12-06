@@ -242,7 +242,7 @@ class VoteHomeViewModel @Inject constructor(
                     val voteStatusData = it[0] as JSONObject
                     val status = voteStatusData.get("vote_status").toString()
 //                    Log.e("status", status)
-                    changeVoteStatus(status)
+//                    changeVoteStatus(status) //TODO 이거 다시 돌려야함
                     val voteDataList = voteStatusData.get("data") as JSONArray
 //                    Log.e("voteDataList", voteDataList.toString())
                     for (i in 0 until voteDataList.length()) {
@@ -303,6 +303,21 @@ class VoteHomeViewModel @Inject constructor(
 
             }
         }
+    }
+
+    fun sampleChangeStatus() {
+        viewModelScope.launch {
+            when (_voteStatus.value) {
+                VoteStatus.Available -> {
+                    _voteStatus.emit(VoteStatus.VoteEnd)
+                }
+
+                VoteStatus.VoteEnd -> {
+                    _voteStatus.emit(VoteStatus.Available)
+                }
+            }
+        }
+
     }
 
     fun saveTooltipState(isShowToolTIp: Boolean) {

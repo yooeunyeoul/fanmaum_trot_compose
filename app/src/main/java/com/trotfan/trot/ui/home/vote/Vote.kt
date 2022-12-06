@@ -325,6 +325,7 @@ fun VoteHome(
                             Button(
                                 onClick = {
                                     viewModel.saveTooltipState(false)
+                                    viewModel.sampleChangeStatus()
                                 },
                                 shape = RectangleShape,
                                 interactionSource = interactionSource,
