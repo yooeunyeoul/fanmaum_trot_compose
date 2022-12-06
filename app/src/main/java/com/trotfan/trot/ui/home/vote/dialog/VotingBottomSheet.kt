@@ -301,7 +301,7 @@ fun VotingBottomSheet(
             Spacer(modifier = Modifier.height(32.dp))
         }
 
-        voteBtnState = voteCnt.text.isEmpty().not()
+        voteBtnState = voteCnt.text.isEmpty().not() && (voteCnt.text == "0").not()
 
         if (isTextFieldFocused) {
             keyboardController?.hide()
