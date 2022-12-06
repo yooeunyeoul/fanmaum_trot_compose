@@ -39,6 +39,7 @@ import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.addFocusCleaner
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.clickableSingle
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
@@ -47,7 +48,8 @@ import java.text.DecimalFormat
 fun VotingBottomSheet(
     votingBottomSheetState: ModalBottomSheetState,
     homeViewModel: HomeViewModel,
-    onDismiss: (starId: Int?, quantity: Long?) -> Unit
+    onDismiss: (starId: Int?, quantity: Long?) -> Unit,
+    onChargeClick: () -> Unit
 ) {
     val context = LocalContext.current
     val decimal = DecimalFormat("#,###")
@@ -126,7 +128,11 @@ fun VotingBottomSheet(
 
                 UnderlineTextButton(
                     text = "충전하기",
-                    modifier = Modifier.padding(start = 8.dp, end = 34.dp)
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 34.dp)
+                        .clickableSingle {
+                            onChargeClick()
+                        }
                 )
             }
 
@@ -143,7 +149,7 @@ fun VotingBottomSheet(
                     )
             ) {
                 Text(
-                    text = "오늘 소멸 예정 투표권",
+                    text = "오늘 소멸 예정",
                     style = FanwooriTypography.body2,
                     color = Primary800,
                     modifier = Modifier
@@ -319,8 +325,12 @@ fun VotingBottomSheetPreview() {
                 initialValue = ModalBottomSheetValue.Hidden,
                 skipHalfExpanded = true
             ),
-            homeViewModel = hiltViewModel()
-        ) { _: Int?, _: Long? ->
-        }
+            homeViewModel = hiltViewModel(),
+            onDismiss = { _: Int?, _: Long? ->
+            },
+            onChargeClick = {
+
+            }
+        )
     }
 }

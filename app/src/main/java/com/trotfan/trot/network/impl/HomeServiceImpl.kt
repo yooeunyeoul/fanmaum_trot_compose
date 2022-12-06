@@ -10,6 +10,8 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
+import io.ktor.util.*
+import org.json.JSONObject
 import javax.inject.Inject
 
 class HomeServiceImpl @Inject constructor(
@@ -25,6 +27,7 @@ class HomeServiceImpl @Inject constructor(
         }.body()
     }
 
+    @OptIn(InternalAPI::class)
     override suspend fun postVoteTicket(
         voteTicket: VoteTicket,
         token: String
@@ -35,10 +38,11 @@ class HomeServiceImpl @Inject constructor(
                 "Authorization",
                 "Bearer $token"
             )
-            setBody(FormDataContent(Parameters.build {
-                append("star_id", voteTicket.star_id.toString())
-                append("quantity", voteTicket.quantity.toString())
-            }))
+            contentType(ContentType.Application.Json)
+            val json = JSONObject()
+            json.put("star_id", voteTicket.star_id.toString())
+            json.put("quantity", voteTicket.quantity.toString())
+            body = (json.toString())
         }.body()
     }
 }

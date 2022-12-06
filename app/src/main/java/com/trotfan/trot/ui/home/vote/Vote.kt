@@ -4,7 +4,6 @@ package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -52,6 +51,7 @@ import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.vote.component.*
+import com.trotfan.trot.ui.home.vote.guide.FullscreenDialog
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
@@ -72,7 +72,7 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
-    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?) -> Unit
+    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -98,6 +98,8 @@ fun VoteHome(
 
 
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ranking_arrow))
+    var appGuideStatue by remember { mutableStateOf(false) }
+    var rankGuideStatue by remember { mutableStateOf(false) }
 
     var ticks by remember { mutableStateOf(getTime()) }
     val second: String = (ticks.toLong() % 60).toString()
@@ -185,6 +187,9 @@ fun VoteHome(
                     modifier = Modifier.clickable {
 //                viewModel.changeVoteStatus()
                     },
+                    onClickStartIcon = {
+                        appGuideStatue = true
+                    },
                     onClickEndIcon = {
                         val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
@@ -254,7 +259,11 @@ fun VoteHome(
                                         onVotingClick(
                                             voteId,
                                             tickets,
-                                            VoteMainStar(id = favoriteStar.id, name = favoriteStarName)
+                                            VoteMainStar(
+                                                id = favoriteStar.id,
+                                                name = favoriteStarName
+                                            ),
+                                            viewModel
                                         )
                                     }
                                     .clip(CircleShape)
@@ -289,7 +298,8 @@ fun VoteHome(
                                     onVotingClick(
                                         voteId,
                                         tickets,
-                                        VoteMainStar(id = favoriteStar.id, name = favoriteStarName)
+                                        VoteMainStar(id = favoriteStar.id, name = favoriteStarName),
+                                        viewModel
                                     )
                                 }
                             }
@@ -325,6 +335,7 @@ fun VoteHome(
                             Button(
                                 onClick = {
                                     viewModel.saveTooltipState(false)
+                                    rankGuideStatue = true
                                 },
                                 shape = RectangleShape,
                                 interactionSource = interactionSource,
@@ -443,7 +454,7 @@ fun VoteHome(
                                     voteId = voteId,
                                     favoriteStarGender = favoriteStarGender ?: Gender.MEN
                                 ) { _: Int, star: VoteMainStar? ->
-                                    onVotingClick(voteId, tickets, star)
+                                    onVotingClick(voteId, tickets, star, viewModel)
                                 }
                             }
                         }
@@ -488,10 +499,20 @@ fun VoteHome(
             }
         }
 
+        if (appGuideStatue) {
+            FullscreenDialog(modifier = Modifier, title = "팬마음 투표 안내") {
+                appGuideStatue = false
+            }
+        }
+
+        if (rankGuideStatue) {
+            FullscreenDialog(modifier = Modifier, title = "최종 순위 선정 방법") {
+                rankGuideStatue = false
+            }
+        }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TodayRankingView(
     hashmapMenList: HashMap<Int?, VoteMainStar>,

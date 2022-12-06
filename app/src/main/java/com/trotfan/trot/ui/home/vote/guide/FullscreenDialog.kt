@@ -22,8 +22,9 @@ import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun VoteGuide(
+fun FullscreenDialog(
     modifier: Modifier = Modifier,
+    title: String,
     onDismiss: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -34,7 +35,7 @@ fun VoteGuide(
         Scaffold(
             topBar = {
                 CustomTopAppBar(
-                    title = "팬마음 투표안내", icon = R.drawable.icon_close
+                    title = title, icon = R.drawable.icon_close
                 ) { onDismiss() }
             }
         ) { innerPadding ->
