@@ -3,11 +3,8 @@ package com.trotfan.trot.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -68,12 +65,17 @@ fun FanwooriApp(
         val lazyListState = rememberLazyListState()
         var voteHomeViewModel: VoteHomeViewModel? = null
 
+        var votesQuantity by remember {
+            mutableStateOf(0L)
+        }
+
         ModalBottomSheetLayout(
             sheetContent = {
                 VotingBottomSheet(
                     votingBottomSheetState,
                     homeViewModel = viewModel,
                     onDismiss = { star_id: Int?, quantity: Long? ->
+                        votesQuantity = quantity?:0
                         star_id?.let {
                             viewModel.postVoteTicket(voteId = voteId, star_id, quantity!!)
                         }
@@ -145,6 +147,12 @@ fun FanwooriApp(
 
                 when (votingCompleteState) {
                     1 -> {
+                        LaunchedEffect(Unit) {
+                            voteHomeViewModel?.addMyTicketsToBoard(
+                                votes = votesQuantity.toInt(),
+                                starName = star?.name ?: ""
+                            )
+                        }
                         coroutineScope.launch {
                             votingBottomSheetState.hide()
                         }

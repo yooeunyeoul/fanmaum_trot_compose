@@ -5,9 +5,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.datastore.FavoriteStarDataStore
-import com.trotfan.trot.datastore.FavoriteStarManager
+import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.VoteMainManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Expired
@@ -21,9 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -47,7 +44,7 @@ class VoteHomeViewModel @Inject constructor(
     lateinit var mBoardSocket: Socket
     lateinit var mRankSocket: Socket
 
-    var favoriteStarManager: FavoriteStarManager
+    var userInfoManager: UserInfoManager
     var voteMainManager: VoteMainManager
 
     private val context = getApplication<Application>()
@@ -93,11 +90,13 @@ class VoteHomeViewModel @Inject constructor(
     private val _tickets =
         MutableStateFlow(Expired())
 
+    var currentBoardPage = 0
+
 
     init {
         getVoteList()
         getVoteTickets()
-        favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
+        userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
         voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
         connectBoardSocket()
         connectRankSocket()
@@ -123,7 +122,7 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun getStarRank() {
         viewModelScope.launch {
-            favoriteStarManager?.favoriteStarIdFlow?.collectLatest {
+            userInfoManager?.favoriteStarIdFlow?.collectLatest {
                 val response = repository.getStarRank(it ?: 2)
                 when (response.result.code) {
                     ResultCodeStatus.StarRankNoResult.code -> {
@@ -345,6 +344,21 @@ class VoteHomeViewModel @Inject constructor(
                 _voteDataList.emit(voteData)
                 _voteDataListCount.emit(voteData.count())
             }
+        }
+
+    }
+
+    fun addMyTicketsToBoard(votes: Int, starName: String) {
+        viewModelScope.launch {
+            _voteDataList.value.add(
+                if (currentBoardPage + 3 >= _voteDataList.value.size) _voteDataList.value.size else currentBoardPage + 3,
+                VoteData(
+                    quantity = votes,
+                    star_name = starName,
+                    user_name = userInfoManager.userNameFlow.first() ?: ""
+                )
+            )
+            _voteDataListCount.emit(_voteDataList.value.count())
         }
 
     }

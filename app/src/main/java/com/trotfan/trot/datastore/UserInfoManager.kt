@@ -11,24 +11,30 @@ import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class FavoriteStarManager(
+class UserInfoManager(
     private val dataStore: DataStore<Preferences>
 ) {
     companion object {
         val FAVORITE_STAR_ID = intPreferencesKey("FAVORITE_STAR_ID")
         val FAVORITE_STAR_GENDER = intPreferencesKey("FAVORITE_STAR_GENDER")
         val FAVORITE_STAR_NAME = stringPreferencesKey("FAVORITE_STAR_NAME")
+        val USER_NAME = stringPreferencesKey("USER_NAME")
         val FAVORITE_STAR_IMAGE = stringPreferencesKey("FAVORITE_STAR_IMAGE")
     }
 
-    suspend fun storeFavoriteStar(
-        id: Int, gender: Int, name: String, image: String
+    suspend fun storeUserInfo(
+        favoriteStarId: Int,
+        favoriteGender: Int,
+        favoriteStarName: String,
+        favoriteStarImage: String,
+        userName: String
     ) {
         dataStore.edit {
-            it[FAVORITE_STAR_ID] = id
-            it[FAVORITE_STAR_GENDER] = gender
-            it[FAVORITE_STAR_NAME] = name
-            it[FAVORITE_STAR_IMAGE] = image
+            it[FAVORITE_STAR_ID] = favoriteStarId
+            it[FAVORITE_STAR_GENDER] = favoriteGender
+            it[FAVORITE_STAR_NAME] = favoriteStarName
+            it[FAVORITE_STAR_IMAGE] = favoriteStarImage
+            it[USER_NAME] = userName
         }
     }
 
@@ -43,6 +49,9 @@ class FavoriteStarManager(
     }
     val favoriteStarImageFlow: Flow<String?> = dataStore.data.map {
         it[FAVORITE_STAR_IMAGE]
+    }
+    val userNameFlow: Flow<String?> = dataStore.data.map {
+        it[USER_NAME]
     }
 
 }

@@ -8,7 +8,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.trotfan.trot.datastore.FavoriteStarDataStore
-import com.trotfan.trot.datastore.FavoriteStarManager
+import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.*
@@ -40,11 +40,11 @@ class AuthViewModel @Inject constructor(
     val userInfo: StateFlow<UserInfo?>
         get() = _userInfo
 
-    var favoriteStarManager: FavoriteStarManager
+    var userInfoManager: UserInfoManager
 
     init {
         getServerState()
-        favoriteStarManager = FavoriteStarManager(context.FavoriteStarDataStore)
+        userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
     }
 
     fun getServerState() {
@@ -127,7 +127,8 @@ class AuthViewModel @Inject constructor(
                 repository.getUserInfo(userId.toInt())
             }.onSuccess {
                 val userInfo = it.data
-                saveFavoriteStar(userInfo?.star)
+                saveUserInfo(userInfo)
+
 
                 _userInfo.emit(userInfo)
                 Log.d("AuthViewModel", userInfo.toString())
@@ -137,15 +138,17 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun saveFavoriteStar(favoriteStar: Star?) {
+    private fun saveUserInfo(userInfo: UserInfo?) {
         viewModelScope.launch {
-            favoriteStar?.let {
-                favoriteStarManager.storeFavoriteStar(
-                    id = it.id,
-                    gender = it.gender,
-                    name = it.name,
-                    image = it.image
+            userInfo?.star?.let {
+                userInfoManager.storeUserInfo(
+                    favoriteStarId = it.id,
+                    favoriteGender = it.gender,
+                    favoriteStarName = it.name,
+                    favoriteStarImage = it.image,
+                    userName = userInfo.name ?: ""
                 )
+
             }
         }
 

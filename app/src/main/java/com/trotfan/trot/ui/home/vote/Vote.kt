@@ -12,7 +12,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -21,15 +20,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -38,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -53,7 +45,6 @@ import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.*
-import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.BottomNavHeight
@@ -92,10 +83,10 @@ fun VoteHome(
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val tickets by viewModel.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
-    val favoriteStarGender by viewModel.favoriteStarManager.favoriteStarGenderFlow.collectAsState(
+    val favoriteStarGender by viewModel.userInfoManager.favoriteStarGenderFlow.collectAsState(
         initial = Gender.MEN
     )
-    val favoriteStarName by viewModel.favoriteStarManager.favoriteStarNameFlow.collectAsState(
+    val favoriteStarName by viewModel.userInfoManager.favoriteStarNameFlow.collectAsState(
         initial = ""
     )
     val isShowingToolTip by viewModel.voteMainManager.isShowingVoteMainToolTipFlow.collectAsState(
@@ -839,7 +830,7 @@ fun VoteToStar(
             yield()
             delay(3500)
             try {
-//                Log.e("count", "${items.count()}")
+                Log.e("count", "${items.count()}")
 
                 if (items.count() > pagerState.currentPage + 1) {
                     pagerState.animateScrollToPage(
@@ -849,7 +840,8 @@ fun VoteToStar(
                 } else {
                     viewModel.clearDataAndAddDummyData()
                 }
-//                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
+                viewModel.currentBoardPage = pagerState.currentPage
+                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
 
             } catch (_: Throwable) {
 
