@@ -21,12 +21,12 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
     override suspend fun requestCertificationCode(
         phoneNumber: String
     ): CommonResponse<SmsAuth> {
-        return httpClient.submitForm(
-            url = HttpRoutes.SMS
-        ) {
-            body = FormDataContent(Parameters.build {
-                append("to", phoneNumber)
-            })
+        return httpClient.post {
+            url(HttpRoutes.SMS)
+            contentType(ContentType.Application.Json)
+            val json = JSONObject()
+            json.put("to", phoneNumber)
+            body = (json.toString())
         }.body()
     }
 

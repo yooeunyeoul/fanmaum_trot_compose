@@ -38,6 +38,7 @@ import com.trotfan.trot.ui.home.mypage.MyPageHome
 import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.VoteHome
+import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -251,7 +252,7 @@ fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
-    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?) -> Unit,
+    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
     navController: NavController,
     lazyListState: LazyListState
 ) {
@@ -262,8 +263,8 @@ fun NavGraphBuilder.addHomeGraph(
             },
             navController = navController,
             modifier = modifier,
-            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
-                onVotingClick(voteId, voteTicket, star)
+            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
+                onVotingClick(voteId, voteTicket, star, voteViewModel)
             },
             lazyListState = lazyListState
         )

@@ -137,12 +137,12 @@ class VoteHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getVoteTickets() {
+    fun getVoteTickets() {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
-                        userId = if (BuildConfig.DEBUG) 1 else it.userId
+                        userId = it.userId
                     )
 
                 }.onSuccess { response ->

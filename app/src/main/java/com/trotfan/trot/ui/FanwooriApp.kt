@@ -28,6 +28,7 @@ import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
+import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.CoroutineScope
@@ -65,17 +66,32 @@ fun FanwooriApp(
             mutableStateOf(HomeSections.Vote)
         }
         val lazyListState = rememberLazyListState()
+        var voteHomeViewModel: VoteHomeViewModel? = null
 
         ModalBottomSheetLayout(
             sheetContent = {
                 VotingBottomSheet(
                     votingBottomSheetState,
-                    homeViewModel = viewModel
-                ) { star_id: Int?, quantity: Long? ->
-                    star_id?.let {
-                        viewModel.postVoteTicket(voteId = voteId, star_id, quantity!!)
+                    homeViewModel = viewModel,
+                    onDismiss = { star_id: Int?, quantity: Long? ->
+                        star_id?.let {
+                            viewModel.postVoteTicket(voteId = voteId, star_id, quantity!!)
+                        }
+                    },
+                    onChargeClick = {
+                        coroutineScope.launch {
+                            votingBottomSheetState.hide()
+                        }
+
+                        navController.navigate(HomeSections.Charge.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo(HomeSections.Vote.route) {
+                                saveState = true
+                            }
+                        }
                     }
-                }
+                )
             },
             sheetState = votingBottomSheetState,
             sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
@@ -116,9 +132,10 @@ fun FanwooriApp(
                 }
                 NavigationComponent(
                     navController = navController,
-                    onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
+                    onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
                         coroutineScope.launch {
                             star?.let {
+                                voteHomeViewModel = voteViewModel
                                 viewModel.voteTicket.emit(voteTicket)
                                 viewModel.voteStar.emit(star)
                                 viewModel.voteId.emit(voteId)
@@ -161,6 +178,7 @@ fun FanwooriApp(
                             onDismiss = {
                                 coroutineScope.launch {
                                     viewModel.votingCompleteState.emit(0)
+                                    voteHomeViewModel?.getVoteTickets()
                                 }
                             }
                         )

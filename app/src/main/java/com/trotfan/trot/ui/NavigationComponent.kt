@@ -18,6 +18,7 @@ import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
+import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
 import com.trotfan.trot.ui.signup.*
 
@@ -39,7 +40,7 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?) -> Unit,
+    onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     lazyListState: LazyListState
 ) {
@@ -60,8 +61,8 @@ fun NavigationComponent(
             onNavigateBottomBar = {
                 onNavigateBottomBar.invoke(it)
             },
-            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
-                onVotingClick(voteId, voteTicket, star)
+            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel->
+                onVotingClick(voteId, voteTicket, star, viewModel)
             },
             navController = navController,
             lazyListState = lazyListState
