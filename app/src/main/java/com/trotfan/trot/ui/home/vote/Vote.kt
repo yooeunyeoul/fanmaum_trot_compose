@@ -4,6 +4,7 @@ package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -27,6 +28,8 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -35,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -125,6 +129,16 @@ fun VoteHome(
             ticks--
         }
     }
+    LaunchedEffect(key1 = lazyListState.isScrollInProgress, block = {
+
+        if (isShowingScrollToolTip) {
+            val offset = lazyListState.firstVisibleItemScrollOffset
+            if (offset > 200) {
+                viewModel.saveScrollTooltipState(false)
+            }
+        }
+    })
+
 
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
 
@@ -167,22 +181,6 @@ fun VoteHome(
             }
             Column(
                 modifier = Modifier
-                    .nestedScroll(
-                        connection = object : NestedScrollConnection {
-                            override fun onPreScroll(
-                                available: Offset,
-                                source: NestedScrollSource
-                            ): Offset {
-                                val delta = available.y
-                                if (isShowingScrollToolTip) {
-                                    if (delta < 0) {
-                                        viewModel.saveScrollTooltipState(false)
-                                    }
-                                }
-                                return super.onPreScroll(available, source)
-                            }
-                        }
-                    )
                     .fillMaxSize()
                     .background(color = Color.White)
                     .padding(bottom = BottomNavHeight)
@@ -270,7 +268,8 @@ fun VoteHome(
                                                 id = favoriteStar.id,
                                                 name = favoriteStarName
                                             ),
-                                            viewModel)
+                                            viewModel
+                                        )
                                     }
                                     .clip(CircleShape)
                                     .border(
