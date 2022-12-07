@@ -82,14 +82,7 @@ fun FanwooriApp(
                         coroutineScope.launch {
                             votingBottomSheetState.hide()
                         }
-
-                        navController.navigate(HomeSections.Charge.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                            popUpTo(HomeSections.Vote.route) {
-                                saveState = true
-                            }
-                        }
+                        currentRoute = HomeSections.Charge
                     }
                 )
             },
