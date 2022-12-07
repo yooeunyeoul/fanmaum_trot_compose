@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -177,7 +178,6 @@ fun TrotBottomBar(
                         .selectable(
                             selected = currentRoute.title == sections.title,
                             onClick = {
-//                                selectedSection = sections
                                 onSelected(sections)
                             },
                             interactionSource = MutableInteractionSource(),
@@ -252,7 +252,8 @@ fun NavGraphBuilder.addHomeGraph(
     onNavigateBottomBar: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
     onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?) -> Unit,
-    navController: NavController
+    navController: NavController,
+    lazyListState: LazyListState
 ) {
     composable(HomeSections.Vote.route) {
         VoteHome(
@@ -263,7 +264,8 @@ fun NavGraphBuilder.addHomeGraph(
             modifier = modifier,
             onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
                 onVotingClick(voteId, voteTicket, star)
-            }
+            },
+            lazyListState = lazyListState
         )
     }
     composable(HomeSections.MyPage.route) { from ->

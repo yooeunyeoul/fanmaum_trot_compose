@@ -11,6 +11,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -74,7 +76,8 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
-    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?) -> Unit
+    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?) -> Unit,
+    lazyListState: LazyListState
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -231,7 +234,8 @@ fun VoteHome(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    state = lazyListState
                 ) {
                     item {
                         Box(modifier = Modifier) {

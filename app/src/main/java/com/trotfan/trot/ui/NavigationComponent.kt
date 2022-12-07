@@ -4,6 +4,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,7 +40,8 @@ enum class Route(
 fun NavigationComponent(
     navController: NavHostController,
     onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?) -> Unit,
-    onNavigateBottomBar: (HomeSections) -> Unit
+    onNavigateBottomBar: (HomeSections) -> Unit,
+    lazyListState: LazyListState
 ) {
     NavHost(
         navController = navController,
@@ -60,7 +63,8 @@ fun NavigationComponent(
             onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
                 onVotingClick(voteId, voteTicket, star)
             },
-            navController = navController
+            navController = navController,
+            lazyListState = lazyListState
         )
         composable(Route.SelectStar.route) {
             SelectStarScreen(
