@@ -48,9 +48,11 @@ import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.*
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.BottomNavHeight
+import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
@@ -68,7 +70,7 @@ import kotlin.time.Duration.Companion.seconds
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VoteHome(
-    onItemClick: (Long) -> Unit,
+    onNavigateClick: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
@@ -129,7 +131,7 @@ fun VoteHome(
             if (isShowingScrollToolTip) {
                 Surface(
                     shape = RoundedCornerShape(20.dp),
-                    color = Color.White,
+                    color = Gray900,
                     elevation = 3.dp,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -144,7 +146,7 @@ fun VoteHome(
                     ) {
                         Text(
                             text = "화면을 내려보세요",
-                            color = Gray750,
+                            color = Color.White,
                             fontSize = 15.sp,
                             style = FanwooriTypography.body2,
                             fontWeight = FontWeight.Medium
@@ -249,12 +251,16 @@ fun VoteHome(
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
+                                    .padding(top = 4.dp)
                                     .size(112.dp)
                                     .clickableSingle {
                                         onVotingClick(
                                             voteId,
                                             tickets,
-                                            VoteMainStar(id = favoriteStar.id, name = favoriteStarName)
+                                            VoteMainStar(
+                                                id = favoriteStar.id,
+                                                name = favoriteStarName
+                                            )
                                         )
                                     }
                                     .clip(CircleShape)
@@ -300,7 +306,10 @@ fun VoteHome(
                             isHide = myVoteHide,
                             hideState = { isHide ->
                                 myVoteHide = isHide
-                            }, tickets = tickets
+                            }, tickets = tickets,
+                            onclick = {
+                                onNavigateClick.invoke(HomeSections.Charge)
+                            }
                         )
                         Box(
                             Modifier
@@ -415,12 +424,12 @@ fun VoteHome(
                                         )
                                         Spacer(modifier = Modifier.width(7.dp))
                                         Text(
-                                            text = "${if (hour.toInt() < 10) "0${hour}" else hour}:${if (minute.toInt() < 10) "0${minute}" else minute}:${if (second.toInt() < 10) "0${second}" else second}",
+                                            text = "08:58:52",
                                             style = FanwooriTypography.button1,
                                             color = Primary500,
                                             fontSize = 17.sp,
                                             fontWeight = FontWeight.SemiBold,
-                                            modifier = Modifier.width(75.dp),
+                                            modifier = Modifier.width(80.dp),
                                             textAlign = TextAlign.Center
                                         )
                                         Spacer(modifier = Modifier.width(7.dp))
@@ -877,7 +886,7 @@ fun VoteToStar(
                     color = Color.White
                 )
             }
-            Spacer(modifier = Modifier.height(9.5.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
                     .padding(start = 18.dp, end = 18.dp)

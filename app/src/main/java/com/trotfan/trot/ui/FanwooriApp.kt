@@ -8,10 +8,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,6 +57,9 @@ fun FanwooriApp(
         val voteId: Int by viewModel.voteId.collectAsState()
         val votingCompleteState by viewModel.votingCompleteState.collectAsState()
         val context = LocalContext.current
+        var currentRoute by remember {
+            mutableStateOf(HomeSections.Vote)
+        }
 
         ModalBottomSheetLayout(
             sheetContent = {
@@ -81,9 +82,10 @@ fun FanwooriApp(
                         HomeSections.MyPage.route, HomeSections.Charge.route -> {
                             TrotBottomBar(
                                 tabs = HomeSections.values(),
-                                currentRoute = HomeSections.Vote.route,
+                                currentRoute = currentRoute,
                                 onSelected = { route ->
-                                    navController.navigate(route) {
+                                    currentRoute = route
+                                    navController.navigate(route.route) {
                                         launchSingleTop = true
                                         restoreState = true
                                         popUpTo(HomeSections.Vote.route) {
@@ -114,6 +116,9 @@ fun FanwooriApp(
                                 votingBottomSheetState.show()
                             }
                         }
+                    },
+                    onNavigateBottomBar = { section ->
+                        currentRoute = section
                     }
                 )
 

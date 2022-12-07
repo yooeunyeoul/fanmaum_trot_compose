@@ -14,11 +14,11 @@ fun RankHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-//    Surface(
-//        color = Color.White,
-//        modifier = Modifier.fillMaxSize()
-//    ) {
-//        Text(text = "This is RankHome", fontWeight = FontWeight.Bold)
-//    }
-    SampleMyPageList()
+    Surface(
+        color = Color.White,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(text = "This is RankHome", fontWeight = FontWeight.Bold)
+    }
+//    SampleMyPageList()
 }

@@ -17,6 +17,6 @@ fun MyPageHome(
         color = Color.White,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "This is MypageHome", fontWeight = FontWeight.Bold)
+        SampleMyPageList()
     }
 }

@@ -71,17 +71,19 @@ fun VoteItem(
     ) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(
-                Modifier.wrapContentWidth(),
+                Modifier.width(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (!beforeRank) {
-                    Text(
-                        text = if (star?.rank == 1) "현재" else "",
-                        color = Primary900,
-                        style = FanwooriTypography.subtitle3,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 13.sp
-                    )
+                    if (star?.rank == 1) {
+                        Text(
+                            text = "현재",
+                            color = Primary900,
+                            style = FanwooriTypography.subtitle3,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 13.sp
+                        )
+                    }
                 }
 
                 Text(
@@ -104,24 +106,17 @@ fun VoteItem(
                     .size(if (beforeRank || !isTop3) 64.dp else 88.dp)
                     .clip(CircleShape)
                     .border(
-                        width = if (beforeRank || isMyStar || !isTop3) 1.dp else 4.dp,
+                        width = if (beforeRank || !isTop3) 1.dp else 4.dp,
                         brush = if (beforeRank || !isTop3)
                             Brush.linearGradient(1f to Color(0xFFCFD5D8), 1f to Color(0xFFCFD5D8))
                         else {
-                            if (isMyStar) {
-                                Brush.linearGradient(
-                                    1f to Color(0xFFFDEAEB),
-                                    1f to Color(0xFFFDEAEB)
-                                )
-                            } else {
-                                gradient01
-                            }
+                            gradient01
 
                         },
                         shape = CircleShape
                     )
                     .border(
-                        width = if (beforeRank || isMyStar || !isTop3) 0.dp else 8.dp,
+                        width = if (beforeRank || !isTop3) 0.dp else 8.dp,
                         color = Color.White,
                         CircleShape
                     )
@@ -181,11 +176,19 @@ fun VoteItem(
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             Column(
                 Modifier
-                    .background(color = Gray100, shape = RoundedCornerShape(20.dp))
+                    .background(
+                        color = if (isMyStar) Color.White else Gray100,
+                        shape = RoundedCornerShape(20.dp)
+                    )
                     .size(width = 56.dp, height = 40.dp)
                     .clickableSingle {
                         onSharedClick()
-                    },
+                    }
+                    .border(
+                        width = if (isMyStar) 1.dp else 0.dp,
+                        color = if (isMyStar) Primary100 else Gray100,
+                        shape = RoundedCornerShape(20.dp)
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

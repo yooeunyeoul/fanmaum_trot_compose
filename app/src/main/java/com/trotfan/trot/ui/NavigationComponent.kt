@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
-import com.trotfan.trot.model.VoteTicket
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
@@ -39,7 +37,8 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?) -> Unit
+    onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?) -> Unit,
+    onNavigateBottomBar: (HomeSections) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -54,6 +53,9 @@ fun NavigationComponent(
         addHomeGraph(
             onItemSelected = { _, _ ->
                 // 각화면의 디테일 작업
+            },
+            onNavigateBottomBar = {
+                onNavigateBottomBar.invoke(it)
             },
             onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar? ->
                 onVotingClick(voteId, voteTicket, star)

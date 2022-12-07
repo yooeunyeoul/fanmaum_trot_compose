@@ -21,20 +21,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Expired
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray100
 import com.trotfan.trot.ui.theme.Gray900
 import com.trotfan.trot.ui.theme.Primary900
 import com.trotfan.trot.ui.utils.NumberComma
-import java.text.DecimalFormat
+import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
 fun MyVote(
     modifier: Modifier = Modifier,
     isHide: Boolean,
     hideState: (Boolean) -> (Unit),
-    tickets: Expired
+    tickets: Expired,
+    onclick: () -> Unit = {}
 ) {
     val textList = listOf("ㄴ 유효기한 무제한", "ㄴ 오늘 소멸 예정")
     val interactionSource = remember {
@@ -92,7 +94,7 @@ fun MyVote(
             Icon(
                 painter = painterResource(id = R.drawable.icon_arrow),
                 contentDescription = null,
-                modifier = Modifier.rotate(90f)
+                modifier = Modifier.rotate(if (isHide) 90f else 270f)
             )
 
         }
@@ -105,7 +107,7 @@ fun MyVote(
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp)
+                            .padding(top = 16.dp, end = 24.dp)
                     ) {
                         Text(
                             text = textList[it],
@@ -128,7 +130,7 @@ fun MyVote(
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
-                Charging()
+                Charging(onclick)
             }
         }
 
@@ -137,13 +139,15 @@ fun MyVote(
 }
 
 @Composable
-fun Charging() {
-    UnderlineTextButton(text = "충전하기")
+fun Charging(onclick: () -> Unit) {
+    UnderlineTextButton(text = "충전하기", modifier = Modifier.clickableSingle {
+        onclick.invoke()
+    })
 
 }
 
 @Preview
 @Composable
 fun PreviewMyVote() {
-    MyVote(isHide = true, hideState = {}, tickets = Expired())
+    MyVote(isHide = true, hideState = {}, tickets = Expired(), onclick = {})
 }

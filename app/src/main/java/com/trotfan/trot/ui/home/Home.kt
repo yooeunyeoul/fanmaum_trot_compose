@@ -1,23 +1,17 @@
 package com.trotfan.trot.ui.home
 
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -30,7 +24,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.dateManager
 import com.trotfan.trot.model.Expired
@@ -45,7 +38,6 @@ import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.theme.*
-import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -67,29 +59,25 @@ private val TextIconSpacing = 2.dp
 @Preview
 @Composable
 fun PreviewTrotBottomBar() {
-    FanwooriTheme {
-        TrotBottomBar(
-            tabs = HomeSections.values(),
-            currentRoute = HomeSections.Vote.route,
-            onSelected = {
-
-            }
-        )
-    }
+//    FanwooriTheme {
+//        TrotBottomBar(
+//            tabs = HomeSections.values(),
+//            currentRoute = HomeSections.Vote,
+//            onSelected = {
+//
+//            }
+//        )
+//    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TrotBottomBar(
     tabs: Array<HomeSections>,
-    currentRoute: String,
-    onSelected: (String) -> Unit,
+    currentRoute: HomeSections,
+    onSelected: (HomeSections) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
-    var selectedSection by remember {
-        mutableStateOf(HomeSections.Vote)
-    }
 
     val context = LocalContext.current
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
@@ -98,6 +86,10 @@ fun TrotBottomBar(
     val rollingState by viewModel.rollingState.collectAsState()
     val feverStatus by viewModel.feverStatus.collectAsState()
     val autoVoteStatus by viewModel.autoVoteStatus.collectAsState()
+
+    LaunchedEffect(key1 = currentRoute, block = {
+        onSelected.invoke(currentRoute)
+    })
 
 
     if (updateState) {
@@ -183,10 +175,10 @@ fun TrotBottomBar(
                         .background(color = Color.White)
                         .fillMaxHeight()
                         .selectable(
-                            selected = selectedSection.title == sections.title,
+                            selected = currentRoute.title == sections.title,
                             onClick = {
-                                selectedSection = sections
-                                onSelected(sections.route)
+//                                selectedSection = sections
+                                onSelected(sections)
                             },
                             interactionSource = MutableInteractionSource(),
                             indication = null
@@ -221,7 +213,7 @@ fun TrotBottomBar(
                                 painter = painterResource(id = id),
                                 modifier = Modifier.height(18.3.dp),
                                 contentDescription = null,
-                                tint = if (selectedSection.title == sections.title) Primary500 else Gray500
+                                tint = if (currentRoute.title == sections.title) Primary500 else Gray500
                             )
                         }
 
@@ -235,7 +227,7 @@ fun TrotBottomBar(
                             Text(
                                 text = sections.title,
                                 fontSize = 15.sp,
-                                color = if (selectedSection.title == sections.title) Primary500 else Gray500,
+                                color = if (currentRoute.title == sections.title) Primary500 else Gray500,
                                 style = FanwooriTypography.body2,
                                 fontWeight = FontWeight.Medium,
                                 maxLines = 1
@@ -257,14 +249,15 @@ fun TrotBottomBar(
 @RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
+    onNavigateBottomBar: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
     onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?) -> Unit,
     navController: NavController
 ) {
-    composable(HomeSections.Vote.route) { from ->
+    composable(HomeSections.Vote.route) {
         VoteHome(
-            onItemClick = { id ->
-                onItemSelected(id, from)
+            onNavigateClick = { section ->
+                onNavigateBottomBar(section)
             },
             navController = navController,
             modifier = modifier,
@@ -274,7 +267,7 @@ fun NavGraphBuilder.addHomeGraph(
         )
     }
     composable(HomeSections.MyPage.route) { from ->
-        RankHome(
+        MyPageHome(
             onItemClick = { id ->
                 onItemSelected(id, from)
             },
@@ -282,7 +275,7 @@ fun NavGraphBuilder.addHomeGraph(
         )
     }
     composable(HomeSections.Ranking.route) { from ->
-        ChargeHome(
+        RankHome(
             onItemClick = { id ->
                 onItemSelected(id, from)
             },
@@ -290,9 +283,13 @@ fun NavGraphBuilder.addHomeGraph(
         )
     }
     composable(HomeSections.Charge.route) { from ->
-        MyPageHome(
+        ChargeHome(
             onItemClick = { id ->
                 onItemSelected(id, from)
+            },
+            navController = navController,
+            onNavigateClick = { section ->
+                onNavigateBottomBar(section)
             },
             modifier = modifier
         )

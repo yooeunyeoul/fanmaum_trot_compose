@@ -45,7 +45,7 @@ fun HeaderVoteState(
             )
             Spacer(modifier = Modifier.width(2.dp))
             Text(
-                text = "에게",
+                text = "님에게",
                 style = FanwooriTypography.body5,
                 color = Gray700,
                 fontSize = 17.sp,
@@ -141,6 +141,7 @@ fun HeaderEndState(myStarName: String) {
                 style = FanwooriTypography.h3,
                 color = Gray800,
             )
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "님의",
                 style = FanwooriTypography.subtitle1,
