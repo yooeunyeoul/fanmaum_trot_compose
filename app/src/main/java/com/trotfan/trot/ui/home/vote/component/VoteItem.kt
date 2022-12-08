@@ -95,6 +95,13 @@ fun VoteItem(
                 )
             }
 
+            if (beforeRank || !isTop3)
+                Brush.linearGradient(1f to Color(0xFFCFD5D8), 1f to Color(0xFFCFD5D8))
+            else {
+                gradient01
+
+            }
+
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data("${star?.image}")
@@ -103,16 +110,18 @@ fun VoteItem(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .padding(start = 23.5.dp, end = 12.dp)
-                    .size(if (beforeRank || !isTop3) 64.dp else 88.dp)
+                    .size(if (isMyStar) 88.dp else if (beforeRank || !isTop3) 64.dp else 88.dp)
                     .clip(CircleShape)
                     .border(
                         width = if (beforeRank || !isTop3) 1.dp else 4.dp,
-                        brush = if (beforeRank || !isTop3)
-                            Brush.linearGradient(1f to Color(0xFFCFD5D8), 1f to Color(0xFFCFD5D8))
-                        else {
-                            gradient01
-
-                        },
+                        brush = if (isTop3) gradient01 else if (isMyStar) Brush.linearGradient(
+                            1f to Color(
+                                0xFFFDEAEB
+                            ), 1f to Color(0xFFFDEAEB)
+                        ) else Brush.linearGradient(
+                            1f to Color(0xFFCFD5D8),
+                            1f to Color(0xFFCFD5D8)
+                        ),
                         shape = CircleShape
                     )
                     .border(
