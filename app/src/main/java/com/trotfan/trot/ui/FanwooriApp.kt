@@ -152,6 +152,10 @@ fun FanwooriApp(
                                 votes = votesQuantity.toInt(),
                                 starName = star?.name ?: ""
                             )
+                            voteHomeViewModel?.refreshLocalVoteList(
+                                votes = votesQuantity.toInt(),
+                                star = star
+                            )
                         }
                         coroutineScope.launch {
                             votingBottomSheetState.hide()

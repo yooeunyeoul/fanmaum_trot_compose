@@ -204,7 +204,9 @@ class VoteHomeViewModel @Inject constructor(
                     val data = Gson().fromJson(jsonObject, VoteMainStar::class.java)
                     starHashMap[data.id]?.run {
                         this.rank = data.rank
-                        this.votes = data.votes
+                        if ((this.votes ?: 0) < (data.votes ?: 0)) {
+                            this.votes = data.votes
+                        }
                     }
                     if (_favoriteStar.value.id == data.id) {
                         _favoriteStar.value.rank?.daily = data.rank ?: 0
@@ -361,5 +363,16 @@ class VoteHomeViewModel @Inject constructor(
             _voteDataListCount.emit(_voteDataList.value.count())
         }
 
+    }
+
+    fun refreshLocalVoteList(votes: Int, star: VoteMainStar?) {
+        viewModelScope.launch {
+            _menHashMap.value[star?.id]?.let {
+                it.votes = it.votes?.plus(votes)
+            }
+            _womenHashMap.value[star?.id]?.let {
+                it.votes = it.votes?.plus(votes)
+            }
+        }
     }
 }
