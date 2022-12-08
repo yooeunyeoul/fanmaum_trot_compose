@@ -78,8 +78,8 @@ fun VoteItem(
                     if (star?.rank == 1) {
                         Text(
                             text = "현재",
-                            color = Primary900,
-                            style = FanwooriTypography.subtitle3,
+                            color = Primary700,
+                            style = FanwooriTypography.button2,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 13.sp
                         )
@@ -88,10 +88,10 @@ fun VoteItem(
 
                 Text(
                     text = if (beforeRank) "-" else "${star?.rank}",
-                    color = Primary900,
-                    style = FanwooriTypography.subtitle3,
+                    color = if (isTop3) Primary500 else Gray700,
+                    style = FanwooriTypography.subtitle1,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 15.sp
+                    fontSize = 20.sp
                 )
             }
 

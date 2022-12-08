@@ -150,7 +150,7 @@ fun VoteHome(
                 ) {
                     Row(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp),
+                            .padding(start = 16.dp, end = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
