@@ -159,9 +159,14 @@ fun getTime(): Int {
 val CHO = listOf("ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ")
 
 fun getShareChar(char: Char): String {
-    val uniVal: Int = char.code - 0xAC00
-    val cho = ((uniVal - (uniVal % 28)) / 28) / 21
-    return CHO[cho]
+    return try {
+        val uniVal: Int = char.code - 0xAC00
+        val cho = ((uniVal - (uniVal % 28)) / 28) / 21
+        CHO[cho]
+    } catch (e: ArrayIndexOutOfBoundsException) {
+        e.printStackTrace()
+        ""
+    }
 }
 
 internal interface MultipleEventsCutter {
