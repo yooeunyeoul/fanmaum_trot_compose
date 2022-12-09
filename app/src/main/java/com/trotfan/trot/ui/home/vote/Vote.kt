@@ -40,12 +40,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.*
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
 import com.trotfan.trot.model.*
-import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
@@ -113,6 +111,10 @@ fun VoteHome(
         MutableInteractionSource()
     }
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
+
+    val tabData = listOf<String>("남자스타", "여자스타")
+    var tabIndex by remember { mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1) }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(ticks != 0) {
         while (ticks > 0) {
@@ -447,15 +449,90 @@ fun VoteHome(
                                 }
                             }
                             item {
-                                TodayRankingView(
-                                    hashmapMenList = hashmapMenList,
-                                    hashmapWomenList = hashmapWomenList,
-                                    favoriteStar = favoriteStar,
-                                    voteId = voteId,
-                                    favoriteStarGender = favoriteStarGender ?: Gender.MEN
-                                ) { _: Int, star: VoteMainStar? ->
-                                    onVotingClick(voteId, tickets, star, viewModel)
+
+                                TabRow(
+                                    selectedTabIndex = tabIndex,
+                                    backgroundColor = Color.White,
+                                    contentColor = Primary300,
+                                    indicator = { tabPositions ->
+                                        Box(
+                                            Modifier
+                                                .tabIndicatorOffset(tabPositions[tabIndex])
+                                                .height(3.dp)
+                                                .padding(
+                                                    start = if (tabIndex == 0) 24.dp else 0.dp,
+                                                    end = if (tabIndex == 1) 24.dp else 0.dp
+                                                )
+                                                .background(
+                                                    color = Primary300,
+                                                    shape = RoundedCornerShape(1.5.dp)
+                                                )
+                                        )
+
+                                    }, divider = {
+                                        Divider(color = Gray200, modifier = Modifier.height(1.dp))
+                                    },
+                                    modifier = Modifier
+                                        .height(48.dp)
+                                ) {
+                                    tabData.forEachIndexed { index, text ->
+                                        Tab(
+                                            modifier = Modifier,
+                                            selected = tabIndex == index,
+                                            onClick = {
+                                                coroutineScope.launch {
+                                                    tabIndex = index
+                                                }
+                                            },
+                                            text = {
+
+                                                Text(
+                                                    text = text,
+                                                    style = FanwooriTypography.body3,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = if (tabIndex == index) Primary900 else Gray600,
+                                                    fontSize = 17.sp,
+                                                    modifier = if (index == 0) Modifier.padding(
+                                                        start = 24.dp
+                                                    ) else Modifier.padding(
+                                                        end = 24.dp
+                                                    )
+                                                )
+                                            })
+                                    }
                                 }
+                            }
+                            val menList = if (tabIndex == 0) {
+                                hashmapMenList.toList().sortedBy { (key, value) -> value.rank }
+                            } else {
+                                hashmapWomenList.toList().sortedBy { (key, value) -> value.rank }
+                            }
+                            items(hashmapMenList.toList().size) { index ->
+                                val men = menList[index]
+                                VoteItem(
+                                    star = men.second,
+                                    isMyStar = men.first == favoriteStar.id,
+                                    onVotingClick = { mainStar ->
+                                        onVotingClick(voteId, tickets, mainStar, viewModel)
+                                    },
+                                    onSharedClick = {
+                                        val sendIntent: Intent = Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(
+                                                Intent.EXTRA_TEXT,
+                                                voteShareText(
+                                                    menList.flatMap { listOf(it.second) },
+                                                    men.second.rank ?: 0
+                                                )
+                                            )
+
+                                            type = "text/plain"
+                                        }
+                                        val shareIntent = Intent.createChooser(sendIntent, null)
+                                        context.startActivity(shareIntent)
+                                    }, isTop3 = (men.second.rank ?: 0) < 4,
+                                    beforeRank = men.second.rank == -1
+                                )
                             }
                         }
                         VoteStatus.VoteEnd -> {
@@ -513,148 +590,7 @@ fun VoteHome(
     }
 }
 
-@Composable
-fun TodayRankingView(
-    hashmapMenList: HashMap<Int?, VoteMainStar>,
-    hashmapWomenList: HashMap<Int?, VoteMainStar>,
-    favoriteStar: FavoriteStarInfo,
-    voteId: Int,
-    favoriteStarGender: Gender,
-    onVotingClick: (vote_id: Int, star: VoteMainStar?) -> Unit
-) {
-    val tabData = listOf<String>("남자스타", "여자스타")
-    val context = LocalContext.current
 
-    val pagerState = rememberPagerState(
-        initialPage = if (favoriteStarGender == Gender.MEN) 0 else 1
-    )
-    val tabIndex = pagerState.currentPage
-    val coroutineScope = rememberCoroutineScope()
-
-    TabRow(
-        selectedTabIndex = tabIndex,
-        backgroundColor = Color.White,
-        contentColor = Primary300,
-        indicator = { tabPositions ->
-            Box(
-                Modifier
-                    .tabIndicatorOffset(tabPositions[tabIndex])
-                    .height(3.dp)
-                    .padding(
-                        start = if (tabIndex == 0) 24.dp else 0.dp,
-                        end = if (tabIndex == 1) 24.dp else 0.dp
-                    )
-                    .background(color = Primary300, shape = RoundedCornerShape(1.5.dp))
-            )
-
-        }, divider = {
-            Divider(color = Gray200, modifier = Modifier.height(1.dp))
-        },
-        modifier = Modifier
-            .height(48.dp)
-    ) {
-        tabData.forEachIndexed { index, text ->
-            Tab(modifier = Modifier, selected = tabIndex == index, onClick = {
-                coroutineScope.launch {
-                    pagerState.scrollToPage(index)
-                }
-            }, text = {
-
-                Text(
-                    text = text,
-                    style = FanwooriTypography.body3,
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (pagerState.currentPage == index) Primary900 else Gray600,
-                    fontSize = 17.sp,
-                    modifier = if (index == 0) Modifier.padding(start = 24.dp) else Modifier.padding(
-                        end = 24.dp
-                    )
-                )
-            })
-        }
-    }
-
-    HorizontalPager(
-        count = 2,
-        state = pagerState,
-        modifier = Modifier
-            .background(color = Color.White)
-            .disabledHorizontalPointerInputScroll()
-    ) { page ->
-        when (page) {
-            0 -> {
-                Column(Modifier.fillMaxWidth()) {
-                    val menList =
-                        hashmapMenList.toList().sortedBy { (key, value) -> value.rank }
-                    for (men in menList) {
-                        key(men.first) {
-                            VoteItem(
-                                star = men.second,
-                                isMyStar = men.first == favoriteStar.id,
-                                onVotingClick = { mainStar ->
-                                    onVotingClick(voteId, mainStar)
-                                },
-                                onSharedClick = {
-                                    val sendIntent: Intent = Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        putExtra(
-                                            Intent.EXTRA_TEXT,
-                                            voteShareText(
-                                                menList.flatMap { listOf(it.second) },
-                                                men.second.rank ?: 0
-                                            )
-                                        )
-
-                                        type = "text/plain"
-                                    }
-                                    val shareIntent = Intent.createChooser(sendIntent, null)
-                                    context.startActivity(shareIntent)
-                                }, isTop3 = (men.second.rank ?: 0) < 4,
-                                beforeRank = men.second.rank == -1
-                            )
-                        }
-                    }
-                }
-            }
-            1 -> {
-                Column(Modifier.fillMaxWidth()) {
-                    val womenList =
-                        hashmapWomenList.toList().sortedBy { (key, value) -> value.rank }
-//                        hashmapWomenList.toList().shuffled()
-                    for (women in womenList) {
-                        key(women.first) {
-                            VoteItem(
-                                star = women.second,
-                                isMyStar = women.first == favoriteStar.id,
-                                onVotingClick = { mainStar ->
-                                    onVotingClick(voteId, mainStar)
-                                },
-                                onSharedClick = {
-                                    val sendIntent: Intent = Intent().apply {
-                                        action = Intent.ACTION_SEND
-                                        putExtra(
-                                            Intent.EXTRA_TEXT,
-                                            voteShareText(
-                                                womenList.flatMap { listOf(it.second) },
-                                                women.second.rank ?: 0
-                                            )
-                                        )
-
-                                        type = "text/plain"
-                                    }
-                                    val shareIntent = Intent.createChooser(sendIntent, null)
-                                    context.startActivity(shareIntent)
-                                }, isTop3 = (women.second.rank ?: 0) < 4
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-}
 
 fun voteTopShareText(favoriteStarName: String?): String {
     return "#팬마음 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 투표 참여하고\n" +
@@ -704,116 +640,6 @@ fun voteShareText(stars: List<VoteMainStar>, rank: Int): String {
     }
 }
 
-@Composable
-fun TryMission(modifier: Modifier) {
-
-    Text(
-        text = "미션을 수행하고 투표권을 모아보세요!",
-        style = FanwooriTypography.body2,
-        color = Primary800,
-        fontSize = 15.sp,
-        modifier = modifier
-    )
-
-    UnderlineTextButton(text = "충전하기")
-
-
-}
-
-@Composable
-fun ScheduledToDisappear() {
-    Text(
-        text = "오늘 소멸 예정",
-        style = FanwooriTypography.body2,
-        color = Primary800,
-        fontSize = 15.sp
-    )
-    Spacer(modifier = Modifier.width(6.4.dp))
-    Image(
-        painter = painterResource(id = R.drawable.icon_vote),
-        contentDescription = null
-    )
-    Text(
-        text = "4,000",
-        style = FanwooriTypography.subtitle3,
-        color = Primary800,
-        fontSize = 15.sp
-    )
-
-}
-
-
-@Composable
-fun Top3View(modifier: Modifier, top3Benefit: Top3Benefit?) {
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp),
-        backgroundColor = Color.White,
-        shape = RoundedCornerShape(32.dp),
-        elevation = 4.dp
-    ) {
-
-        Column(
-            modifier = modifier
-                .padding(bottom = 32.dp, top = 16.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = top3Benefit?.title ?: "",
-                style = FanwooriTypography.subtitle1,
-                fontSize = 20.sp,
-                color = Gray800
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = top3Benefit?.content ?: "",
-                style = FanwooriTypography.body3,
-                fontSize = 17.sp,
-                color = Gray600,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .background(
-                        color = Gray800,
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .height(40.dp)
-                    .padding(start = 15.dp, end = 15.dp)
-            ) {
-                Text(
-                    text = "TOP3 혜택 자세히보기",
-                    fontSize = 15.sp,
-                    style = FanwooriTypography.subtitle3,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_arrow),
-                    contentDescription = null,
-                    tint = Color.White
-                )
-            }
-
-
-        }
-
-
-    }
-    Surface(
-        color = Color.White,
-        modifier = Modifier.fillMaxSize()
-    ) {
-    }
-
-
-}
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun VoteToStar(
@@ -822,7 +648,6 @@ fun VoteToStar(
     voteStatus: VoteStatus,
     viewModel: VoteHomeViewModel
 ) {
-
 
     val pagerState = rememberPagerState()
     LaunchedEffect(key1 = voteStatus, block = {
@@ -854,7 +679,6 @@ fun VoteToStar(
         state = pagerState,
         modifier = Modifier.disabledVerticalPointerInputScroll()
     ) { currentPage ->
-//        Log.e("items.size", "${items.size}")
         Column(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -953,36 +777,6 @@ fun VoteToStar(
 
 }
 
-@Composable
-fun VoteIng() {
-    Column(
-        Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        Text(
-            text = "투표 진행 중",
-            color = Color.White,
-            style = FanwooriTypography.subtitle4,
-            maxLines = 1,
-            fontSize = 18.sp,
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "지금 내 스타에게 투표해보세요!",
-            color = Color.White,
-            style = FanwooriTypography.body2,
-            maxLines = 1,
-            fontSize = 15.sp,
-            overflow = TextOverflow.Ellipsis
-        )
-
-
-    }
-}
 
 @Composable
 fun VoteEndHeader() {
