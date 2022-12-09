@@ -531,7 +531,7 @@ fun VoteHome(
                                         val shareIntent = Intent.createChooser(sendIntent, null)
                                         context.startActivity(shareIntent)
                                     }, isTop3 = (starMap.second.rank ?: 0) < 4,
-                                    beforeRank = starMap.second.rank == 0
+                                    beforeRank = starMap.second.votes == 0
                                 )
                             }
                         }
