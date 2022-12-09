@@ -502,16 +502,16 @@ fun VoteHome(
                                     }
                                 }
                             }
-                            val menList = if (tabIndex == 0) {
+                            val sortedList = if (tabIndex == 0) {
                                 hashmapMenList.toList().sortedBy { (key, value) -> value.rank }
                             } else {
                                 hashmapWomenList.toList().sortedBy { (key, value) -> value.rank }
                             }
                             items(hashmapMenList.toList().size) { index ->
-                                val men = menList[index]
+                                val starMap = sortedList[index]
                                 VoteItem(
-                                    star = men.second,
-                                    isMyStar = men.first == favoriteStar.id,
+                                    star = starMap.second,
+                                    isMyStar = starMap.first == favoriteStar.id,
                                     onVotingClick = { mainStar ->
                                         onVotingClick(voteId, tickets, mainStar, viewModel)
                                     },
@@ -521,8 +521,8 @@ fun VoteHome(
                                             putExtra(
                                                 Intent.EXTRA_TEXT,
                                                 voteShareText(
-                                                    menList.flatMap { listOf(it.second) },
-                                                    men.second.rank ?: 0
+                                                    sortedList.flatMap { listOf(it.second) },
+                                                    starMap.second.rank ?: 0
                                                 )
                                             )
 
@@ -530,8 +530,8 @@ fun VoteHome(
                                         }
                                         val shareIntent = Intent.createChooser(sendIntent, null)
                                         context.startActivity(shareIntent)
-                                    }, isTop3 = (men.second.rank ?: 0) < 4,
-                                    beforeRank = men.second.rank == -1
+                                    }, isTop3 = (starMap.second.rank ?: 0) < 4,
+                                    beforeRank = starMap.second.rank == 0
                                 )
                             }
                         }
