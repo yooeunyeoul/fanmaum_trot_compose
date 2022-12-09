@@ -136,6 +136,7 @@ fun VoteItem(
                 if (isMyStar) {
                     Row(
                         Modifier
+                            .padding(top = 5.dp)
                             .background(
                                 brush = gradient01,
                                 shape = RoundedCornerShape(20.dp),
