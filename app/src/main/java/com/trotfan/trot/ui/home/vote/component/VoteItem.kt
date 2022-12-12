@@ -132,11 +132,10 @@ fun VoteItem(
             )
 
 
-            Column(Modifier.wrapContentWidth()) {
+            Column(Modifier.wrapContentWidth(), verticalArrangement = Arrangement.Center) {
                 if (isMyStar) {
                     Row(
                         Modifier
-                            .padding(top = 5.dp)
                             .background(
                                 brush = gradient01,
                                 shape = RoundedCornerShape(20.dp),
@@ -240,7 +239,8 @@ fun PreviewVoteItem() {
         VoteItem(
             star = VoteMainStar(id = 1, name = "임영웅", rank = 1, votes = 3000),
             onVotingClick = {},
-            onSharedClick = {}, isTop3 = false
+            onSharedClick = {}, isTop3 = false,
+            isMyStar = true
         )
     }
 }
