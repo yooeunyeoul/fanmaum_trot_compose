@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -17,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
@@ -46,6 +48,7 @@ fun FanwooriApp(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     FanwooriTheme {
+        val systemUiController = rememberSystemUiController()
         val scaffoldState: ScaffoldState = rememberScaffoldState()
         val navController: NavHostController = rememberNavController()
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
@@ -68,6 +71,7 @@ fun FanwooriApp(
         var votesQuantity by remember {
             mutableStateOf(0L)
         }
+        systemUiController.setSystemBarsColor(color = Color.White)
 
         ModalBottomSheetLayout(
             sheetContent = {
