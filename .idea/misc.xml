@@ -29,6 +29,21 @@
         <entry key="../../../../layout/compose-model-1669879163303.xml" value="1.0" />
         <entry key="../../../../layout/compose-model-1669881872859.xml" value="0.987037037037037" />
         <entry key="../../../../layout/compose-model-1670198501528.xml" value="0.45565878378378377" />
+        <entry key="../../../../layout/compose-model-1670891683382.xml" value="0.47381756756756754" />
+        <entry key="../../../../layout/compose-model-1670895187227.xml" value="0.37922297297297297" />
+        <entry key="../../../../layout/compose-model-1670896261045.xml" value="0.37922297297297297" />
+        <entry key="../../../../layout/compose-model-1670896500206.xml" value="0.55" />
+        <entry key="../../../../layout/compose-model-1670900890243.xml" value="1.0" />
+        <entry key="../../../../layout/compose-model-1670902932162.xml" value="0.44130067567567566" />
+        <entry key="../../../../layout/compose-model-1670903835615.xml" value="0.44130067567567566" />
+        <entry key="../../../../layout/compose-model-1670910868078.xml" value="0.55" />
+        <entry key="../../../../layout/compose-model-1670910962267.xml" value="0.5666666666666667" />
+        <entry key="../../../../layout/compose-model-1670913094902.xml" value="0.5666666666666667" />
+        <entry key="../../../../layout/compose-model-1670915622628.xml" value="0.5666666666666667" />
+        <entry key="../../../../layout/compose-model-1670916138198.xml" value="0.5" />
+        <entry key="../../../../layout/compose-model-1670916291181.xml" value="0.5666666666666667" />
+        <entry key="../../../../layout/compose-model-1670921126923.xml" value="0.5666666666666667" />
+        <entry key="../../../../layout/compose-model-1670921391470.xml" value="1.0" />
         <entry key="../../.gradle/caches/transforms-3/1b77068ed14cd846b77ce4ce2d6c0488/transformed/appcompat-1.4.2/res/drawable/btn_radio_on_to_off_mtrl_animation.xml" value="0.1" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/components/button/IconOutline3Button.kt" value="0.7324675324675325" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/components/input/InputSearchTextField.kt" value="0.38055555555555554" />
@@ -42,7 +57,18 @@
         <entry key="app/src/main/java/com/trotfan/trot/ui/signup/SettingNickName.kt" value="0.2014358108108108" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/theme/Type.kt" value="0.23375527426160336" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.15" />
+        <entry key="app/src/main/res/drawable/ic_icon_calendar.xml" value="0.306" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.15" />
+        <entry key="app/src/main/res/drawable/ic_monthlybenefit.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/ic_ranking_monthlytop1.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/ic_ranking_monthlytop2.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/ic_ranking_monthlytop_one.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/ic_ranking_monthlytop_three.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/ic_ranking_monthlytop_two.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/ic_ranking_nohistory.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/ic_vote_iconcolored.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/icon_add.xml" value="0.306" />
+        <entry key="app/src/main/res/drawable/icon_arrow.xml" value="0.3855" />
         <entry key="app/src/main/res/drawable/icon_info.xml" value="0.1755" />
         <entry key="app/src/main/res/drawable/icon_share.xml" value="0.1755" />
         <entry key="app/src/main/res/drawable/icon_share_aos.xml" value="0.1755" />

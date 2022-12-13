@@ -30,6 +30,7 @@ fun IconOutline1Button(
     enabled: Boolean = true,
     onClick: () -> Unit,
     icon: Int,
+    isCircle: Boolean = true
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -65,12 +66,20 @@ fun IconOutline1Button(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Box(
-            modifier = Modifier.border(
-                width = 2.dp,
-                color = Secondary400, shape = CircleShape
-            )
-        ) {
+        if (isCircle) {
+            Box(
+                modifier = Modifier.border(
+                    width = 2.dp,
+                    color = Secondary400, shape = CircleShape
+                )
+            ) {
+                Icon(
+                    painter = painterResource(id = icon),
+                    contentDescription = null,
+                    tint = Secondary500
+                )
+            }
+        } else {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
