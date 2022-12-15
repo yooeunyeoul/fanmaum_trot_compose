@@ -19,6 +19,9 @@
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/Home.kt" value="0.33240740740740743" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/RankingHistory.kt" value="0.18981481481481483" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/RankingHistoryMonthly.kt" value="0.18981481481481483" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/cumulative/CumulativeRanking.kt" value="0.375" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/cumulative/CumulativeRankingHeader.kt" value="0.375" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/cumulative/CumulativeRankingItem.kt" value="0.375" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/daily/RankingStarDailyItem.kt" value="0.375" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/monthly/RankingStarItem.kt" value="0.18055555555555555" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/monthly/RankingStarMonthlyItem.kt" value="0.375" />

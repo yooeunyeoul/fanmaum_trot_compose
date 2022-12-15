@@ -49,7 +49,7 @@ fun RankingDailyRankerItem(star: VoteMainStar?) {
             text = star?.rank.toString(),
             color = color,
             style = FanwooriTypography.h2,
-            modifier = Modifier.align(CenterVertically),
+            modifier = Modifier.align(CenterVertically).size(24.dp),
             textAlign = TextAlign.Center
         )
 
@@ -158,5 +158,13 @@ fun RankingDailyDefaultItem(star: VoteMainStar?) {
 fun RankingStarItemPreview() {
     FanwooriTheme {
         RankingDailyRankerItem(VoteMainStar(0, null, "최영화", 1, 3000))
+    }
+}
+
+@Preview
+@Composable
+fun RankingStarDailyPreview() {
+    FanwooriTheme {
+        RankingStarDailyItem(VoteMainStar(0, null, "최영화", 4, 3000))
     }
 }
