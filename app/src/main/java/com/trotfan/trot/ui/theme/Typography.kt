@@ -33,12 +33,12 @@ class Typography internal constructor(
         h1: TextStyle = TextStyle(
             fontWeight = FontWeight.SemiBold,
             fontSize = 28.sp,
-            letterSpacing = (-1.5).sp
+            letterSpacing = (-0.7).sp
         ),
         h2: TextStyle = TextStyle(
-            fontWeight = FontWeight.Light,
-            fontSize = 60.sp,
-            letterSpacing = (-0.5).sp
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
+            letterSpacing = (-0.3).sp
         ),
         h3: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
@@ -46,14 +46,14 @@ class Typography internal constructor(
             letterSpacing = (-1).sp
         ),
         subtitle1: TextStyle = TextStyle(
-            fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            letterSpacing = 0.15.sp
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 20.sp,
+            letterSpacing = (-1).sp
         ),
         subtitle2: TextStyle = TextStyle(
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            letterSpacing = 0.1.sp
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 18.sp,
+            letterSpacing = (-0.25).sp
         ),
         subtitle3: TextStyle = TextStyle(
             fontWeight = FontWeight.SemiBold,
@@ -67,23 +67,23 @@ class Typography internal constructor(
         ),
         body1: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            letterSpacing = 0.5.sp
+            fontSize = 18.sp,
+            letterSpacing = (-0.3).sp
         ),
         body2: TextStyle = TextStyle(
-            fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
-            letterSpacing = 0.25.sp
+            fontWeight = FontWeight.Medium,
+            fontSize = 15.sp,
+            letterSpacing = (-0.25).sp
         ),
         body3: TextStyle = TextStyle(
-            fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            letterSpacing = 0.5.sp
+            fontWeight = FontWeight.Medium,
+            fontSize = 17.sp,
+            letterSpacing = (-0.25).sp
         ),
         body4: TextStyle = TextStyle(
-            fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
-            letterSpacing = 0.25.sp
+            fontWeight = FontWeight.Medium,
+            fontSize = 18.sp,
+            letterSpacing = (-0.3).sp
         ),
         body5: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
@@ -91,24 +91,24 @@ class Typography internal constructor(
             letterSpacing = (-0.25).sp
         ),
         button1: TextStyle = TextStyle(
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            letterSpacing = 1.25.sp
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 17.sp,
+            letterSpacing = (-0.4).sp
         ),
         button2: TextStyle = TextStyle(
             fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            letterSpacing = 1.25.sp
+            fontSize = 13.sp,
+            letterSpacing = (-0.25).sp
         ),
         caption1: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
-            fontSize = 12.sp,
-            letterSpacing = 0.4.sp
+            fontSize = 15.sp,
+            letterSpacing = (-0.25).sp
         ),
         caption2: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
-            fontSize = 12.sp,
-            letterSpacing = 0.4.sp
+            fontSize = 13.sp,
+            letterSpacing = (-0.25).sp
         )
     ) : this(
         h1 = h1.withDefaultFontFamily(defaultFontFamily),
