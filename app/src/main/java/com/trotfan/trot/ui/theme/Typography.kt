@@ -36,8 +36,8 @@ class Typography internal constructor(
             letterSpacing = (-1.5).sp
         ),
         h2: TextStyle = TextStyle(
-            fontWeight = FontWeight.Light,
-            fontSize = 60.sp,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
             letterSpacing = (-0.5).sp
         ),
         h3: TextStyle = TextStyle(

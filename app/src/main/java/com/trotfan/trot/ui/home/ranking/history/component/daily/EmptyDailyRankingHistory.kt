@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.home.ranking.history.component.monthly
+package com.trotfan.trot.ui.home.ranking.history.component.daily
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -17,7 +17,7 @@ import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Primary500
 
 @Composable
-fun EmptyRankingHistory() {
+fun EmptyDailyRankingHistory() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -42,14 +42,14 @@ fun EmptyRankingHistory() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "월간 순위는 이번 투표를 반영해", color = Gray700, style = FanwooriTypography.body5,
+            text = "일일 순위는 오늘 투표를 반영해", color = Gray700, style = FanwooriTypography.body5,
             modifier = Modifier.align(CenterHorizontally)
         )
 
         Spacer(modifier = Modifier.height(2.dp))
 
         Row(horizontalArrangement = Arrangement.Center) {
-            Text(text = "4월 1일에 공개", color = Primary500, style = FanwooriTypography.button1)
+            Text(text = "2일에 공개", color = Primary500, style = FanwooriTypography.button1)
             Text(text = "됩니다.", color = Gray700, style = FanwooriTypography.body5)
         }
 

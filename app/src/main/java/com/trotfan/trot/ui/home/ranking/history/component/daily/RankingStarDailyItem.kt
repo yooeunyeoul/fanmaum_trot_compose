@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.home.ranking.history.component.monthly
+package com.trotfan.trot.ui.home.ranking.history.component.daily
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -23,20 +24,19 @@ import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
 
 @Composable
-fun RankingStarItem(star: VoteMainStar) {
+fun RankingStarDailyItem(star: VoteMainStar) {
     if (star.rank!! < 4) {
-        RankingStarRankerItem(star = star)
+        RankingDailyRankerItem(star = star)
     } else {
-        RankingStarDefaultItem(star = star)
+        RankingDailyDefaultItem(star = star)
     }
 }
 
 @Composable
-fun RankingStarRankerItem(star: VoteMainStar?) {
-    val painter: Painter = when (star?.rank) {
-        1 -> painterResource(id = R.drawable.ic_ranking_monthlytop1)
-        2 -> painterResource(id = R.drawable.ic_ranking_monthlytop2)
-        else -> painterResource(id = R.drawable.ic_ranking_monthlytop3)
+fun RankingDailyRankerItem(star: VoteMainStar?) {
+    val color: Color = when (star?.rank) {
+        1 -> Primary500
+        else -> Primary800
     }
     Row(
         modifier = Modifier
@@ -45,20 +45,19 @@ fun RankingStarRankerItem(star: VoteMainStar?) {
     ) {
         Spacer(modifier = Modifier.width(24.dp))
 
-        Image(
-            painter = painter,
-            modifier = Modifier
-                .size(40.dp)
-                .fillMaxHeight()
-                .align(CenterVertically),
-            contentDescription = null
+        Text(
+            text = star?.rank.toString(),
+            color = color,
+            style = FanwooriTypography.h2,
+            modifier = Modifier.align(CenterVertically),
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.width(12.dp))
 
         Box(
             modifier = Modifier
-                .size(58.dp)
+                .size(56.dp)
                 .background(Color.Yellow, CircleShape)
                 .border(1.dp, Gray100, CircleShape)
                 .align(CenterVertically)
@@ -91,23 +90,11 @@ fun RankingStarRankerItem(star: VoteMainStar?) {
                 style = FanwooriTypography.body5
             )
         }
-
-        Icon(
-            painter = painterResource(id = R.drawable.icon_arrow),
-            contentDescription = null,
-            tint = Gray600,
-            modifier = Modifier
-                .size(16.dp)
-                .align(CenterVertically)
-        )
-
-
-        Spacer(modifier = Modifier.width(24.dp))
     }
 }
 
 @Composable
-fun RankingStarDefaultItem(star: VoteMainStar?) {
+fun RankingDailyDefaultItem(star: VoteMainStar?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -163,18 +150,6 @@ fun RankingStarDefaultItem(star: VoteMainStar?) {
                 style = FanwooriTypography.body5
             )
         }
-
-        Icon(
-            painter = painterResource(id = R.drawable.icon_arrow),
-            contentDescription = null,
-            tint = Gray600,
-            modifier = Modifier
-                .size(16.dp)
-                .align(CenterVertically)
-        )
-
-
-        Spacer(modifier = Modifier.width(24.dp))
     }
 }
 
@@ -182,6 +157,6 @@ fun RankingStarDefaultItem(star: VoteMainStar?) {
 @Composable
 fun RankingStarItemPreview() {
     FanwooriTheme {
-        RankingStarRankerItem(VoteMainStar(0, null, "최영화", 1, 3000))
+        RankingDailyRankerItem(VoteMainStar(0, null, "최영화", 1, 3000))
     }
 }

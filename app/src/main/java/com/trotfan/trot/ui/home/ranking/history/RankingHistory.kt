@@ -17,6 +17,9 @@ fun RankingHistory(
     var monthlyEmptyState by remember {
         mutableStateOf(false)
     }
+    var dailyEmptyState by remember {
+        mutableStateOf(false)
+    }
 
     Column {
         CustomTopAppBar(title = "지난 순위", icon = R.drawable.icon_back) {
@@ -26,6 +29,7 @@ fun RankingHistory(
 
             if (selectedTabIndex == it) {
                 monthlyEmptyState = monthlyEmptyState.not()
+                dailyEmptyState = dailyEmptyState.not()
             }
             selectedTabIndex = it
         }
@@ -33,7 +37,7 @@ fun RankingHistory(
         if (selectedTabIndex == 0) {
             RankingHistoryMonthly(monthlyEmptyState)
         } else {
-            RankingHistoryDaily()
+            RankingHistoryDaily(dailyEmptyState)
         }
     }
 }
