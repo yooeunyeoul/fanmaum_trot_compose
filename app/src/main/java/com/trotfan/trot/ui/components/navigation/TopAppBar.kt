@@ -36,7 +36,7 @@ fun CustomTopAppBar(
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = Gray700,
+                tint = Gray800,
                 modifier = Modifier
                     .padding(start = 16.dp, end = 8.dp)
                     .size(32.dp)

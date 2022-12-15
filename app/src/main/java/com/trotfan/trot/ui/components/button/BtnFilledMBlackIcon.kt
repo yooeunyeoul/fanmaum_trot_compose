@@ -14,10 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray400
-import com.trotfan.trot.ui.theme.Gray600
-import com.trotfan.trot.ui.theme.Gray800
+import com.trotfan.trot.ui.theme.*
 
 @Composable
 fun BtnFilledMBlackIcon(
@@ -48,7 +45,7 @@ fun BtnFilledMBlackIcon(
         Text(
             text = text,
             color = if (enabled) {
-                if (isPressed) Gray800 else Gray600
+                if (isPressed) Gray800 else Gray650
             } else Gray400,
             style = FanwooriTypography.button1
         )

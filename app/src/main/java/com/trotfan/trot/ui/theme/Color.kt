@@ -10,6 +10,7 @@ val Gray300 = Color(0XFFCFD5D8)
 val Gray400 = Color(0XFFBDC6C9)
 val Gray500 = Color(0XFFABB6BA)
 val Gray600 = Color(0XFF819298)
+val Gray650 = Color(0XFF5C6B70)
 val Gray700 = Color(0XFF5C6B70)
 val Gray750 = Color(0XFF475357)
 val Gray800 = Color(0XFF394346)
@@ -50,4 +51,16 @@ val gradient01 = Brush.linearGradient(
     0.37f to Color(0xFF6E61D7),
     0.7f to Color(0xFFB1A0F6),
     1.0f to Color(0xFFF8ADAF),
+)
+
+val gradient02 = Brush.linearGradient(
+    0.0f to Color(0xFF4E43B3),
+    0.44f to Color(0xFFB1A0F6),
+    0.91f to Color(0xFFF8ADAF),
+)
+
+val gradient03 = Brush.linearGradient(
+    0.0f to Color(0xFF4E43B3),
+    0.48f to Color(0xFFB1A0F6),
+    1.0f to Color(0xFFFACBCC),
 )

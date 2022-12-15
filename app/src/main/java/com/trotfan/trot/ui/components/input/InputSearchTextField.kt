@@ -22,10 +22,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray100
-import com.trotfan.trot.ui.theme.Gray400
-import com.trotfan.trot.ui.theme.Gray800
+import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
 enum class SearchStatus {
@@ -71,7 +68,8 @@ fun SearchTextField(
             Icon(
                 modifier = Modifier.padding(start = 0.dp),
                 painter = painterResource(id = R.drawable.icon_search),
-                contentDescription = "Search Icon"
+                contentDescription = "Search Icon",
+                tint = Gray700
             )
         },
         trailingIcon = {
@@ -82,7 +80,7 @@ fun SearchTextField(
                     modifier = Modifier.clickable {
                         text = ""
                         inputText.invoke("")
-                    }
+                    }, tint = Gray700
                 )
             }
         },
@@ -93,7 +91,7 @@ fun SearchTextField(
             Text(
                 text = stringResource(id = placeHolder),
                 style = FanwooriTypography.body3,
-                color = Gray400,
+                color = Gray600,
                 maxLines = 1,
                 fontSize = 17.sp,
                 letterSpacing = (-0.25).sp,
@@ -107,6 +105,7 @@ fun SearchTextField(
             disabledIndicatorColor = Color.Transparent,
             backgroundColor = Gray100,
             cursorColor = Gray800,
+            textColor = Gray800
         ),
         keyboardActions = KeyboardActions {
             onClickSearch.invoke(text)

@@ -54,7 +54,7 @@ fun BtnOutlineLGray(
         Text(
             text = text,
             color = if (enabled) {
-                if (isPressed) Gray800 else Gray600
+                if (isPressed) Gray800 else Gray650
             } else Gray400,
             style = FanwooriTypography.button1
         )

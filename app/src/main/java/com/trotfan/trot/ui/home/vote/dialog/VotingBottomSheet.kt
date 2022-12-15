@@ -82,7 +82,7 @@ fun VotingBottomSheet(
             Icon(
                 painter = painterResource(id = R.drawable.icon_close),
                 contentDescription = null,
-                tint = Gray700,
+                tint = Gray800,
                 modifier = Modifier
                     .padding(start = 24.dp, top = 16.dp, bottom = 16.dp)
                     .clickable {
@@ -94,7 +94,7 @@ fun VotingBottomSheet(
             Text(
                 text = "투표",
                 style = FanwooriTypography.body3,
-                color = Gray700,
+                color = Gray800,
                 modifier = Modifier.align(Alignment.Center)
             )
         }

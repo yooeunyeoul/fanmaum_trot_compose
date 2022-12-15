@@ -88,7 +88,7 @@ fun VoteItem(
 
                 Text(
                     text = if (beforeRank) "-" else "${star?.rank}",
-                    color = if (isTop3) Primary500 else Gray700,
+                    color = if (isTop3) Primary500 else if (isMyStar) Primary700 else Gray700,
                     style = FanwooriTypography.subtitle1,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 20.sp

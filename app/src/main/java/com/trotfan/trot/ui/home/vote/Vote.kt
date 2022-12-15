@@ -461,7 +461,7 @@ fun VoteHome(
                                                     text = text,
                                                     style = FanwooriTypography.body3,
                                                     fontWeight = FontWeight.SemiBold,
-                                                    color = if (tabIndex == index) Primary900 else Gray600,
+                                                    color = if (tabIndex == index) Primary900 else Gray700,
                                                     fontSize = 17.sp,
                                                     modifier = if (index == 0) Modifier.padding(
                                                         start = 24.dp
