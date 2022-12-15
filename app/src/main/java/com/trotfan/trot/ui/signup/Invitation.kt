@@ -24,10 +24,7 @@ import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.signup.components.VerticalDialogInvitationComplete
 import com.trotfan.trot.ui.signup.viewmodel.InvitationViewModel
 import com.trotfan.trot.ui.signup.viewmodel.InviteCodeCheckStatus
-import com.trotfan.trot.ui.theme.FanwooriTheme
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray500
-import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -54,13 +51,13 @@ fun InvitationScreen(
             modifier = Modifier
                 .padding(top = 8.dp),
             text = "친구에게 받은\n초대코드를 입력해주세요",
-            color = Gray700,
+            color = Gray800,
             style = FanwooriTypography.h1
         )
 
         Text(
             text = "나와 친구 모두 500 투표권을 받을 수 있어요!",
-            color = Gray500,
+            color = Gray700,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
         )

@@ -23,6 +23,7 @@ import com.trotfan.trot.ui.signup.viewmodel.NickNameViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.Gray900
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -45,13 +46,13 @@ fun SettingNicknameScreen(
                 .padding(top = 8.dp),
             text = "팬마음에서 사용할\n" +
                     "닉네임을 정해볼까요?",
-            color = Gray700,
+            color = Gray900,
             style = FanwooriTypography.h1
         )
 
         Text(
             text = "언제든지 변경할 수 있어요!",
-            color = Gray500,
+            color = Gray700,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
         )

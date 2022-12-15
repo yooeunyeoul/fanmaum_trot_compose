@@ -143,7 +143,7 @@ fun SelectStarScreen(
 
                     Text(
                         text = "내 스타\n1명을 선택해주세요",
-                        color = Gray700,
+                        color = Gray900,
                         style = FanwooriTypography.h1
                     )
                     Spacer(modifier = Modifier.height(8.dp))

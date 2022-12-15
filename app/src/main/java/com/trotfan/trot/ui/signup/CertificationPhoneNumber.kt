@@ -139,13 +139,13 @@ fun CertificationPhoneScreen(
                 .padding(top = 8.dp),
             text = "휴대폰 번호를\n" +
                     "인증해주세요",
-            color = Gray700,
+            color = Gray900,
             style = FanwooriTypography.h1
         )
 
         Text(
             text = "공정한 투표를 위해 번호인증이 필요해요.",
-            color = Gray500,
+            color = Gray700,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
         )

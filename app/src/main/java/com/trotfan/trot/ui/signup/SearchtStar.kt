@@ -41,10 +41,7 @@ import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
 import com.trotfan.trot.ui.signup.components.ListItemButton
 import com.trotfan.trot.ui.signup.viewmodel.StarSearchViewModel
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray600
-import com.trotfan.trot.ui.theme.Gray700
-import com.trotfan.trot.ui.theme.Primary500
+import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.delay
 
 
@@ -237,7 +234,7 @@ fun SearchStarScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = "좋아하는 스타를 검색해보세요!",
                     style = FanwooriTypography.body1,
-                    color = Gray600
+                    color = Gray700
                 )
 
             }
@@ -314,14 +311,14 @@ fun SearchStarScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = "앗! 검색결과가 없어요.",
                     style = FanwooriTypography.subtitle1,
-                    color = Gray700
+                    color = Gray800
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = "이렇게 해보세요.",
                     style = FanwooriTypography.subtitle2,
-                    color = Gray600
+                    color = Gray700
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -329,7 +326,7 @@ fun SearchStarScreen(
 
                     Row(
                         Modifier
-                            .background(shape = CircleShape, color = Gray600)
+                            .background(shape = CircleShape, color = Gray700)
                             .size(4.dp)
                             .align(CenterVertically),
                         content = {}
@@ -339,14 +336,14 @@ fun SearchStarScreen(
                     Text(
                         text = "검색어를 바르게 입력했는지 확인해주세요.",
                         style = FanwooriTypography.caption1,
-                        color = Gray600
+                        color = Gray700
                     )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                     Row(
                         Modifier
-                            .background(shape = CircleShape, color = Gray600)
+                            .background(shape = CircleShape, color = Gray700)
                             .size(4.dp)
                             .align(CenterVertically),
                         content = {}
@@ -355,7 +352,7 @@ fun SearchStarScreen(
                     Text(
                         text = "스타 추가 요청을 할 수 있어요.",
                         style = FanwooriTypography.caption1,
-                        color = Gray600
+                        color = Gray700
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))

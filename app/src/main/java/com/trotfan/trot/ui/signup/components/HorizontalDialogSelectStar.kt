@@ -85,7 +85,7 @@ fun HorizontalDialogSelectStar(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         text = "님",
                         style = FanwooriTypography.body4,
-                        color = Gray600
+                        color = Gray750
                     )
                 }
 
@@ -93,7 +93,7 @@ fun HorizontalDialogSelectStar(
                     text = "을 선택하시겠어요?",
                     textAlign = TextAlign.Center,
                     style = FanwooriTypography.body4,
-                    color = Gray600,
+                    color = Gray750,
                     modifier = Modifier.padding(top = 16.dp)
                 )
 
