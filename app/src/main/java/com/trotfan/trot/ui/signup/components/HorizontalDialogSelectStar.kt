@@ -21,7 +21,7 @@ import com.trotfan.trot.ui.theme.*
 @Composable
 fun HorizontalDialogSelectStar(
     modifier: Modifier = Modifier,
-    titleText: String,
+    content: @Composable() () -> Unit,
     contentText: String,
     maxLength: Int = 8,
     positiveText: String,
@@ -55,12 +55,7 @@ fun HorizontalDialogSelectStar(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = titleText,
-                    textAlign = TextAlign.Center,
-                    style = FanwooriTypography.subtitle1,
-                    color = Gray700
-                )
+                content.invoke()
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row() {
@@ -139,7 +134,15 @@ fun HorizontalDialogSelectStar(
 @Composable
 fun HorizontalTitleDialogPreview() {
     HorizontalDialogSelectStar(
-        titleText = "title",
+        content = {
+            Text(
+                text = "내 스타 선택은\n" +
+                        "최초 1회만 가능해요!",
+                textAlign = TextAlign.Center,
+                style = FanwooriTypography.subtitle1,
+                color = Gray700
+            )
+        },
         contentText = "양파쿵야",
         positiveText = "확인",
         negativeText = "취소",

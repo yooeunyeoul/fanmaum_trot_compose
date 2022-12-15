@@ -21,6 +21,7 @@ import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.HomeSections
+import com.trotfan.trot.ui.signup.components.VerticalDialogInvitationComplete
 import com.trotfan.trot.ui.signup.viewmodel.InvitationViewModel
 import com.trotfan.trot.ui.signup.viewmodel.InviteCodeCheckStatus
 import com.trotfan.trot.ui.theme.FanwooriTheme
@@ -58,7 +59,7 @@ fun InvitationScreen(
         )
 
         Text(
-            text = "나와 친구 모두 타임투표권 500표를 받을 수 있어요.",
+            text = "나와 친구 모두 500 투표권을 받을 수 있어요!",
             color = Gray500,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
@@ -117,7 +118,7 @@ fun InvitationScreen(
         }
 
         if (completeDialogState) {
-            VerticalDialog(
+            VerticalDialogInvitationComplete(
                 contentText = "타임투표권 500표 받았어요!",
                 buttonOneText = "확인",
                 onDismiss = {

@@ -19,6 +19,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -43,6 +44,7 @@ import com.trotfan.trot.ui.signup.viewmodel.StarSearchViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.Primary500
 import kotlinx.coroutines.delay
 
 
@@ -98,8 +100,39 @@ fun SearchStarScreen(
 
     if (starSelectDialog) {
         HorizontalDialogSelectStar(
-            titleText = "내 스타 선택은\n" +
-                    "최초 1회만 가능해요!",
+            content = {
+                Text(
+                    text = "내 스타 선택은",
+                    color = Gray700,
+                    style = FanwooriTypography.subtitle1
+                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                    ) {
+                        Text(
+                            text = "최초 1회",
+                            style = FanwooriTypography.h2,
+                            color = Primary500
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .background(Primary500)
+                                .width(62.dp)
+                                .height(1.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "만 가능해요!",
+                        color = Gray700,
+                        style = FanwooriTypography.subtitle1
+                    )
+                }
+            },
             positiveText = "선택",
             negativeText = "취소",
             contentText = selectedItem?.name ?: "",

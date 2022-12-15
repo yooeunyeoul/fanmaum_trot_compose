@@ -71,7 +71,7 @@ fun AppleLoginButtonPreview() {
     FanwooriTheme {
         Surface {
             LoginButton(
-                text = "Apple 계정으로 로그인",
+                text = "Apple 계정으로 계속하기",
                 icon = painterResource(id = R.drawable.apple_symbol),
                 textColor = Gray700,
                 borderColor = Gray300
