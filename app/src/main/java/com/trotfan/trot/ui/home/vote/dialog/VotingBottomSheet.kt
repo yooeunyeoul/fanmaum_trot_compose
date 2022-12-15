@@ -30,12 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Expired
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.IconOutline3Button
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineMPrimaryImg
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
-import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.addFocusCleaner
 import com.trotfan.trot.ui.utils.clickable
@@ -280,7 +278,7 @@ fun VotingBottomSheet(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            IconOutline3Button(
+            BtnOutlineMPrimaryImg(
                 text = "모두사용",
                 onClick = {
                     coroutineScope.launch {
@@ -294,7 +292,7 @@ fun VotingBottomSheet(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            ContainedLargeButton(
+            BtnFilledLPrimary(
                 text = "투표",
                 enabled = voteBtnState,
                 modifier = Modifier.padding(start = 32.dp, end = 32.dp)

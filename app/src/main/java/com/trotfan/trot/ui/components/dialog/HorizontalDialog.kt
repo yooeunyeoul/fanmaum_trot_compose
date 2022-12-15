@@ -15,8 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.Outline2Button
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineLGray
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
@@ -98,7 +98,7 @@ fun HorizontalDialog(
                         .padding(top = 24.dp)
                         .fillMaxWidth()
                 ) {
-                    Outline2Button(
+                    BtnOutlineLGray(
                         text = negativeText,
                         modifier = Modifier.weight(1f)
                     ) {
@@ -107,7 +107,7 @@ fun HorizontalDialog(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    ContainedLargeButton(
+                    BtnFilledLPrimary(
                         text = positiveText,
                         enabled = positiveButtonEnabled,
                         modifier = Modifier.weight(1f)

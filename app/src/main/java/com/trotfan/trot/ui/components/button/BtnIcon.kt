@@ -18,7 +18,7 @@ import com.trotfan.trot.ui.theme.Gray700
 
 
 @Composable
-fun BackIcon(
+fun BtnIcon(
     onCLick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -48,5 +48,5 @@ fun BackIcon(
 @Preview
 @Composable
 fun PreviewBackIcon() {
-    BackIcon(onCLick = {})
+    BtnIcon(onCLick = {})
 }

@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.components.button
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,16 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
 
 @Composable
-fun IconOutline3Button(
+fun BtnOutlineSecondaryLeftIcon(
     modifier: Modifier = Modifier,
     text: String,
     enabled: Boolean = true,
@@ -38,14 +35,14 @@ fun IconOutline3Button(
 
     Row(
         modifier = modifier
-            .height(40.dp)
-            .defaultMinSize(minWidth = 140.dp, minHeight = 40.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .height(48.dp)
+            .defaultMinSize(minWidth = 170.dp, minHeight = 48.dp)
+            .clip(RoundedCornerShape(14.dp))
             .border(
                 1.dp,
                 if (enabled) {
-                    Primary200
-                } else Gray200, RoundedCornerShape(20.dp)
+                    Secondary300
+                } else Gray200, RoundedCornerShape(14.dp)
             )
             .clickable(
                 indication = null,
@@ -56,25 +53,35 @@ fun IconOutline3Button(
                 }
             }
             .background(
-                if (isPressed) {
-                    Primary100
-                } else {
-                    Color.White
-                }
+                if (enabled) {
+                    if (isPressed) {
+                        Secondary100
+                    } else {
+                        Secondary50
+                    }
+                } else Gray100
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_vote_iconcolored),
-            contentDescription = null
-        )
+        Box(
+            modifier = Modifier.border(
+                width = 2.dp,
+                color = Secondary400, shape = CircleShape
+            )
+        ) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                tint = Secondary500
+            )
+        }
 
         Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = text,
             color = if (enabled) {
-                Primary600
+                if (isPressed) Secondary800 else Secondary900
             } else Gray400,
             style = FanwooriTypography.button1,
             maxLines = 1
@@ -82,11 +89,11 @@ fun IconOutline3Button(
     }
 }
 
-@Preview(name = "IconOutline3Button")
+@Preview(name = "IconOutline1Button")
 @Composable
-fun PreviewIconOutline3Button() {
-    IconOutline3Button(text = "Enabled",
-        icon = R.drawable.ic_vote_iconcolored,
+fun PreviewIconOutline1Button() {
+    BtnOutlineSecondaryLeftIcon(text = "Enabled",
+        icon = R.drawable.icon_add,
         onClick = {})
 
 

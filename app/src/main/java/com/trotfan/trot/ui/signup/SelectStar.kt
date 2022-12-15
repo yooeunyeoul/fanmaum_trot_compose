@@ -28,7 +28,7 @@ import androidx.paging.compose.items
 import com.trotfan.trot.R
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.ui.Route
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
@@ -220,7 +220,7 @@ fun SelectStarScreen(
                     .height(96.dp)
                     .align(Alignment.BottomCenter)
             ) {
-                ContainedLargeButton(
+                BtnFilledLPrimary(
                     text = "다음",
                     enabled = selectedItem != null,
                     modifier = Modifier.align(Alignment.Center)

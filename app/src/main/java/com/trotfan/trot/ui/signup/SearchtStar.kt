@@ -30,9 +30,9 @@ import androidx.paging.compose.items
 import com.trotfan.trot.R
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.ui.Route
-import com.trotfan.trot.ui.components.button.BackIcon
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.IconOutline1Button
+import com.trotfan.trot.ui.components.button.BtnIcon
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.SearchStatus
@@ -159,7 +159,7 @@ fun SearchStarScreen(
                 .height(64.dp)
                 .padding(bottom = 8.dp)
         ) {
-            BackIcon(
+            BtnIcon(
                 onCLick = {
                     navController.popBackStack()
                 }, modifier = Modifier.align(CenterVertically)
@@ -263,7 +263,7 @@ fun SearchStarScreen(
                             .height(96.dp)
                             .align(Alignment.BottomCenter)
                     ) {
-                        ContainedLargeButton(
+                        BtnFilledLPrimary(
                             text = "다음",
                             enabled = selectedItem != null,
                             modifier = Modifier.align(Alignment.BottomCenter)
@@ -326,7 +326,7 @@ fun SearchStarScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-                IconOutline1Button(
+                BtnOutlineSecondaryLeftIcon(
                     text = "스타 추가 요청",
                     icon = R.drawable.icon_add,
                     enabled = true,

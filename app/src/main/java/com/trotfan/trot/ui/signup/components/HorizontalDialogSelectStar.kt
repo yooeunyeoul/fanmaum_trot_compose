@@ -8,16 +8,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.Outline2Button
-import com.trotfan.trot.ui.components.input.InputTextField
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineLGray
 import com.trotfan.trot.ui.theme.*
 
 @Composable
@@ -110,7 +108,7 @@ fun HorizontalDialogSelectStar(
                         .padding(top = 24.dp)
                         .fillMaxWidth()
                 ) {
-                    Outline2Button(
+                    BtnOutlineLGray(
                         text = negativeText,
                         modifier = Modifier.weight(1f)
                     ) {
@@ -119,7 +117,7 @@ fun HorizontalDialogSelectStar(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    ContainedLargeButton(
+                    BtnFilledLPrimary(
                         text = positiveText,
                         modifier = Modifier.weight(1f)
                     ) {

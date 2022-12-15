@@ -13,9 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.trotfan.trot.ui.components.button.Outline1Button
-import com.trotfan.trot.ui.components.button.TextButton
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
+import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
+import com.trotfan.trot.ui.components.button.BtnFilledMBlackIcon
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
 
@@ -58,7 +58,7 @@ fun VerticalDialog(
                     color = Gray600
                 )
 
-                ContainedLargeButton(
+                BtnFilledLPrimary(
                     text = buttonOneText,
                     modifier = Modifier.padding(
                         top = if (buttonTwoText.isNullOrEmpty()) 24.dp else 16.dp,
@@ -69,13 +69,13 @@ fun VerticalDialog(
                 }
 
                 buttonThreeText?.let {
-                    Outline1Button(text = it, modifier = Modifier.padding(top = 8.dp)) {
+                    BtnOutlineLPrimary(text = it, modifier = Modifier.padding(top = 8.dp)) {
 
                     }
                 }
 
                 buttonTwoText?.let {
-                    TextButton(
+                    BtnFilledMBlackIcon(
                         text = it,
                         modifier = Modifier.padding(
                             top = if (buttonThreeText.isNullOrEmpty()) 16.dp else 8.dp

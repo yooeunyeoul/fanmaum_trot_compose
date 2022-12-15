@@ -14,8 +14,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.Route
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.Outline1Button
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.InputTextField
@@ -87,13 +87,13 @@ fun InvitationScreen(
             verticalAlignment = Alignment.Bottom
         ) {
 
-            Outline1Button(text = "건너뛰기", modifier = Modifier.weight(1f)) {
+            BtnOutlineLPrimary(text = "건너뛰기", modifier = Modifier.weight(1f)) {
                 skipDialogState = true
             }
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            ContainedLargeButton(
+            BtnFilledLPrimary(
                 text = "완료",
                 enabled = inviteCodeCheckState == InviteCodeCheckStatus.None && inviteCode.length == 8,
                 modifier = Modifier.weight(1f)

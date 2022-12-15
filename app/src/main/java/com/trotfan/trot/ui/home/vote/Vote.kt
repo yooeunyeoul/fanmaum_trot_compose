@@ -141,36 +141,7 @@ fun VoteHome(
         ) {
 
             if (isShowingScrollToolTip) {
-                Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = Gray900,
-                    elevation = 3.dp,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = BottomNavHeight.plus(32.dp))
-                        .zIndex(2f)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "화면을 내려보세요",
-                            color = Color.White,
-                            fontSize = 15.sp,
-                            style = FanwooriTypography.body2,
-                            fontWeight = FontWeight.Medium
-                        )
-
-                        LottieAnimation(
-                            composition = composition,
-                            iterations = LottieConstants.IterateForever,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                }
+                ChipCapsuleImg()
             }
             Column(
                 modifier = Modifier

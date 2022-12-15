@@ -1,32 +1,25 @@
 package com.trotfan.trot.ui.home.dialog
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.trotfan.trot.ui.components.button.Outline2Button
-import com.trotfan.trot.ui.components.chip.Chip
+import com.trotfan.trot.ui.components.button.BtnOutlineLGray
+import com.trotfan.trot.ui.components.chip.ChipFilledLSecondary
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
@@ -61,7 +54,7 @@ fun AutoVotingDialog(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Chip(
+                ChipFilledLSecondary(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .background(Secondary50),
@@ -97,7 +90,7 @@ fun AutoVotingDialog(
                     .align(CenterHorizontally),
             )
 
-            Outline2Button(
+            BtnOutlineLGray(
                 text = "출석했어요!",
                 modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 14.dp, bottom = 24.dp)
             ) {
