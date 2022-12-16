@@ -37,7 +37,7 @@ fun BtnOutlineLPrimary(
             .border(
                 1.dp,
                 if (enabled) {
-                    if (isPressed) Primary500 else Primary300
+                    if (isPressed) Primary500 else Primary200
                 } else Gray300, RoundedCornerShape(28.dp)
             )
             .clickable(
@@ -55,7 +55,7 @@ fun BtnOutlineLPrimary(
         Text(
             text = text,
             color = if (enabled) {
-                if (isPressed) Primary700 else Primary500
+                if (isPressed) Primary700 else Primary600
             } else Gray400,
             style = FanwooriTypography.button1
         )

@@ -46,7 +46,7 @@ fun NavigationComponent(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Route.SelectStar.route
+        startDestination = Route.Login.route
     ) {
         composable(Route.Login.route) {
             LoginScreen(

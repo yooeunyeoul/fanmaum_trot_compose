@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.Gray300
+import com.trotfan.trot.ui.theme.Gray700
 import com.trotfan.trot.ui.theme.Gray800
 
 
@@ -40,7 +41,7 @@ fun BtnIcon(
             painter = painterResource(
                 id = R.drawable.iconback_default
             ), contentDescription = null,
-            tint = if (isPressed) Gray300 else Gray800
+            tint = if (isPressed) Gray300 else Gray700
         )
     }
 }

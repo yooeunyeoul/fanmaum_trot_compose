@@ -43,7 +43,7 @@ fun BtnFilledLPrimary(
             .background(
                 if (enabled) {
                     if (isPressed) Primary600 else Primary500
-                } else Gray100
+                } else Gray200
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
