@@ -16,6 +16,9 @@ val Gray750 = Color(0XFF475357)
 val Gray800 = Color(0XFF394346)
 val Gray900 = Color(0XFF22282A)
 
+val GrayOpacity30 = Color(0XFF00004D)
+
+
 val Primary30 = Color(0XFFFFFAFA)
 val Primary50 = Color(0XFFFEF5F5)
 val Primary100 = Color(0XFFFDEAEB)

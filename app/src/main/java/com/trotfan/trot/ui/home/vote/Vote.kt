@@ -61,6 +61,8 @@ import java.time.LocalDate
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
+val tabData = listOf<String>("남자스타", "여자스타")
+
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -112,7 +114,6 @@ fun VoteHome(
     }
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
 
-    val tabData = listOf<String>("남자스타", "여자스타")
     var tabIndex by remember { mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1) }
     val coroutineScope = rememberCoroutineScope()
 
