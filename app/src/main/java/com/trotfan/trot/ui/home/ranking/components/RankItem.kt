@@ -11,23 +11,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -40,6 +35,12 @@ import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.clickable
 
 val rankDrawables = listOf(
+    R.drawable.ranking_monthlytop1,
+    R.drawable.ranking_monthlytop2,
+    R.drawable.ranking_monthlytop3
+)
+
+val imageRankDrawable = listOf(
     R.drawable.ranking_monthlytop1,
     R.drawable.ranking_monthlytop2,
     R.drawable.ranking_monthlytop3
@@ -147,7 +148,8 @@ fun RankItem(
     }
 }
 
-val textShadow = Shadow(color = Color.Black, offset = Offset(2f, 2f), blurRadius = 1f)
+val textShadow =
+    Shadow(color = Color.Black.copy(alpha = 0.30f), offset = Offset(2f, 2f), blurRadius = 4f)
 
 @Composable
 fun RankImageItem() {
@@ -171,7 +173,7 @@ fun RankImageItem() {
             ) {
                 Box(modifier = Modifier.align(Alignment.Center)) {
                     Image(
-                        painter = painterResource(id = R.drawable.ranking_1st),
+                        painter = painterResource(id = R.drawable.ranking_1st_03),
                         contentDescription = null,
                         modifier = Modifier
                             .size(72.dp)
@@ -187,24 +189,14 @@ fun RankImageItem() {
                     ) {
                         Text(
                             text = "1,500점",
-                            style = TextStyle(
-                                fontSize = FanwooriTypography.body3.fontSize,
-                                fontStyle = FanwooriTypography.body3.fontStyle,
-                                fontWeight = FanwooriTypography.body3.fontWeight,
-                                shadow = textShadow
-                            ),
+                            style = FanwooriTypography.body3.copy(shadow = textShadow),
                             color = Color.White,
                             modifier = Modifier
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "가수명",
-                                style = TextStyle(
-                                    fontSize = FanwooriTypography.subtitle1.fontSize,
-                                    fontStyle = FanwooriTypography.subtitle1.fontStyle,
-                                    fontWeight = FanwooriTypography.subtitle1.fontWeight,
-                                    shadow = textShadow
-                                ),
+                                style = FanwooriTypography.subtitle1.copy(shadow = textShadow),
                                 color = Color.White
                             )
                             Icon(
@@ -263,24 +255,14 @@ fun RankImageItem() {
                     ) {
                         Text(
                             text = "1,500점",
-                            style = TextStyle(
-                                fontSize = FanwooriTypography.body2.fontSize,
-                                fontStyle = FanwooriTypography.body2.fontStyle,
-                                fontWeight = FanwooriTypography.body2.fontWeight,
-                                shadow = textShadow
-                            ),
+                            style = FanwooriTypography.body2.copy(shadow = textShadow),
                             color = Color.White,
                             modifier = Modifier
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "가수명",
-                                style = TextStyle(
-                                    fontSize = FanwooriTypography.subtitle2.fontSize,
-                                    fontStyle = FanwooriTypography.subtitle2.fontStyle,
-                                    fontWeight = FanwooriTypography.subtitle2.fontWeight,
-                                    shadow = textShadow
-                                ),
+                                style = FanwooriTypography.subtitle2.copy(shadow = textShadow),
                                 color = Color.White
                             )
                             Icon(
@@ -337,24 +319,14 @@ fun RankImageItem() {
                     ) {
                         Text(
                             text = "1,500점",
-                            style = TextStyle(
-                                fontSize = FanwooriTypography.body2.fontSize,
-                                fontStyle = FanwooriTypography.body2.fontStyle,
-                                fontWeight = FanwooriTypography.body2.fontWeight,
-                                shadow = textShadow
-                            ),
+                            style = FanwooriTypography.body2.copy(shadow = textShadow),
                             color = Color.White,
                             modifier = Modifier
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "가수명",
-                                style = TextStyle(
-                                    fontSize = FanwooriTypography.subtitle2.fontSize,
-                                    fontStyle = FanwooriTypography.subtitle2.fontStyle,
-                                    fontWeight = FanwooriTypography.subtitle2.fontWeight,
-                                    shadow = textShadow
-                                ),
+                                style = FanwooriTypography.subtitle2.copy(shadow = textShadow),
                                 color = Color.White
                             )
                             Icon(
@@ -370,12 +342,7 @@ fun RankImageItem() {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "가수명",
-                            style = TextStyle(
-                                fontSize = FanwooriTypography.subtitle1.fontSize,
-                                fontStyle = FanwooriTypography.subtitle1.fontStyle,
-                                fontWeight = FanwooriTypography.subtitle1.fontWeight,
-                                shadow = textShadow
-                            ),
+                            style = FanwooriTypography.subtitle1.copy(shadow = textShadow),
                             color = Color.White
                         )
                         Icon(
@@ -397,7 +364,7 @@ fun RankImageItem() {
                     )
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data("https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2022/05/02/9dbf1b16-c77e-4724-b762-9abffcd7fde7.jpg")
+                            .data("https://cdn.ziksir.com/news/photo/202212/31765_62346_2612.jpg")
                             .crossfade(true).build(),
                         contentDescription = null,
                         error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
@@ -442,4 +409,3 @@ fun PreviewListItemButtonNotSub() {
 fun PreviewRankImageItem() {
     RankImageItem()
 }
-

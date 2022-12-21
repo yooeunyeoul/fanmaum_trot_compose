@@ -127,9 +127,10 @@ fun VoteHome(
 
         if (isShowingScrollToolTip) {
             val offset = lazyListState.firstVisibleItemScrollOffset
-            if (offset > 200) {
+            if (offset > 150) {
                 viewModel.saveScrollTooltipState(false)
             }
+            Log.e("OFFSE", offset.toString())
         }
     })
 
@@ -561,7 +562,6 @@ fun VoteHome(
         }
     }
 }
-
 
 
 fun voteTopShareText(favoriteStarName: String?): String {
