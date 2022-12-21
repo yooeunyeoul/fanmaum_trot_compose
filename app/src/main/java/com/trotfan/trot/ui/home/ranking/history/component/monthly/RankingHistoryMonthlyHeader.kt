@@ -16,12 +16,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.home.ranking.history.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.ranking.history.component.RankingHistoryGenderTab
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 
 @Composable
-fun RankingHistoryMonthlyHeader() {
+fun RankingHistoryMonthlyHeader(
+    onCalenderClick: (String) -> Unit,
+    rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
+) {
+    val year = rankingHistoryViewModel.monthlyYear.collectAsState()
+    val month = rankingHistoryViewModel.monthlyMonth.collectAsState()
+
     Column {
         Row(
             modifier = Modifier
@@ -30,6 +39,7 @@ fun RankingHistoryMonthlyHeader() {
                 .padding(start = 24.dp, end = 24.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(Gray100)
+                .clickable { onCalenderClick("${year.value}/${month.value}") }
         ) {
             Spacer(modifier = Modifier.width(12.dp))
             IconButton(
@@ -67,7 +77,7 @@ fun RankingHistoryMonthlyHeader() {
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    text = "2022.12",
+                    text = "${year.value}.${month.value}",
                     color = Gray900,
                     style = FanwooriTypography.body3
                 )
@@ -104,6 +114,10 @@ fun RankingHistoryMonthlyHeader() {
 @Composable
 fun RankingHistoryHeaderPreview() {
     FanwooriTheme {
-        RankingHistoryMonthlyHeader()
+        RankingHistoryMonthlyHeader(
+            onCalenderClick = {
+
+            }
+        )
     }
 }

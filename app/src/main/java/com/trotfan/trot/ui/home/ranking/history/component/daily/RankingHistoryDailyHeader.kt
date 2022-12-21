@@ -16,12 +16,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.home.ranking.history.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.ranking.history.component.RankingHistoryGenderTab
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 
 @Composable
-fun RankingHistoryDailyHeader() {
+fun RankingHistoryDailyHeader(
+    onCalenderClick: () -> Unit, rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
+) {
+
+    val year = rankingHistoryViewModel.dailyYear.collectAsState()
+    val month = rankingHistoryViewModel.dailyMonth.collectAsState()
+    val day = rankingHistoryViewModel.dailyDay.collectAsState()
     Column {
         Row(
             modifier = Modifier
@@ -30,6 +39,9 @@ fun RankingHistoryDailyHeader() {
                 .padding(start = 24.dp, end = 24.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(Gray100)
+                .clickable {
+                    onCalenderClick()
+                }
         ) {
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -49,7 +61,7 @@ fun RankingHistoryDailyHeader() {
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    text = "2022.12.31",
+                    text = "${year.value}.${month.value}.${day.value}",
                     color = Gray900,
                     style = FanwooriTypography.body3
                 )
@@ -64,7 +76,7 @@ fun RankingHistoryDailyHeader() {
                     .rotate(90f)
                     .size(24.dp),
                 onClick = {
-
+                    onCalenderClick()
                 }) {
 
                 Icon(
@@ -87,6 +99,8 @@ fun RankingHistoryDailyHeader() {
 @Composable
 fun RankingHistoryHeaderPreview() {
     FanwooriTheme {
-        RankingHistoryDailyHeader()
+        RankingHistoryDailyHeader(onCalenderClick = {
+
+        })
     }
 }

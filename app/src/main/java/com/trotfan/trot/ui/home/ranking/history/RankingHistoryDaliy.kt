@@ -13,7 +13,8 @@ import com.trotfan.trot.ui.home.ranking.history.component.daily.RankingStarDaily
 
 @Composable
 fun RankingHistoryDaily(
-    emptyState: Boolean = false
+    emptyState: Boolean = false,
+    onCalenderClick: () -> Unit
 ) {
     val stars = listOf(
         VoteMainStar(0, null, "최영화", 1, 13000),
@@ -32,7 +33,9 @@ fun RankingHistoryDaily(
         LazyColumn {
             item {
                 Spacer(modifier = Modifier.height(24.dp))
-                RankingHistoryDailyHeader()
+                RankingHistoryDailyHeader(onCalenderClick = {
+                    onCalenderClick()
+                })
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
