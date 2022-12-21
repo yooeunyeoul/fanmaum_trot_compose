@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.R
-import com.trotfan.trot.ui.components.button.IconOutline1Button
+import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray700
 import com.trotfan.trot.ui.theme.Gray800
@@ -62,7 +62,7 @@ fun EmptyDailyRankingHistory() {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        IconOutline1Button(
+        BtnOutlineSecondaryLeftIcon(
             text = "투표 하러가기",
             onClick = { },
             icon = R.drawable.icon_vote,

@@ -19,12 +19,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
 
 @Composable
-fun IconOutline1Button(
+fun BtnOutlineSecondaryLeftIcon(
     modifier: Modifier = Modifier,
     text: String,
     enabled: Boolean = true,
@@ -102,7 +101,7 @@ fun IconOutline1Button(
 @Preview(name = "IconOutline1Button")
 @Composable
 fun PreviewIconOutline1Button() {
-    IconOutline1Button(text = "Enabled",
+    BtnOutlineSecondaryLeftIcon(text = "Enabled",
         icon = R.drawable.icon_add,
         onClick = {})
 

@@ -282,7 +282,7 @@ fun noRankHistory() {
             text = "투표 하러가기",
             onClick = { /*TODO*/ },
             icon = R.drawable.icon_vote,
-            iconNonBorder = true
+            isCircle = false
         )
     }
 

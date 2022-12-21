@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.home.ranking.history.RankingHistoryViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -71,7 +71,7 @@ fun MonthlyCalenderPicker(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-        ContainedLargeButton(
+        BtnFilledLPrimary(
             text = "확인",
             modifier = Modifier
                 .padding(start = 24.dp, end = 24.dp),
