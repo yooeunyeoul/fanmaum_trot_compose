@@ -1,17 +1,13 @@
 package com.trotfan.trot.ui.signup
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
@@ -20,8 +16,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trotfan.trot.ui.Route
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.Outline1Button
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
@@ -143,13 +139,13 @@ fun CertificationPhoneScreen(
                 .padding(top = 8.dp),
             text = "휴대폰 번호를\n" +
                     "인증해주세요",
-            color = Gray700,
+            color = Gray900,
             style = FanwooriTypography.h1
         )
 
         Text(
             text = "공정한 투표를 위해 번호인증이 필요해요.",
-            color = Gray500,
+            color = Gray700,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
         )
@@ -192,7 +188,7 @@ fun CertificationPhoneScreen(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Outline1Button(
+            BtnOutlineLPrimary(
                 text = if (inputPhoneNumber.length == 11 && certificationNumberSend && requestedInputNumber == inputPhoneNumber)
                     RequestButtonText.REQUEST.text else RequestButtonText.ReceiveCode.text,
                 enabled = inputPhoneNumber.length >= 11 && !errorState,
@@ -274,7 +270,7 @@ fun CertificationPhoneScreen(
 
         if (certificationNumberSend) {
 
-            ContainedLargeButton(
+            BtnFilledLPrimary(
                 text = "인증하기",
                 enabled = inputCertificationNumber.length == 6,
                 modifier = Modifier

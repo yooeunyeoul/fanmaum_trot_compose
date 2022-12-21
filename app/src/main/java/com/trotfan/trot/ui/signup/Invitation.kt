@@ -14,19 +14,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.trotfan.trot.ui.Route
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.Outline1Button
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.HomeSections
+import com.trotfan.trot.ui.signup.components.VerticalDialogInvitationComplete
 import com.trotfan.trot.ui.signup.viewmodel.InvitationViewModel
 import com.trotfan.trot.ui.signup.viewmodel.InviteCodeCheckStatus
-import com.trotfan.trot.ui.theme.FanwooriTheme
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray500
-import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -53,13 +51,13 @@ fun InvitationScreen(
             modifier = Modifier
                 .padding(top = 8.dp),
             text = "친구에게 받은\n초대코드를 입력해주세요",
-            color = Gray700,
+            color = Gray800,
             style = FanwooriTypography.h1
         )
 
         Text(
-            text = "나와 친구 모두 타임투표권 500표를 받을 수 있어요.",
-            color = Gray500,
+            text = "나와 친구 모두 500 투표권을 받을 수 있어요!",
+            color = Gray700,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
         )
@@ -87,13 +85,13 @@ fun InvitationScreen(
             verticalAlignment = Alignment.Bottom
         ) {
 
-            Outline1Button(text = "건너뛰기", modifier = Modifier.weight(1f)) {
+            BtnOutlineLPrimary(text = "건너뛰기", modifier = Modifier.weight(1f)) {
                 skipDialogState = true
             }
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            ContainedLargeButton(
+            BtnFilledLPrimary(
                 text = "완료",
                 enabled = inviteCodeCheckState == InviteCodeCheckStatus.None && inviteCode.length == 8,
                 modifier = Modifier.weight(1f)
@@ -117,7 +115,7 @@ fun InvitationScreen(
         }
 
         if (completeDialogState) {
-            VerticalDialog(
+            VerticalDialogInvitationComplete(
                 contentText = "타임투표권 500표 받았어요!",
                 buttonOneText = "확인",
                 onDismiss = {

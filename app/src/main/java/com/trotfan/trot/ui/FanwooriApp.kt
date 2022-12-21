@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -17,12 +17,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
-import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
+import com.trotfan.trot.ui.home.dialog.VotingCompleteDialog
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
@@ -46,6 +47,7 @@ fun FanwooriApp(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     FanwooriTheme {
+        val systemUiController = rememberSystemUiController()
         val scaffoldState: ScaffoldState = rememberScaffoldState()
         val navController: NavHostController = rememberNavController()
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
@@ -68,6 +70,7 @@ fun FanwooriApp(
         var votesQuantity by remember {
             mutableStateOf(0L)
         }
+        systemUiController.setSystemBarsColor(color = Color.White)
 
         ModalBottomSheetLayout(
             sheetContent = {
@@ -75,7 +78,7 @@ fun FanwooriApp(
                     votingBottomSheetState,
                     homeViewModel = viewModel,
                     onDismiss = { star_id: Int?, quantity: Long? ->
-                        votesQuantity = quantity?:0
+                        votesQuantity = quantity ?: 0
                         star_id?.let {
                             viewModel.postVoteTicket(voteId = voteId, star_id, quantity!!)
                         }
@@ -160,15 +163,15 @@ fun FanwooriApp(
                         coroutineScope.launch {
                             votingBottomSheetState.hide()
                         }
-                        HorizontalDialog(
-                            titleText = "${star?.name}에게 투표완료",
-                            contentText = "${star?.name} 님에 대한\n" +
-                                    "나의 투표 기여도를 공유하고,\n" +
-                                    "더 많은 친구들과 응원해보세요!",
-                            positiveText = "공유하기",
-                            negativeText = "완료",
-                            modifier = Modifier,
-                            onPositive = {
+                        VotingCompleteDialog(
+                            starName = star?.name ?: "",
+                            quantity = votesQuantity.toInt(),
+                            onDismiss = {
+                                coroutineScope.launch {
+                                    viewModel.votingCompleteState.emit(0)
+                                    voteHomeViewModel?.getVoteTickets()
+                                }
+                            }, onPositive = {
                                 val sendIntent: Intent = Intent().apply {
                                     action = Intent.ACTION_SEND
                                     putExtra(
@@ -179,12 +182,6 @@ fun FanwooriApp(
                                 }
                                 val shareIntent = Intent.createChooser(sendIntent, null)
                                 context.startActivity(shareIntent)
-                            },
-                            onDismiss = {
-                                coroutineScope.launch {
-                                    viewModel.votingCompleteState.emit(0)
-                                    voteHomeViewModel?.getVoteTickets()
-                                }
                             }
                         )
                     }

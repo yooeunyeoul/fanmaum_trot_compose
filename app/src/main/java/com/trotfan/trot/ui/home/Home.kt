@@ -230,7 +230,6 @@ fun TrotBottomBar(
                                 fontSize = 15.sp,
                                 color = if (currentRoute.title == sections.title) Primary500 else Gray500,
                                 style = FanwooriTypography.body2,
-                                fontWeight = FontWeight.Medium,
                                 maxLines = 1
                             )
                         }

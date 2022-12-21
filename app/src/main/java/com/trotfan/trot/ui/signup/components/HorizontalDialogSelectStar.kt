@@ -8,22 +8,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.Outline2Button
-import com.trotfan.trot.ui.components.input.InputTextField
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineLGray
 import com.trotfan.trot.ui.theme.*
 
 @Composable
 fun HorizontalDialogSelectStar(
     modifier: Modifier = Modifier,
-    titleText: String,
+    content: @Composable() () -> Unit,
     contentText: String,
     maxLength: Int = 8,
     positiveText: String,
@@ -57,12 +55,7 @@ fun HorizontalDialogSelectStar(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = titleText,
-                    textAlign = TextAlign.Center,
-                    style = FanwooriTypography.subtitle1,
-                    color = Gray700
-                )
+                content.invoke()
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row() {
@@ -92,7 +85,7 @@ fun HorizontalDialogSelectStar(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         text = "님",
                         style = FanwooriTypography.body4,
-                        color = Gray600
+                        color = Gray750
                     )
                 }
 
@@ -100,7 +93,7 @@ fun HorizontalDialogSelectStar(
                     text = "을 선택하시겠어요?",
                     textAlign = TextAlign.Center,
                     style = FanwooriTypography.body4,
-                    color = Gray600,
+                    color = Gray750,
                     modifier = Modifier.padding(top = 16.dp)
                 )
 
@@ -110,7 +103,7 @@ fun HorizontalDialogSelectStar(
                         .padding(top = 24.dp)
                         .fillMaxWidth()
                 ) {
-                    Outline2Button(
+                    BtnOutlineLGray(
                         text = negativeText,
                         modifier = Modifier.weight(1f)
                     ) {
@@ -119,7 +112,7 @@ fun HorizontalDialogSelectStar(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    ContainedLargeButton(
+                    BtnFilledLPrimary(
                         text = positiveText,
                         modifier = Modifier.weight(1f)
                     ) {
@@ -141,7 +134,15 @@ fun HorizontalDialogSelectStar(
 @Composable
 fun HorizontalTitleDialogPreview() {
     HorizontalDialogSelectStar(
-        titleText = "title",
+        content = {
+            Text(
+                text = "내 스타 선택은\n" +
+                        "최초 1회만 가능해요!",
+                textAlign = TextAlign.Center,
+                style = FanwooriTypography.subtitle1,
+                color = Gray700
+            )
+        },
         contentText = "양파쿵야",
         positiveText = "확인",
         negativeText = "취소",

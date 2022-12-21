@@ -3,16 +3,15 @@ package com.trotfan.trot.ui.signup.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.signup.Sample
@@ -35,7 +33,7 @@ fun ListItemButton(
     text: String,
     subText: String?,
     imageUrl: String?,
-    textColor: Color = Gray700,
+    textColor: Color = Gray900,
     subTextColor: Color = Gray600,
     selectedTextColor: Color = Primary700,
     selectedSubTextColor: Color = Primary500,
@@ -43,7 +41,7 @@ fun ListItemButton(
     unCheckedTrailingIcon: Int,
     checked: Boolean = false,
     checkedIconTint: Color = Primary500,
-    unCheckedIconTint: Color = Gray600,
+    unCheckedIconTint: Color = Gray700,
     item: Any?,
     onClick: (Any?) -> Unit,
 ) {
@@ -113,7 +111,7 @@ fun ListItemButton(
                     id = if (checked) checkedTrailingIcon
                     else unCheckedTrailingIcon
                 ),
-                contentDescription = null
+                contentDescription = null,
             )
 
 

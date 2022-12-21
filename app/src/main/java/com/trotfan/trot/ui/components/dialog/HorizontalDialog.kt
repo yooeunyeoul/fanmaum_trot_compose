@@ -15,12 +15,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.Outline2Button
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineLGray
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray600
-import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.Gray750
+import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Primary700
 import com.trotfan.trot.ui.utils.drawColoredShadow
 
@@ -69,7 +69,7 @@ fun HorizontalDialog(
                     text = titleText,
                     textAlign = TextAlign.Center,
                     style = FanwooriTypography.subtitle1,
-                    color = Gray700
+                    color = Gray800
                 )
 
                 contentText?.let {
@@ -77,7 +77,7 @@ fun HorizontalDialog(
                         text = it,
                         textAlign = TextAlign.Center,
                         style = FanwooriTypography.body4,
-                        color = Gray600,
+                        color = Gray750,
                         modifier = Modifier.padding(top = 12.dp)
                     )
                 }
@@ -98,7 +98,7 @@ fun HorizontalDialog(
                         .padding(top = 24.dp)
                         .fillMaxWidth()
                 ) {
-                    Outline2Button(
+                    BtnOutlineLGray(
                         text = negativeText,
                         modifier = Modifier.weight(1f)
                     ) {
@@ -107,7 +107,7 @@ fun HorizontalDialog(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    ContainedLargeButton(
+                    BtnFilledLPrimary(
                         text = positiveText,
                         enabled = positiveButtonEnabled,
                         modifier = Modifier.weight(1f)

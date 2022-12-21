@@ -47,7 +47,6 @@ fun CustomTopAppBarWithIcon(
             text = title,
             textAlign = TextAlign.Start,
             color = Gray900,
-            fontWeight = FontWeight.SemiBold,
             style = FanwooriTypography.h2,
         )
 
@@ -69,7 +68,8 @@ fun CustomTopAppBarWithIcon(
                 .size(32.dp)
                 .clickable {
                     onClickEndIcon.invoke()
-                }
+                },
+            tint = Gray800
         )
         Spacer(modifier = Modifier.width(16.dp))
     }

@@ -15,10 +15,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.Gray300
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.Gray800
 
 
 @Composable
-fun BackIcon(
+fun BtnIcon(
     onCLick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -48,5 +49,5 @@ fun BackIcon(
 @Preview
 @Composable
 fun PreviewBackIcon() {
-    BackIcon(onCLick = {})
+    BtnIcon(onCLick = {})
 }

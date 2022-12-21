@@ -1,6 +1,6 @@
 package com.trotfan.trot.ui.components.button
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -16,13 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.*
-import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
-fun ContainedLargeButton(
+fun BtnOutlineLPrimary(
     modifier: Modifier = Modifier,
     text: String,
     enabled: Boolean = true,
@@ -36,16 +34,20 @@ fun ContainedLargeButton(
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(28.dp))
-            .clickableSingle {
+            .border(
+                1.dp,
+                if (enabled) {
+                    if (isPressed) Primary500 else Primary200
+                } else Gray300, RoundedCornerShape(28.dp)
+            )
+            .clickable(
+                indication = null,
+                interactionSource = interactionSource
+            ) {
                 if (enabled) {
                     onClick()
                 }
-            }
-            .background(
-                if (enabled) {
-                    if (isPressed) Primary600 else Primary500
-                } else Gray100
-            ),
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -53,7 +55,7 @@ fun ContainedLargeButton(
         Text(
             text = text,
             color = if (enabled) {
-                if (isPressed) Primary100 else Color.White
+                if (isPressed) Primary700 else Primary600
             } else Gray400,
             style = FanwooriTypography.button1
         )

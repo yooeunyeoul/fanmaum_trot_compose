@@ -61,6 +61,8 @@ import java.time.LocalDate
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
+val tabData = listOf<String>("남자스타", "여자스타")
+
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -112,7 +114,6 @@ fun VoteHome(
     }
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
 
-    val tabData = listOf<String>("남자스타", "여자스타")
     var tabIndex by remember { mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -126,9 +127,10 @@ fun VoteHome(
 
         if (isShowingScrollToolTip) {
             val offset = lazyListState.firstVisibleItemScrollOffset
-            if (offset > 200) {
+            if (offset > 150) {
                 viewModel.saveScrollTooltipState(false)
             }
+            Log.e("OFFSE", offset.toString())
         }
     })
 
@@ -141,36 +143,7 @@ fun VoteHome(
         ) {
 
             if (isShowingScrollToolTip) {
-                Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = Gray900,
-                    elevation = 3.dp,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = BottomNavHeight.plus(32.dp))
-                        .zIndex(2f)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "화면을 내려보세요",
-                            color = Color.White,
-                            fontSize = 15.sp,
-                            style = FanwooriTypography.body2,
-                            fontWeight = FontWeight.Medium
-                        )
-
-                        LottieAnimation(
-                            composition = composition,
-                            iterations = LottieConstants.IterateForever,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                }
+                ChipCapsuleImg()
             }
             Column(
                 modifier = Modifier
@@ -490,7 +463,7 @@ fun VoteHome(
                                                     text = text,
                                                     style = FanwooriTypography.body3,
                                                     fontWeight = FontWeight.SemiBold,
-                                                    color = if (tabIndex == index) Primary900 else Gray600,
+                                                    color = if (tabIndex == index) Primary900 else Gray700,
                                                     fontSize = 17.sp,
                                                     modifier = if (index == 0) Modifier.padding(
                                                         start = 24.dp
@@ -589,7 +562,6 @@ fun VoteHome(
         }
     }
 }
-
 
 
 fun voteTopShareText(favoriteStarName: String?): String {

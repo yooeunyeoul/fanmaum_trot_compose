@@ -15,9 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -28,15 +33,13 @@ import androidx.paging.compose.items
 import com.trotfan.trot.R
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.ui.Route
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
 import com.trotfan.trot.ui.signup.components.ListItemButton
 import com.trotfan.trot.ui.signup.viewmodel.StarSelectViewModel
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray600
-import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
 data class Sample(
@@ -76,8 +79,39 @@ fun SelectStarScreen(
 
     if (starSelectDialog) {
         HorizontalDialogSelectStar(
-            titleText = "내 스타 선택은\n" +
-                    "최초 1회만 가능해요!",
+            content = {
+                Text(
+                    text = "내 스타 선택은",
+                    color = Gray700,
+                    style = FanwooriTypography.subtitle1
+                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                    ) {
+                        Text(
+                            text = "최초 1회",
+                            style = FanwooriTypography.h2,
+                            color = Primary500
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .background(Primary500)
+                                .width(62.dp)
+                                .height(1.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "만 가능해요!",
+                        color = Gray700,
+                        style = FanwooriTypography.subtitle1
+                    )
+                }
+            },
             positiveText = "선택",
             negativeText = "취소",
             contentText = selectedItem?.name ?: "",
@@ -85,7 +119,6 @@ fun SelectStarScreen(
                 viewModel.selectStar(selectedItem)
             }
         ) {
-
             starSelectDialog = false
         }
     }
@@ -110,15 +143,28 @@ fun SelectStarScreen(
 
                     Text(
                         text = "내 스타\n1명을 선택해주세요",
-                        color = Gray700,
+                        color = Gray900,
                         style = FanwooriTypography.h1
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "내 스타 선택은 최초 1회만 가능해요.",
-                        color = Gray600,
-                        style = FanwooriTypography.caption1
+                        buildAnnotatedString {
+                            append("내 스타 선택은")
+                            withStyle(
+                                style = SpanStyle(
+                                    fontStyle = FanwooriTypography.body2.fontStyle,
+                                    fontWeight = FanwooriTypography.body2.fontWeight,
+                                    color = Primary500,
+                                    fontSize = FanwooriTypography.body2.fontSize
+                                )
+                            ) {
+                                append(" 최초 1회")
+                            }
+                            append("만 가능해요.")
+                        }, maxLines = 1, style = FanwooriTypography.caption1,
+                        color = Gray700
                     )
+
                     Spacer(modifier = Modifier.height(28.dp))
 
                 }
@@ -220,7 +266,7 @@ fun SelectStarScreen(
                     .height(96.dp)
                     .align(Alignment.BottomCenter)
             ) {
-                ContainedLargeButton(
+                BtnFilledLPrimary(
                     text = "다음",
                     enabled = selectedItem != null,
                     modifier = Modifier.align(Alignment.Center)

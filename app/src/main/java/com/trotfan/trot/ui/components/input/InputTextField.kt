@@ -69,7 +69,8 @@ fun InputTextField(
                         Modifier.clickable {
                             value = ""
                             onValueChange(value)
-                        }
+                        },
+                        tint = Gray700
                     )
                 }
 
@@ -78,12 +79,13 @@ fun InputTextField(
                 backgroundColor = Gray100,
                 focusedBorderColor = focusBorderColor,
                 unfocusedBorderColor = Color.Transparent,
-                placeholderColor = Gray400,
+                placeholderColor = Gray600,
                 focusedLabelColor = Primary300,
                 leadingIconColor = Color.Black,
-                unfocusedLabelColor = Gray400,
+                unfocusedLabelColor = Gray600,
                 errorBorderColor = SemanticNegative300,
-                errorTrailingIconColor = Gray600
+                errorTrailingIconColor = Gray600,
+                textColor = Gray900
             ),
             keyboardOptions = keyboardOptions ?: KeyboardOptions(),
 

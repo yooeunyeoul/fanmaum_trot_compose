@@ -19,6 +19,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -30,9 +31,9 @@ import androidx.paging.compose.items
 import com.trotfan.trot.R
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.ui.Route
-import com.trotfan.trot.ui.components.button.BackIcon
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.IconOutline1Button
+import com.trotfan.trot.ui.components.button.BtnIcon
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.input.SearchStatus
@@ -40,9 +41,7 @@ import com.trotfan.trot.ui.components.input.SearchTextField
 import com.trotfan.trot.ui.signup.components.HorizontalDialogSelectStar
 import com.trotfan.trot.ui.signup.components.ListItemButton
 import com.trotfan.trot.ui.signup.viewmodel.StarSearchViewModel
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray600
-import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.delay
 
 
@@ -98,8 +97,39 @@ fun SearchStarScreen(
 
     if (starSelectDialog) {
         HorizontalDialogSelectStar(
-            titleText = "내 스타 선택은\n" +
-                    "최초 1회만 가능해요!",
+            content = {
+                Text(
+                    text = "내 스타 선택은",
+                    color = Gray700,
+                    style = FanwooriTypography.subtitle1
+                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                    ) {
+                        Text(
+                            text = "최초 1회",
+                            style = FanwooriTypography.h2,
+                            color = Primary500
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .background(Primary500)
+                                .width(62.dp)
+                                .height(1.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "만 가능해요!",
+                        color = Gray700,
+                        style = FanwooriTypography.subtitle1
+                    )
+                }
+            },
             positiveText = "선택",
             negativeText = "취소",
             contentText = selectedItem?.name ?: "",
@@ -159,7 +189,7 @@ fun SearchStarScreen(
                 .height(64.dp)
                 .padding(bottom = 8.dp)
         ) {
-            BackIcon(
+            BtnIcon(
                 onCLick = {
                     navController.popBackStack()
                 }, modifier = Modifier.align(CenterVertically)
@@ -204,7 +234,7 @@ fun SearchStarScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = "좋아하는 스타를 검색해보세요!",
                     style = FanwooriTypography.body1,
-                    color = Gray600
+                    color = Gray700
                 )
 
             }
@@ -263,7 +293,7 @@ fun SearchStarScreen(
                             .height(96.dp)
                             .align(Alignment.BottomCenter)
                     ) {
-                        ContainedLargeButton(
+                        BtnFilledLPrimary(
                             text = "다음",
                             enabled = selectedItem != null,
                             modifier = Modifier.align(Alignment.BottomCenter)
@@ -281,14 +311,14 @@ fun SearchStarScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = "앗! 검색결과가 없어요.",
                     style = FanwooriTypography.subtitle1,
-                    color = Gray700
+                    color = Gray800
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = "이렇게 해보세요.",
                     style = FanwooriTypography.subtitle2,
-                    color = Gray600
+                    color = Gray700
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -296,7 +326,7 @@ fun SearchStarScreen(
 
                     Row(
                         Modifier
-                            .background(shape = CircleShape, color = Gray600)
+                            .background(shape = CircleShape, color = Gray700)
                             .size(4.dp)
                             .align(CenterVertically),
                         content = {}
@@ -306,14 +336,14 @@ fun SearchStarScreen(
                     Text(
                         text = "검색어를 바르게 입력했는지 확인해주세요.",
                         style = FanwooriTypography.caption1,
-                        color = Gray600
+                        color = Gray700
                     )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                     Row(
                         Modifier
-                            .background(shape = CircleShape, color = Gray600)
+                            .background(shape = CircleShape, color = Gray700)
                             .size(4.dp)
                             .align(CenterVertically),
                         content = {}
@@ -322,11 +352,11 @@ fun SearchStarScreen(
                     Text(
                         text = "스타 추가 요청을 할 수 있어요.",
                         style = FanwooriTypography.caption1,
-                        color = Gray600
+                        color = Gray700
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-                IconOutline1Button(
+                BtnOutlineSecondaryLeftIcon(
                     text = "스타 추가 요청",
                     icon = R.drawable.icon_add,
                     enabled = true,

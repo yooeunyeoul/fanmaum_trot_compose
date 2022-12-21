@@ -6,20 +6,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.ui.Route
-import com.trotfan.trot.ui.components.button.ContainedLargeButton
-import com.trotfan.trot.ui.components.button.Outline1Button
+import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
 import com.trotfan.trot.ui.components.input.InputTextField
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.signup.viewmodel.NickNameCheckStatus
@@ -27,8 +23,7 @@ import com.trotfan.trot.ui.signup.viewmodel.NickNameViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import com.trotfan.trot.ui.theme.Gray900
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -51,13 +46,13 @@ fun SettingNicknameScreen(
                 .padding(top = 8.dp),
             text = "팬마음에서 사용할\n" +
                     "닉네임을 정해볼까요?",
-            color = Gray700,
+            color = Gray900,
             style = FanwooriTypography.h1
         )
 
         Text(
             text = "언제든지 변경할 수 있어요!",
-            color = Gray500,
+            color = Gray700,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
         )
@@ -89,7 +84,7 @@ fun SettingNicknameScreen(
                     .align(Alignment.BottomEnd)
             )
         }
-        Outline1Button(
+        BtnOutlineLPrimary(
             text = "중복확인",
             enabled = inputNickname.length >= 2 && nickCheckState != NickNameCheckStatus.SpecialCharacterEmpty,
             modifier = Modifier
@@ -113,7 +108,7 @@ fun SettingNicknameScreen(
         verticalAlignment = Alignment.Bottom
     ) {
 
-        ContainedLargeButton(
+        BtnFilledLPrimary(
             text = "다음",
             enabled = nickCheckState == NickNameCheckStatus.AuthSuccess,
             modifier = Modifier.weight(1f)

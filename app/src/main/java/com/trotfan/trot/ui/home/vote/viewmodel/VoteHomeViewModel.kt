@@ -5,10 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.trotfan.trot.datastore.FavoriteStarDataStore
-import com.trotfan.trot.datastore.UserInfoManager
-import com.trotfan.trot.datastore.VoteMainManager
-import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteData
@@ -97,7 +94,7 @@ class VoteHomeViewModel @Inject constructor(
         getVoteList()
         getVoteTickets()
         userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
-        voteMainManager = VoteMainManager(context.FavoriteStarDataStore)
+        voteMainManager = VoteMainManager(context.VoteMainDataStore)
         connectBoardSocket()
         connectRankSocket()
         getStarRank()
