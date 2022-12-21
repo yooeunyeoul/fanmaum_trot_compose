@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.ranking.history
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,21 +27,20 @@ fun RankingHistoryDaily(
         VoteMainStar(6, null, "박수빈", 7, 10),
     )
 
-    if (emptyState) {
-        EmptyDailyRankingHistory()
-    } else {
+    Column {
+        if (emptyState) {
+            EmptyDailyRankingHistory()
+        } else {
+            Spacer(modifier = Modifier.height(24.dp))
+            RankingHistoryDailyHeader(onCalenderClick = {
+                onCalenderClick()
+            })
 
-        LazyColumn {
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                RankingHistoryDailyHeader(onCalenderClick = {
-                    onCalenderClick()
-                })
-                Spacer(modifier = Modifier.height(24.dp))
-            }
-
-            items(stars.size) { idx ->
-                RankingStarDailyItem(star = stars[idx])
+            Spacer(modifier = Modifier.height(24.dp))
+            LazyColumn {
+                items(stars.size) { idx ->
+                    RankingStarDailyItem(star = stars[idx])
+                }
             }
         }
     }

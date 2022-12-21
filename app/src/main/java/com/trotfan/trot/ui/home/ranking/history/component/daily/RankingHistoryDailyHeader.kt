@@ -60,8 +60,22 @@ fun RankingHistoryDailyHeader(
 
                 Spacer(modifier = Modifier.width(4.dp))
 
+                var tempMonth = ""
+                tempMonth = if (month.value < 10) {
+                    "0${month.value}"
+                } else {
+                    "${month.value}"
+                }
+
+                var tempDay = ""
+                tempDay = if (day.value < 10) {
+                    "0${day.value}"
+                } else {
+                    "${day.value}"
+                }
+
                 Text(
-                    text = "${year.value}.${month.value}.${day.value}",
+                    text = "${year.value}.${tempMonth}.${tempDay}",
                     color = Gray900,
                     style = FanwooriTypography.body3
                 )

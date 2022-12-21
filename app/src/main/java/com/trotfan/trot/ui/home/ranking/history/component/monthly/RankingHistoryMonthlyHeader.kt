@@ -76,8 +76,15 @@ fun RankingHistoryMonthlyHeader(
 
                 Spacer(modifier = Modifier.width(4.dp))
 
+                var tempMonth = ""
+                tempMonth = if (month.value < 10) {
+                    "0${month.value}"
+                } else {
+                    "${month.value}"
+                }
+
                 Text(
-                    text = "${year.value}.${month.value}",
+                    text = "${year.value}.${tempMonth}",
                     color = Gray900,
                     style = FanwooriTypography.body3
                 )
