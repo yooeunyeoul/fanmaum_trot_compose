@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.ranking.history.component.cumulative
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -25,17 +26,19 @@ fun CumulativeRanking() {
         )
     }
     temp.sortByDescending { it.day }
+    Column {
+        CustomTopAppBar(title = "임영웅 일간누적순위", icon = R.drawable.icon_back) {
 
-    LazyColumn(state = lazyColumnState) {
-        item {
-            CustomTopAppBar(title = "임영웅 일간누적순위", icon = R.drawable.icon_back) {
-
-            }
-            CumulativeRankingHeader(title = "2022년 1월")
         }
 
-        items(temp.size) { index ->
-            CumulativeRankingItem(cumulativeRanking = temp[index])
+        LazyColumn(state = lazyColumnState) {
+            item {
+                CumulativeRankingHeader(title = "2022년 1월")
+            }
+
+            items(temp.size) { index ->
+                CumulativeRankingItem(cumulativeRanking = temp[index])
+            }
         }
     }
 }

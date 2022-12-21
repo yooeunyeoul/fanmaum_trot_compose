@@ -15,7 +15,7 @@ class RankingHistoryViewModel @Inject constructor() : ViewModel() {
     val monthlyYear = MutableStateFlow(calender.get(Calendar.YEAR))
     val monthlyMonth = MutableStateFlow(calender.get(Calendar.MONTH))
     val dailyYear = MutableStateFlow(calender.get(Calendar.YEAR))
-    val dailyMonth = MutableStateFlow(calender.get(Calendar.MONTH))
+    val dailyMonth = MutableStateFlow(calender.get(Calendar.MONTH) + 1)
     val dailyDay = MutableStateFlow(calender.get(Calendar.DAY_OF_MONTH))
 
     init {
