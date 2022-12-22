@@ -16,4 +16,5 @@ object HttpRoutes {
     val SMS = "$BASE_URL/auth/sms"
     val VOTE = "$BASE_URL/votes"
     val POPUPS = "$BASE_URL/popups"
+    val RANK = "$BASE_URL/rank"
 }
