@@ -2,10 +2,7 @@ package com.trotfan.trot.ui.home.ranking
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -34,6 +31,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.*
 import com.trotfan.trot.R
+import com.trotfan.trot.model.MonthStarRank
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.navigation.AppbarL
@@ -41,16 +39,14 @@ import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.ranking.components.RankImageItem
 import com.trotfan.trot.ui.home.ranking.components.RankItem
+import com.trotfan.trot.ui.home.ranking.viewmodel.MonthlyRankViewType
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankHomeViewModel
 import com.trotfan.trot.ui.home.vote.component.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.*
-import com.trotfan.trot.ui.utils.clickable
-import com.trotfan.trot.ui.utils.getTime
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 import kotlin.time.Duration.Companion.seconds
 
 enum class RankStatus {
@@ -79,6 +75,8 @@ fun RankHome(
     val rankStatus by remember {
         mutableStateOf(RankStatus.Available)
     }
+    val pairMenList by viewModel.pairMenRankList.collectAsState()
+    val pairWomenList by viewModel.pairWomenRankList.collectAsState()
 
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
@@ -224,21 +222,51 @@ fun RankHome(
                                 )
                             }
                         }
-                        items(100) { index ->
-                            if (index == 0) {
-                                RankImageItem()
+                        items(
+                            if (tabIndex == 0) pairMenList.second?.count()
+                                ?: 0 else pairWomenList.second?.count() ?: 0
+                        ) { index ->
+                            val viewType: MonthlyRankViewType
+                            val list: List<MonthStarRank>
+                            if (tabIndex == 0) {
+                                viewType = pairMenList.first
+                                list = pairMenList.second ?: listOf()
                             } else {
-                                RankItem(
-                                    text = "김쿵야",
-                                    subText = 1000,
-                                    imageUrl = "https://image.xportsnews.com/contents/images/upload/article/2022/0313/1647169234362908.jpg",
-                                    rank = if (index % 3 == 0) 1 else if (index % 3 == 1) 2 else 3,
-                                    item = null,
-                                    onClick = {
+                                viewType = pairWomenList.first
+                                list = pairWomenList.second ?: listOf()
+                            }
 
+                            when (viewType) {
+                                MonthlyRankViewType.IMAGE -> {
+                                    if (index == 2) {
+                                        RankImageItem(list.subList(0, 3))
+                                    } else if (index > 2) {
+                                        RankItem(
+                                            text = list[index].name ?: "",
+                                            subText = list[index].score,
+                                            imageUrl = list[index].image,
+                                            rank = list[index].rank ?: 0,
+                                            item = null,
+                                            onClick = {
+
+                                            }
+                                        )
                                     }
-                                )
+                                }
+                                MonthlyRankViewType.NUMBER -> {
+                                    RankItem(
+                                        text = list[index].name ?: "",
+                                        subText = list[index].score,
+                                        imageUrl = list[index].image,
+                                        rank = list[index].rank ?: 0,
+                                        item = null,
+                                        onClick = {
+                                        }
+                                    )
+                                }
+                                MonthlyRankViewType.NONE -> {
 
+                                }
                             }
                         }
                     }
