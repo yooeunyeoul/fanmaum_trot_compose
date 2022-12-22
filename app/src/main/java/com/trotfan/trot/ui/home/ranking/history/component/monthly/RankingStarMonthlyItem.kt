@@ -21,18 +21,19 @@ import com.trotfan.trot.R
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
+import com.trotfan.trot.ui.utils.clickable
 
 @Composable
-fun RankingStarMonthlyItem(star: VoteMainStar) {
+fun RankingStarMonthlyItem(star: VoteMainStar, onItemClick: () -> Unit) {
     if (star.rank!! < 4) {
-        RankingMonthlyRankerItem(star = star)
+        RankingMonthlyRankerItem(star = star, onItemClick = onItemClick)
     } else {
-        RankingMonthlyDefaultItem(star = star)
+        RankingMonthlyDefaultItem(star = star, onItemClick = onItemClick)
     }
 }
 
 @Composable
-fun RankingMonthlyRankerItem(star: VoteMainStar?) {
+fun RankingMonthlyRankerItem(star: VoteMainStar?, onItemClick: () -> Unit) {
     val painter: Painter = when (star?.rank) {
         1 -> painterResource(id = R.drawable.ic_ranking_monthlytop1)
         2 -> painterResource(id = R.drawable.ic_ranking_monthlytop2)
@@ -42,6 +43,9 @@ fun RankingMonthlyRankerItem(star: VoteMainStar?) {
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
+            .clickable {
+                onItemClick()
+            }
     ) {
         Spacer(modifier = Modifier.width(24.dp))
 
@@ -107,11 +111,14 @@ fun RankingMonthlyRankerItem(star: VoteMainStar?) {
 }
 
 @Composable
-fun RankingMonthlyDefaultItem(star: VoteMainStar?) {
+fun RankingMonthlyDefaultItem(star: VoteMainStar?, onItemClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
+            .clickable {
+                onItemClick()
+            }
     ) {
 
         Spacer(modifier = Modifier.width(24.dp))
@@ -182,6 +189,8 @@ fun RankingMonthlyDefaultItem(star: VoteMainStar?) {
 @Composable
 fun RankingStarItemPreview() {
     FanwooriTheme {
-        RankingMonthlyRankerItem(VoteMainStar(0, null, "최영화", 1, 3000))
+        RankingMonthlyRankerItem(VoteMainStar(0, null, "최영화", 1, 3000), onItemClick = {
+
+        })
     }
 }

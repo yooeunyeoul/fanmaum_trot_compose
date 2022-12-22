@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.ranking.history.component.RankingHistoryTab
 import com.trotfan.trot.ui.home.ranking.history.component.daily.DailyCalenderPicker
@@ -63,6 +64,7 @@ fun RankingHistory(
     ) {
         Column {
             CustomTopAppBar(title = "지난 순위", icon = R.drawable.icon_back) {
+                navController?.popBackStack()
             }
 
             RankingHistoryTab(selectedTabIndex) {
@@ -75,14 +77,19 @@ fun RankingHistory(
             }
 
             if (selectedTabIndex == 0) {
-                RankingHistoryMonthly(monthlyEmptyState) {
-                    coroutineScope.launch {
-                        val date = it.split("/")
-                        rankingHistoryViewModel.monthlyYear.emit(date[0].toInt())
-                        rankingHistoryViewModel.monthlyMonth.emit(date[1].toInt())
-                        bottomSheetState.show()
-                    }
-                }
+                RankingHistoryMonthly(
+                    emptyState = monthlyEmptyState,
+                    onCalenderClick = {
+                        coroutineScope.launch {
+                            val date = it.split("/")
+                            rankingHistoryViewModel.monthlyYear.emit(date[0].toInt())
+                            rankingHistoryViewModel.monthlyMonth.emit(date[1].toInt())
+                            bottomSheetState.show()
+                        }
+                    },
+                    onItemClick = {
+                        navController?.navigate(Route.RankingHistoryCumulative.route)
+                    })
             } else {
                 RankingHistoryDaily(dailyEmptyState) {
                     coroutineScope.launch {
