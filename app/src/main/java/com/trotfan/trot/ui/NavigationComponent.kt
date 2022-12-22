@@ -17,6 +17,8 @@ import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
+import com.trotfan.trot.ui.home.ranking.history.RankingHistory
+import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeRanking
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
@@ -32,7 +34,9 @@ enum class Route(
     CertificationPhoneNumber(route = "certificationPhoneNumber"),
     SettingNickname(route = "settingNickName"),
     InvitationCode(route = "invitationCode"),
-    VoteBenefits(route = "voteBenefits")
+    VoteBenefits(route = "voteBenefits"),
+    RankingHistory(route = "rankingHistory"),
+    RankingHistoryCumulative(route = "RankingHistoryCumulative")
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -101,6 +105,18 @@ fun NavigationComponent(
             VoteBenefits(
                 navController = navController,
                 modifier = Modifier
+            )
+        }
+        composable(Route.RankingHistory.route) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                RankingHistory(
+                    navController = navController
+                )
+            }
+        }
+        composable(Route.RankingHistoryCumulative.route) {
+            CumulativeRanking(
+                navController = navController
             )
         }
     }

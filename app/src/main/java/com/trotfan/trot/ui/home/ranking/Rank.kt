@@ -25,10 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.*
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.navigation.AppbarL
 import com.trotfan.trot.ui.home.ranking.components.RankImageItem
@@ -38,6 +40,7 @@ import com.trotfan.trot.ui.home.vote.component.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.launch
 
 enum class RankStatus {
@@ -49,6 +52,7 @@ enum class RankStatus {
 fun RankHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: RankHomeViewModel = hiltViewModel(),
     lazyListState: LazyListState = rememberLazyListState()
 ) {
@@ -98,7 +102,7 @@ fun RankHome(
                             .background(Color.White)
                     ) {
                         HorizontalImagePager(scrollState)
-                        LastRankView()
+                        LastRankView(navController)
                     }
 
                 }
@@ -358,7 +362,7 @@ fun HorizontalImagePager(scrollState: ScrollState) {
 }
 
 @Composable
-fun LastRankView() {
+fun LastRankView(navController: NavController) {
 
     Row(
         Modifier
@@ -371,7 +375,7 @@ fun LastRankView() {
     ) {
         Button(
             onClick = {
-
+                navController.navigate(Route.RankingHistory.route)
             },
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),

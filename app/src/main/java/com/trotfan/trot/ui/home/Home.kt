@@ -281,6 +281,7 @@ fun NavGraphBuilder.addHomeGraph(
             onItemClick = { id ->
                 onItemSelected(id, from)
             },
+            navController = navController,
             modifier = modifier
         )
     }

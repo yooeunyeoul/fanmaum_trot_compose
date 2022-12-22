@@ -22,6 +22,7 @@ import com.trotfan.trot.ui.theme.FanwooriTheme
 fun RankingHistoryMonthly(
     emptyState: Boolean = false,
     onCalenderClick: (String) -> Unit,
+    onItemClick: () -> Unit
 ) {
     val stars = listOf(
         VoteMainStar(0, null, "최영화", 1, 13000),
@@ -51,7 +52,9 @@ fun RankingHistoryMonthly(
                 }
 
                 items(stars.size) { idx ->
-                    RankingStarMonthlyItem(star = stars[idx])
+                    RankingStarMonthlyItem(star = stars[idx]) {
+                        onItemClick()
+                    }
                 }
 
                 item {
@@ -67,8 +70,9 @@ fun RankingHistoryMonthly(
 @Composable
 fun RankingHistoryMonthlyPreview() {
     FanwooriTheme {
-        RankingHistoryMonthly {
-
-        }
+        RankingHistoryMonthly(
+            onCalenderClick = {},
+            onItemClick = {}
+        )
     }
 }

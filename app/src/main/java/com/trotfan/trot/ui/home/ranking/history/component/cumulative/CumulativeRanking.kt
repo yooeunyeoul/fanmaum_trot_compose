@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.model.CumulativeRankingTest
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
@@ -12,7 +13,7 @@ import com.trotfan.trot.ui.theme.FanwooriTheme
 import java.util.Collections
 
 @Composable
-fun CumulativeRanking() {
+fun CumulativeRanking(navController: NavController? = null) {
     val lazyColumnState = rememberLazyListState()
     val temp = mutableListOf<CumulativeRankingTest>()
     for (i in 0.rangeTo(30)) {
@@ -28,7 +29,7 @@ fun CumulativeRanking() {
     temp.sortByDescending { it.day }
     Column {
         CustomTopAppBar(title = "임영웅 일간누적순위", icon = R.drawable.icon_back) {
-
+            navController?.popBackStack()
         }
 
         LazyColumn(state = lazyColumnState) {
