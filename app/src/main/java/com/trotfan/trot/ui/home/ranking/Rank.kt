@@ -1,7 +1,11 @@
 package com.trotfan.trot.ui.home.ranking
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -33,6 +37,8 @@ import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.navigation.AppbarL
+import com.trotfan.trot.ui.home.BottomNavHeight
+import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.ranking.components.RankImageItem
 import com.trotfan.trot.ui.home.ranking.components.RankItem
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankHomeViewModel
@@ -41,7 +47,11 @@ import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.getTime
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
+import kotlin.time.Duration.Companion.seconds
 
 enum class RankStatus {
     Available, UnAvailable
@@ -54,6 +64,7 @@ fun RankHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: RankHomeViewModel = hiltViewModel(),
+    onNavigateClick: (HomeSections) -> Unit,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     val favoriteStarGender by viewModel.userInfoManager.favoriteStarGenderFlow.collectAsState(
@@ -67,6 +78,10 @@ fun RankHome(
 
     val rankStatus by remember {
         mutableStateOf(RankStatus.Available)
+    }
+
+    BackHandler {
+        onNavigateClick.invoke(HomeSections.Vote)
     }
 
     LaunchedEffect(key1 = lazyListState.isScrollInProgress, block = {
@@ -84,7 +99,11 @@ fun RankHome(
         if (isShowingScrollToolTip) {
             ChipCapsuleImg()
         }
-        Column(Modifier.fillMaxSize()) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = BottomNavHeight)
+        ) {
             AppbarL(
                 title = "순위",
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp)
@@ -296,11 +315,29 @@ fun noRankHistory() {
 @Composable
 fun HorizontalImagePager(scrollState: ScrollState) {
     val pagerState = rememberPagerState(initialPage = 0)
+    var ticks by remember { mutableStateOf(3) }
     val pageList = mutableListOf<String>(
-        "https://image.xportsnews.com/contents/images/upload/article/2022/0313/1647169234362908.jpg",
-        "https://image.xportsnews.com/contents/images/upload/article/2022/0313/1647169234362908.jpg",
-        "https://image.xportsnews.com/contents/images/upload/article/2022/0313/1647169234362908.jpg"
+        "https://cdn.clien.net/web/api/file/F01/11598178/52d17b86e92c22.png?w=780&h=30000",
+        "https://image.chosun.com/sitedata/image/202105/04/2021050400008_0.jpg",
+        "https://cdn.mhnse.com/news/photo/202204/102523_85665_1330.jpg"
     )
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1.seconds)
+            ticks--
+            if (ticks < 0) {
+                with(pagerState) {
+                    try {
+                        animateScrollToPage(
+                            page = currentPage + 1
+                        )
+                    } catch (_: Exception) {
+                    }
+                }
+            }
+        }
+    }
 
     Box(
         Modifier
@@ -309,7 +346,7 @@ fun HorizontalImagePager(scrollState: ScrollState) {
     ) {
         HorizontalPager(
             state = pagerState,
-            count = pageList.size,
+            count = Int.MAX_VALUE,
             modifier = Modifier
                 .height(120.dp)
                 .background(Gray700)
@@ -327,14 +364,18 @@ fun HorizontalImagePager(scrollState: ScrollState) {
                     }
                 })
         ) { page: Int ->
+            ticks = 3
+            val currentPage = page % pageList.count()
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(pageList[page])
+                    .data(pageList[currentPage])
                     .crossfade(true).build(),
                 contentDescription = null,
                 error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
                 contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .align(Alignment.Center)
             )
 
         }
@@ -346,7 +387,7 @@ fun HorizontalImagePager(scrollState: ScrollState) {
                 .background(GrayOpacity30, shape = RoundedCornerShape(16.dp))
         ) {
             Text(
-                text = "${pagerState.currentPage + 1}/${pageList.size}",
+                text = "${(pagerState.currentPage % pageList.count()) + 1}/${pageList.size}",
                 style = FanwooriTypography.body2,
                 color = Color.White,
                 modifier = Modifier.padding(

@@ -1,8 +1,11 @@
 package com.trotfan.trot.ui.home.ranking.viewmodel
 
 import android.app.Application
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteMainStar
