@@ -18,10 +18,14 @@ class RankinHistoryServiceImpl @Inject constructor(
         year: String,
         month: String
     ): CommonResponse<StarRankingList> {
-        return httpClient.get {
-            url("$RANK/monthly")
+        val response = httpClient.get("$RANK/monthly") {
             contentType(ContentType.Application.Json)
-        }.body()
+            url {
+                parameter("month", month)
+                parameter("year", year)
+            }
+        }
+        return response.body()
     }
 
     override suspend fun getDailyStarList(

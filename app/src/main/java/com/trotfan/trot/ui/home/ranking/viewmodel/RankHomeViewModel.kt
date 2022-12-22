@@ -4,13 +4,17 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.datastore.*
+import com.trotfan.trot.datastore.FavoriteStarDataStore
+import com.trotfan.trot.datastore.RankMainDataStore
+import com.trotfan.trot.datastore.RankMainManager
+import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.model.FavoriteStarInfo
-import com.trotfan.trot.model.MonthStarRank
+import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.network.ResultCodeStatus
-import com.trotfan.trot.repository.RankRepository
+import com.trotfan.trot.repository.RankingHistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -21,7 +25,7 @@ enum class MonthlyRankViewType {
 
 @HiltViewModel
 class RankHomeViewModel @Inject constructor(
-    private val repository: RankRepository,
+    private val repository: RankingHistoryRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -31,21 +35,21 @@ class RankHomeViewModel @Inject constructor(
 
     private val context = getApplication<Application>()
 
-    val pairMenRankList: StateFlow<Pair<MonthlyRankViewType, List<MonthStarRank>?>>
+    val pairMenRankList: StateFlow<Pair<MonthlyRankViewType, List<StarRanking>?>>
         get() = _pairMenRankList
     private val _pairMenRankList =
         MutableStateFlow(
-            Pair<MonthlyRankViewType, List<MonthStarRank>?>(
+            Pair<MonthlyRankViewType, List<StarRanking>?>(
                 first = MonthlyRankViewType.NONE,
                 listOf()
             )
         )
 
-    val pairWomenRankList: StateFlow<Pair<MonthlyRankViewType, List<MonthStarRank>?>>
+    val pairWomenRankList: StateFlow<Pair<MonthlyRankViewType, List<StarRanking>?>>
         get() = _pairWomenRankList
     private val _pairWomenRankList =
         MutableStateFlow(
-            Pair<MonthlyRankViewType, List<MonthStarRank>?>(
+            Pair<MonthlyRankViewType, List<StarRanking>?>(
                 first = MonthlyRankViewType.NONE,
                 listOf()
             )
@@ -73,11 +77,14 @@ class RankHomeViewModel @Inject constructor(
 
     private fun getMonthStarRank() {
         viewModelScope.launch {
-            val response = repository.getMonthStarRank(LocalDate.now().month.value)
+            val response = repository.getMonthlyStarList(
+                LocalDate.now().year.toString(),
+                LocalDate.now().month.value.toString()
+            )
             when (response.result.code) {
                 ResultCodeStatus.Success.code -> {
                     val result = response.data
-                    val menList = result?.men?.subList(0, 4)
+                    val menList = result?.men?.filter { it.rank < 4 }
                     val originMenCount = menList?.count()
                     val distinctMen = menList?.distinctBy { it.rank }?.filter { it.rank != 0 }
                     val distinctMenCount = distinctMen?.count()

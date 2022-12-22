@@ -31,6 +31,7 @@ import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.model.MonthStarRank
 import com.trotfan.trot.model.MonthStarRankInfo
+import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.signup.Sample
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
@@ -158,7 +159,7 @@ val textShadow =
     Shadow(color = Color.Black.copy(alpha = 0.30f), offset = Offset(2f, 2f), blurRadius = 4f)
 
 @Composable
-fun RankImageItem(top3List: List<MonthStarRank>) {
+fun RankImageItem(top3List: List<StarRanking>) {
     Column {
         Spacer(modifier = Modifier.height(16.dp))
         Row(

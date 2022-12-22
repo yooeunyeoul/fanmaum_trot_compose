@@ -32,6 +32,7 @@ import coil.request.ImageRequest
 import com.google.accompanist.pager.*
 import com.trotfan.trot.R
 import com.trotfan.trot.model.MonthStarRank
+import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.navigation.AppbarL
@@ -227,7 +228,7 @@ fun RankHome(
                                 ?: 0 else pairWomenList.second?.count() ?: 0
                         ) { index ->
                             val viewType: MonthlyRankViewType
-                            val list: List<MonthStarRank>
+                            val list: List<StarRanking>
                             if (tabIndex == 0) {
                                 viewType = pairMenList.first
                                 list = pairMenList.second ?: listOf()
@@ -464,7 +465,7 @@ fun LastRankView(navController: NavController) {
                         painter = painterResource(id = R.drawable.icon_history),
                         contentDescription = null,
                         modifier = Modifier.align(Alignment.Center),
-                        tint = Gray800
+                        tint = Secondary500
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
