@@ -1,15 +1,7 @@
 package com.trotfan.trot.di
 
-import com.trotfan.trot.network.SignUpService
-import com.trotfan.trot.network.impl.SignUpServiceImpl
-import com.trotfan.trot.network.AuthService
-import com.trotfan.trot.network.HomeService
-import com.trotfan.trot.network.ServerStateService
-import com.trotfan.trot.network.VoteService
-import com.trotfan.trot.network.impl.AuthServiceImpl
-import com.trotfan.trot.network.impl.HomeServiceImpl
-import com.trotfan.trot.network.impl.ServerStateServiceImpl
-import com.trotfan.trot.network.impl.VoteServiceImpl
+import com.trotfan.trot.network.*
+import com.trotfan.trot.network.impl.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -38,4 +30,8 @@ abstract class BindModule {
     @Binds
     @Singleton
     abstract fun provideVoteService(serverStateService: VoteServiceImpl): VoteService
+
+    @Binds
+    @Singleton
+    abstract fun provideRankingHistoryService(rankingHistoryService: RankinHistoryServiceImpl): RankingHistoryService
 }
