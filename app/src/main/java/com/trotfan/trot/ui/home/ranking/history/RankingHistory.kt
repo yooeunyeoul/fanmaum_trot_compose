@@ -92,11 +92,13 @@ fun RankingHistory(
                         navController?.navigate(Route.RankingHistoryCumulative.route)
                     })
             } else {
-                RankingHistoryDaily(dailyEmptyState) {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
-                    }
-                }
+                RankingHistoryDaily(
+                    emptyState = dailyEmptyState,
+                    onCalenderClick = {
+                        coroutineScope.launch {
+                            bottomSheetState.show()
+                        }
+                    })
             }
         }
     }

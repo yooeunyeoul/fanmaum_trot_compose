@@ -38,8 +38,13 @@ class RankinHistoryServiceImpl @Inject constructor(
         month: String,
         day: String
     ): CommonResponse<StarRankingList> {
-        return httpClient.get {
-            url("$RANK/daily")
+        return httpClient.get("$RANK/daily") {
+            contentType(ContentType.Application.Json)
+            url {
+                parameter("month", month)
+                parameter("year", year)
+                parameter("day", day)
+            }
         }.body()
     }
 

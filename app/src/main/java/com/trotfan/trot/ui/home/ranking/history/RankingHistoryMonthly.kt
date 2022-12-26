@@ -1,7 +1,6 @@
 package com.trotfan.trot.ui.home.ranking.history
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,11 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.substring
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.EmptyMonthlyRankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingHistoryBanner
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingHistoryMonthlyHeader
@@ -32,8 +29,8 @@ fun RankingHistoryMonthly(
     onItemClick: () -> Unit,
     viewModel: RankingHistoryViewModel = viewModel()
 ) {
-    val manList = viewModel.manList.collectAsState().value
-    val womanList = viewModel.womanList.collectAsState().value
+    val manList = viewModel.monthlyManList.collectAsState().value
+    val womanList = viewModel.monthlyWomanList.collectAsState().value
     val favoriteStarGender by viewModel.userInfoManager.favoriteStarGenderFlow.collectAsState(
         initial = Gender.MEN
     )
