@@ -29,6 +29,9 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
+import com.trotfan.trot.model.MonthStarRank
+import com.trotfan.trot.model.MonthStarRankInfo
+import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.signup.Sample
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
@@ -82,7 +85,7 @@ fun RankItem(
                     end = 12.dp
                 )
         ) {
-            if (rank < 4) {
+            if (rank in 1..3) {
                 Image(
                     painter = painterResource(
                         id = when (rank) {
@@ -104,7 +107,11 @@ fun RankItem(
                 Spacer(modifier = Modifier.width(12.dp))
 
             } else {
-                Text(text = "4", style = FanwooriTypography.subtitle3, color = Gray700)
+                Text(
+                    text = if (rank == 0) "-" else "$rank",
+                    style = FanwooriTypography.subtitle3,
+                    color = Gray700
+                )
                 Spacer(modifier = Modifier.width(19.dp))
             }
 
@@ -129,7 +136,7 @@ fun RankItem(
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "${NumberComma.decimalFormat.format(1000)}점",
+                    text = "${NumberComma.decimalFormat.format(subText)}점",
                     color = Gray700,
                     style = FanwooriTypography.body2,
                     maxLines = 1
@@ -152,7 +159,7 @@ val textShadow =
     Shadow(color = Color.Black.copy(alpha = 0.30f), offset = Offset(2f, 2f), blurRadius = 4f)
 
 @Composable
-fun RankImageItem() {
+fun RankImageItem(top3List: List<StarRanking>) {
     Column {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -188,14 +195,14 @@ fun RankImageItem() {
                             .padding(start = 16.dp, bottom = 12.dp)
                     ) {
                         Text(
-                            text = "1,500점",
+                            text = "${NumberComma.decimalFormat.format(top3List[0].score)}점",
                             style = FanwooriTypography.body3.copy(shadow = textShadow),
                             color = Color.White,
                             modifier = Modifier
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = "가수명",
+                                text = top3List[0].name ?: "",
                                 style = FanwooriTypography.subtitle1.copy(shadow = textShadow),
                                 color = Color.White
                             )
@@ -211,7 +218,7 @@ fun RankImageItem() {
 
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data("https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2022/07/26/50865541-b973-46f4-9859-3298b9acbc5c.jpeg")
+                            .data(top3List[0].image)
                             .crossfade(true).build(),
                         contentDescription = null,
                         error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
@@ -254,14 +261,14 @@ fun RankImageItem() {
                             .padding(start = 8.dp, bottom = 12.dp)
                     ) {
                         Text(
-                            text = "1,500점",
+                            text = "${NumberComma.decimalFormat.format(top3List[1].score)}점",
                             style = FanwooriTypography.body2.copy(shadow = textShadow),
                             color = Color.White,
                             modifier = Modifier
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = "가수명",
+                                text = top3List[1].name ?: "",
                                 style = FanwooriTypography.subtitle2.copy(shadow = textShadow),
                                 color = Color.White
                             )
@@ -286,7 +293,7 @@ fun RankImageItem() {
 
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data("https://cdn.entermedia.co.kr/news/photo/202208/29726_57555_1418.jpg")
+                            .data(top3List[1].image)
                             .crossfade(true)
                             .build(),
                         contentDescription = null,
@@ -318,14 +325,14 @@ fun RankImageItem() {
                             .padding(start = 8.dp, bottom = 12.dp)
                     ) {
                         Text(
-                            text = "1,500점",
+                            text = "${NumberComma.decimalFormat.format(top3List[2].score)}점",
                             style = FanwooriTypography.body2.copy(shadow = textShadow),
                             color = Color.White,
                             modifier = Modifier
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = "가수명",
+                                text = top3List[2].name ?: "",
                                 style = FanwooriTypography.subtitle2.copy(shadow = textShadow),
                                 color = Color.White
                             )
@@ -341,7 +348,7 @@ fun RankImageItem() {
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "가수명",
+                            text = top3List[2].name ?: "",
                             style = FanwooriTypography.subtitle1.copy(shadow = textShadow),
                             color = Color.White
                         )
@@ -364,7 +371,7 @@ fun RankImageItem() {
                     )
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data("https://cdn.ziksir.com/news/photo/202212/31765_62346_2612.jpg")
+                            .data(top3List[2].image)
                             .crossfade(true).build(),
                         contentDescription = null,
                         error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
@@ -407,5 +414,5 @@ fun PreviewListItemButtonNotSub() {
 @Composable
 @Preview
 fun PreviewRankImageItem() {
-    RankImageItem()
+    RankImageItem(listOf())
 }

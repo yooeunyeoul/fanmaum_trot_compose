@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.ranking.history.component.monthly
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -18,18 +19,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.R
-import com.trotfan.trot.ui.home.ranking.history.RankingHistoryViewModel
+import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.ranking.history.component.RankingHistoryGenderTab
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import kotlinx.coroutines.launch
 
 @Composable
 fun RankingHistoryMonthlyHeader(
     onCalenderClick: (String) -> Unit,
+    onCalenderBefore: () -> Unit,
+    onCalenderAfter: () -> Unit,
+    onGenderClick: (Int) -> Unit,
     rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
 ) {
     val year = rankingHistoryViewModel.monthlyYear.collectAsState()
     val month = rankingHistoryViewModel.monthlyMonth.collectAsState()
+    val isEnded = rankingHistoryViewModel.isEnded.collectAsState().value
+    val isStared = rankingHistoryViewModel.isStared.collectAsState().value
+    val coroutineScope = rememberCoroutineScope()
 
     Column {
         Row(
@@ -43,13 +51,14 @@ fun RankingHistoryMonthlyHeader(
         ) {
             Spacer(modifier = Modifier.width(12.dp))
             IconButton(
+                enabled = isStared.not(),
                 modifier = Modifier
                     .align(CenterVertically)
                     .clip(CircleShape)
-                    .background(Gray900)
+                    .background(if (isStared) Gray300 else Gray900)
                     .size(24.dp),
                 onClick = {
-
+                    onCalenderBefore()
                 }) {
 
                 Icon(
@@ -76,8 +85,7 @@ fun RankingHistoryMonthlyHeader(
 
                 Spacer(modifier = Modifier.width(4.dp))
 
-                var tempMonth = ""
-                tempMonth = if (month.value < 10) {
+                val tempMonth: String = if (month.value < 10) {
                     "0${month.value}"
                 } else {
                     "${month.value}"
@@ -92,13 +100,14 @@ fun RankingHistoryMonthlyHeader(
             }
 
             IconButton(
+                enabled = isEnded.not(),
                 modifier = Modifier
                     .align(CenterVertically)
                     .clip(CircleShape)
-                    .background(Gray900)
+                    .background(if (isEnded) Gray300 else Gray900)
                     .size(24.dp),
                 onClick = {
-
+                    onCalenderAfter()
                 }) {
 
                 Icon(
@@ -113,7 +122,7 @@ fun RankingHistoryMonthlyHeader(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        RankingHistoryGenderTab()
+        RankingHistoryGenderTab(onGenderClick = onGenderClick)
     }
 }
 
@@ -124,7 +133,12 @@ fun RankingHistoryHeaderPreview() {
         RankingHistoryMonthlyHeader(
             onCalenderClick = {
 
-            }
+            },
+            onGenderClick = {
+
+            },
+            onCalenderAfter = {},
+            onCalenderBefore = {}
         )
     }
 }

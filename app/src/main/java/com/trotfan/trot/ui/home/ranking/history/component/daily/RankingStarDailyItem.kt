@@ -1,31 +1,29 @@
 package com.trotfan.trot.ui.home.ranking.history.component.daily
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.trotfan.trot.R
-import com.trotfan.trot.model.VoteMainStar
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
 
 @Composable
-fun RankingStarDailyItem(star: VoteMainStar) {
-    if (star.rank!! < 4) {
+fun RankingStarDailyItem(star: StarRanking) {
+    if (star.rank < 4) {
         RankingDailyRankerItem(star = star)
     } else {
         RankingDailyDefaultItem(star = star)
@@ -33,7 +31,7 @@ fun RankingStarDailyItem(star: VoteMainStar) {
 }
 
 @Composable
-fun RankingDailyRankerItem(star: VoteMainStar?) {
+fun RankingDailyRankerItem(star: StarRanking?) {
     val color: Color = when (star?.rank) {
         1 -> Primary500
         else -> Primary800
@@ -58,14 +56,19 @@ fun RankingDailyRankerItem(star: VoteMainStar?) {
         Box(
             modifier = Modifier
                 .size(56.dp)
-                .background(Color.Yellow, CircleShape)
                 .border(1.dp, Gray100, CircleShape)
+                .clip(CircleShape)
                 .align(CenterVertically)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.kakao_symbol),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(star?.image)
+                    .crossfade(true).build(),
                 contentDescription = null,
-                modifier = Modifier.align(Center)
+                contentScale = ContentScale.FillHeight,
+                modifier = Modifier
+                    .align(Center)
+                    .clip(CircleShape)
             )
         }
 
@@ -85,7 +88,7 @@ fun RankingDailyRankerItem(star: VoteMainStar?) {
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = "${NumberComma.decimalFormat.format(star?.votes)} 점",
+                text = "${NumberComma.decimalFormat.format(star?.score)} 점",
                 color = Gray700,
                 style = FanwooriTypography.body5
             )
@@ -94,7 +97,7 @@ fun RankingDailyRankerItem(star: VoteMainStar?) {
 }
 
 @Composable
-fun RankingDailyDefaultItem(star: VoteMainStar?) {
+fun RankingDailyDefaultItem(star: StarRanking?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,14 +121,19 @@ fun RankingDailyDefaultItem(star: VoteMainStar?) {
         Box(
             modifier = Modifier
                 .size(48.dp)
-                .background(Color.Yellow, CircleShape)
                 .border(1.dp, Gray100, CircleShape)
+                .clip(CircleShape)
                 .align(CenterVertically)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.kakao_symbol),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(star?.image)
+                    .crossfade(true).build(),
                 contentDescription = null,
-                modifier = Modifier.align(Center)
+                contentScale = ContentScale.FillHeight,
+                modifier = Modifier
+                    .align(Center)
+                    .clip(CircleShape)
             )
         }
 
@@ -145,7 +153,7 @@ fun RankingDailyDefaultItem(star: VoteMainStar?) {
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = "${NumberComma.decimalFormat.format(star?.votes)} 점",
+                text = "${NumberComma.decimalFormat.format(star?.score)} 점",
                 color = Gray700,
                 style = FanwooriTypography.body5
             )
@@ -157,7 +165,7 @@ fun RankingDailyDefaultItem(star: VoteMainStar?) {
 @Composable
 fun RankingStarItemPreview() {
     FanwooriTheme {
-        RankingDailyRankerItem(VoteMainStar(0, null, "최영화", 1, 3000))
+        RankingDailyRankerItem(StarRanking(0, 1, 1, "최영화", ""))
     }
 }
 
@@ -165,6 +173,6 @@ fun RankingStarItemPreview() {
 @Composable
 fun RankingStarDailyPreview() {
     FanwooriTheme {
-        RankingStarDailyItem(VoteMainStar(0, null, "최영화", 4, 3000))
+        RankingStarDailyItem(StarRanking(0, 1, 1, "최영화", ""))
     }
 }

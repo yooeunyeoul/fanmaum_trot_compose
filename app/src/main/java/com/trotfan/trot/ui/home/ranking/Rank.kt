@@ -2,10 +2,7 @@ package com.trotfan.trot.ui.home.ranking
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -34,6 +31,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.*
 import com.trotfan.trot.R
+import com.trotfan.trot.model.Banner
+import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.navigation.AppbarL
@@ -41,16 +40,17 @@ import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.ranking.components.RankImageItem
 import com.trotfan.trot.ui.home.ranking.components.RankItem
+import com.trotfan.trot.ui.home.ranking.viewmodel.MonthlyRankViewType
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankHomeViewModel
+import com.trotfan.trot.ui.home.ranking.viewmodel.RankRemainingStatus
 import com.trotfan.trot.ui.home.vote.component.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.*
-import com.trotfan.trot.ui.utils.clickable
-import com.trotfan.trot.ui.utils.getTime
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
+import java.time.LocalDate
+import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
 enum class RankStatus {
@@ -79,6 +79,10 @@ fun RankHome(
     val rankStatus by remember {
         mutableStateOf(RankStatus.Available)
     }
+    val rankRemainingStatus by viewModel.rankRemainingStatus.collectAsState()
+    val pairMenList by viewModel.pairMenRankList.collectAsState()
+    val pairWomenList by viewModel.pairWomenRankList.collectAsState()
+    val banners by viewModel.banners.collectAsState()
 
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
@@ -120,7 +124,7 @@ fun RankHome(
                             .fillMaxWidth()
                             .background(Color.White)
                     ) {
-                        HorizontalImagePager(scrollState)
+                        HorizontalImagePager(scrollState, banners)
                         LastRankView(navController)
                     }
 
@@ -142,25 +146,13 @@ fun RankHome(
                                     color = Gray900
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = "투표마감까지",
-                                        style = FanwooriTypography.body2,
-                                        color = Gray700
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "24일",
-                                        style = FanwooriTypography.button1,
-                                        color = Primary500
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "남았습니다",
-                                        style = FanwooriTypography.body2,
-                                        color = Gray700
-                                    )
-
+                                when (rankRemainingStatus.second) {
+                                    RankRemainingStatus.VoteIng -> {
+                                        VoteRemainingView(rankRemainingStatus.first)
+                                    }
+                                    RankRemainingStatus.VoteWaiting -> {
+                                        VoteWaitingView()
+                                    }
                                 }
 
                             }
@@ -224,21 +216,51 @@ fun RankHome(
                                 )
                             }
                         }
-                        items(100) { index ->
-                            if (index == 0) {
-                                RankImageItem()
+                        items(
+                            if (tabIndex == 0) pairMenList.second?.count()
+                                ?: 0 else pairWomenList.second?.count() ?: 0
+                        ) { index ->
+                            val viewType: MonthlyRankViewType
+                            val list: List<StarRanking>
+                            if (tabIndex == 0) {
+                                viewType = pairMenList.first
+                                list = pairMenList.second ?: listOf()
                             } else {
-                                RankItem(
-                                    text = "김쿵야",
-                                    subText = 1000,
-                                    imageUrl = "https://image.xportsnews.com/contents/images/upload/article/2022/0313/1647169234362908.jpg",
-                                    rank = if (index % 3 == 0) 1 else if (index % 3 == 1) 2 else 3,
-                                    item = null,
-                                    onClick = {
+                                viewType = pairWomenList.first
+                                list = pairWomenList.second ?: listOf()
+                            }
 
+                            when (viewType) {
+                                MonthlyRankViewType.IMAGE -> {
+                                    if (index == 2) {
+                                        RankImageItem(list.subList(0, 3))
+                                    } else if (index > 2) {
+                                        RankItem(
+                                            text = list[index].name ?: "",
+                                            subText = list[index].score,
+                                            imageUrl = list[index].image,
+                                            rank = list[index].rank ?: 0,
+                                            item = null,
+                                            onClick = {
+
+                                            }
+                                        )
                                     }
-                                )
+                                }
+                                MonthlyRankViewType.NUMBER -> {
+                                    RankItem(
+                                        text = list[index].name ?: "",
+                                        subText = list[index].score,
+                                        imageUrl = list[index].image,
+                                        rank = list[index].rank ?: 0,
+                                        item = null,
+                                        onClick = {
+                                        }
+                                    )
+                                }
+                                MonthlyRankViewType.NONE -> {
 
+                                }
                             }
                         }
                     }
@@ -256,6 +278,47 @@ fun RankHome(
 
     }
 
+
+}
+
+@Composable
+fun VoteRemainingView(remainTime: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = "투표마감까지",
+            style = FanwooriTypography.body2,
+            color = Gray700
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = remainTime,
+            style = FanwooriTypography.button1,
+            color = Primary500
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = "남았습니다",
+            style = FanwooriTypography.body2,
+            color = Gray700
+        )
+
+    }
+}
+
+@Composable
+fun VoteWaitingView() {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = "${
+                if (LocalDate.now().month.value.plus(1) == 13) "1" else LocalDate.now().month.value.plus(
+                    1
+                )
+            }월 순위는 2일부터 공개됩니다",
+            style = FanwooriTypography.body2,
+            color = Gray750
+        )
+
+    }
 
 }
 
@@ -313,14 +376,17 @@ fun noRankHistory() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HorizontalImagePager(scrollState: ScrollState) {
+fun HorizontalImagePager(scrollState: ScrollState, banners: List<Banner> = listOf()) {
+    if (banners.isEmpty()) {
+        return
+    }
     val pagerState = rememberPagerState(initialPage = 0)
     var ticks by remember { mutableStateOf(3) }
-    val pageList = mutableListOf<String>(
-        "https://cdn.clien.net/web/api/file/F01/11598178/52d17b86e92c22.png?w=780&h=30000",
-        "https://image.chosun.com/sitedata/image/202105/04/2021050400008_0.jpg",
-        "https://cdn.mhnse.com/news/photo/202204/102523_85665_1330.jpg"
-    )
+//    val pageList = mutableListOf<String>(
+//        "https://cdn.clien.net/web/api/file/F01/11598178/52d17b86e92c22.png?w=780&h=30000",
+//        "https://image.chosun.com/sitedata/image/202105/04/2021050400008_0.jpg",
+//        "https://cdn.mhnse.com/news/photo/202204/102523_85665_1330.jpg"
+//    )
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -365,11 +431,11 @@ fun HorizontalImagePager(scrollState: ScrollState) {
                 })
         ) { page: Int ->
             ticks = 3
-            val currentPage = page % pageList.count()
+            val currentPage = page % banners.count()
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(pageList[currentPage])
+                    .data(banners[currentPage].image)
                     .crossfade(true).build(),
                 contentDescription = null,
                 error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
@@ -387,7 +453,7 @@ fun HorizontalImagePager(scrollState: ScrollState) {
                 .background(GrayOpacity30, shape = RoundedCornerShape(16.dp))
         ) {
             Text(
-                text = "${(pagerState.currentPage % pageList.count()) + 1}/${pageList.size}",
+                text = "${(pagerState.currentPage % banners.count()) + 1}/${banners.size}",
                 style = FanwooriTypography.body2,
                 color = Color.White,
                 modifier = Modifier.padding(
@@ -436,7 +502,7 @@ fun LastRankView(navController: NavController) {
                         painter = painterResource(id = R.drawable.icon_history),
                         contentDescription = null,
                         modifier = Modifier.align(Alignment.Center),
-                        tint = Gray800
+                        tint = Secondary500
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))

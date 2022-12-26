@@ -4,28 +4,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.trotfan.trot.model.VoteMainStar
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.ui.home.ranking.history.component.daily.EmptyDailyRankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.daily.RankingHistoryDailyHeader
 import com.trotfan.trot.ui.home.ranking.history.component.daily.RankingStarDailyItem
+import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
+import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 
 @Composable
 fun RankingHistoryDaily(
     emptyState: Boolean = false,
-    onCalenderClick: () -> Unit
+    onCalenderClick: () -> Unit,
+    viewModel: RankingHistoryViewModel = viewModel()
 ) {
-    val stars = listOf(
-        VoteMainStar(0, null, "최영화", 1, 13000),
-        VoteMainStar(1, null, "이민혁", 2, 12000),
-        VoteMainStar(2, null, "임형규", 3, 11000),
-        VoteMainStar(3, null, "유은열", 4, 9000),
-        VoteMainStar(4, null, "김준영", 5, 7000),
-        VoteMainStar(5, null, "이소진", 6, 555),
-        VoteMainStar(6, null, "박수빈", 7, 10),
+    val manList = viewModel.dailyManList.collectAsState().value
+    val womanList = viewModel.dailyWomanList.collectAsState().value
+    val favoriteStarGender by viewModel.userInfoManager.favoriteStarGenderFlow.collectAsState(
+        initial = Gender.MEN
     )
+    var genderIndex by remember {
+        mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
+    }
+    val coroutineScope = rememberCoroutineScope()
 
     Column {
         if (emptyState) {
@@ -38,8 +41,14 @@ fun RankingHistoryDaily(
 
             Spacer(modifier = Modifier.height(24.dp))
             LazyColumn {
-                items(stars.size) { idx ->
-                    RankingStarDailyItem(star = stars[idx])
+                if (genderIndex == 0) {
+                    items(manList.size) { idx ->
+                        RankingStarDailyItem(star = manList[idx])
+                    }
+                } else {
+                    items(womanList.size) { idx ->
+                        RankingStarDailyItem(star = womanList[idx])
+                    }
                 }
             }
         }
