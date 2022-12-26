@@ -1,9 +1,12 @@
 package com.trotfan.trot.network.impl
 
+import com.trotfan.trot.model.Banner
 import com.trotfan.trot.model.StarRankingDetail
 import com.trotfan.trot.model.StarRankingList
+import com.trotfan.trot.network.HttpRoutes.BANNER
 import com.trotfan.trot.network.HttpRoutes.RANK
 import com.trotfan.trot.network.RankingHistoryService
+import com.trotfan.trot.network.response.CommonListResponse
 import com.trotfan.trot.network.response.CommonResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -46,5 +49,19 @@ class RankinHistoryServiceImpl @Inject constructor(
                 parameter("star_id", starId)
             }
         }.body()
+    }
+
+    override suspend fun getBanners(
+        group: String,
+        platform: String
+    ): CommonListResponse<Banner> {
+        val response = httpClient.get(BANNER) {
+            contentType(ContentType.Application.Json)
+            url {
+                parameter("group", group)
+                parameter("platform", platform)
+            }
+        }
+        return response.body()
     }
 }

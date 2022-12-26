@@ -2,6 +2,7 @@ package com.trotfan.trot.ui.utils
 
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.compiler.plugins.kotlin.ComposeFqNames.remember
 import androidx.compose.foundation.LocalIndication
@@ -31,6 +32,7 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
@@ -148,12 +150,44 @@ fun Modifier.disabledHorizontalPointerInputScroll(disabled: Boolean = true) =
 fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean = true) =
     if (disabled) this.nestedScroll(VerticalScrollConsumer) else this
 
-fun getTime(): Int {
+fun getTime(
+    targetMonth: Int? = null,
+    targetDay: Int? = null,
+    targetSecond: Int? = null,
+    targetHour: Int = 23,
+    targetMinute: Int = 30
+
+): Int {
     val cal = Calendar.getInstance()
-    cal.set(Calendar.HOUR_OF_DAY, 23)
-    cal.set(Calendar.MINUTE, 30)
+    targetMonth?.let {
+        cal.set(Calendar.MONTH, targetMonth)
+    }
+    targetDay?.let {
+        cal.set(Calendar.DAY_OF_MONTH, targetDay)
+    }
+    targetSecond?.let {
+        cal.set(Calendar.SECOND, targetSecond)
+    }
+    cal.set(Calendar.HOUR_OF_DAY, targetHour)
+    cal.set(Calendar.SECOND, targetMinute)
     val diff = abs(cal.timeInMillis - System.currentTimeMillis()) / 1000;
     return diff.toInt()
+}
+
+fun getTime(
+    targetMilliSecond: Long?
+): Int {
+    val diff = abs((targetMilliSecond ?: 0)).minus(System.currentTimeMillis()) / 1000;
+    return diff.toInt()
+}
+
+fun convertStringToTime(date: String): Long {
+    return if (date.isNotEmpty()) {
+        val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        formatter.parse(date)?.time ?: 0
+    } else {
+        0
+    }
 }
 
 val CHO = listOf("ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ")

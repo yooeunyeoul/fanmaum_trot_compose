@@ -8,7 +8,7 @@ import javax.inject.Inject
 class VoteRepository @Inject constructor(
     private val voteService: VoteService
 ) {
-    suspend fun getVote(): CommonResponse<Top3Benefit>? =
+    suspend fun getVote(): CommonResponse<VoteInfo>? =
         voteService.vote()
 
     suspend fun getStarRank(starId: Int): CommonResponse<FavoriteStarInfo> =

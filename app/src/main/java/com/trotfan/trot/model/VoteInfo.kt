@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Top3Benefit(
+data class VoteInfo(
     val id: Int = -1,
     val title: String = "",
     val content: String = "",
