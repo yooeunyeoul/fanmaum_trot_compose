@@ -18,4 +18,5 @@ object HttpRoutes {
     val POPUPS = "$BASE_URL/popups"
     val RANK = "$BASE_URL/rank"
     val DATE_PICKER = "$BASE_URL/datepickers"
+    val BANNER = "$BASE_URL/banners"
 }
