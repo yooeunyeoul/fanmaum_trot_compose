@@ -1,7 +1,9 @@
 package com.trotfan.trot.network.impl
 
+import com.trotfan.trot.model.DatePickerRange
 import com.trotfan.trot.model.StarRankingDetail
 import com.trotfan.trot.model.StarRankingList
+import com.trotfan.trot.network.HttpRoutes.DATE_PICKER
 import com.trotfan.trot.network.HttpRoutes.RANK
 import com.trotfan.trot.network.RankingHistoryService
 import com.trotfan.trot.network.response.CommonResponse
@@ -45,6 +47,12 @@ class RankinHistoryServiceImpl @Inject constructor(
             url("$RANK/monthly/detail") {
                 parameter("star_id", starId)
             }
+        }.body()
+    }
+
+    override suspend fun getDatePickerRange(): CommonResponse<DatePickerRange> {
+        return httpClient.get {
+            url("$DATE_PICKER/rank")
         }.body()
     }
 }

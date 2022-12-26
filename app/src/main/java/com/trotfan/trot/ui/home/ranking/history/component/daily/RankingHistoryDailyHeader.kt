@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.R
-import com.trotfan.trot.ui.home.ranking.history.RankingHistoryViewModel
+import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.ranking.history.component.RankingHistoryGenderTab
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
@@ -60,8 +60,7 @@ fun RankingHistoryDailyHeader(
 
                 Spacer(modifier = Modifier.width(4.dp))
 
-                var tempMonth = ""
-                tempMonth = if (month.value < 10) {
+                val tempMonth: String = if (month.value < 10) {
                     "0${month.value}"
                 } else {
                     "${month.value}"
@@ -105,7 +104,9 @@ fun RankingHistoryDailyHeader(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        RankingHistoryGenderTab()
+        RankingHistoryGenderTab(onGenderClick = {
+
+        })
     }
 }
 

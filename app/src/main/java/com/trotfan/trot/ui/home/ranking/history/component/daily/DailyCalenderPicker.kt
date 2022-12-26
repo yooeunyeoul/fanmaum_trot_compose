@@ -17,8 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
-import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
-import com.trotfan.trot.ui.home.ranking.history.RankingHistoryViewModel
+import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.NumberPickerComponent
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography

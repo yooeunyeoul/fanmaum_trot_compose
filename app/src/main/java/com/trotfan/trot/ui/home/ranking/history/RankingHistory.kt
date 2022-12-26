@@ -19,6 +19,7 @@ import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.ranking.history.component.RankingHistoryTab
 import com.trotfan.trot.ui.home.ranking.history.component.daily.DailyCalenderPicker
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.MonthlyCalenderPicker
+import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.launch
 
