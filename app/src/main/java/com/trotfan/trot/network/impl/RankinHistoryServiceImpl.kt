@@ -1,9 +1,6 @@
 package com.trotfan.trot.network.impl
 
-import com.trotfan.trot.model.DatePickerRange
-import com.trotfan.trot.model.Banner
-import com.trotfan.trot.model.StarRankingDetail
-import com.trotfan.trot.model.StarRankingList
+import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes.DATE_PICKER
 import com.trotfan.trot.network.HttpRoutes.BANNER
 import com.trotfan.trot.network.HttpRoutes.RANK
@@ -37,23 +34,27 @@ class RankinHistoryServiceImpl @Inject constructor(
         year: String,
         month: String,
         day: String
-    ): CommonResponse<StarRankingList> {
+    ): CommonResponse<StarRankingDailyList> {
         return httpClient.get("$RANK/daily") {
             contentType(ContentType.Application.Json)
             url {
-                parameter("month", month)
                 parameter("year", year)
+                parameter("month", month)
                 parameter("day", day)
             }
         }.body()
     }
 
     override suspend fun getStarRankingDetail(
-        starId: Int
+        starId: Int,
+        year: String,
+        month: String
     ): CommonResponse<List<StarRankingDetail>> {
-        return httpClient.get {
-            url("$RANK/monthly/detail") {
+        return httpClient.get("$RANK/monthly/detail") {
+            url {
                 parameter("star_id", starId)
+                parameter("year", year)
+                parameter("month", month)
             }
         }.body()
     }

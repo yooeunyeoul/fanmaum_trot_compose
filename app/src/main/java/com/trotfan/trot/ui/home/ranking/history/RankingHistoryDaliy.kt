@@ -37,6 +37,8 @@ fun RankingHistoryDaily(
             Spacer(modifier = Modifier.height(24.dp))
             RankingHistoryDailyHeader(onCalenderClick = {
                 onCalenderClick()
+            }, onGenderClick = {
+                genderIndex = it
             })
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -49,6 +51,10 @@ fun RankingHistoryDaily(
                     items(womanList.size) { idx ->
                         RankingStarDailyItem(star = womanList[idx])
                     }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }

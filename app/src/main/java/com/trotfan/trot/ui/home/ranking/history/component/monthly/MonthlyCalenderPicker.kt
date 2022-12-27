@@ -36,7 +36,6 @@ import java.util.*
 @Composable
 fun MonthlyCalenderPicker(
     modalBottomSheetState: ModalBottomSheetState,
-    startYear: Int,
     onConfirmClick: (String) -> Unit,
     rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
 ) {
@@ -45,6 +44,7 @@ fun MonthlyCalenderPicker(
     val coroutineScope = rememberCoroutineScope()
     val year = rankingHistoryViewModel.monthlyYear.collectAsState()
     val month = rankingHistoryViewModel.monthlyMonth.collectAsState()
+    val startYear = rankingHistoryViewModel.startYear.collectAsState()
     var tempYear by remember {
         mutableStateOf(year.value)
     }
@@ -70,8 +70,8 @@ fun MonthlyCalenderPicker(
             NumberPickerComponent(
                 context = context,
                 year.value,
-                startYear,
-                startYear
+                startYear.value,
+                year.value,
             ) { p0, _, _ ->
                 tempYear = p0.value
             }
@@ -87,19 +87,22 @@ fun MonthlyCalenderPicker(
             modifier = Modifier
                 .padding(start = 24.dp, end = 24.dp),
             onClick = {
-                val simpleDate = SimpleDateFormat("yyyy-mm", Locale.KOREA)
+                val simpleDate = SimpleDateFormat("yyyy-MM", Locale.KOREA)
                 val pickDate = simpleDate.parse("$tempYear-$tempMonth")
-                val sDate =
-                    simpleDate.parse("2022-11")
-                val eDate = simpleDate.parse("2022-12")
+                val startedAt =
+                    rankingHistoryViewModel.datePickerRange.value?.started_at?.split("-")
+                val endedAt =
+                    rankingHistoryViewModel.datePickerRange.value?.ended_at?.split("-")
+                val sDate = simpleDate.parse("${startedAt?.get(0)}-${startedAt?.get(1)}")
+                val eDate = simpleDate.parse("${endedAt?.get(0)}-${endedAt?.get(1)}")
                 pickDate?.let {
-                    if (it > sDate && it < eDate)
+                    if (it >= sDate && it <= eDate)
                         coroutineScope.launch {
                             rankingHistoryViewModel.monthlyYear.emit(tempYear)
                             rankingHistoryViewModel.monthlyMonth.emit(tempMonth)
                             modalBottomSheetState.hide()
+                            onConfirmClick("$tempYear/$tempMonth")
                         }
-                    onConfirmClick("$tempYear/$tempMonth")
                 }
             }
         )
@@ -165,8 +168,7 @@ fun MonthlyCalenderPickerPreview() {
                 initialValue = ModalBottomSheetValue.Hidden,
                 skipHalfExpanded = true
             ),
-            onConfirmClick = {},
-            startYear = 2000
+            onConfirmClick = {}
         )
     }
 }

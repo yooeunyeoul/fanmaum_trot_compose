@@ -1,9 +1,6 @@
 package com.trotfan.trot.network
 
-import com.trotfan.trot.model.DatePickerRange
-import com.trotfan.trot.model.Banner
-import com.trotfan.trot.model.StarRankingDetail
-import com.trotfan.trot.model.StarRankingList
+import com.trotfan.trot.model.*
 import com.trotfan.trot.network.response.CommonListResponse
 import com.trotfan.trot.network.response.CommonResponse
 
@@ -17,10 +14,12 @@ interface RankingHistoryService {
         year: String,
         month: String,
         day: String
-    ): CommonResponse<StarRankingList>
+    ): CommonResponse<StarRankingDailyList>
 
     suspend fun getStarRankingDetail(
-        starId: Int
+        starId: Int,
+        year: String,
+        month: String
     ): CommonResponse<List<StarRankingDetail>>
 
     suspend fun getDatePickerRange(): CommonResponse<DatePickerRange>

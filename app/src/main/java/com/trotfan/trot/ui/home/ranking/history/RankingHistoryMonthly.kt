@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.EmptyMonthlyRankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingHistoryBanner
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingHistoryMonthlyHeader
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 fun RankingHistoryMonthly(
     emptyState: Boolean = false,
     onCalenderClick: (String) -> Unit,
-    onItemClick: () -> Unit,
+    onItemClick: (StarRanking) -> Unit,
     viewModel: RankingHistoryViewModel = viewModel()
 ) {
     val manList = viewModel.monthlyManList.collectAsState().value
@@ -57,7 +58,7 @@ fun RankingHistoryMonthly(
                     } else {
                         viewModel.monthlyMonth.emit(viewModel.monthlyMonth.value.plus(1))
                     }
-                    settingDateRange(viewModel, coroutineScope)
+                    viewModel.settingDateRange()
                     viewModel.getMonthlyStarRankingList()
                 }
             }, onCalenderBefore = {
@@ -68,7 +69,7 @@ fun RankingHistoryMonthly(
                     } else {
                         viewModel.monthlyMonth.emit(viewModel.monthlyMonth.value.minus(1))
                     }
-                    settingDateRange(viewModel, coroutineScope)
+                    viewModel.settingDateRange()
                     viewModel.getMonthlyStarRankingList()
                 }
             })
@@ -83,13 +84,13 @@ fun RankingHistoryMonthly(
                 if (genderIndex == 0) {
                     items(manList.size) { idx ->
                         RankingStarMonthlyItem(star = manList[idx]) {
-                            onItemClick()
+                            onItemClick(manList[idx])
                         }
                     }
                 } else {
                     items(womanList.size) { idx ->
                         RankingStarMonthlyItem(star = womanList[idx]) {
-                            onItemClick()
+                            onItemClick(womanList[idx])
                         }
                     }
                 }
@@ -98,23 +99,6 @@ fun RankingHistoryMonthly(
                 }
             }
         }
-    }
-}
-
-fun settingDateRange(viewModel: RankingHistoryViewModel, coroutineScope: CoroutineScope) {
-    coroutineScope.launch {
-        viewModel.isEnded.emit(
-            "${viewModel.monthlyYear.value}-${viewModel.monthlyMonth.value}" == viewModel.datePickerRange.value?.ended_at?.substring(
-                0,
-                7
-            ).toString()
-        )
-        viewModel.isStared.emit(
-            "${viewModel.monthlyYear.value}-${viewModel.monthlyMonth.value}" == viewModel.datePickerRange.value?.started_at?.substring(
-                0,
-                7
-            ).toString()
-        )
     }
 }
 

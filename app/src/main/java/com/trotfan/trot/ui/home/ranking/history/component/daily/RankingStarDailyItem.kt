@@ -18,11 +18,12 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.model.StarRanking
+import com.trotfan.trot.model.StarRankingDaily
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
 
 @Composable
-fun RankingStarDailyItem(star: StarRanking) {
+fun RankingStarDailyItem(star: StarRankingDaily) {
     if (star.rank < 4) {
         RankingDailyRankerItem(star = star)
     } else {
@@ -31,7 +32,7 @@ fun RankingStarDailyItem(star: StarRanking) {
 }
 
 @Composable
-fun RankingDailyRankerItem(star: StarRanking?) {
+fun RankingDailyRankerItem(star: StarRankingDaily?) {
     val color: Color = when (star?.rank) {
         1 -> Primary500
         else -> Primary800
@@ -47,7 +48,9 @@ fun RankingDailyRankerItem(star: StarRanking?) {
             text = star?.rank.toString(),
             color = color,
             style = FanwooriTypography.h2,
-            modifier = Modifier.align(CenterVertically).size(24.dp),
+            modifier = Modifier
+                .align(CenterVertically)
+                .size(24.dp),
             textAlign = TextAlign.Center
         )
 
@@ -97,7 +100,7 @@ fun RankingDailyRankerItem(star: StarRanking?) {
 }
 
 @Composable
-fun RankingDailyDefaultItem(star: StarRanking?) {
+fun RankingDailyDefaultItem(star: StarRankingDaily?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -165,7 +168,7 @@ fun RankingDailyDefaultItem(star: StarRanking?) {
 @Composable
 fun RankingStarItemPreview() {
     FanwooriTheme {
-        RankingDailyRankerItem(StarRanking(0, 1, 1, "최영화", ""))
+        RankingDailyRankerItem(StarRankingDaily("최영화", "", 50, 1, "0", 11))
     }
 }
 
@@ -173,6 +176,6 @@ fun RankingStarItemPreview() {
 @Composable
 fun RankingStarDailyPreview() {
     FanwooriTheme {
-        RankingStarDailyItem(StarRanking(0, 1, 1, "최영화", ""))
+        RankingStarDailyItem(StarRankingDaily("최영화", "", 50, 1, "0", 11))
     }
 }

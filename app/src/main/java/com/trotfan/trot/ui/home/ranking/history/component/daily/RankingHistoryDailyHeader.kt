@@ -25,7 +25,9 @@ import com.trotfan.trot.ui.utils.clickable
 
 @Composable
 fun RankingHistoryDailyHeader(
-    onCalenderClick: () -> Unit, rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
+    onCalenderClick: () -> Unit,
+    onGenderClick: (Int) -> Unit,
+    rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
 ) {
 
     val year = rankingHistoryViewModel.dailyYear.collectAsState()
@@ -105,7 +107,7 @@ fun RankingHistoryDailyHeader(
         Spacer(modifier = Modifier.height(16.dp))
 
         RankingHistoryGenderTab(onGenderClick = {
-
+            onGenderClick(it)
         })
     }
 }
@@ -116,6 +118,6 @@ fun RankingHistoryHeaderPreview() {
     FanwooriTheme {
         RankingHistoryDailyHeader(onCalenderClick = {
 
-        })
+        }, onGenderClick = {})
     }
 }

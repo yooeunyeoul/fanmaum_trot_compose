@@ -6,12 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.FavoriteStarDataStore
 import com.trotfan.trot.datastore.UserInfoManager
-import com.trotfan.trot.model.Banner
-import com.trotfan.trot.model.DatePickerRange
-import com.trotfan.trot.model.StarRanking
-import com.trotfan.trot.model.StarRankingDetail
+import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.RankingHistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
@@ -33,8 +31,8 @@ class RankingHistoryViewModel @Inject constructor(
     val monthlyWomanList = MutableStateFlow(listOf<StarRanking>())
     val datePickerRange = MutableStateFlow<DatePickerRange?>(null)
 
-    val dailyManList = MutableStateFlow(listOf<StarRanking>())
-    val dailyWomanList = MutableStateFlow(listOf<StarRanking>())
+    val dailyManList = MutableStateFlow(listOf<StarRankingDaily>())
+    val dailyWomanList = MutableStateFlow(listOf<StarRankingDaily>())
 
     private val context = getApplication<Application>()
     var userInfoManager: UserInfoManager = UserInfoManager(context.FavoriteStarDataStore)
@@ -42,9 +40,7 @@ class RankingHistoryViewModel @Inject constructor(
     val isEnded = MutableStateFlow(true)
 
     val banners = MutableStateFlow<List<Banner>?>(null)
-    val startYear = MutableStateFlow(2000)
-
-    val starRankingDetail = MutableStateFlow(listOf<StarRankingDetail>())
+    val startYear = MutableStateFlow(2022)
 
     init {
         getDatePickerRange()
@@ -55,7 +51,7 @@ class RankingHistoryViewModel @Inject constructor(
     fun getBannerList() {
         viewModelScope.launch {
             kotlin.runCatching {
-                repository.getBanners("rank", "aos")
+                repository.getBanners("last", "aos")
             }.onSuccess {
                 banners.emit(it.data)
             }.onFailure {
@@ -112,7 +108,7 @@ class RankingHistoryViewModel @Inject constructor(
             }.onSuccess {
                 it.data?.let { data ->
                     datePickerRange.emit(data)
-                    startYear.emit(2022)
+                    startYear.emit(data.started_at.split("-")[0].toInt())
                     val tempDate = data.ended_at.split("-")
                     monthlyYear.emit(tempDate[0].toInt())
                     monthlyMonth.emit(tempDate[1].toInt())
@@ -127,17 +123,21 @@ class RankingHistoryViewModel @Inject constructor(
         }
     }
 
-    fun getStarRankingDetail(starId: Int) {
+
+    fun settingDateRange() {
         viewModelScope.launch {
-            kotlin.runCatching {
-                repository.getStarRankingDetail(starId)
-            }.onSuccess {
-                it.data?.let { list ->
-                    starRankingDetail.emit(list)
-                }
-            }.onFailure {
-                Log.d("RankingHistoryViewModel", it.message.toString())
-            }
+            isEnded.emit(
+                "${monthlyYear.value}-${monthlyMonth.value}" == datePickerRange.value?.ended_at?.substring(
+                    0,
+                    7
+                ).toString()
+            )
+            isStared.emit(
+                "${monthlyYear.value}-${monthlyMonth.value}" == datePickerRange.value?.started_at?.substring(
+                    0,
+                    7
+                ).toString()
+            )
         }
     }
 //

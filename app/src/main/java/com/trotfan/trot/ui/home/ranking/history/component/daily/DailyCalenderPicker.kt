@@ -1,6 +1,7 @@
 package com.trotfan.trot.ui.home.ranking.history.component.daily
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,8 @@ import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray100
 import com.trotfan.trot.ui.theme.Gray900
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterialApi::class)
@@ -39,6 +42,8 @@ fun DailyCalenderPicker(
     val year = rankingHistoryViewModel.dailyYear.collectAsState()
     val month = rankingHistoryViewModel.dailyMonth.collectAsState()
     val day = rankingHistoryViewModel.dailyDay.collectAsState()
+    val startYear = rankingHistoryViewModel.startYear.collectAsState()
+
     var tempYear by remember {
         mutableStateOf(year.value)
     }
@@ -67,8 +72,8 @@ fun DailyCalenderPicker(
             NumberPickerComponent(
                 context = context,
                 year.value,
-                2010,
-                2022,
+                startYear.value,
+                year.value,
                 onValueChangeListener = { p0, _, _ ->
                     tempYear = p0.value
                 })
@@ -98,13 +103,23 @@ fun DailyCalenderPicker(
             modifier = Modifier
                 .padding(start = 24.dp, end = 24.dp)
         ) {
-            coroutineScope.launch {
-                rankingHistoryViewModel.dailyYear.emit(tempYear)
-                rankingHistoryViewModel.dailyMonth.emit(tempMonth)
-                rankingHistoryViewModel.dailyDay.emit(tempDay)
-                modalBottomSheetState.hide()
+            val simpleDate = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+            val startedAt = rankingHistoryViewModel.datePickerRange.value?.started_at
+            val endedAt = rankingHistoryViewModel.datePickerRange.value?.ended_at
+            val pickDate = simpleDate.parse("$tempYear-$tempMonth-$tempDay")
+            val sDate = simpleDate.parse(startedAt ?: "2022-11-11")
+            val eDate = simpleDate.parse(endedAt ?: "2022-12-13")
+            pickDate?.let {
+                if (it >= sDate && it <= eDate) {
+                    coroutineScope.launch {
+                        rankingHistoryViewModel.dailyYear.emit(tempYear)
+                        rankingHistoryViewModel.dailyMonth.emit(tempMonth)
+                        rankingHistoryViewModel.dailyDay.emit(tempDay)
+                        modalBottomSheetState.hide()
+                        onConfirmClick("$tempYear/$tempMonth/$tempDay")
+                    }
+                }
             }
-            onConfirmClick("$tempYear/$tempMonth/$tempDay")
         }
         Spacer(modifier = Modifier.height(32.dp))
     }

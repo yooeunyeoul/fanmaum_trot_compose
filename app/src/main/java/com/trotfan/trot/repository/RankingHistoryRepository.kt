@@ -1,9 +1,6 @@
 package com.trotfan.trot.repository
 
-import com.trotfan.trot.model.DatePickerRange
-import com.trotfan.trot.model.Banner
-import com.trotfan.trot.model.StarRankingDetail
-import com.trotfan.trot.model.StarRankingList
+import com.trotfan.trot.model.*
 import com.trotfan.trot.network.RankingHistoryService
 import com.trotfan.trot.network.response.CommonListResponse
 import com.trotfan.trot.network.response.CommonResponse
@@ -21,11 +18,15 @@ class RankingHistoryRepository @Inject constructor(
         year: String,
         month: String,
         day: String
-    ): CommonResponse<StarRankingList> = rankingHistoryService.getDailyStarList(year, month, day)
+    ): CommonResponse<StarRankingDailyList> =
+        rankingHistoryService.getDailyStarList(year, month, day)
 
     suspend fun getStarRankingDetail(
-        starId: Int
-    ): CommonResponse<List<StarRankingDetail>> = rankingHistoryService.getStarRankingDetail(starId)
+        starId: Int,
+        year: String,
+        month: String
+    ): CommonResponse<List<StarRankingDetail>> =
+        rankingHistoryService.getStarRankingDetail(starId, year, month)
 
     suspend fun getDatePickerRange(
     ): CommonResponse<DatePickerRange> = rankingHistoryService.getDatePickerRange()

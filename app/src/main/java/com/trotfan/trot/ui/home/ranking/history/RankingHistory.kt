@@ -4,10 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,64 +40,65 @@ fun RankingHistory(
             skipHalfExpanded = true
         )
     val coroutineScope = rememberCoroutineScope()
-    val startYear = rankingHistoryViewModel.startYear.collectAsState()
 
-    ModalBottomSheetLayout(
-        sheetContent = {
-            if (selectedTabIndex == 0) {
-                MonthlyCalenderPicker(
-                    modalBottomSheetState = bottomSheetState,
-                    onConfirmClick = {
-
-                    },
-                    startYear = startYear.value
-                )
-            } else {
-                DailyCalenderPicker(modalBottomSheetState = bottomSheetState,
-                    onConfirmClick = {
-
-                    })
-            }
-        },
-        sheetState = bottomSheetState,
-        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-    ) {
-        Column {
-            CustomTopAppBar(title = "지난 순위", icon = R.drawable.icon_back) {
-                navController?.popBackStack()
-            }
-
-            RankingHistoryTab(selectedTabIndex) {
-
-                if (selectedTabIndex == it) {
-                    monthlyEmptyState = monthlyEmptyState.not()
-                    dailyEmptyState = dailyEmptyState.not()
+    Surface {
+        ModalBottomSheetLayout(
+            sheetContent = {
+                if (selectedTabIndex == 0) {
+                    MonthlyCalenderPicker(
+                        modalBottomSheetState = bottomSheetState,
+                        onConfirmClick = {
+                            rankingHistoryViewModel.settingDateRange()
+                            rankingHistoryViewModel.getMonthlyStarRankingList()
+                        }
+                    )
+                } else {
+                    DailyCalenderPicker(modalBottomSheetState = bottomSheetState,
+                        onConfirmClick = {
+                            rankingHistoryViewModel.getDailyStarRankingList()
+                        })
                 }
-                selectedTabIndex = it
-            }
+            },
+            sheetState = bottomSheetState,
+            sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+        ) {
+            Column {
+                CustomTopAppBar(title = "지난 순위", icon = R.drawable.icon_back) {
+                    navController?.popBackStack()
+                }
 
-            if (selectedTabIndex == 0) {
-                RankingHistoryMonthly(
-                    emptyState = monthlyEmptyState,
-                    onCalenderClick = {
-                        coroutineScope.launch {
-                            val date = it.split("/")
-                            rankingHistoryViewModel.monthlyYear.emit(date[0].toInt())
-                            rankingHistoryViewModel.monthlyMonth.emit(date[1].toInt())
-                            bottomSheetState.show()
-                        }
-                    },
-                    onItemClick = {
-                        navController?.navigate(Route.RankingHistoryCumulative.route)
-                    })
-            } else {
-                RankingHistoryDaily(
-                    emptyState = dailyEmptyState,
-                    onCalenderClick = {
-                        coroutineScope.launch {
-                            bottomSheetState.show()
-                        }
-                    })
+                RankingHistoryTab(selectedTabIndex) {
+
+                    if (selectedTabIndex == it) {
+                        monthlyEmptyState = monthlyEmptyState.not()
+                        dailyEmptyState = dailyEmptyState.not()
+                    }
+                    selectedTabIndex = it
+                }
+
+                if (selectedTabIndex == 0) {
+                    RankingHistoryMonthly(
+                        emptyState = monthlyEmptyState,
+                        onCalenderClick = {
+                            coroutineScope.launch {
+                                val date = it.split("/")
+                                rankingHistoryViewModel.monthlyYear.emit(date[0].toInt())
+                                rankingHistoryViewModel.monthlyMonth.emit(date[1].toInt())
+                                bottomSheetState.show()
+                            }
+                        },
+                        onItemClick = { starRanking ->
+                            navController?.navigate("${Route.RankingHistoryCumulative.route}/${starRanking.star_id}/${starRanking.name}/${rankingHistoryViewModel.monthlyYear.value}-${rankingHistoryViewModel.monthlyMonth.value}")
+                        })
+                } else {
+                    RankingHistoryDaily(
+                        emptyState = dailyEmptyState,
+                        onCalenderClick = {
+                            coroutineScope.launch {
+                                bottomSheetState.show()
+                            }
+                        })
+                }
             }
         }
     }

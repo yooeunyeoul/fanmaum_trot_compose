@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -115,9 +116,23 @@ fun NavigationComponent(
                 )
             }
         }
-        composable(Route.RankingHistoryCumulative.route) {
+        composable("${Route.RankingHistoryCumulative.route}/{starId}/{starName}/{date}",
+            arguments = listOf(
+                navArgument(name = "starId") {
+                    type = NavType.IntType
+                },
+                navArgument(name = "starName") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "date") {
+                    type = NavType.StringType
+                }
+            )) { backStackEntry ->
             CumulativeRanking(
-                navController = navController
+                navController = navController,
+                backStackEntry.arguments?.getInt("starId"),
+                backStackEntry.arguments?.getString("starName"),
+                backStackEntry.arguments?.getString("date")
             )
         }
     }
