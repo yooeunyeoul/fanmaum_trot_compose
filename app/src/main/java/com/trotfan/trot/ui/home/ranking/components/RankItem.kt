@@ -67,6 +67,7 @@ fun RankItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp)
             .clickable {
                 onClick.invoke(item)
             },
@@ -225,6 +226,7 @@ fun RankImageItem(top3List: List<StarRanking>) {
                         contentScale = ContentScale.FillHeight,
                         modifier = Modifier
                             .align(Alignment.Center)
+                            .fillMaxHeight()
                             .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
                     )
 
@@ -283,7 +285,7 @@ fun RankImageItem(top3List: List<StarRanking>) {
 
 
                     Image(
-                        painter = painterResource(id = R.drawable.ranking_1st),
+                        painter = painterResource(id = R.drawable.ranking_2nd),
                         contentDescription = null,
                         modifier = Modifier
                             .size(40.dp)
@@ -362,7 +364,7 @@ fun RankImageItem(top3List: List<StarRanking>) {
 
 
                     Image(
-                        painter = painterResource(id = R.drawable.ranking_1st),
+                        painter = painterResource(id = R.drawable.ranking_3rd),
                         contentDescription = null,
                         modifier = Modifier
                             .size(40.dp)

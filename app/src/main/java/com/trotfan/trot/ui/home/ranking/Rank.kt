@@ -43,6 +43,7 @@ import com.trotfan.trot.ui.home.ranking.components.RankItem
 import com.trotfan.trot.ui.home.ranking.viewmodel.MonthlyRankViewType
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankHomeViewModel
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankRemainingStatus
+import com.trotfan.trot.ui.home.ranking.viewmodel.RankStatus
 import com.trotfan.trot.ui.home.vote.component.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
@@ -52,10 +53,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
-
-enum class RankStatus {
-    Available, UnAvailable
-}
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -76,9 +73,7 @@ fun RankHome(
     )
     val scrollState = rememberScrollState()
 
-    val rankStatus by remember {
-        mutableStateOf(RankStatus.Available)
-    }
+    val rankStatus by viewModel.rankStatus.collectAsState()
     val rankRemainingStatus by viewModel.rankRemainingStatus.collectAsState()
     val pairMenList by viewModel.pairMenRankList.collectAsState()
     val pairWomenList by viewModel.pairWomenRankList.collectAsState()
@@ -266,7 +261,9 @@ fun RankHome(
                     }
                     RankStatus.UnAvailable -> {
                         item {
-                            noRankHistory()
+                            noRankHistory {
+                                onNavigateClick.invoke(HomeSections.Vote)
+                            }
                         }
                     }
                 }
@@ -323,7 +320,7 @@ fun VoteWaitingView() {
 }
 
 @Composable
-fun noRankHistory() {
+fun noRankHistory(onNavigateClick: (HomeSections) -> Unit) {
     Column(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -366,7 +363,7 @@ fun noRankHistory() {
         Spacer(modifier = Modifier.height(32.dp))
         BtnOutlineSecondaryLeftIcon(
             text = "투표 하러가기",
-            onClick = { /*TODO*/ },
+            onClick = { onNavigateClick.invoke(HomeSections.Vote) },
             icon = R.drawable.icon_vote,
             isCircle = false
         )
@@ -376,19 +373,16 @@ fun noRankHistory() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HorizontalImagePager(scrollState: ScrollState, banners: List<Banner> = listOf()) {
-    if (banners.isEmpty()) {
-        return
-    }
+fun HorizontalImagePager(
+    scrollState: ScrollState,
+    banners: List<Banner>
+) {
+
     val pagerState = rememberPagerState(initialPage = 0)
     var ticks by remember { mutableStateOf(3) }
-//    val pageList = mutableListOf<String>(
-//        "https://cdn.clien.net/web/api/file/F01/11598178/52d17b86e92c22.png?w=780&h=30000",
-//        "https://image.chosun.com/sitedata/image/202105/04/2021050400008_0.jpg",
-//        "https://cdn.mhnse.com/news/photo/202204/102523_85665_1330.jpg"
-//    )
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(banners) {
+
         while (true) {
             delay(1.seconds)
             ticks--
@@ -430,39 +424,48 @@ fun HorizontalImagePager(scrollState: ScrollState, banners: List<Banner> = listO
                     }
                 })
         ) { page: Int ->
-            ticks = 3
-            val currentPage = page % banners.count()
+            if (banners.isNotEmpty()) {
+                ticks = 3
+                val currentPage = page % banners.count()
 
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(banners[currentPage].image)
-                    .crossfade(true).build(),
-                contentDescription = null,
-                error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .align(Alignment.Center)
-            )
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(banners[currentPage].image)
+                        .crossfade(true).build(),
+                    contentDescription = null,
+                    error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
+                    contentScale = ContentScale.FillHeight,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                )
+            }
+
 
         }
-
-        Box(
-            Modifier
-                .padding(end = 16.dp, bottom = 8.dp)
-                .align(Alignment.BottomEnd)
-                .background(GrayOpacity30, shape = RoundedCornerShape(16.dp))
-        ) {
-            Text(
-                text = "${(pagerState.currentPage % banners.count()) + 1}/${banners.size}",
-                style = FanwooriTypography.body2,
-                color = Color.White,
-                modifier = Modifier.padding(
-                    start = 9.dp,
-                    end = 9.dp,
-                    top = 4.dp,
-                    bottom = 4.dp
+        if (banners.isNotEmpty()) {
+            Box(
+                Modifier
+                    .padding(end = 16.dp, bottom = 8.dp)
+                    .align(Alignment.BottomEnd)
+                    .background(
+                        color = Color.Black.copy(alpha = 0.30f),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+            ) {
+                Text(
+                    text = "${(pagerState.currentPage % banners.count()) + 1}/${banners.size}",
+                    style = FanwooriTypography.body2,
+                    color = Color.White,
+                    modifier = Modifier.padding(
+                        start = 9.dp,
+                        end = 9.dp,
+                        top = 4.dp,
+                        bottom = 4.dp
+                    )
                 )
-            )
+            }
+
         }
     }
 
