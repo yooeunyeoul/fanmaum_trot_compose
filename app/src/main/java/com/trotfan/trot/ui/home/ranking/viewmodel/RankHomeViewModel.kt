@@ -32,6 +32,10 @@ enum class RankRemainingStatus {
     VoteIng, VoteWaiting
 }
 
+enum class RankStatus {
+    Available, UnAvailable
+}
+
 const val ApiNotRoad = -1004
 
 @HiltViewModel
@@ -71,16 +75,22 @@ class RankHomeViewModel @Inject constructor(
     private val _favoriteStar =
         MutableStateFlow(FavoriteStarInfo())
 
-
     val banners: StateFlow<List<Banner>>
         get() = _banners
     private val _banners =
-        MutableStateFlow<List<Banner>>(listOf())
+        MutableStateFlow(
+            listOf<Banner>()
+        )
 
     val rankRemainingStatus: StateFlow<Pair<String, RankRemainingStatus>>
         get() = _rankRemainingStatus
     private val _rankRemainingStatus =
         MutableStateFlow(Pair("", RankRemainingStatus.VoteIng))
+
+    val rankStatus: StateFlow<RankStatus>
+        get() = _rankStatus
+    private val _rankStatus =
+        MutableStateFlow(RankStatus.Available)
 
     var remain24HourTime: Int = 0
     var remainMonthlyVoteTime: Int = ApiNotRoad
@@ -98,9 +108,11 @@ class RankHomeViewModel @Inject constructor(
     private fun getVoteEndedTime() {
         viewModelScope.launch {
             val response = voteRepository.getVote()
-//            val milliSecond = convertStringToTime(response?.data?.endedAt ?: "")
-            val milliSecond = convertStringToTime("2022-12-26 23:59:59")
-            remainMonthlyVoteTime = getTime(milliSecond)
+            val milliSecond = convertStringToTime(response?.data?.endedAt ?: "")
+//            val milliSecond = convertStringToTime("2022-12-27 11:45:11")
+            val differenceTime = getTime(milliSecond)
+            remainMonthlyVoteTime = if (differenceTime < 0) ApiNotRoad else differenceTime
+            Log.e("remain", remainMonthlyVoteTime.toString())
 
         }
     }
@@ -113,6 +125,7 @@ class RankHomeViewModel @Inject constructor(
                 if (remainMonthlyVoteTime != ApiNotRoad) {
                     remainMonthlyVoteTime -= 1
                     if (remainMonthlyVoteTime < 0) {
+                        remainMonthlyVoteTime = ApiNotRoad
                         getVoteEndedTime()
                     } else {
                         if (LocalDate.now().dayOfMonth == 2) {
@@ -183,70 +196,83 @@ class RankHomeViewModel @Inject constructor(
             when (response.result.code) {
                 ResultCodeStatus.Success.code -> {
                     val result = response.data
-                    val menList = result?.men?.filter { it.rank < 4 }
-                    val originMenCount = menList?.count()
-                    val distinctMen = menList?.distinctBy { it.rank }?.filter { it.rank != 0 }
-                    val distinctMenCount = distinctMen?.count()
-                    if (originMenCount == distinctMenCount) {
-                        if (distinctMen?.count { (it.rank ?: 0) < 4 } == 3) {
-                            Log.e("IMAGE VIEW", "남자 이미지")
-                            _pairMenRankList.emit(
-                                Pair(
-                                    first = MonthlyRankViewType.IMAGE,
-                                    second = result?.men
+
+                    when {
+                        result?.men.isNullOrEmpty() and result?.women.isNullOrEmpty() -> {
+                            _rankStatus.emit(RankStatus.UnAvailable)
+                        }
+                        else -> {
+                            _rankStatus.emit(RankStatus.Available)
+                            val menList = result?.men?.filter { it.rank < 4 }
+                            val originMenCount = menList?.count()
+                            val distinctMen =
+                                menList?.distinctBy { it.rank }?.filter { it.rank != 0 }
+                            val distinctMenCount = distinctMen?.count()
+                            if (originMenCount == distinctMenCount) {
+                                if (distinctMen?.count { (it.rank ?: 0) < 4 } == 3) {
+                                    Log.e("IMAGE VIEW", "남자 이미지")
+                                    _pairMenRankList.emit(
+                                        Pair(
+                                            first = MonthlyRankViewType.IMAGE,
+                                            second = result?.men
+                                        )
+                                    )
+                                } else {
+                                    Log.e("NUMBER VIEW", "남자 넘버")
+                                    _pairMenRankList.emit(
+                                        Pair(
+                                            first = MonthlyRankViewType.NUMBER,
+                                            second = result?.men
+                                        )
+                                    )
+                                }
+
+                            } else {
+                                Log.e("NUMBER VIEW", "남자 넘버")
+                                _pairMenRankList.emit(
+                                    Pair(
+                                        first = MonthlyRankViewType.NUMBER,
+                                        second = result?.men
+                                    )
                                 )
-                            )
-                        } else {
-                            Log.e("NUMBER VIEW", "남자 넘버")
-                            _pairMenRankList.emit(
-                                Pair(
-                                    first = MonthlyRankViewType.NUMBER,
-                                    second = result?.men
+                            }
+                            val womenList = result?.women?.subList(0, 4)
+                            val originWomenCount = womenList?.count()
+                            val distinctWomen = womenList?.distinctBy { it.rank }
+                            val distinctWomenCount = distinctWomen?.count()
+                            if (originWomenCount == distinctWomenCount) {
+
+                                if (distinctMen?.count { (it.rank ?: 0) < 4 } == 3) {
+                                    Log.e("IMAGE VIEW", "여자 이미지")
+                                    _pairWomenRankList.emit(
+                                        Pair(
+                                            first = MonthlyRankViewType.IMAGE,
+                                            second = result?.women
+                                        )
+                                    )
+                                } else {
+                                    Log.e("NUMBER VIEW", "여자 넘버")
+                                    _pairWomenRankList.emit(
+                                        Pair(
+                                            first = MonthlyRankViewType.NUMBER,
+                                            second = result?.women
+                                        )
+                                    )
+                                }
+                            } else {
+                                Log.e("NUMBER VIEW", "여자 넘버")
+                                _pairWomenRankList.emit(
+                                    Pair(
+                                        first = MonthlyRankViewType.NUMBER,
+                                        second = result?.women
+                                    )
                                 )
-                            )
+                            }
+
                         }
 
-                    } else {
-                        Log.e("NUMBER VIEW", "남자 넘버")
-                        _pairMenRankList.emit(
-                            Pair(
-                                first = MonthlyRankViewType.NUMBER,
-                                second = result?.men
-                            )
-                        )
                     }
-                    val womenList = result?.women?.subList(0, 4)
-                    val originWomenCount = womenList?.count()
-                    val distinctWomen = womenList?.distinctBy { it.rank }
-                    val distinctWomenCount = distinctWomen?.count()
-                    if (originWomenCount == distinctWomenCount) {
 
-                        if (distinctMen?.count { (it.rank ?: 0) < 4 } == 3) {
-                            Log.e("IMAGE VIEW", "여자 이미지")
-                            _pairWomenRankList.emit(
-                                Pair(
-                                    first = MonthlyRankViewType.IMAGE,
-                                    second = result?.women
-                                )
-                            )
-                        } else {
-                            Log.e("NUMBER VIEW", "여자 넘버")
-                            _pairWomenRankList.emit(
-                                Pair(
-                                    first = MonthlyRankViewType.NUMBER,
-                                    second = result?.women
-                                )
-                            )
-                        }
-                    } else {
-                        Log.e("NUMBER VIEW", "여자 넘버")
-                        _pairWomenRankList.emit(
-                            Pair(
-                                first = MonthlyRankViewType.NUMBER,
-                                second = result?.women
-                            )
-                        )
-                    }
                 }
             }
         }

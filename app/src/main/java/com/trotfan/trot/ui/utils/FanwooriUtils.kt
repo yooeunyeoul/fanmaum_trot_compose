@@ -183,7 +183,7 @@ fun getTime(
 
 fun convertStringToTime(date: String): Long {
     return if (date.isNotEmpty()) {
-        val formatter = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         formatter.parse(date)?.time ?: 0
     } else {
         0
