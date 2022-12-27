@@ -43,6 +43,7 @@ fun RankingHistory(
             skipHalfExpanded = true
         )
     val coroutineScope = rememberCoroutineScope()
+    val startYear = rankingHistoryViewModel.startYear.collectAsState()
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -51,7 +52,8 @@ fun RankingHistory(
                     modalBottomSheetState = bottomSheetState,
                     onConfirmClick = {
 
-                    }
+                    },
+                    startYear = startYear.value
                 )
             } else {
                 DailyCalenderPicker(modalBottomSheetState = bottomSheetState,

@@ -4,29 +4,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.trotfan.trot.R
-import com.trotfan.trot.model.CumulativeRankingTest
+import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
+import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
-import java.util.Collections
 
 @Composable
-fun CumulativeRanking(navController: NavController? = null) {
+fun CumulativeRanking(
+    navController: NavController? = null,
+    starInfo: StarRanking? = null,
+    historyViewModel: RankingHistoryViewModel = viewModel()
+) {
     val lazyColumnState = rememberLazyListState()
-    val temp = mutableListOf<CumulativeRankingTest>()
-    for (i in 0.rangeTo(30)) {
-        temp.add(
-            CumulativeRankingTest(
-                day = i.plus(1),
-                votes = i * 1050,
-                score = i + 10,
-                rank = i * 2
-            )
-        )
-    }
-    temp.sortByDescending { it.day }
+    val starRankingDetail = historyViewModel.starRankingDetail.collectAsState().value
+
     Column {
         CustomTopAppBar(title = "임영웅 일간누적순위", icon = R.drawable.icon_back) {
             navController?.popBackStack()
@@ -37,8 +33,8 @@ fun CumulativeRanking(navController: NavController? = null) {
                 CumulativeRankingHeader(title = "2022년 1월")
             }
 
-            items(temp.size) { index ->
-                CumulativeRankingItem(cumulativeRanking = temp[index])
+            items(starRankingDetail.size) { index ->
+                CumulativeRankingItem(cumulativeRanking = starRankingDetail[index])
             }
         }
     }

@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
@@ -65,7 +66,7 @@ fun NavigationComponent(
             onNavigateBottomBar = {
                 onNavigateBottomBar.invoke(it)
             },
-            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel->
+            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel ->
                 onVotingClick(voteId, voteTicket, star, viewModel)
             },
             navController = navController,

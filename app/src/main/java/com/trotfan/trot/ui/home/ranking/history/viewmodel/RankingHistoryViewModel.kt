@@ -9,6 +9,7 @@ import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.model.Banner
 import com.trotfan.trot.model.DatePickerRange
 import com.trotfan.trot.model.StarRanking
+import com.trotfan.trot.model.StarRankingDetail
 import com.trotfan.trot.repository.RankingHistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +43,8 @@ class RankingHistoryViewModel @Inject constructor(
 
     val banners = MutableStateFlow<List<Banner>?>(null)
     val startYear = MutableStateFlow(2000)
+
+    val starRankingDetail = MutableStateFlow(listOf<StarRankingDetail>())
 
     init {
         getDatePickerRange()
@@ -117,6 +120,20 @@ class RankingHistoryViewModel @Inject constructor(
                     dailyMonth.emit(tempDate[1].toInt())
                     dailyDay.emit(tempDate[2].toInt())
                     getDailyStarRankingList()
+                }
+            }.onFailure {
+                Log.d("RankingHistoryViewModel", it.message.toString())
+            }
+        }
+    }
+
+    fun getStarRankingDetail(starId: Int) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                repository.getStarRankingDetail(starId)
+            }.onSuccess {
+                it.data?.let { list ->
+                    starRankingDetail.emit(list)
                 }
             }.onFailure {
                 Log.d("RankingHistoryViewModel", it.message.toString())

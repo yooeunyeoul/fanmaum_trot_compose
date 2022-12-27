@@ -36,6 +36,7 @@ import java.util.*
 @Composable
 fun MonthlyCalenderPicker(
     modalBottomSheetState: ModalBottomSheetState,
+    startYear: Int,
     onConfirmClick: (String) -> Unit,
     rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
 ) {
@@ -50,7 +51,6 @@ fun MonthlyCalenderPicker(
     var tempMonth by remember {
         mutableStateOf(month.value)
     }
-    val startYear = rankingHistoryViewModel.startYear.collectAsState()
 
     Column(
         modifier = Modifier
@@ -65,13 +65,13 @@ fun MonthlyCalenderPicker(
         }
         Spacer(modifier = Modifier.height(40.dp))
 
-        Log.d("test", startYear.value.toString())
+        Log.d("test", startYear.toString())
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
             NumberPickerComponent(
                 context = context,
                 year.value,
-                startYear.value,
-                startYear.value
+                startYear,
+                startYear
             ) { p0, _, _ ->
                 tempYear = p0.value
             }
@@ -160,13 +160,13 @@ fun PickerChip(text: String) {
 fun MonthlyCalenderPickerPreview() {
     FanwooriTheme {
         MonthlyCalenderPicker(
+            modalBottomSheetState =
             rememberModalBottomSheetState(
                 initialValue = ModalBottomSheetValue.Hidden,
                 skipHalfExpanded = true
             ),
-            {
-
-            }
+            onConfirmClick = {},
+            startYear = 2000
         )
     }
 }
