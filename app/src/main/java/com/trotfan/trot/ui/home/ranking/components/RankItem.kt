@@ -29,8 +29,6 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
-import com.trotfan.trot.model.MonthStarRank
-import com.trotfan.trot.model.MonthStarRankInfo
 import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.signup.Sample
 import com.trotfan.trot.ui.theme.*
@@ -80,7 +78,7 @@ fun RankItem(
                 .height(72.dp)
                 .fillMaxWidth()
                 .padding(
-                    start = 12.dp,
+                    start = 19.dp,
                     top = 8.dp,
                     bottom = 8.dp,
                     end = 12.dp
@@ -109,7 +107,7 @@ fun RankItem(
 
             } else {
                 Text(
-                    text = if (rank == 0) "-" else "$rank",
+                    text = if (subText == 0) "-" else "$rank",
                     style = FanwooriTypography.subtitle3,
                     color = Gray700
                 )
@@ -160,7 +158,7 @@ val textShadow =
     Shadow(color = Color.Black.copy(alpha = 0.30f), offset = Offset(2f, 2f), blurRadius = 4f)
 
 @Composable
-fun RankImageItem(top3List: List<StarRanking>) {
+fun RankImageItem(top3List: List<StarRanking>, onClick: (Any?) -> Unit) {
     Column {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -178,10 +176,13 @@ fun RankImageItem(top3List: List<StarRanking>) {
                 Modifier
                     .weight(1f)
                     .background(color = Color.White)
+                    .clickable {
+                        onClick.invoke(top3List[0])
+                    }
             ) {
                 Box(modifier = Modifier.align(Alignment.Center)) {
                     Image(
-                        painter = painterResource(id = R.drawable.ranking_1st_03),
+                        painter = painterResource(id = R.drawable.ranking_1st),
                         contentDescription = null,
                         modifier = Modifier
                             .size(72.dp)
@@ -254,7 +255,12 @@ fun RankImageItem(top3List: List<StarRanking>) {
                     )
             ) {
 
-                Box(Modifier.size(136.dp)) {
+                Box(
+                    Modifier
+                        .size(136.dp)
+                        .clickable {
+                            onClick.invoke(top3List[1])
+                        }) {
 
                     Column(
                         modifier = Modifier
@@ -318,7 +324,12 @@ fun RankImageItem(top3List: List<StarRanking>) {
 
                 }
                 Spacer(modifier = Modifier.height(2.dp))
-                Box(Modifier.size(136.dp)) {
+                Box(
+                    Modifier
+                        .size(136.dp)
+                        .clickable {
+                            onClick.invoke(top3List[2])
+                        }) {
 
                     Column(
                         modifier = Modifier
@@ -416,5 +427,5 @@ fun PreviewListItemButtonNotSub() {
 @Composable
 @Preview
 fun PreviewRankImageItem() {
-    RankImageItem(listOf())
+    RankImageItem(listOf(),{})
 }

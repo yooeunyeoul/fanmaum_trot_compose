@@ -38,9 +38,9 @@ fun RankingStarMonthlyItem(star: StarRanking, onItemClick: () -> Unit) {
 @Composable
 fun RankingMonthlyRankerItem(star: StarRanking, onItemClick: () -> Unit) {
     val painter: Painter = when (star.rank) {
-        1 -> painterResource(id = R.drawable.ic_ranking_monthlytop1)
-        2 -> painterResource(id = R.drawable.ic_ranking_monthlytop2)
-        else -> painterResource(id = R.drawable.ic_ranking_monthlytop3)
+        1 -> painterResource(id = R.drawable.ranking_monthlytop1)
+        2 -> painterResource(id = R.drawable.ranking_monthlytop2)
+        else -> painterResource(id = R.drawable.ranking_monthlytop3)
     }
     Row(
         modifier = Modifier

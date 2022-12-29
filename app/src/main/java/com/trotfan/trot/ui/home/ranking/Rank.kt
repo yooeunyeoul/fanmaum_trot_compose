@@ -228,15 +228,24 @@ fun RankHome(
                             when (viewType) {
                                 MonthlyRankViewType.IMAGE -> {
                                     if (index == 2) {
-                                        RankImageItem(list.subList(0, 3))
+                                        RankImageItem(list.subList(0, 3), onClick = {
+                                            if (it is StarRanking) {
+                                                navigateRankingHistory(navController, it)
+
+                                            }
+                                        }
+                                        )
                                     } else if (index > 2) {
                                         RankItem(
                                             text = list[index].name ?: "",
                                             subText = list[index].score,
                                             imageUrl = list[index].image,
                                             rank = list[index].rank ?: 0,
-                                            item = null,
+                                            item = list[index],
                                             onClick = {
+                                                if (it is StarRanking) {
+                                                    navigateRankingHistory(navController, it)
+                                                }
 
                                             }
                                         )
@@ -248,8 +257,11 @@ fun RankHome(
                                         subText = list[index].score,
                                         imageUrl = list[index].image,
                                         rank = list[index].rank ?: 0,
-                                        item = null,
+                                        item = list[index],
                                         onClick = {
+                                            if (it is StarRanking) {
+                                                navigateRankingHistory(navController, it)
+                                            }
                                         }
                                     )
                                 }
@@ -275,6 +287,11 @@ fun RankHome(
 
     }
 
+
+}
+
+fun navigateRankingHistory(navController: NavController, starRanking: StarRanking) {
+    navController.navigate("${Route.RankingHistoryCumulative.route}/${starRanking.star_id}/${starRanking.name}/${LocalDate.now().year}-${LocalDate.now().month.value}")
 
 }
 
