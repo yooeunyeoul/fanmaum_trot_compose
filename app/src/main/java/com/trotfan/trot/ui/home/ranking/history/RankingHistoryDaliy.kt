@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.trotfan.trot.ui.home.ranking.history.component.daily.EmptyDailyRankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.daily.RankingHistoryDailyHeader
 import com.trotfan.trot.ui.home.ranking.history.component.daily.RankingStarDailyItem
@@ -18,6 +19,8 @@ import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 fun RankingHistoryDaily(
     emptyState: Boolean = false,
     onCalenderClick: () -> Unit,
+    navController: NavController? = null,
+    onVotingClick: () -> Unit?,
     viewModel: RankingHistoryViewModel = viewModel()
 ) {
     val manList = viewModel.dailyManList.collectAsState().value
@@ -32,7 +35,7 @@ fun RankingHistoryDaily(
 
     Column {
         if (emptyState) {
-            EmptyDailyRankingHistory()
+            EmptyDailyRankingHistory(navController = navController, onVotingClick = onVotingClick)
         } else {
             Spacer(modifier = Modifier.height(24.dp))
             RankingHistoryDailyHeader(onCalenderClick = {

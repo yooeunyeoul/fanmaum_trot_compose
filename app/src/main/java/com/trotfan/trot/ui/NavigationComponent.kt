@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,6 +24,7 @@ import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
 import com.trotfan.trot.ui.signup.*
+import com.trotfan.trot.ui.webview.PublicWebView
 
 enum class Route(
     @StringRes val title: Int? = null,
@@ -38,7 +38,8 @@ enum class Route(
     InvitationCode(route = "invitationCode"),
     VoteBenefits(route = "voteBenefits"),
     RankingHistory(route = "rankingHistory"),
-    RankingHistoryCumulative(route = "RankingHistoryCumulative")
+    RankingHistoryCumulative(route = "RankingHistoryCumulative"),
+    WebView(route = "WebView")
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -112,9 +113,19 @@ fun NavigationComponent(
         composable(Route.RankingHistory.route) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 RankingHistory(
-                    navController = navController
+                    navController = navController,
+                    onVotingClick = { onNavigateBottomBar.invoke(HomeSections.Vote) }
                 )
             }
+        }
+        composable("${Route.WebView.route}/{uri}", arguments = listOf(
+            navArgument(name = "uri") {
+                type = NavType.StringType
+            }
+        )) { backStackEntry ->
+            PublicWebView(
+                backStackEntry.arguments?.getString("uri")
+            )
         }
         composable("${Route.RankingHistoryCumulative.route}/{starId}/{starName}/{date}",
             arguments = listOf(

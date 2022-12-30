@@ -24,7 +24,7 @@ import com.trotfan.trot.ui.utils.NumberComma
 
 @Composable
 fun RankingStarDailyItem(star: StarRankingDaily) {
-    if (star.rank < 4) {
+    if (star.rank in 1..3) {
         RankingDailyRankerItem(star = star)
     } else {
         RankingDailyDefaultItem(star = star)
@@ -110,7 +110,7 @@ fun RankingDailyDefaultItem(star: StarRankingDaily?) {
         Spacer(modifier = Modifier.width(24.dp))
 
         Text(
-            text = star?.rank.toString(),
+            text = if (star?.rank == 0) "-" else star?.rank.toString(),
             style = FanwooriTypography.subtitle3,
             color = Gray700,
             textAlign = TextAlign.Center,

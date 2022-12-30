@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -17,7 +18,10 @@ import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Primary500
 
 @Composable
-fun EmptyMonthlyRankingHistory() {
+fun EmptyMonthlyRankingHistory(
+    navController: NavController?,
+    onVotingClick: () -> Unit?
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -64,7 +68,10 @@ fun EmptyMonthlyRankingHistory() {
 
         BtnOutlineSecondaryLeftIcon(
             text = "투표 하러가기",
-            onClick = { },
+            onClick = {
+                navController?.popBackStack()
+                onVotingClick()
+            },
             icon = R.drawable.icon_vote,
             isCircle = false
         )

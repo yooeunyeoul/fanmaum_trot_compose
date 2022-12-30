@@ -12,7 +12,7 @@ data class StarRankingList(
 @Serializable
 data class StarRanking(
     val score: Int = 0,
-    val star_id: Int = 0,
+    val id: Int = 0,
     val gender: Int = 0,
     val name: String = "",
     val image: String = "",

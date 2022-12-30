@@ -51,7 +51,6 @@ import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
@@ -273,7 +272,7 @@ fun RankHome(
                     }
                     RankStatus.UnAvailable -> {
                         item {
-                            noRankHistory {
+                            NoRankHistory {
                                 onNavigateClick.invoke(HomeSections.Vote)
                             }
                         }
@@ -291,7 +290,7 @@ fun RankHome(
 }
 
 fun navigateRankingHistory(navController: NavController, starRanking: StarRanking) {
-    navController.navigate("${Route.RankingHistoryCumulative.route}/${starRanking.star_id}/${starRanking.name}/${LocalDate.now().year}-${LocalDate.now().month.value}")
+    navController.navigate("${Route.RankingHistoryCumulative.route}/${starRanking.id}/${starRanking.name}/${LocalDate.now().year}-${LocalDate.now().month.value}")
 
 }
 
@@ -337,7 +336,7 @@ fun VoteWaitingView() {
 }
 
 @Composable
-fun noRankHistory(onNavigateClick: (HomeSections) -> Unit) {
+fun NoRankHistory(onNavigateClick: (HomeSections) -> Unit) {
     Column(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally

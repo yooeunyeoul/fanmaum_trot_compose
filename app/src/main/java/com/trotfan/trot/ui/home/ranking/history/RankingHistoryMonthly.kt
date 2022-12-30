@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.EmptyMonthlyRankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingHistoryBanner
@@ -28,6 +29,8 @@ fun RankingHistoryMonthly(
     emptyState: Boolean = false,
     onCalenderClick: (String) -> Unit,
     onItemClick: (StarRanking) -> Unit,
+    navController: NavController? = null,
+    onVotingClick: () -> Unit?,
     viewModel: RankingHistoryViewModel = viewModel()
 ) {
     val manList = viewModel.monthlyManList.collectAsState().value
@@ -42,7 +45,7 @@ fun RankingHistoryMonthly(
 
     Column {
         if (emptyState) {
-            EmptyMonthlyRankingHistory()
+            EmptyMonthlyRankingHistory(navController = navController, onVotingClick = onVotingClick)
         } else {
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -77,7 +80,9 @@ fun RankingHistoryMonthly(
             Spacer(modifier = Modifier.height(24.dp))
             LazyColumn {
                 item {
-                    RankingHistoryBanner()
+                    RankingHistoryBanner(
+                        navController = navController
+                    )
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
@@ -109,7 +114,8 @@ fun RankingHistoryMonthlyPreview() {
     FanwooriTheme {
         RankingHistoryMonthly(
             onCalenderClick = {},
-            onItemClick = {}
+            onItemClick = {},
+            onVotingClick = {}
         )
     }
 }

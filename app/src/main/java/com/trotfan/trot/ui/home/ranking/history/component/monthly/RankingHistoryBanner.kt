@@ -1,5 +1,7 @@
 package com.trotfan.trot.ui.home.ranking.history.component.monthly
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,13 +25,19 @@ import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.theme.FanwooriTypography
+import com.trotfan.trot.ui.utils.clickableSingle
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun RankingHistoryBanner(
+    navController: NavController? = null,
     viewModel: RankingHistoryViewModel = viewModel()
 ) {
     val pagerState = rememberPagerState()
@@ -51,6 +59,13 @@ fun RankingHistoryBanner(
                     .fillMaxHeight()
                     .padding(start = 4.dp, end = 4.dp)
                     .clip(RoundedCornerShape(12.dp))
+                    .clickableSingle {
+                        navController?.navigate(
+                            "${Route.WebView.route}/${
+                                URLEncoder.encode("${banners?.get(page)?.path}")
+                            }"
+                        )
+                    }
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)

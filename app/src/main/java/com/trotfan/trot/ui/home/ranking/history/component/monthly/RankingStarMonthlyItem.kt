@@ -28,7 +28,7 @@ import com.trotfan.trot.ui.utils.clickable
 
 @Composable
 fun RankingStarMonthlyItem(star: StarRanking, onItemClick: () -> Unit) {
-    if (star.rank < 4) {
+    if (star.rank in 1..3) {
         RankingMonthlyRankerItem(star = star, onItemClick = onItemClick)
     } else {
         RankingMonthlyDefaultItem(star = star, onItemClick = onItemClick)
@@ -132,7 +132,7 @@ fun RankingMonthlyDefaultItem(star: StarRanking, onItemClick: () -> Unit) {
         Spacer(modifier = Modifier.width(24.dp))
 
         Text(
-            text = star.rank.toString(),
+            text = if (star.rank == 0) "-" else star.rank.toString(),
             style = FanwooriTypography.subtitle3,
             color = Gray700,
             textAlign = TextAlign.Center,
