@@ -95,8 +95,6 @@ fun RankingMonthlyRankerItem(star: StarRanking, onItemClick: () -> Unit) {
                 style = FanwooriTypography.subtitle1
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
-
             Text(
                 text = "${NumberComma.decimalFormat.format(star.score)} 점",
                 color = Gray700,
@@ -174,8 +172,6 @@ fun RankingMonthlyDefaultItem(star: StarRanking, onItemClick: () -> Unit) {
                 color = Gray900,
                 style = FanwooriTypography.subtitle1
             )
-
-            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
                 text = "${NumberComma.decimalFormat.format(star.score)} 점",

@@ -88,8 +88,6 @@ fun RankingDailyRankerItem(star: StarRankingDaily?) {
                 style = FanwooriTypography.subtitle1
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
-
             Text(
                 text = "${NumberComma.decimalFormat.format(star?.score)} 점",
                 color = Gray700,
@@ -152,8 +150,6 @@ fun RankingDailyDefaultItem(star: StarRankingDaily?) {
                 color = Gray900,
                 style = FanwooriTypography.subtitle1
             )
-
-            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
                 text = "${NumberComma.decimalFormat.format(star?.score)} 점",
