@@ -111,12 +111,8 @@ fun FanwooriApp(
                                             saveState = true
                                         }
                                     }
-                                    if (route.route == HomeSections.Vote.route) {
-                                        coroutineScope.launch {
-                                            lazyListState.scrollToItem(0)
-                                        }
-                                    }
-                                }
+                                },
+                                lazyListState = lazyListState
                             )
                         }
                     }

@@ -62,7 +62,7 @@ fun RankHome(
     navController: NavController,
     viewModel: RankHomeViewModel = hiltViewModel(),
     onNavigateClick: (HomeSections) -> Unit,
-    lazyListState: LazyListState = rememberLazyListState()
+    lazyListState: LazyListState
 ) {
     val favoriteStarGender by viewModel.gender.collectAsState()
 

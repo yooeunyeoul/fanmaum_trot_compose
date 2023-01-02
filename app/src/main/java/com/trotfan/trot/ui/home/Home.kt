@@ -78,6 +78,7 @@ fun TrotBottomBar(
     tabs: Array<HomeSections>,
     currentRoute: HomeSections,
     onSelected: (HomeSections) -> Unit,
+    lazyListState: LazyListState,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -179,6 +180,9 @@ fun TrotBottomBar(
                         .selectable(
                             selected = currentRoute.title == sections.title,
                             onClick = {
+                                coroutineScope.launch {
+                                    lazyListState.scrollToItem(0)
+                                }
                                 onSelected(sections)
                             },
                             interactionSource = MutableInteractionSource(),
@@ -285,7 +289,8 @@ fun NavGraphBuilder.addHomeGraph(
             onNavigateClick = { section ->
                 onNavigateBottomBar(section)
             },
-            modifier = modifier
+            modifier = modifier,
+            lazyListState = lazyListState
         )
     }
     composable(HomeSections.Charge.route) { from ->
