@@ -135,7 +135,7 @@ fun RankHome(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    text = "12월 현재 순위",
+                                    text = "${LocalDate.now().month.value}월 현재 순위",
                                     style = FanwooriTypography.h2,
                                     color = Gray900
                                 )
