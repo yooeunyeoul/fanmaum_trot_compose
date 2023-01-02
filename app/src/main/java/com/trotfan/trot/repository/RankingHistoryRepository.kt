@@ -10,8 +10,8 @@ class RankingHistoryRepository @Inject constructor(
     private val rankingHistoryService: RankingHistoryService
 ) {
     suspend fun getMonthlyStarList(
-        year: String,
-        month: String
+        year: String?,
+        month: String?
     ): CommonResponse<StarRankingList> = rankingHistoryService.getMonthlyStarList(year, month)
 
     suspend fun getDailyStarList(

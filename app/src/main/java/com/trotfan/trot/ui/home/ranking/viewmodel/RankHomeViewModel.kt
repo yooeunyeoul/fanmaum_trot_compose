@@ -211,8 +211,8 @@ class RankHomeViewModel @Inject constructor(
     private fun getMonthStarRank() {
         viewModelScope.launch {
             val response = repository.getMonthlyStarList(
-                LocalDate.now().year.toString(),
-                LocalDate.now().month.value.toString()
+                null,
+                null
             )
             when (response.result.code) {
                 ResultCodeStatus.EmptySuccess.code -> {

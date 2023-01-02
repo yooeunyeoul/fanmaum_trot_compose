@@ -144,17 +144,26 @@ fun RankHome(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                Text(
-                                    text = "${LocalDate.now().month.value}월 현재 순위",
-                                    style = FanwooriTypography.h2,
-                                    color = Gray900
-                                )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 when (rankRemainingStatus.second) {
                                     RankRemainingStatus.VoteIng -> {
+                                        Text(
+                                            text = "${LocalDate.now().month.value}월 현재 순위",
+                                            style = FanwooriTypography.h2,
+                                            color = Gray900
+                                        )
                                         VoteRemainingView(rankRemainingStatus.first)
                                     }
                                     RankRemainingStatus.VoteWaiting -> {
+                                        Text(
+                                            text = "${
+                                                if (LocalDate.now().month.value == 1) "12" else LocalDate.now().month.value.minus(
+                                                    1
+                                                )
+                                            }월 최종 순위",
+                                            style = FanwooriTypography.h2,
+                                            color = Gray900
+                                        )
                                         VoteWaitingView()
                                     }
                                 }
@@ -332,11 +341,7 @@ fun VoteRemainingView(remainTime: String) {
 fun VoteWaitingView() {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = "${
-                if (LocalDate.now().month.value.plus(1) == 13) "1" else LocalDate.now().month.value.plus(
-                    1
-                )
-            }월 순위는 2일부터 공개됩니다",
+            text = "${LocalDate.now().month.value}월 순위는 2일부터 공개됩니다",
             style = FanwooriTypography.body2,
             color = Gray750
         )

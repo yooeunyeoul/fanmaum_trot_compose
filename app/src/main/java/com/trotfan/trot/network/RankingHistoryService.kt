@@ -6,8 +6,8 @@ import com.trotfan.trot.network.response.CommonResponse
 
 interface RankingHistoryService {
     suspend fun getMonthlyStarList(
-        year: String,
-        month: String
+        year: String?,
+        month: String?
     ): CommonResponse<StarRankingList>
 
     suspend fun getDailyStarList(
