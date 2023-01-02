@@ -84,7 +84,12 @@ class RankHomeViewModel @Inject constructor(
     val rankRemainingStatus: StateFlow<Pair<String, RankRemainingStatus>>
         get() = _rankRemainingStatus
     private val _rankRemainingStatus =
-        MutableStateFlow(Pair("", RankRemainingStatus.VoteIng))
+        MutableStateFlow(
+            Pair(
+                "08:50",
+                RankRemainingStatus.VoteIng
+            )
+        )
 
     val rankStatus: StateFlow<RankStatus>
         get() = _rankStatus
@@ -94,6 +99,8 @@ class RankHomeViewModel @Inject constructor(
     var remain24HourTime: Int = 0
     var remainMonthlyVoteTime: Int = StopLoop
 
+    var sampleCount = 0
+
     init {
         userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
         rankMainManager = RankMainManager(context.RankMainDataStore)
@@ -101,7 +108,7 @@ class RankHomeViewModel @Inject constructor(
         getBanners()
         refreshRank()
         getVoteEndedTime()
-        refreshVoteStatus()
+//        refreshVoteStatus()
     }
 
     private fun getVoteEndedTime() {
@@ -302,5 +309,40 @@ class RankHomeViewModel @Inject constructor(
                 _rankStatus.emit(RankStatus.UnAvailable)
             }
         }
+    }
+
+    fun changeTime() {
+        viewModelScope.launch {
+            sampleCount += 1
+            when {
+                sampleCount % 3 == 0 -> {
+                    _rankRemainingStatus.emit(
+                        Pair(
+                            "08:50",
+                            RankRemainingStatus.VoteIng
+                        )
+                    )
+
+                }
+                sampleCount % 3 == 1 -> {
+                    _rankRemainingStatus.emit(
+                        Pair(
+                            "36일",
+                            RankRemainingStatus.VoteIng
+                        )
+                    )
+
+                }
+                sampleCount % 3 == 2 -> {
+                    _rankRemainingStatus.emit(
+                        Pair(
+                            "36일",
+                            RankRemainingStatus.VoteWaiting
+                        )
+                    )
+                }
+            }
+        }
+
     }
 }

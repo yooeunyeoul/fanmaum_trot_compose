@@ -105,9 +105,11 @@ fun RankHome(
         ) {
             AppbarL(
                 title = "순위",
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp).clickable {
-                    viewModel.changeStatus()
-                }
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp)
+                    .clickable {
+                        viewModel.changeStatus()
+                    }
             )
             LazyColumn(
                 modifier = Modifier
@@ -133,7 +135,10 @@ fun RankHome(
                                 Modifier
                                     .fillMaxWidth()
                                     .height(94.dp)
-                                    .background(color = Color.White),
+                                    .background(color = Color.White)
+                                    .clickable {
+                                        viewModel.changeTime()
+                                    },
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
