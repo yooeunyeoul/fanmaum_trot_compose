@@ -48,6 +48,7 @@ import com.trotfan.trot.ui.home.vote.component.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -104,7 +105,9 @@ fun RankHome(
         ) {
             AppbarL(
                 title = "순위",
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp).clickable {
+                    viewModel.changeStatus()
+                }
             )
             LazyColumn(
                 modifier = Modifier

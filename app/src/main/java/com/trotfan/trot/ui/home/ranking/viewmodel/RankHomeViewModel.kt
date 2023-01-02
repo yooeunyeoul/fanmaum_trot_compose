@@ -293,4 +293,14 @@ class RankHomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun changeStatus() {
+        viewModelScope.launch {
+            if (_rankStatus.value == RankStatus.UnAvailable) {
+                _rankStatus.emit(RankStatus.Available)
+            } else {
+                _rankStatus.emit(RankStatus.UnAvailable)
+            }
+        }
+    }
 }
