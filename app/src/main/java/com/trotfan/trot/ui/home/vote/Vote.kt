@@ -55,6 +55,7 @@ import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.time.LocalDate
@@ -83,9 +84,7 @@ fun VoteHome(
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val tickets by viewModel.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
-    val favoriteStarGender by viewModel.userInfoManager.favoriteStarGenderFlow.collectAsState(
-        initial = Gender.MEN
-    )
+
     val favoriteStarName by viewModel.userInfoManager.favoriteStarNameFlow.collectAsState(
         initial = ""
     )
@@ -114,7 +113,15 @@ fun VoteHome(
     }
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
 
-    var tabIndex by remember { mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1) }
+    val favoriteStarGender= viewModel.gender.value
+
+    Log.e("favoriteStarGender",favoriteStarGender.toString())
+
+    var tabIndex by remember {
+        Log.e("favoriteStarGender == Gender.MEN", favoriteStarGender.toString())
+        mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
+    }
+
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(ticks != 0) {

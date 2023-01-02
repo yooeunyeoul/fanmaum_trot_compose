@@ -1,6 +1,7 @@
 package com.trotfan.trot.ui.home.ranking.history
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,9 +36,8 @@ fun RankingHistoryMonthly(
 ) {
     val manList = viewModel.monthlyManList.collectAsState().value
     val womanList = viewModel.monthlyWomanList.collectAsState().value
-    val favoriteStarGender by viewModel.userInfoManager.favoriteStarGenderFlow.collectAsState(
-        initial = Gender.MEN
-    )
+    val favoriteStarGender by viewModel.gender.collectAsState()
+
     var genderIndex by remember {
         mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
     }

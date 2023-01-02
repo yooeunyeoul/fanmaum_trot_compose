@@ -8,9 +8,12 @@ import com.trotfan.trot.datastore.FavoriteStarDataStore
 import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.RankingHistoryRepository
+import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -42,10 +45,24 @@ class RankingHistoryViewModel @Inject constructor(
     val banners = MutableStateFlow<List<Banner>?>(null)
     val startYear = MutableStateFlow(2022)
 
+    val gender: StateFlow<Gender>
+        get() = _gender
+    private val _gender =
+        MutableStateFlow(Gender.WOMEN)
+
     init {
         getDatePickerRange()
         getBannerList()
         getMonthlyStarRankingList()
+        observeGender()
+    }
+
+    private fun observeGender() {
+        viewModelScope.launch {
+            userInfoManager.favoriteStarGenderFlow.collectLatest {
+                _gender.emit(it ?: Gender.WOMEN)
+            }
+        }
     }
 
     fun getBannerList() {

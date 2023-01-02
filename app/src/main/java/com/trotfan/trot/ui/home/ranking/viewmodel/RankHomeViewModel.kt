@@ -14,6 +14,7 @@ import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.RankingHistoryRepository
 import com.trotfan.trot.repository.VoteRepository
+import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.utils.convertStringToTime
 import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -96,6 +97,11 @@ class RankHomeViewModel @Inject constructor(
     private val _rankStatus =
         MutableStateFlow(RankStatus.Available)
 
+    val gender: StateFlow<Gender>
+        get() = _gender
+    private val _gender =
+        MutableStateFlow(Gender.WOMEN)
+
     var remain24HourTime: Int = 0
     var remainMonthlyVoteTime: Int = StopLoop
 
@@ -108,7 +114,16 @@ class RankHomeViewModel @Inject constructor(
         getBanners()
         refreshRank()
         getVoteEndedTime()
+        observeGender()
 //        refreshVoteStatus()
+    }
+
+    private fun observeGender() {
+        viewModelScope.launch {
+            userInfoManager.favoriteStarGenderFlow.collectLatest {
+                _gender.emit(it ?: Gender.WOMEN)
+            }
+        }
     }
 
     private fun getVoteEndedTime() {

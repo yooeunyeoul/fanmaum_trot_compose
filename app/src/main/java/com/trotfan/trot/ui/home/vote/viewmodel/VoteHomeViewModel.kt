@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.trotfan.trot.datastore.*
+import com.trotfan.trot.extensions.CommonObserve
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteData
@@ -37,6 +38,7 @@ class VoteHomeViewModel @Inject constructor(
     private val repository: VoteRepository,
     application: Application
 ) : AndroidViewModel(application) {
+
 
     lateinit var mBoardSocket: Socket
     lateinit var mRankSocket: Socket
@@ -87,6 +89,11 @@ class VoteHomeViewModel @Inject constructor(
     private val _tickets =
         MutableStateFlow(Expired())
 
+    val gender: StateFlow<Gender>
+        get() = _gender
+    private val _gender =
+        MutableStateFlow(Gender.WOMEN)
+
     var currentBoardPage = 0
 
 
@@ -99,6 +106,15 @@ class VoteHomeViewModel @Inject constructor(
         connectRankSocket()
         getStarRank()
         getTime()
+        observeGender()
+    }
+
+    private fun observeGender() {
+        viewModelScope.launch {
+            userInfoManager.favoriteStarGenderFlow.collectLatest {
+                _gender.emit(it ?: Gender.WOMEN)
+            }
+        }
     }
 
     private fun getVoteList() {
@@ -372,4 +388,5 @@ class VoteHomeViewModel @Inject constructor(
             }
         }
     }
+
 }

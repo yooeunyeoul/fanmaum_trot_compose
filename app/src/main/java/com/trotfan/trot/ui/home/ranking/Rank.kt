@@ -64,10 +64,12 @@ fun RankHome(
     onNavigateClick: (HomeSections) -> Unit,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
-    val favoriteStarGender by viewModel.userInfoManager.favoriteStarGenderFlow.collectAsState(
-        initial = Gender.MEN
-    )
-    var tabIndex by remember { mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1) }
+    val favoriteStarGender by viewModel.gender.collectAsState()
+
+    var tabIndex by remember {
+        Log.e("favoriteStarGender == Gender.MEN", favoriteStarGender.toString())
+        mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
+    }
     val isShowingScrollToolTip by viewModel.rankMainManager.isShowingRankMainScrollToolTipFlow.collectAsState(
         initial = false
     )
@@ -162,7 +164,7 @@ fun RankHome(
                         }
                         item {
 
-                            val pagerState = rememberPagerState(initialPage = tabIndex)
+//                            val pagerState = rememberPagerState(initialPage = tabIndex)
                             val coroutineScope = rememberCoroutineScope()
                             Box {
                                 TabRow(
@@ -170,7 +172,7 @@ fun RankHome(
                                         .fillMaxWidth()
                                         .padding(start = 16.dp, end = 16.dp),
                                     backgroundColor = Color.White,
-                                    selectedTabIndex = pagerState.currentPage,
+                                    selectedTabIndex = tabIndex,
                                     divider = {},
                                     // Override the indicator, using the provided pagerTabIndicatorOffset modifier
                                     indicator = { tabPositions ->
