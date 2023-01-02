@@ -21,8 +21,8 @@ class RankingHistoryViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
     private val calender: Calendar = Calendar.getInstance()
-    val monthlyYear = MutableStateFlow(2022)
-    val monthlyMonth = MutableStateFlow(12)
+    val monthlyYear = MutableStateFlow(2023)
+    val monthlyMonth = MutableStateFlow(1)
     val dailyYear = MutableStateFlow(calender.get(Calendar.YEAR))
     val dailyMonth = MutableStateFlow(calender.get(Calendar.MONTH) + 1)
     val dailyDay = MutableStateFlow(calender.get(Calendar.DAY_OF_MONTH))
@@ -126,14 +126,19 @@ class RankingHistoryViewModel @Inject constructor(
 
     fun settingDateRange() {
         viewModelScope.launch {
+            val tempMonth = if (monthlyMonth.value < 10) {
+                "0${monthlyMonth.value}"
+            } else {
+                monthlyMonth.value
+            }
             isEnded.emit(
-                "${monthlyYear.value}-${monthlyMonth.value}" == datePickerRange.value?.ended_at?.substring(
+                "${monthlyYear.value}-${tempMonth}" == datePickerRange.value?.ended_at?.substring(
                     0,
                     7
                 ).toString()
             )
             isStared.emit(
-                "${monthlyYear.value}-${monthlyMonth.value}" == datePickerRange.value?.started_at?.substring(
+                "${monthlyYear.value}-${tempMonth}" == datePickerRange.value?.started_at?.substring(
                     0,
                     7
                 ).toString()
