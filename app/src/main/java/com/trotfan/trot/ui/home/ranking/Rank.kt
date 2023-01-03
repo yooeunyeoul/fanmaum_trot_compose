@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -23,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,21 +41,23 @@ import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.navigation.AppbarL
 import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
+import com.trotfan.trot.ui.home.SoftBarHeight
 import com.trotfan.trot.ui.home.ranking.components.RankImageItem
-import com.trotfan.trot.ui.home.ranking.components.RankItem
+import com.trotfan.trot.ui.components.list.RankingStarMonthlyItem
 import com.trotfan.trot.ui.home.ranking.viewmodel.MonthlyRankViewType
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankHomeViewModel
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankRemainingStatus
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankStatus
 import com.trotfan.trot.ui.home.vote.component.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
-import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.seconds
+
+val topSectionHeight = 200.dp
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -64,11 +69,11 @@ fun RankHome(
     onNavigateClick: (HomeSections) -> Unit,
     lazyListState: LazyListState?
 ) {
-    val favoriteStarGender by viewModel.gender.collectAsState()
-
-    var tabIndex by remember {
-        mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
-    }
+//    val favoriteStarGender by viewModel.gender.collectAsState()
+    val tabIndex by viewModel.tabIndex.collectAsState()
+//    var tabIndex by remember {
+//        mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
+//    }
     val isShowingScrollToolTip by viewModel.rankMainManager.isShowingRankMainScrollToolTipFlow.collectAsState(
         initial = false
     )
@@ -95,7 +100,8 @@ fun RankHome(
         }
     })
 
-    Box(Modifier.fillMaxSize()) {
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val screenHeight = maxHeight
         if (isShowingScrollToolTip) {
             ChipCapsuleImg()
         }
@@ -120,7 +126,7 @@ fun RankHome(
                 item {
                     Column(
                         modifier = Modifier
-                            .height(200.dp)
+                            .height(topSectionHeight)
                             .fillMaxWidth()
                             .background(Color.White)
                     ) {
@@ -151,6 +157,7 @@ fun RankHome(
                                             style = FanwooriTypography.h2,
                                             color = Gray900
                                         )
+                                        Spacer(modifier = Modifier.height(8.dp))
                                         VoteRemainingView(rankRemainingStatus.first)
                                     }
                                     RankRemainingStatus.VoteWaiting -> {
@@ -163,6 +170,7 @@ fun RankHome(
                                             style = FanwooriTypography.h2,
                                             color = Gray900
                                         )
+                                        Spacer(modifier = Modifier.height(8.dp))
                                         VoteWaitingView()
                                     }
                                 }
@@ -201,7 +209,7 @@ fun RankHome(
                                             selected = tabIndex == index,
                                             onClick = {
                                                 coroutineScope.launch {
-                                                    tabIndex = index
+                                                    viewModel.changeIndex(index)
                                                 }
                                             },
                                             text = {
@@ -211,12 +219,7 @@ fun RankHome(
                                                     style = FanwooriTypography.body3,
                                                     fontWeight = FontWeight.SemiBold,
                                                     color = if (tabIndex == index) Primary900 else Gray700,
-                                                    fontSize = 17.sp,
-                                                    modifier = if (index == 0) Modifier.padding(
-                                                        start = 24.dp
-                                                    ) else Modifier.padding(
-                                                        end = 24.dp
-                                                    )
+                                                    fontSize = 17.sp
                                                 )
                                             })
                                     }
@@ -253,34 +256,16 @@ fun RankHome(
                                         }
                                         )
                                     } else if (index > 2) {
-                                        RankItem(
-                                            text = list[index].name ?: "",
-                                            subText = list[index].score,
-                                            imageUrl = list[index].image,
-                                            rank = list[index].rank ?: 0,
-                                            item = list[index],
-                                            onClick = {
-                                                if (it is StarRanking) {
-                                                    navigateRankingHistory(navController, it)
-                                                }
-
-                                            }
-                                        )
+                                        RankingStarMonthlyItem(star = list[index], onItemClick = {
+                                            navigateRankingHistory(navController, list[index])
+                                        })
                                     }
                                 }
                                 MonthlyRankViewType.NUMBER -> {
-                                    RankItem(
-                                        text = list[index].name ?: "",
-                                        subText = list[index].score,
-                                        imageUrl = list[index].image,
-                                        rank = list[index].rank ?: 0,
-                                        item = list[index],
-                                        onClick = {
-                                            if (it is StarRanking) {
-                                                navigateRankingHistory(navController, it)
-                                            }
-                                        }
-                                    )
+
+                                    RankingStarMonthlyItem(star = list[index], onItemClick = {
+                                        navigateRankingHistory(navController, list[index])
+                                    })
                                 }
                                 MonthlyRankViewType.NONE -> {
 
@@ -290,9 +275,12 @@ fun RankHome(
                     }
                     RankStatus.UnAvailable -> {
                         item {
-                            NoRankHistory {
-                                onNavigateClick.invoke(HomeSections.Vote)
-                            }
+                            NoRankHistory(
+                                onNavigateClick = { onNavigateClick.invoke(HomeSections.Vote) },
+                                height = screenHeight - topSectionHeight - BottomNavHeight - SoftBarHeight
+                            )
+
+
                         }
                     }
                 }
@@ -350,12 +338,13 @@ fun VoteWaitingView() {
 }
 
 @Composable
-fun NoRankHistory(onNavigateClick: (HomeSections) -> Unit) {
+fun LazyItemScope.NoRankHistory(onNavigateClick: (HomeSections) -> Unit, height: Dp) {
     Column(
-        Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        Modifier
+            .fillMaxWidth()
+            .height(height),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
         Image(
             painter = painterResource(id = R.drawable.ranking_nohistory),
             contentDescription = null

@@ -1,19 +1,12 @@
 package com.trotfan.trot.ui.home.ranking.components
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,129 +23,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.model.StarRanking
-import com.trotfan.trot.ui.signup.Sample
-import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.clickable
 
-val rankDrawables = listOf(
-    R.drawable.ranking_monthlytop1,
-    R.drawable.ranking_monthlytop2,
-    R.drawable.ranking_monthlytop3
-)
-
-val imageRankDrawable = listOf(
-    R.drawable.ranking_monthlytop1,
-    R.drawable.ranking_monthlytop2,
-    R.drawable.ranking_monthlytop3
-)
-
-@Composable
-fun RankItem(
-    text: String,
-    subText: Int?,
-    imageUrl: String?,
-    checked: Boolean = false,
-    rank: Int,
-    item: Any?,
-    onClick: (Any?) -> Unit,
-) {
-    val animatedColor by animateColorAsState(
-        targetValue = if (checked) Primary100 else Gray100,
-        animationSpec = tween(120, easing = LinearEasing)
-    )
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp)
-            .clickable {
-                onClick.invoke(item)
-            },
-        backgroundColor = Color.White,
-        elevation = 0.dp
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .height(72.dp)
-                .fillMaxWidth()
-                .padding(
-                    start = 19.dp,
-                    top = 8.dp,
-                    bottom = 8.dp,
-                    end = 12.dp
-                )
-        ) {
-            if (rank in 1..3) {
-                Image(
-                    painter = painterResource(
-                        id = when (rank) {
-                            1 -> {
-                                rankDrawables[0]
-                            }
-                            2 -> {
-                                rankDrawables[1]
-                            }
-                            3 -> {
-                                rankDrawables[2]
-                            }
-                            else -> {
-                                rankDrawables[0]
-                            }
-                        }
-                    ), contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-
-            } else {
-                Text(
-                    text = if (subText == 0) "-" else "$rank",
-                    style = FanwooriTypography.subtitle3,
-                    color = Gray700
-                )
-                Spacer(modifier = Modifier.width(19.dp))
-            }
-
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrl).crossfade(true).build(),
-                contentDescription = null,
-                error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(56.dp)
-                    .border(width = 1.dp, color = Gray300, CircleShape)
-            )
-            Spacer(modifier = Modifier.size(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = text,
-                    color = Gray900,
-                    style = FanwooriTypography.subtitle1,
-                    maxLines = 1
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "${NumberComma.decimalFormat.format(subText)}점",
-                    color = Gray700,
-                    style = FanwooriTypography.body2,
-                    maxLines = 1
-                )
-
-            }
-            Spacer(modifier = Modifier.size(12.dp))
-            Icon(
-                painter = painterResource(id = R.drawable.icon_arrow),
-                contentDescription = null,
-                tint = Gray600
-            )
-
-
-        }
-    }
-}
 
 val textShadow =
     Shadow(color = Color.Black.copy(alpha = 0.30f), offset = Offset(2f, 2f), blurRadius = 4f)
@@ -410,19 +284,6 @@ fun RankImageItem(top3List: List<StarRanking>, onClick: (Any?) -> Unit) {
 
 }
 
-
-@Composable
-@Preview
-fun PreviewListItemButtonNotSub() {
-    RankItem(
-        text = "파쿵야파쿵야파쿵야파쿵야파쿵야파쿵야파쿵야파쿵야파쿵야",
-        subText = null,
-        imageUrl = "",
-        onClick = {},
-        item = Sample(),
-        rank = 1
-    )
-}
 
 @Composable
 @Preview

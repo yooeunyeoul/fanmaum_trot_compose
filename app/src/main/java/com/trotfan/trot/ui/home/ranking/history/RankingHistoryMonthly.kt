@@ -16,7 +16,7 @@ import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.EmptyMonthlyRankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingHistoryBanner
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingHistoryMonthlyHeader
-import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingStarMonthlyItem
+import com.trotfan.trot.ui.components.list.RankingStarMonthlyItem
 import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.FanwooriTheme

@@ -97,15 +97,15 @@ class RankHomeViewModel @Inject constructor(
     private val _rankStatus =
         MutableStateFlow(RankStatus.Available)
 
-    val gender: StateFlow<Gender>
-        get() = _gender
-    private val _gender =
-        MutableStateFlow(Gender.WOMEN)
 
     var remain24HourTime: Int = 0
     var remainMonthlyVoteTime: Int = StopLoop
 
     var sampleCount = 0
+
+    val tabIndex: StateFlow<Int>
+        get() = _tabIndex
+    private val _tabIndex = MutableStateFlow(0)
 
     init {
         userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
@@ -121,8 +121,14 @@ class RankHomeViewModel @Inject constructor(
     private fun observeGender() {
         viewModelScope.launch {
             userInfoManager.favoriteStarGenderFlow.collectLatest {
-                _gender.emit(it ?: Gender.WOMEN)
+                _tabIndex.emit(if (it == Gender.MEN) 0 else 1)
             }
+        }
+    }
+
+    fun changeIndex(index: Int) {
+        viewModelScope.launch {
+            _tabIndex.emit(index)
         }
     }
 

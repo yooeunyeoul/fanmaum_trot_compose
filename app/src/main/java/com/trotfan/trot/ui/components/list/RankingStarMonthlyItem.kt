@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.home.ranking.history.component.monthly
+package com.trotfan.trot.ui.components.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
