@@ -41,9 +41,9 @@ import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.navigation.AppbarL
 import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
-import com.trotfan.trot.ui.home.SoftBarHeight
 import com.trotfan.trot.ui.home.ranking.components.RankImageItem
 import com.trotfan.trot.ui.components.list.RankingStarMonthlyItem
+import com.trotfan.trot.ui.components.navigation.titleBarHeight
 import com.trotfan.trot.ui.home.ranking.viewmodel.MonthlyRankViewType
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankHomeViewModel
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankRemainingStatus
@@ -277,7 +277,7 @@ fun RankHome(
                         item {
                             NoRankHistory(
                                 onNavigateClick = { onNavigateClick.invoke(HomeSections.Vote) },
-                                height = screenHeight - topSectionHeight - BottomNavHeight - SoftBarHeight
+                                height = screenHeight - topSectionHeight - BottomNavHeight - titleBarHeight
                             )
 
 
