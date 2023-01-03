@@ -1,6 +1,7 @@
 package com.trotfan.trot.ui.home
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -41,6 +42,7 @@ import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -78,7 +80,7 @@ fun TrotBottomBar(
     tabs: Array<HomeSections>,
     currentRoute: HomeSections,
     onSelected: (HomeSections) -> Unit,
-    lazyListState: LazyListState,
+    lazyListStates: HashMap<String, LazyListState>,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -180,8 +182,12 @@ fun TrotBottomBar(
                         .selectable(
                             selected = currentRoute.title == sections.title,
                             onClick = {
-                                coroutineScope.launch {
-                                    lazyListState.scrollToItem(0)
+                                if (sections.route == currentRoute.route) {
+                                    Log.e("current ROute", "같다")
+                                    coroutineScope.launch {
+                                        lazyListStates[sections.route]?.scrollToItem(0)
+//                                        lazyListState.scrollToItem(0)
+                                    }
                                 }
                                 onSelected(sections)
                             },
@@ -257,7 +263,7 @@ fun NavGraphBuilder.addHomeGraph(
     modifier: Modifier = Modifier,
     onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
     navController: NavController,
-    lazyListState: LazyListState
+    lazyListState: HashMap<String,LazyListState>?
 ) {
     composable(HomeSections.Vote.route) {
         VoteHome(
@@ -269,7 +275,7 @@ fun NavGraphBuilder.addHomeGraph(
             onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
                 onVotingClick(voteId, voteTicket, star, voteViewModel)
             },
-            lazyListState = lazyListState
+            lazyListState = lazyListState?.get(HomeSections.Vote.route)
         )
     }
     composable(HomeSections.MyPage.route) { from ->
@@ -290,7 +296,7 @@ fun NavGraphBuilder.addHomeGraph(
                 onNavigateBottomBar(section)
             },
             modifier = modifier,
-            lazyListState = lazyListState
+            lazyListState = lazyListState?.get(HomeSections.Ranking.route)
         )
     }
     composable(HomeSections.Charge.route) { from ->

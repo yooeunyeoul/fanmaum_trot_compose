@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -49,7 +50,7 @@ fun NavigationComponent(
     navController: NavHostController,
     onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
-    lazyListState: LazyListState
+    lazyListStates: HashMap<String, LazyListState>
 ) {
     NavHost(
         navController = navController,
@@ -72,7 +73,7 @@ fun NavigationComponent(
                 onVotingClick(voteId, voteTicket, star, viewModel)
             },
             navController = navController,
-            lazyListState = lazyListState
+            lazyListState = lazyListStates
         )
         composable(Route.SelectStar.route) {
             SelectStarScreen(

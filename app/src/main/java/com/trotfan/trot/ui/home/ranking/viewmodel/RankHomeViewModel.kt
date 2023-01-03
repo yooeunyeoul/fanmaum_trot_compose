@@ -133,7 +133,7 @@ class RankHomeViewModel @Inject constructor(
 //            val milliSecond = convertStringToTime("2022-12-27 19:11:00")
             val differenceTime = getTime(milliSecond)
             remainMonthlyVoteTime = if (differenceTime < 0) StopLoop else differenceTime
-            Log.e("remain", remainMonthlyVoteTime.toString())
+//            Log.e("remain", remainMonthlyVoteTime.toString())
 
         }
     }
