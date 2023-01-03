@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.home.ranking.history.component
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,12 +25,11 @@ import com.trotfan.trot.ui.utils.clickable
 @Composable
 fun RankingHistoryGenderTab(
     viewModel: RankingHistoryViewModel = viewModel(),
+    gender: Gender,
     onGenderClick: (Int) -> Unit
 ) {
-    val favoriteStarGender by viewModel.gender.collectAsState()
-
     var tabIndex by remember {
-        mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
+        mutableStateOf(if (gender == Gender.MEN) 0 else 1)
     }
 
     Row(

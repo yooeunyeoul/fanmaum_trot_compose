@@ -1,7 +1,6 @@
 package com.trotfan.trot.ui.home.ranking.history
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +20,6 @@ import com.trotfan.trot.ui.home.ranking.history.component.monthly.RankingStarMon
 import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.FanwooriTheme
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -36,7 +34,7 @@ fun RankingHistoryMonthly(
 ) {
     val manList = viewModel.monthlyManList.collectAsState().value
     val womanList = viewModel.monthlyWomanList.collectAsState().value
-    val favoriteStarGender by viewModel.gender.collectAsState()
+    val favoriteStarGender by viewModel.monthlyGender.collectAsState()
 
     var genderIndex by remember {
         mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
@@ -52,7 +50,10 @@ fun RankingHistoryMonthly(
             RankingHistoryMonthlyHeader(onCalenderClick = {
                 onCalenderClick(it)
             }, onGenderClick = {
-                genderIndex = it
+                coroutineScope.launch {
+                    viewModel.monthlyGender.emit(if (it == 0) Gender.MEN else Gender.WOMEN)
+                    genderIndex = it
+                }
             }, onCalenderAfter = {
                 coroutineScope.launch {
                     if (viewModel.monthlyMonth.value == 12) {
@@ -75,7 +76,7 @@ fun RankingHistoryMonthly(
                     viewModel.settingDateRange()
                     viewModel.getMonthlyStarRankingList()
                 }
-            })
+            }, gender = favoriteStarGender)
 
             Spacer(modifier = Modifier.height(24.dp))
             LazyColumn {

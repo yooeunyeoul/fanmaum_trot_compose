@@ -20,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.ranking.history.component.RankingHistoryGenderTab
+import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
@@ -27,6 +28,7 @@ import com.trotfan.trot.ui.utils.clickable
 fun RankingHistoryDailyHeader(
     onCalenderClick: () -> Unit,
     onGenderClick: (Int) -> Unit,
+    gender: Gender,
     rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
 ) {
 
@@ -106,7 +108,7 @@ fun RankingHistoryDailyHeader(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        RankingHistoryGenderTab(onGenderClick = {
+        RankingHistoryGenderTab(gender = gender, onGenderClick = {
             onGenderClick(it)
         })
     }
@@ -118,6 +120,6 @@ fun RankingHistoryHeaderPreview() {
     FanwooriTheme {
         RankingHistoryDailyHeader(onCalenderClick = {
 
-        }, onGenderClick = {})
+        }, onGenderClick = {}, gender = Gender.MEN)
     }
 }

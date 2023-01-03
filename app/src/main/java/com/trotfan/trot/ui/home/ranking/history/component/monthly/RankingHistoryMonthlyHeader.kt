@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.ranking.history.component.RankingHistoryGenderTab
+import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.launch
@@ -31,6 +32,7 @@ fun RankingHistoryMonthlyHeader(
     onCalenderBefore: () -> Unit,
     onCalenderAfter: () -> Unit,
     onGenderClick: (Int) -> Unit,
+    gender: Gender,
     rankingHistoryViewModel: RankingHistoryViewModel = viewModel()
 ) {
     val year = rankingHistoryViewModel.monthlyYear.collectAsState()
@@ -122,7 +124,7 @@ fun RankingHistoryMonthlyHeader(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        RankingHistoryGenderTab(onGenderClick = onGenderClick)
+        RankingHistoryGenderTab(onGenderClick = onGenderClick, gender = gender)
     }
 }
 
@@ -138,7 +140,8 @@ fun RankingHistoryHeaderPreview() {
 
             },
             onCalenderAfter = {},
-            onCalenderBefore = {}
+            onCalenderBefore = {},
+            gender = Gender.MEN
         )
     }
 }

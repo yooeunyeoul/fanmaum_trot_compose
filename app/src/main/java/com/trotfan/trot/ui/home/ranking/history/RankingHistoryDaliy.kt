@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.home.ranking.history
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -15,6 +14,7 @@ import com.trotfan.trot.ui.home.ranking.history.component.daily.RankingHistoryDa
 import com.trotfan.trot.ui.home.ranking.history.component.daily.RankingStarDailyItem
 import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
+import kotlinx.coroutines.launch
 
 @Composable
 fun RankingHistoryDaily(
@@ -26,7 +26,7 @@ fun RankingHistoryDaily(
 ) {
     val manList = viewModel.dailyManList.collectAsState().value
     val womanList = viewModel.dailyWomanList.collectAsState().value
-    val favoriteStarGender by viewModel.gender.collectAsState()
+    val favoriteStarGender by viewModel.dailyGender.collectAsState()
 
     var genderIndex by remember {
         mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
@@ -38,10 +38,13 @@ fun RankingHistoryDaily(
             EmptyDailyRankingHistory(navController = navController, onVotingClick = onVotingClick)
         } else {
             Spacer(modifier = Modifier.height(24.dp))
-            RankingHistoryDailyHeader(onCalenderClick = {
+            RankingHistoryDailyHeader(gender = favoriteStarGender, onCalenderClick = {
                 onCalenderClick()
             }, onGenderClick = {
-                genderIndex = it
+                coroutineScope.launch {
+                    viewModel.dailyGender.emit(if (it == 0) Gender.MEN else Gender.WOMEN)
+                    genderIndex = it
+                }
             })
 
             Spacer(modifier = Modifier.height(24.dp))
