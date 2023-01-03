@@ -99,13 +99,16 @@ fun VotingCompleteDialog(
                     .align(CenterHorizontally),
             )
 
-            Row(Modifier.padding(top = 24.dp)) {
-                BtnOutlineLGray(text = "완료") {
+            Row(Modifier.padding(top = 24.dp, bottom = 24.dp)) {
+                Spacer(modifier = Modifier.width(24.dp))
+                BtnOutlineLGray(text = "완료", modifier = Modifier.weight(1f)) {
                     onDismiss()
                 }
-                BtnFilledLPrimary(text = "공유하기") {
+                Spacer(modifier = Modifier.width(8.dp))
+                BtnFilledLPrimary(text = "공유하기", modifier = Modifier.weight(1f)) {
                     onPositive()
                 }
+                Spacer(modifier = Modifier.width(24.dp))
             }
         }
 
