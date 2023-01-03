@@ -51,9 +51,10 @@ fun CumulativeRankingItem(cumulativeRanking: StarRankingDetail) {
                     .align(Alignment.CenterVertically),
                 textAlign = TextAlign.Center
             )
+            val rank = if (cumulativeRanking.rank == 0) "-" else cumulativeRanking.rank.toString()
 
             Text(
-                text = "${cumulativeRanking.rank}위",
+                text = "${rank}위",
                 color = Primary500,
                 style = FanwooriTypography.button1,
                 modifier = Modifier
