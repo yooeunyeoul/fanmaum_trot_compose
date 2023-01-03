@@ -57,6 +57,7 @@ enum class HomeSections(
 }
 
 val BottomNavHeight = 56.dp
+val SoftBarHeight = 52.dp
 private val TextIconSpacing = 2.dp
 
 @RequiresApi(Build.VERSION_CODES.O)
