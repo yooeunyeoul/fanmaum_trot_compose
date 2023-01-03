@@ -43,7 +43,7 @@ import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.SoftBarHeight
 import com.trotfan.trot.ui.home.ranking.components.RankImageItem
-import com.trotfan.trot.ui.home.ranking.components.RankItem
+import com.trotfan.trot.ui.components.list.RankingStarMonthlyItem
 import com.trotfan.trot.ui.home.ranking.viewmodel.MonthlyRankViewType
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankHomeViewModel
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankRemainingStatus
@@ -256,34 +256,16 @@ fun RankHome(
                                         }
                                         )
                                     } else if (index > 2) {
-                                        RankItem(
-                                            text = list[index].name ?: "",
-                                            subText = list[index].score,
-                                            imageUrl = list[index].image,
-                                            rank = list[index].rank ?: 0,
-                                            item = list[index],
-                                            onClick = {
-                                                if (it is StarRanking) {
-                                                    navigateRankingHistory(navController, it)
-                                                }
-
-                                            }
-                                        )
+                                        RankingStarMonthlyItem(star = list[index], onItemClick = {
+                                            navigateRankingHistory(navController, list[index])
+                                        })
                                     }
                                 }
                                 MonthlyRankViewType.NUMBER -> {
-                                    RankItem(
-                                        text = list[index].name ?: "",
-                                        subText = list[index].score,
-                                        imageUrl = list[index].image,
-                                        rank = list[index].rank ?: 0,
-                                        item = list[index],
-                                        onClick = {
-                                            if (it is StarRanking) {
-                                                navigateRankingHistory(navController, it)
-                                            }
-                                        }
-                                    )
+
+                                    RankingStarMonthlyItem(star = list[index], onItemClick = {
+                                        navigateRankingHistory(navController, list[index])
+                                    })
                                 }
                                 MonthlyRankViewType.NONE -> {
 

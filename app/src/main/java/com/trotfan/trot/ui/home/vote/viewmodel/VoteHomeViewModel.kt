@@ -128,8 +128,6 @@ class VoteHomeViewModel @Inject constructor(
             _voteId.emit(response.data.id)
             _menHashMap.emit(menHashMap)
             _womenHashMap.emit(womenHashMap)
-
-            Log.d("TOP3Benefit", response?.data?.voteMainStars.toString())
         }
     }
 
