@@ -12,6 +12,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -73,7 +74,7 @@ fun VoteHome(
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
     onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
-    lazyListState: LazyListState
+    lazyListState: LazyListState?
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -113,12 +114,12 @@ fun VoteHome(
     }
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
 
-    val favoriteStarGender= viewModel.gender.value
+    val favoriteStarGender = viewModel.gender.value
 
-    Log.e("favoriteStarGender",favoriteStarGender.toString())
+//    Log.e("favoriteStarGender",favoriteStarGender.toString())
 
     var tabIndex by remember {
-        Log.e("favoriteStarGender == Gender.MEN", favoriteStarGender.toString())
+//        Log.e("favoriteStarGender == Gender.MEN", favoriteStarGender.toString())
         mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
     }
 
@@ -130,10 +131,10 @@ fun VoteHome(
             ticks--
         }
     }
-    LaunchedEffect(key1 = lazyListState.isScrollInProgress, block = {
+    LaunchedEffect(key1 = lazyListState?.isScrollInProgress, block = {
 
         if (isShowingScrollToolTip) {
-            val offset = lazyListState.firstVisibleItemScrollOffset
+            val offset = lazyListState?.firstVisibleItemScrollOffset ?: 0
             if (offset > 150) {
                 viewModel.saveScrollTooltipState(false)
             }
@@ -211,7 +212,7 @@ fun VoteHome(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    state = lazyListState
+                    state = lazyListState ?: rememberLazyListState()
                 ) {
                     item {
                         Box(modifier = Modifier) {

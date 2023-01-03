@@ -43,7 +43,6 @@ class UserInfoManager(
         it[FAVORITE_STAR_ID]
     }
     val favoriteStarGenderFlow: Flow<Gender?> = dataStore.data.map {
-        Log.e("it[FAVORITE_STAR_GENDER]",it[FAVORITE_STAR_GENDER].toString())
         if (it[FAVORITE_STAR_GENDER] == 1) Gender.MEN else Gender.WOMEN
     }
     val favoriteStarNameFlow: Flow<String?> = dataStore.data.map {

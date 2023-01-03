@@ -3,8 +3,10 @@ package com.trotfan.trot.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -64,7 +66,13 @@ fun FanwooriApp(
         var currentRoute by remember {
             mutableStateOf(HomeSections.Vote)
         }
-        val lazyListState = rememberLazyListState()
+//        val lazyListState = rememberLazyListState()
+        val lazyListStates = hashMapOf(
+            Pair(first = HomeSections.Vote.route, rememberLazyListState()),
+            Pair(first = HomeSections.Ranking.route, rememberLazyListState()),
+            Pair(first = HomeSections.Charge.route, rememberLazyListState()),
+            Pair(first = HomeSections.MyPage.route, rememberLazyListState())
+        )
         var voteHomeViewModel: VoteHomeViewModel? = null
 
         var votesQuantity by remember {
@@ -112,7 +120,7 @@ fun FanwooriApp(
                                         }
                                     }
                                 },
-                                lazyListState = lazyListState
+                                lazyListStates = lazyListStates
                             )
                         }
                     }
@@ -141,7 +149,7 @@ fun FanwooriApp(
                     onNavigateBottomBar = { section ->
                         currentRoute = section
                     },
-                    lazyListState = lazyListState
+                    lazyListStates = lazyListStates
                 )
 
                 when (votingCompleteState) {

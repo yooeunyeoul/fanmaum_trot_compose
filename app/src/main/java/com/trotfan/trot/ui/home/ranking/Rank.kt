@@ -62,12 +62,11 @@ fun RankHome(
     navController: NavController,
     viewModel: RankHomeViewModel = hiltViewModel(),
     onNavigateClick: (HomeSections) -> Unit,
-    lazyListState: LazyListState
+    lazyListState: LazyListState?
 ) {
     val favoriteStarGender by viewModel.gender.collectAsState()
 
     var tabIndex by remember {
-        Log.e("favoriteStarGender == Gender.MEN", favoriteStarGender.toString())
         mutableStateOf(if (favoriteStarGender == Gender.MEN) 0 else 1)
     }
     val isShowingScrollToolTip by viewModel.rankMainManager.isShowingRankMainScrollToolTipFlow.collectAsState(
@@ -85,10 +84,10 @@ fun RankHome(
         onNavigateClick.invoke(HomeSections.Vote)
     }
 
-    LaunchedEffect(key1 = lazyListState.isScrollInProgress, block = {
+    LaunchedEffect(key1 = lazyListState?.isScrollInProgress, block = {
 
         if (isShowingScrollToolTip) {
-            val offset = lazyListState.firstVisibleItemScrollOffset
+            val offset = lazyListState?.firstVisibleItemScrollOffset ?: 0
             if (offset > 150) {
                 viewModel.saveScrollTooltipState(false)
             }
@@ -116,7 +115,7 @@ fun RankHome(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
-                state = lazyListState
+                state = lazyListState ?: rememberLazyListState()
             ) {
                 item {
                     Column(
