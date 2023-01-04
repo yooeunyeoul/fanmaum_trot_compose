@@ -22,8 +22,8 @@ class RankingHistoryViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
     private val calender: Calendar = Calendar.getInstance()
-    val monthlyYear = MutableStateFlow(2023)
-    val monthlyMonth = MutableStateFlow(1)
+    val monthlyYear = MutableStateFlow(2022)
+    val monthlyMonth = MutableStateFlow(12)
     val dailyYear = MutableStateFlow(calender.get(Calendar.YEAR))
     val dailyMonth = MutableStateFlow(calender.get(Calendar.MONTH) + 1)
     val dailyDay = MutableStateFlow(calender.get(Calendar.DAY_OF_MONTH))
@@ -37,6 +37,7 @@ class RankingHistoryViewModel @Inject constructor(
 
     private val context = getApplication<Application>()
     var userInfoManager: UserInfoManager = UserInfoManager(context.FavoriteStarDataStore)
+    val endedAt = MutableStateFlow("2022-12")
     val isStared = MutableStateFlow(false)
     val isEnded = MutableStateFlow(true)
 
@@ -123,9 +124,12 @@ class RankingHistoryViewModel @Inject constructor(
                 it.data?.let { data ->
                     datePickerRange.emit(data)
                     startYear.emit(data.started_at.split("-")[0].toInt())
+                    val calendar = Calendar.getInstance()
+                    calendar.add(Calendar.MONTH, -1)
+                    endedAt.emit("${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}")
+                    monthlyYear.emit(calendar.get(Calendar.YEAR))
+                    monthlyMonth.emit(calendar.get(Calendar.MONTH) + 1)
                     val tempDate = data.ended_at.split("-")
-                    monthlyYear.emit(tempDate[0].toInt())
-                    monthlyMonth.emit(tempDate[1].toInt())
                     dailyYear.emit(tempDate[0].toInt())
                     dailyMonth.emit(tempDate[1].toInt())
                     dailyDay.emit(tempDate[2].toInt())
@@ -146,10 +150,7 @@ class RankingHistoryViewModel @Inject constructor(
                 monthlyMonth.value
             }
             isEnded.emit(
-                "${monthlyYear.value}-${tempMonth}" == datePickerRange.value?.ended_at?.substring(
-                    0,
-                    7
-                ).toString()
+                "${monthlyYear.value}-${tempMonth}" == endedAt.value
             )
             isStared.emit(
                 "${monthlyYear.value}-${tempMonth}" == datePickerRange.value?.started_at?.substring(

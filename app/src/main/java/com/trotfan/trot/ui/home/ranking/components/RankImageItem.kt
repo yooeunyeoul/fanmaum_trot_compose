@@ -61,7 +61,7 @@ fun RankImageItem(top3List: List<StarRanking>, onClick: (Any?) -> Unit) {
                         modifier = Modifier
                             .size(72.dp)
                             .align(Alignment.TopStart)
-                            .zIndex(1f)
+                            .zIndex(2f)
                     )
 
                     Column(
@@ -170,7 +170,7 @@ fun RankImageItem(top3List: List<StarRanking>, onClick: (Any?) -> Unit) {
                         modifier = Modifier
                             .size(40.dp)
                             .align(Alignment.TopStart)
-                            .zIndex(1f)
+                            .zIndex(2f)
                     )
 
                     AsyncImage(
@@ -254,7 +254,7 @@ fun RankImageItem(top3List: List<StarRanking>, onClick: (Any?) -> Unit) {
                         modifier = Modifier
                             .size(40.dp)
                             .align(Alignment.TopStart)
-                            .zIndex(1f)
+                            .zIndex(2f)
                     )
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
