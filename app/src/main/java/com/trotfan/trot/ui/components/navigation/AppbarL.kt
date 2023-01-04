@@ -15,7 +15,7 @@ import com.trotfan.trot.ui.theme.Gray700
 import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Gray900
 import com.trotfan.trot.ui.utils.clickable
-
+val titleBarHeight = 56.dp
 @Composable
 fun AppbarL(
     title: String,
@@ -26,7 +26,7 @@ fun AppbarL(
 ) {
     Row(
         modifier = modifier
-            .height(56.dp)
+            .height(titleBarHeight)
             .fillMaxWidth()
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
