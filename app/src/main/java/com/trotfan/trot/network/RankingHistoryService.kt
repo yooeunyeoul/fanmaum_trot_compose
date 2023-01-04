@@ -18,8 +18,8 @@ interface RankingHistoryService {
 
     suspend fun getStarRankingDetail(
         starId: Int,
-        year: String,
-        month: String
+        year: String?,
+        month: String?
     ): CommonResponse<List<StarRankingDetail>>
 
     suspend fun getDatePickerRange(): CommonResponse<DatePickerRange>

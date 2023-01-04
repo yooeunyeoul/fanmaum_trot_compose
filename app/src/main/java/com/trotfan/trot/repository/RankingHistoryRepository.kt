@@ -23,8 +23,8 @@ class RankingHistoryRepository @Inject constructor(
 
     suspend fun getStarRankingDetail(
         starId: Int,
-        year: String,
-        month: String
+        year: String?,
+        month: String?
     ): CommonResponse<List<StarRankingDetail>> =
         rankingHistoryService.getStarRankingDetail(starId, year, month)
 

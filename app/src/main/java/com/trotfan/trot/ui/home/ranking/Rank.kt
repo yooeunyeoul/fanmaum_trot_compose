@@ -102,6 +102,9 @@ fun RankHome(
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val screenHeight = maxHeight
+        val screenWidth = maxWidth
+
+        Log.e("screenWidth", screenWidth.toString())
         if (isShowingScrollToolTip) {
             ChipCapsuleImg()
         }
@@ -121,7 +124,9 @@ fun RankHome(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
-                state = lazyListState ?: rememberLazyListState()
+                state = lazyListState ?: rememberLazyListState(),
+                contentPadding = PaddingValues(bottom = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
                     Column(
@@ -180,7 +185,7 @@ fun RankHome(
                         }
                         item {
 
-//                            val pagerState = rememberPagerState(initialPage = tabIndex)
+                            Spacer(modifier = Modifier.height(16.dp))
                             val coroutineScope = rememberCoroutineScope()
                             Box {
                                 TabRow(
@@ -248,12 +253,16 @@ fun RankHome(
                             when (viewType) {
                                 MonthlyRankViewType.IMAGE -> {
                                     if (index == 2) {
-                                        RankImageItem(list.subList(0, 3), onClick = {
-                                            if (it is StarRanking) {
-                                                navigateRankingHistory(navController, it)
+                                        RankImageItem(
+                                            list.subList(0, 3),
+                                            onClick = {
+                                                if (it is StarRanking) {
+                                                    navigateRankingHistory(navController, it)
 
-                                            }
-                                        }
+                                                }
+                                            },
+                                            isScreenWidthDp500Over = screenWidth > 500.dp,
+                                            modifier = if (screenWidth > 500.dp) Modifier.width(500.dp) else Modifier.fillMaxWidth()
                                         )
                                     } else if (index > 2) {
                                         RankingStarMonthlyItem(star = list[index], onItemClick = {
@@ -262,7 +271,9 @@ fun RankHome(
                                     }
                                 }
                                 MonthlyRankViewType.NUMBER -> {
-
+                                    if (index == 0) {
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                    }
                                     RankingStarMonthlyItem(star = list[index], onItemClick = {
                                         navigateRankingHistory(navController, list[index])
                                     })
@@ -296,7 +307,7 @@ fun RankHome(
 }
 
 fun navigateRankingHistory(navController: NavController, starRanking: StarRanking) {
-    navController.navigate("${Route.RankingHistoryCumulative.route}/${starRanking.id}/${starRanking.name}/${LocalDate.now().year}-${LocalDate.now().month.value}")
+    navController.navigate("${Route.RankingHistoryCumulative.route}/${starRanking.id}/${starRanking.name}/${""}-${""}")
 
 }
 

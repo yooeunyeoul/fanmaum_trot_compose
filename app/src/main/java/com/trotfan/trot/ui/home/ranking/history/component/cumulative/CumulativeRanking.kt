@@ -16,6 +16,7 @@ import com.trotfan.trot.model.StarRanking
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
+import java.time.LocalDate
 
 @Composable
 fun CumulativeRanking(
@@ -31,7 +32,7 @@ fun CumulativeRanking(
     val month = date?.split("-")?.get(1)
     LaunchedEffect(starId) {
         starId?.let {
-            historyViewModel.getStarRankingDetail(it, year ?: "2022", month ?: "11")
+            historyViewModel.getStarRankingDetail(it, year, month)
         }
     }
 
@@ -42,7 +43,7 @@ fun CumulativeRanking(
 
         LazyColumn(state = lazyColumnState) {
             item {
-                CumulativeRankingHeader(title = "${year}년 ${month}월")
+                CumulativeRankingHeader(title = "${if (year.isNullOrEmpty()) LocalDate.now().year else year}년 ${if (month.isNullOrEmpty()) LocalDate.now().month.value else month}월")
             }
 
             items(starRankingDetail.size) { index ->
