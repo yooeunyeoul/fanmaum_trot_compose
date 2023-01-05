@@ -32,7 +32,7 @@ class CumulativeViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
     val starRankingDetail = MutableStateFlow(listOf<StarRankingDetail>())
 
-    fun getStarRankingDetail(starId: Int, year: String, month: String) {
+    fun getStarRankingDetail(starId: Int, year: String?, month: String?) {
         viewModelScope.launch {
             kotlin.runCatching {
                 repository.getStarRankingDetail(starId, year, month)

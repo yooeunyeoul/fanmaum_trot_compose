@@ -32,12 +32,16 @@ val textShadow =
     Shadow(color = Color.Black.copy(alpha = 0.30f), offset = Offset(2f, 2f), blurRadius = 4f)
 
 @Composable
-fun RankImageItem(top3List: List<StarRanking>, onClick: (Any?) -> Unit) {
+fun RankImageItem(
+    top3List: List<StarRanking>,
+    onClick: (Any?) -> Unit,
+    isScreenWidthDp500Over: Boolean,
+    modifier: Modifier = Modifier
+) {
     Column {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
-            Modifier
-                .fillMaxWidth()
+            modifier
                 .height(274.dp)
                 .padding(start = 16.dp, end = 16.dp)
                 .background(
@@ -288,5 +292,5 @@ fun RankImageItem(top3List: List<StarRanking>, onClick: (Any?) -> Unit) {
 @Composable
 @Preview
 fun PreviewRankImageItem() {
-    RankImageItem(listOf(),{})
+    RankImageItem(listOf(), {}, isScreenWidthDp500Over = true)
 }

@@ -51,14 +51,18 @@ class RankinHistoryServiceImpl @Inject constructor(
 
     override suspend fun getStarRankingDetail(
         starId: Int,
-        year: String,
-        month: String
+        year: String?,
+        month: String?
     ): CommonResponse<List<StarRankingDetail>> {
         return httpClient.get("$RANK/monthly/detail") {
             url {
                 parameter("star_id", starId)
-                parameter("year", year)
-                parameter("month", month)
+                if (!year.isNullOrEmpty()) {
+                    parameter("year", year)
+                }
+                if (!month.isNullOrEmpty()) {
+                    parameter("month", month)
+                }
             }
         }.body()
     }
