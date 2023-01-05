@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,10 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.home.ranking.history.viewmodel.RankingHistoryViewModel
 import com.trotfan.trot.ui.home.ranking.history.component.monthly.NumberPickerComponent
-import com.trotfan.trot.ui.theme.FanwooriTheme
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray100
-import com.trotfan.trot.ui.theme.Gray900
+import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,6 +50,10 @@ fun DailyCalenderPicker(
     }
     var tempDay by remember {
         mutableStateOf(day.value)
+    }
+
+    var errState by remember {
+        mutableStateOf(false)
     }
     Column(
         modifier = Modifier
@@ -97,6 +99,20 @@ fun DailyCalenderPicker(
                 })
         }
 
+        if (errState) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "내역이 없는 날짜입니다.\n다른 날짜를 선택해주세요.",
+                textAlign = TextAlign.Center,
+                color = SemanticNegative500,
+                style = FanwooriTypography.body2,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            )
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
         BtnFilledLPrimary(
             text = "확인",
@@ -117,7 +133,10 @@ fun DailyCalenderPicker(
                         rankingHistoryViewModel.dailyDay.emit(tempDay)
                         modalBottomSheetState.hide()
                         onConfirmClick("$tempYear/$tempMonth/$tempDay")
+                        errState = false
                     }
+                } else {
+                    errState = true
                 }
             }
         }
