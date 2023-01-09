@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
@@ -46,7 +47,8 @@ object Destinations {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FanwooriApp(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    purchaseHelper: PurchaseHelper
 ) {
     FanwooriTheme {
         val systemUiController = rememberSystemUiController()
@@ -149,7 +151,8 @@ fun FanwooriApp(
                     onNavigateBottomBar = { section ->
                         currentRoute = section
                     },
-                    lazyListStates = lazyListStates
+                    lazyListStates = lazyListStates,
+                    purchaseHelper = purchaseHelper
                 )
 
                 when (votingCompleteState) {

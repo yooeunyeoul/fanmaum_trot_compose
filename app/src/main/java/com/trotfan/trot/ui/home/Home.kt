@@ -26,6 +26,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.dateManager
 import com.trotfan.trot.model.Expired
@@ -263,7 +264,8 @@ fun NavGraphBuilder.addHomeGraph(
     modifier: Modifier = Modifier,
     onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
     navController: NavController,
-    lazyListState: HashMap<String,LazyListState>?
+    lazyListState: HashMap<String, LazyListState>?,
+    purchaseHelper: PurchaseHelper
 ) {
     composable(HomeSections.Vote.route) {
         VoteHome(
@@ -308,7 +310,8 @@ fun NavGraphBuilder.addHomeGraph(
             onNavigateClick = { section ->
                 onNavigateBottomBar(section)
             },
-            modifier = modifier
+            modifier = modifier,
+            purchaseHelper = purchaseHelper
         )
     }
 

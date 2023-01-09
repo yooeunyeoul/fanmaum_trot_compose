@@ -15,6 +15,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
@@ -50,7 +51,8 @@ fun NavigationComponent(
     navController: NavHostController,
     onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
-    lazyListStates: HashMap<String, LazyListState>
+    lazyListStates: HashMap<String, LazyListState>,
+    purchaseHelper: PurchaseHelper
 ) {
     NavHost(
         navController = navController,
@@ -73,7 +75,8 @@ fun NavigationComponent(
                 onVotingClick(voteId, voteTicket, star, viewModel)
             },
             navController = navController,
-            lazyListState = lazyListStates
+            lazyListState = lazyListStates,
+            purchaseHelper = purchaseHelper
         )
         composable(Route.SelectStar.route) {
             SelectStarScreen(
