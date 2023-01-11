@@ -23,6 +23,7 @@ class Typography internal constructor(
     val body3: TextStyle,
     val body4: TextStyle,
     val body5: TextStyle,
+    val body6: TextStyle,
     val button1: TextStyle,
     val button2: TextStyle,
     val caption1: TextStyle,
@@ -90,6 +91,11 @@ class Typography internal constructor(
             fontSize = 17.sp,
             letterSpacing = (-0.25).sp
         ),
+        body6: TextStyle = TextStyle(
+            fontWeight = FontWeight.Medium,
+            fontSize = 20.sp,
+            letterSpacing = (-0.25).sp
+        ),
         button1: TextStyle = TextStyle(
             fontWeight = FontWeight.SemiBold,
             fontSize = 17.sp,
@@ -123,6 +129,7 @@ class Typography internal constructor(
         body3 = body3.withDefaultFontFamily(defaultFontFamily),
         body4 = body4.withDefaultFontFamily(defaultFontFamily),
         body5 = body5.withDefaultFontFamily(defaultFontFamily),
+        body6 = body6.withDefaultFontFamily(defaultFontFamily),
         button1 = button1.withDefaultFontFamily(defaultFontFamily),
         button2 = button2.withDefaultFontFamily(defaultFontFamily),
         caption1 = caption1.withDefaultFontFamily(defaultFontFamily),

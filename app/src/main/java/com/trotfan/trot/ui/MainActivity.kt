@@ -26,10 +26,9 @@ class MainActivity : ComponentActivity() {
         getDynamicLink()
 
         setContent {
-            val purchaseHelper = PurchaseHelper(this)
-            purchaseHelper.billingSetup()
+
             FanwooriApp(
-                purchaseHelper = purchaseHelper
+                purchaseHelper = PurchaseHelper(this)
             )
         }
     }

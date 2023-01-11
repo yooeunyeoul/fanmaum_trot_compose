@@ -16,7 +16,7 @@ android {
         applicationId "com.trotfan.trot"
         minSdk 24
         targetSdk 33
-        versionCode 4
+        versionCode 6
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -30,14 +30,14 @@ android {
 
     signingConfigs {
         release {
-            keyAlias keyProperties.getProperty("keyAlias")
+            keyAlias keyProperties.getProperty("")
             keyPassword keyProperties.getProperty("keyPassword")
             storeFile file(keyProperties.getProperty("storeFile"))
             storePassword keyProperties.getProperty("storePassword")
         }
     }
 
-    buildTypes {
+    buildTypes {keyAlias
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
