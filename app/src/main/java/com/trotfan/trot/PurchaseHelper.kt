@@ -111,10 +111,16 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                     // 구매 취소 시
                     billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED -> {
                         Log.e("User Cancelled", "Cancelled")
+                        coroutineScope.launch {
+                            _statusText.emit("User Cancelled")
+                        }
                     }
                     // 에러
                     else -> {
                         Log.e("Purchase Error", "Error")
+                        coroutineScope.launch {
+                            _statusText.emit("Purchase Error")
+                        }
                     }
                 }
             }
@@ -127,10 +133,16 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                     // 준비 완료가 되면 상품 쿼리를 처리 할 수 있다!
                     _statusText.value = "Billing Client Connected"
                     Log.e("Billing Connected", "Success")
+                    coroutineScope.launch {
+                        _statusText.emit("Billing Connected Success")
+                    }
                     queryProduct()
                     reloadPurchase()
                 } else {
                     Log.e("Billing Connected", "Failed")
+                    coroutineScope.launch {
+                        _statusText.emit("Billing Connected Failed")
+                    }
 
                 }
 
@@ -139,6 +151,9 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
             override fun onBillingServiceDisconnected() {
                 // 연결 실패 시 재시도 로직을 구현.
                 Log.e("Billing Connected", "Disconnected")
+                coroutineScope.launch {
+                    _statusText.emit("Billing Disconnected")
+                }
             }
         })
     }
@@ -157,6 +172,9 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
             val billingResult = billingClient.launchBillingFlow(activity, billingFlowParams)
             if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
                 Log.e("구매 에러 발생", "구매 에러 발생")
+                coroutineScope.launch {
+                    _statusText.emit("구매 에러 발생")
+                }
             }
         }
 
@@ -166,8 +184,14 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
         purchasedItem = item
         if (purchasedItem.purchaseState == Purchase.PurchaseState.PURCHASED) {
             Log.e("Purchase Complete", "Purchase Complete")
+            coroutineScope.launch {
+                _statusText.emit("Purchase Complete")
+            }
             if (mBillingType == BillingClient.ProductType.INAPP) {
-                consumePurchase()
+                coroutineScope.launch {
+                    _statusText.emit("소비 처리 하기")
+                }
+//                consumePurchase()
             }
         }
     }
@@ -182,6 +206,9 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                 consumeParams
             ) { billingResult, s ->
                 Log.e("Purchase Consumed", "Purchase Consumed")
+                coroutineScope.launch {
+                    _statusText.emit("소비 처리 완료")
+                }
             }
         }
 
@@ -208,9 +235,17 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                 this.productDetailList = productDetailList
                 productDetailList.forEach {
                     Log.e("Product${it.title}", it.name)
+                    coroutineScope.launch {
+                        _statusText.emit("Product${it.title}")
+                    }
+
                 }
             } else {
                 Log.e("Product No Matching", "No Product Matching")
+                coroutineScope.launch {
+                    _statusText.emit("Product No Matching")
+                }
+
             }
         }
     }
@@ -228,6 +263,9 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
             if (purchases.isNotEmpty()) {
                 purchasedItem = purchases.first()
                 Log.e("Previous Purchase Found", "Previous Purchase Found")
+                coroutineScope.launch {
+                    _statusText.emit("Previous Purchase Found")
+                }
 
             }
         }

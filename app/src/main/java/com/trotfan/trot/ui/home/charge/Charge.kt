@@ -45,7 +45,7 @@ fun ChargeHome(
     lazyListState: LazyListState = rememberLazyListState()
 ) {
     val tickets by viewModel.tickets.collectAsState()
-
+    val purchaseStatusText by purchaseHelper.statusText.collectAsState()
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
     }
@@ -61,7 +61,11 @@ fun ChargeHome(
                 .padding(start = 16.dp, end = 16.dp)
         ) {
             AppbarL(title = "충전")
-
+            Text(
+                text = purchaseStatusText,
+                style = FanwooriTypography.h1,
+                color = Color.Black
+            )
             LazyColumn(
                 Modifier.fillMaxWidth(), state = lazyListState ?: rememberLazyListState(),
                 contentPadding = PaddingValues(bottom = 16.dp)
