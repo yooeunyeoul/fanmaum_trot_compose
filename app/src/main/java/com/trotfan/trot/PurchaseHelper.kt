@@ -5,14 +5,12 @@ import android.util.Log
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
-import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Singleton
 
 
 enum class InAppProduct(
@@ -60,6 +58,10 @@ enum class InAppProduct(
     )
 }
 
+enum class ConsumeState {
+    Success, None
+}
+
 data class PurchaseHelper @Inject constructor(val activity: Activity) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -74,21 +76,13 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
     private val _buyEnabled = MutableStateFlow(false)
     val buyEnabled = _buyEnabled.asStateFlow()
 
-    private val _consumeEnabled = MutableStateFlow(false)
-    val consumeEnabled = _consumeEnabled.asStateFlow()
+    private val _consumeState = MutableStateFlow(ConsumeState.None)
+    val consumeState = _consumeState.asStateFlow()
 
     private val _statusText = MutableStateFlow("Initializing...")
     val statusText = _statusText.asStateFlow()
 
     var mBillingType = BillingClient.ProductType.INAPP
-
-    val productIdList = listOf(
-        InAppProduct.Votes_6000.id,
-        InAppProduct.Votes_21000.id,
-        InAppProduct.Votes_63000.id,
-        InAppProduct.Votes_160000.id,
-        InAppProduct.Votes_450000.id
-    )
 
     init {
         billingSetup()
@@ -112,14 +106,20 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                     billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED -> {
                         Log.e("User Cancelled", "Cancelled")
                         coroutineScope.launch {
-                            _statusText.emit("User Cancelled")
+                            _statusText.emit(
+                                _statusText.value + "\n" +
+                                        "User Cancelled"
+                            )
                         }
                     }
                     // 에러
                     else -> {
                         Log.e("Purchase Error", "Error")
                         coroutineScope.launch {
-                            _statusText.emit("Purchase Error")
+                            _statusText.emit(
+                                _statusText.value + "\n" +
+                                        "Purchase Error"
+                            )
                         }
                     }
                 }
@@ -134,14 +134,22 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                     _statusText.value = "Billing Client Connected"
                     Log.e("Billing Connected", "Success")
                     coroutineScope.launch {
-                        _statusText.emit("Billing Connected Success")
+                        _statusText.emit(
+                            _statusText.value + "\n" +
+                                    "Billing Connected Success"
+                        )
+
                     }
                     queryProduct()
                     reloadPurchase()
                 } else {
                     Log.e("Billing Connected", "Failed")
                     coroutineScope.launch {
-                        _statusText.emit("Billing Connected Failed")
+                        _statusText.emit(
+                            _statusText.value + "\n" +
+                                    "Billing Connected Failed"
+                        )
+
                     }
 
                 }
@@ -152,7 +160,10 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                 // 연결 실패 시 재시도 로직을 구현.
                 Log.e("Billing Connected", "Disconnected")
                 coroutineScope.launch {
-                    _statusText.emit("Billing Disconnected")
+                    _statusText.emit(
+                        _statusText.value + "\n" +
+                                "Billing Disconnected"
+                    )
                 }
             }
         })
@@ -173,7 +184,10 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
             if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
                 Log.e("구매 에러 발생", "구매 에러 발생")
                 coroutineScope.launch {
-                    _statusText.emit("구매 에러 발생")
+                    _statusText.emit(
+                        _statusText.value + "\n" +
+                                "구매 에러 발생"
+                    )
                 }
             }
         }
@@ -185,19 +199,27 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
         if (purchasedItem.purchaseState == Purchase.PurchaseState.PURCHASED) {
             Log.e("Purchase Complete", "Purchase Complete")
             coroutineScope.launch {
-                _statusText.emit("Purchase Complete")
+                _statusText.emit(
+                    _statusText.value + "\n" +
+                            "Purchase Complete"
+                )
             }
             if (mBillingType == BillingClient.ProductType.INAPP) {
                 coroutineScope.launch {
-                    _statusText.emit("소비 처리 하기")
+                    _statusText.emit(
+                        _statusText.value + "\n" +
+                                "소비 처리 하기"
+                    )
                 }
-//                consumePurchase()
+                consumePurchase(isLastIndex = true)
+
+
             }
         }
     }
 
     //소비성 상품인 경우에는 소비 처리를 해주어야 상품을 다시 구매 할 수 있다.
-    fun consumePurchase() {
+    fun consumePurchase(isLastIndex: Boolean) {
         val consumeParams =
             ConsumeParams.newBuilder().setPurchaseToken(purchasedItem.purchaseToken).build()
 
@@ -205,20 +227,38 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
             billingClient.consumeAsync(
                 consumeParams
             ) { billingResult, s ->
+
                 Log.e("Purchase Consumed", "Purchase Consumed")
-                coroutineScope.launch {
-                    _statusText.emit("소비 처리 완료")
+                if (isLastIndex) {
+                    coroutineScope.launch {
+                        _consumeState.emit(ConsumeState.Success)
+                        _statusText.emit(
+                            _statusText.value + "\n" +
+                                    "소비 처리 완료"
+                        )
+                    }
+
                 }
             }
         }
 
     }
 
+    fun changeConsumeStatus() {
+        coroutineScope.launch {
+            _consumeState.emit(ConsumeState.None)
+            _statusText.emit(
+                _statusText.value + "\n" +
+                        "이게 나온다면 api 콜이 정상적으로 된다는 뜻이지"
+            )
+        }
+    }
+
     private fun queryProduct() {
         val productList = ArrayList<Product>()
-        productIdList.forEach { id ->
+        InAppProduct.values().map { inAppProduct ->
             productList.add(
-                Product.newBuilder().setProductId(id)
+                Product.newBuilder().setProductId(inAppProduct.id)
                     .setProductType(BillingClient.ProductType.INAPP).build()
             )
         }
@@ -236,14 +276,20 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                 productDetailList.forEach {
                     Log.e("Product${it.title}", it.name)
                     coroutineScope.launch {
-                        _statusText.emit("Product${it.title}")
+                        _statusText.emit(
+                            _statusText.value + "\n" +
+                                    "Product${it.title}"
+                        )
                     }
 
                 }
             } else {
                 Log.e("Product No Matching", "No Product Matching")
                 coroutineScope.launch {
-                    _statusText.emit("Product No Matching")
+                    _statusText.emit(
+                        _statusText.value + "\n" +
+                                "Product No Matching"
+                    )
                 }
 
             }
@@ -261,12 +307,18 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
             queryPurchasesParams
         ) { billingResult, purchases ->
             if (purchases.isNotEmpty()) {
-                purchasedItem = purchases.first()
-                Log.e("Previous Purchase Found", "Previous Purchase Found")
-                coroutineScope.launch {
-                    _statusText.emit("Previous Purchase Found")
-                }
+                purchases.forEachIndexed { index, purchase ->
+                    coroutineScope.launch {
+                        _statusText.emit(
+                            _statusText.value + "\n" +
+                                    "Previous Purchase ${purchase.orderId} is Consumed"
+                        )
+                    }
 
+                    purchasedItem = purchase
+                    consumePurchase(index == purchases.lastIndex)
+                }
+                Log.e("Previous Purchase Found", "Previous Purchase Found")
             }
         }
     }
