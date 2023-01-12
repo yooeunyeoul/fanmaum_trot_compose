@@ -48,7 +48,7 @@ import com.trotfan.trot.ui.home.ranking.viewmodel.MonthlyRankViewType
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankHomeViewModel
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankRemainingStatus
 import com.trotfan.trot.ui.home.ranking.viewmodel.RankStatus
-import com.trotfan.trot.ui.home.vote.component.ChipCapsuleImg
+import com.trotfan.trot.ui.components.chip.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable

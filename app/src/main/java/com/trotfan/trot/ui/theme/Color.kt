@@ -14,6 +14,7 @@ val Gray650 = Color(0XFF5C6B70)
 val Gray700 = Color(0XFF5C6B70)
 val Gray750 = Color(0XFF475357)
 val Gray800 = Color(0XFF394346)
+val Gray850 = Color(0XFF728388)
 val Gray900 = Color(0XFF22282A)
 
 
