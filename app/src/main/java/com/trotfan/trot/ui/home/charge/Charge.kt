@@ -8,18 +8,15 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.android.billingclient.api.BillingClient
-import com.trotfan.trot.ConsumeState
 import com.trotfan.trot.InAppProduct
+import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.ui.components.list.StoreItem
 import com.trotfan.trot.ui.components.navigation.AppbarL
@@ -39,17 +36,20 @@ fun ChargeHome(
     purchaseHelper: PurchaseHelper,
     lazyListState: LazyListState = rememberLazyListState()
 ) {
-    val tickets by viewModel.tickets.collectAsState()
+    val tickets by purchaseHelper.tickets.collectAsState()
     val purchaseStatusText by purchaseHelper.statusText.collectAsState()
-    val consumeState by purchaseHelper.consumeState.collectAsState()
+    val refreshState by purchaseHelper.refreshState.collectAsState()
 
-    LaunchedEffect(key1 = consumeState, block = {
-        if (consumeState == ConsumeState.Success) {
-            viewModel.getVoteTickets()
-            purchaseHelper.changeConsumeStatus()
-            Log.e("이거 호출 되긴 되냐 Success", "이거 호출 되긴 되냐 Success")
+
+    LaunchedEffect(key1 = refreshState, block = {
+        if (refreshState == RefreshTicket.Need) {
+            viewModel.getVoteTickets(purchaseHelper)
         }
+
     })
+
+
+
 
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)

@@ -5,12 +5,13 @@ import android.util.Log
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
+import com.trotfan.trot.model.Expired
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 enum class InAppProduct(
@@ -58,11 +59,12 @@ enum class InAppProduct(
     )
 }
 
-enum class ConsumeState {
-    Success, None
+enum class RefreshTicket {
+    Need, Unnecessary
 }
 
-data class PurchaseHelper @Inject constructor(val activity: Activity) {
+
+data class PurchaseHelper (val activity: Activity) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -73,11 +75,13 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
     private val _productName = MutableStateFlow("Searching...")
     val productName = _productName.asStateFlow()
 
-    private val _buyEnabled = MutableStateFlow(false)
-    val buyEnabled = _buyEnabled.asStateFlow()
+    val tickets: StateFlow<Expired>
+        get() = _tickets
+    private val _tickets =
+        MutableStateFlow(Expired())
 
-    private val _consumeState = MutableStateFlow(ConsumeState.None)
-    val consumeState = _consumeState.asStateFlow()
+    private val _refreshState = MutableStateFlow(RefreshTicket.Need)
+    val refreshState = _refreshState.asStateFlow()
 
     private val _statusText = MutableStateFlow("Initializing...")
     val statusText = _statusText.asStateFlow()
@@ -231,7 +235,7 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                 Log.e("Purchase Consumed", "Purchase Consumed")
                 if (isLastIndex) {
                     coroutineScope.launch {
-                        _consumeState.emit(ConsumeState.Success)
+                        _refreshState.value = RefreshTicket.Need
                         _statusText.emit(
                             _statusText.value + "\n" +
                                     "소비 처리 완료"
@@ -244,14 +248,14 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
 
     }
 
-    fun changeConsumeStatus() {
+    fun closeApiCall() {
         coroutineScope.launch {
-            _consumeState.emit(ConsumeState.None)
             _statusText.emit(
                 _statusText.value + "\n" +
                         "이게 나온다면 api 콜이 정상적으로 된다는 뜻이지"
             )
         }
+        _refreshState.value = RefreshTicket.Unnecessary
     }
 
     private fun queryProduct() {
@@ -321,6 +325,10 @@ data class PurchaseHelper @Inject constructor(val activity: Activity) {
                 Log.e("Previous Purchase Found", "Previous Purchase Found")
             }
         }
+    }
+
+    fun refreshTickets(tickets: Expired) {
+        _tickets.value = tickets
     }
 
 

@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.*
-import com.trotfan.trot.extensions.CommonObserve
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteData
@@ -84,11 +84,6 @@ class VoteHomeViewModel @Inject constructor(
 
     private val dummyData = VoteData(quantity = -1, star_name = "null", user_name = "null")
 
-    val tickets: StateFlow<Expired>
-        get() = _tickets
-    private val _tickets =
-        MutableStateFlow(Expired())
-
     val gender: StateFlow<Gender>
         get() = _gender
     private val _gender =
@@ -96,10 +91,11 @@ class VoteHomeViewModel @Inject constructor(
 
     var currentBoardPage = 0
 
+    var today = 1000L
+
 
     init {
         getVoteList()
-        getVoteTickets()
         userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
         voteMainManager = VoteMainManager(context.VoteMainDataStore)
         connectBoardSocket()
@@ -147,7 +143,7 @@ class VoteHomeViewModel @Inject constructor(
         }
     }
 
-    fun getVoteTickets() {
+    fun getVoteTickets(purchaseHelper: PurchaseHelper) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 kotlin.runCatching {
@@ -158,7 +154,8 @@ class VoteHomeViewModel @Inject constructor(
                 }.onSuccess { response ->
                     when (response.result.code) {
                         ResultCodeStatus.Success.code -> {
-                            _tickets.emit(response.data?.expired ?: Expired())
+                            purchaseHelper.refreshTickets(response.data?.expired ?: Expired())
+                            purchaseHelper.closeApiCall()
                         }
                         ResultCodeStatus.Fail.code -> {
                             Log.e("VoteHomeViewModel", response.result.message.toString())

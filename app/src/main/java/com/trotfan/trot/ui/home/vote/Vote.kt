@@ -43,6 +43,8 @@ import com.airbnb.lottie.compose.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.trotfan.trot.RefreshTicket
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.model.*
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
@@ -56,7 +58,6 @@ import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.time.LocalDate
@@ -74,7 +75,8 @@ fun VoteHome(
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
     onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
-    lazyListState: LazyListState?
+    lazyListState: LazyListState?,
+    purchaseHelper: PurchaseHelper
 ) {
     val context = LocalContext.current
     val voteStatus by viewModel.voteStatus.collectAsState()
@@ -83,7 +85,7 @@ fun VoteHome(
     val hashmapWomenList by viewModel.womenHashMap.collectAsState()
     val voteStatusBoardList by viewModel.voteDataList.collectAsState()
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
-    val tickets by viewModel.tickets.collectAsState()
+    val tickets by purchaseHelper.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
 
     val favoriteStarName by viewModel.userInfoManager.favoriteStarNameFlow.collectAsState(
@@ -95,7 +97,6 @@ fun VoteHome(
     val isShowingScrollToolTip by viewModel.voteMainManager.isShowingVoteMainScrollToolTipFlow.collectAsState(
         initial = false
     )
-
 
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ranking_arrow))
     var appGuideStatue by remember { mutableStateOf(false) }
@@ -115,6 +116,8 @@ fun VoteHome(
     val isPressedLastRank by interactionSource.collectIsPressedAsState()
 
     val favoriteStarGender = viewModel.gender.value
+
+    val refreshState by purchaseHelper.refreshState.collectAsState()
 
 //    Log.e("favoriteStarGender",favoriteStarGender.toString())
 
@@ -139,6 +142,11 @@ fun VoteHome(
                 viewModel.saveScrollTooltipState(false)
             }
             Log.e("OFFSE", offset.toString())
+        }
+    })
+    LaunchedEffect(key1 = refreshState, block = {
+        if (refreshState == RefreshTicket.Need) {
+            viewModel.getVoteTickets(purchaseHelper)
         }
     })
 

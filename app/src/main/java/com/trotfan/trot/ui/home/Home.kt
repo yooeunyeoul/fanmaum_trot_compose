@@ -277,7 +277,8 @@ fun NavGraphBuilder.addHomeGraph(
             onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
                 onVotingClick(voteId, voteTicket, star, voteViewModel)
             },
-            lazyListState = lazyListState?.get(HomeSections.Vote.route)
+            lazyListState = lazyListState?.get(HomeSections.Vote.route),
+            purchaseHelper = purchaseHelper
         )
     }
     composable(HomeSections.MyPage.route) { from ->

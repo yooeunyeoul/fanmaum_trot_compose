@@ -4,13 +4,12 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,17 +21,8 @@ class ChargeHomeViewModel @Inject constructor(
 
     private val context = getApplication<Application>()
 
-    val tickets: StateFlow<Expired>
-        get() = _tickets
-    private val _tickets =
-        MutableStateFlow(Expired())
 
-    init {
-        getVoteTickets()
-    }
-
-
-    fun getVoteTickets() {
+    fun getVoteTickets(purchaseHelper: PurchaseHelper) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 kotlin.runCatching {
@@ -43,7 +33,8 @@ class ChargeHomeViewModel @Inject constructor(
                 }.onSuccess { response ->
                     when (response.result.code) {
                         ResultCodeStatus.Success.code -> {
-                            _tickets.emit(response.data?.expired ?: Expired())
+                            purchaseHelper.refreshTickets(response.data?.expired ?: Expired())
+                            purchaseHelper.closeApiCall()
                         }
                         ResultCodeStatus.Fail.code -> {
                             Log.e("ChargeHomeViewModel", response.result.message.toString())

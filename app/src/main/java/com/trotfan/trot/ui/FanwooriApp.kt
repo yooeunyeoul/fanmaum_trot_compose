@@ -176,7 +176,7 @@ fun FanwooriApp(
                             onDismiss = {
                                 coroutineScope.launch {
                                     viewModel.votingCompleteState.emit(0)
-                                    voteHomeViewModel?.getVoteTickets()
+                                    voteHomeViewModel?.getVoteTickets(purchaseHelper)
                                 }
                             }, onPositive = {
                                 val sendIntent: Intent = Intent().apply {
