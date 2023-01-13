@@ -116,6 +116,7 @@ fun RankHome(
             AppbarL(
                 title = "순위",
                 modifier = Modifier
+                    .background(Color.White)
                     .padding(start = 16.dp, end = 16.dp)
                     .clickable {
                         viewModel.changeStatus()

@@ -105,7 +105,8 @@ fun MyProfile() {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_pen),
                     contentDescription = null,
-                    tint = Gray850
+                    tint = Gray850,
+                    modifier = Modifier.align(CenterVertically)
                 )
             }
         }

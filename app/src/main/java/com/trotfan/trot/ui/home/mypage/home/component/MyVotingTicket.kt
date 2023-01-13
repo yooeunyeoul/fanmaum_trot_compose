@@ -30,13 +30,18 @@ fun MyVotingTicket() {
     val decimal = DecimalFormat("#,###")
 
     Surface(
+        color = Color.White,
+        elevation = 30.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp)
             .clip(RoundedCornerShape(24.dp))
-            .background(Color.White)
     ) {
-        Column(Modifier.fillMaxWidth()) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 24.dp)
+        ) {
             Row {
                 Text(
                     text = "내 투표권",
@@ -54,7 +59,11 @@ fun MyVotingTicket() {
                     alignment = Alignment.CenterStart
                 )
             }
+            Spacer(modifier = Modifier.height(2.dp))
+
             Text(text = decimal.format(14000), style = FanwooriTypography.h2, color = Gray800)
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             Row(modifier = Modifier.align(End)) {
                 Text(text = "이용내역", style = FanwooriTypography.button1, color = Primary900)

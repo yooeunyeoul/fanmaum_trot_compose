@@ -10,15 +10,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Gray900
+import com.trotfan.trot.ui.utils.clickableSingle
 
-val titleBarHeight = 56.dp
 @Composable
-fun AppbarL(
+fun AppbarMLeftIcon(
+    modifier: Modifier = Modifier,
     title: String,
     onDismiss: () -> Unit = {},
-    icon: Int? = null,
-    modifier: Modifier = Modifier
+    icon: Int? = null
 
 ) {
     Row(
@@ -27,23 +28,22 @@ fun AppbarL(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-        Text(
-            text = title,
-            color = Gray900,
-            style = FanwooriTypography.h2,
-            modifier = Modifier.weight(1f)
-        )
-
         icon?.let {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = Gray700,
+                tint = Gray800,
                 modifier = Modifier
-                    .padding(start = 16.dp)
+                    .padding(start = 16.dp, end = 8.dp)
                     .size(32.dp)
+                    .clickableSingle { onDismiss() }
             )
         }
+        Text(
+            text = title,
+            color = Gray800,
+            style = FanwooriTypography.body3,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
