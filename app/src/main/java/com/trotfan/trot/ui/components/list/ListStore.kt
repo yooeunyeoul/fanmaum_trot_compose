@@ -39,7 +39,7 @@ fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
                 drawLine(
                     color = Gray100,
                     start = Offset(0f, y),
-                    end = Offset(size.width , y),
+                    end = Offset(size.width, y),
                     strokeWidth = strokeWidth
                 )
             }
@@ -75,30 +75,41 @@ fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
                 color = Gray800,
                 style = FanwooriTypography.body6
             )
+            Spacer(modifier = Modifier.height(4.dp))
 
             Row(
                 verticalAlignment = CenterVertically,
                 modifier = Modifier.background(color = Color.White)
             ) {
+                Text(
+                    text = product.votes,
+                    color = Gray700,
+                    style = FanwooriTypography.body2
+                )
+//                Spacer(modifier= Modifier.width(2.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.icon_add),
                     contentDescription = null,
                     tint = Primary500
                 )
+//                Spacer(modifier= Modifier.width(2.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_vote_iconcolored),
                     contentDescription = null,
                     tint = Primary500
                 )
+//                Spacer(modifier= Modifier.width(2.dp))
                 Text(
                     text = product.bonus,
                     color = Primary500,
-                    style = FanwooriTypography.body4
+                    style = FanwooriTypography.body2
                 )
             }
         }
         
-        BtnFilledMPrimary(text = product.price, modifier = Modifier.align(CenterVertically).width(104.dp)) {
+        BtnFilledMPrimary(text = product.price, modifier = Modifier
+            .align(CenterVertically)
+            .width(104.dp)) {
             onItemClick.invoke(product)
         }
 

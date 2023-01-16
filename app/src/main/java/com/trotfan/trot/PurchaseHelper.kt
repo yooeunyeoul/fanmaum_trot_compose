@@ -19,43 +19,49 @@ enum class InAppProduct(
     val productName: String,
     val price: String,
     val image: String,
+    val votes: String,
     val bonus: String
 ) {
     Votes_6000(
         id = "votes_6000",
         productName = "6,000투표권",
-        price = "1,200원",
+        price = "1,500원",
         image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
+        votes = "5,500",
         bonus = "500"
 
     ),
-    Votes_21000(
-        "votes_21000",
-        productName = "21,000투표권",
+    Votes_22000(
+        "votes_22000",
+        productName = "22,000투표권",
         price = "4,400원",
         image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
-        bonus = "1,500"
+        votes = "2,0000",
+        bonus = "2,000"
     ),
     Votes_63000(
         "votes_63000",
         productName = "63,000투표권",
         price = "9,900원",
         image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
-        bonus = "5,000"
+        votes = "55,000",
+        bonus = "8,000"
     ),
     Votes_160000(
         "votes_160000",
         productName = "160,000투표권",
         price = "19,000원",
         image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
-        bonus = "10,000"
+        votes = "135,000",
+        bonus = "25,000"
     ),
     Votes_450000(
         "votes_450000",
         productName = "450,000투표권",
         price = "50,000원",
         image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
-        bonus = "25,000"
+        votes = "360,000",
+        bonus = "90,000"
     )
 }
 
@@ -64,7 +70,7 @@ enum class RefreshTicket {
 }
 
 
-data class PurchaseHelper (val activity: Activity) {
+data class PurchaseHelper(val activity: Activity) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 

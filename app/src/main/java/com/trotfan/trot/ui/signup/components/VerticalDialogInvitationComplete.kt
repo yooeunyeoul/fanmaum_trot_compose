@@ -55,7 +55,7 @@ fun VerticalDialogInvitationComplete(
     ) {
 
         Box(
-            modifier = Modifier.size(360.dp)
+            modifier = Modifier.size(600.dp)
         ) {
 
             AsyncImage(
@@ -64,17 +64,21 @@ fun VerticalDialogInvitationComplete(
                     .crossfade(true).build(),
                 contentDescription = null,
                 modifier = Modifier
+                    .padding(bottom = 220.dp)
                     .width(200.dp)
                     .height(144.dp)
-                    .zIndex(1f)
-                    .align(Alignment.TopCenter)
+                    .zIndex(2f)
+                    .align(Alignment.Center)
+
+
             )
 
 
             Surface(
                 modifier = modifier
                     .width(328.dp)
-                    .wrapContentHeight()
+                    .height(188.dp)
+                    .zIndex(1f)
                     .align(Alignment.Center),
                 shape = RoundedCornerShape(24.dp),
                 color = Color.White
@@ -130,8 +134,8 @@ fun VerticalDialogInvitationComplete(
                 iterations = LottieConstants.IterateForever,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .zIndex(2f)
-                    .padding(bottom = 100.dp)
+                    .zIndex(0f)
+                    .size(360.dp)
 
             )
         }
