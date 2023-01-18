@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -24,13 +25,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.trotfan.trot.R
+import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
+import com.trotfan.trot.ui.components.dialog.HorizontalDialog
+import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.clickableSingle
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingSecession(
@@ -66,7 +74,17 @@ fun SettingSecession(
 
 
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
+
+    var secessionDialogState by remember {
+        mutableStateOf(false)
+    }
+
+    var secessionConfirmDialogState by remember {
+        mutableStateOf(false)
+    }
+
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     Surface(
         modifier = Modifier
@@ -298,6 +316,44 @@ fun SettingSecession(
                     secessionPage = 2
                 }
             }
+        }
+
+        if (secessionDialogState) {
+            HorizontalDialog(
+                titleText = "정말로 회원탈퇴를 하시겠습니까?",
+                positiveText = "확인",
+                negativeText = "취소",
+                onPositive = {
+                    secessionDialogState = false
+                    secessionConfirmDialogState = true
+                },
+                onDismiss = {
+                    secessionDialogState = false
+                }
+            )
+        }
+
+        if (secessionConfirmDialogState) {
+            VerticalDialog(
+                contentText = "회원탈퇴 되었습니다",
+                buttonOneText = "확인",
+                onDismiss = {
+                    coroutineScope.launch {
+                        val gso =
+                            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestEmail().build()
+                        val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                        googleSignInClient.signOut().addOnCompleteListener {
+                            navController?.navigate(Route.Login.route) {
+                                secessionConfirmDialogState = false
+                            }
+                        }
+                        context.userIdStore.updateData {
+                            it.toBuilder().setUserId(0).build()
+                        }
+                    }
+                }
+            )
         }
     }
 }
