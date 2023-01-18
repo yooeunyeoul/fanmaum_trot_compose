@@ -30,10 +30,7 @@ import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
 import com.trotfan.trot.ui.components.button.BtnFilledMBlackIcon
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray300
-import com.trotfan.trot.ui.theme.Gray600
-import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
 @Composable
@@ -55,7 +52,7 @@ fun VerticalDialogInvitationComplete(
     ) {
 
         Box(
-            modifier = Modifier.size(600.dp)
+            modifier = Modifier.size(650.dp)
         ) {
 
             AsyncImage(
@@ -64,7 +61,7 @@ fun VerticalDialogInvitationComplete(
                     .crossfade(true).build(),
                 contentDescription = null,
                 modifier = Modifier
-                    .padding(bottom = 220.dp)
+                    .padding(bottom = 240.dp)
                     .width(200.dp)
                     .height(144.dp)
                     .zIndex(2f)
@@ -97,7 +94,7 @@ fun VerticalDialogInvitationComplete(
                         text = contentText,
                         textAlign = TextAlign.Center,
                         style = FanwooriTypography.body4,
-                        color = Gray600
+                        color = Gray750
                     )
 
                     BtnFilledLPrimary(
