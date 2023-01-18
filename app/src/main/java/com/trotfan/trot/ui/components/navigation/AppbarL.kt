@@ -10,13 +10,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Gray900
+import com.trotfan.trot.ui.utils.clickable
 
 val titleBarHeight = 56.dp
 @Composable
 fun AppbarL(
     title: String,
-    onDismiss: () -> Unit = {},
+    onIconClick: () -> Unit = {},
     icon: Int? = null,
     modifier: Modifier = Modifier
 
@@ -39,10 +41,13 @@ fun AppbarL(
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = Gray700,
+                tint = Gray800,
                 modifier = Modifier
                     .padding(start = 16.dp)
                     .size(32.dp)
+                    .clickable {
+                        onIconClick()
+                    }
             )
         }
     }

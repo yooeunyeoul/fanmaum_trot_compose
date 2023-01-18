@@ -1,7 +1,6 @@
-package com.trotfan.trot.ui.home.mypage
+package com.trotfan.trot.ui.home.mypage.home.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -23,10 +22,13 @@ import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Primary900
+import com.trotfan.trot.ui.utils.clickable
 import java.text.DecimalFormat
 
 @Composable
-fun MyVotingTicket() {
+fun MyVotingTicket(
+    onClick: () -> Unit
+) {
     val decimal = DecimalFormat("#,###")
 
     Surface(
@@ -36,6 +38,7 @@ fun MyVotingTicket() {
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp)
             .clip(RoundedCornerShape(24.dp))
+            .clickable { onClick() }
     ) {
         Column(
             Modifier
@@ -82,6 +85,8 @@ fun MyVotingTicket() {
 @Composable
 fun MyVotingTicketPreview() {
     FanwooriTheme {
-        MyVotingTicket()
+        MyVotingTicket({
+
+        })
     }
 }

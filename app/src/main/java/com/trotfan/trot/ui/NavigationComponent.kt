@@ -19,6 +19,13 @@ import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
+import com.trotfan.trot.ui.home.mypage.home.component.MyProfile
+import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
+import com.trotfan.trot.ui.home.mypage.setting.Setting
+import com.trotfan.trot.ui.home.mypage.setting.SettingAccount
+import com.trotfan.trot.ui.home.mypage.setting.SettingPush
+import com.trotfan.trot.ui.home.mypage.setting.SettingSecession
+import com.trotfan.trot.ui.home.mypage.votehistory.MyVoteHistory
 import com.trotfan.trot.ui.home.ranking.history.RankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeRanking
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
@@ -39,8 +46,14 @@ enum class Route(
     InvitationCode(route = "invitationCode"),
     VoteBenefits(route = "voteBenefits"),
     RankingHistory(route = "rankingHistory"),
-    RankingHistoryCumulative(route = "RankingHistoryCumulative"),
-    WebView(route = "WebView")
+    RankingHistoryCumulative(route = "rankingHistoryCumulative"),
+    WebView(route = "webView"),
+    MyProfileModify(route = "myProfileModify"),
+    MyVoteHistory(route = "myVoteHistory"),
+    Setting(route = "setting"),
+    SettingAccount(route = "settingAccount"),
+    SettingPush(route = "settingPush"),
+    SettingSecession(route = "SettingSecession")
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -145,6 +158,36 @@ fun NavigationComponent(
                 backStackEntry.arguments?.getInt("starId"),
                 backStackEntry.arguments?.getString("starName"),
                 backStackEntry.arguments?.getString("date")
+            )
+        }
+        composable(Route.MyProfileModify.route) {
+            ProfileModify(
+                navController = navController
+            )
+        }
+        composable(Route.MyVoteHistory.route) {
+            MyVoteHistory(
+                navController = navController
+            )
+        }
+        composable(Route.Setting.route) {
+            Setting(
+                navController = navController
+            )
+        }
+        composable(Route.SettingAccount.route) {
+            SettingAccount(
+                navController = navController
+            )
+        }
+        composable(Route.SettingPush.route) {
+            SettingPush(
+                navController = navController
+            )
+        }
+        composable(Route.SettingSecession.route) {
+            SettingSecession(
+                navController = navController
             )
         }
     }

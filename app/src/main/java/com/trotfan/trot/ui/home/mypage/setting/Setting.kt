@@ -12,22 +12,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
-fun Setting() {
+fun Setting(
+    navController: NavController? = null
+) {
     Surface(
         Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
         Column {
-            AppbarMLeftIcon(title = "설정", icon = R.drawable.icon_back)
+            AppbarMLeftIcon(title = "설정", icon = R.drawable.icon_back, onIconClick = {
+                navController?.popBackStack()
+            })
             SettingComponent(text = "계정 정보") {
-
+                navController?.navigate(Route.SettingAccount.route)
             }
             Spacer(
                 modifier = Modifier
@@ -37,7 +43,7 @@ fun Setting() {
                     .background(Gray100)
             )
             SettingComponent(text = "앱 알림 설정") {
-
+                navController?.navigate(Route.SettingPush.route)
             }
             Spacer(
                 modifier = Modifier

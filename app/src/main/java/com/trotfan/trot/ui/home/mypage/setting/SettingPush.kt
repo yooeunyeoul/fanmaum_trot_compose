@@ -10,12 +10,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.theme.*
 
 @Composable
-fun SettingPush() {
+fun SettingPush(
+    navController: NavController? = null
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -29,7 +32,10 @@ fun SettingPush() {
                     .fillMaxWidth()
                     .background(
                         Color.White
-                    )
+                    ),
+                onIconClick = {
+                    navController?.popBackStack()
+                }
             )
             Spacer(
                 modifier = Modifier

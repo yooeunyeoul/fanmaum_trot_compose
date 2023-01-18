@@ -9,16 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray700
 import com.trotfan.trot.ui.theme.Gray800
-import com.trotfan.trot.ui.theme.Gray900
 import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
 fun AppbarMLeftIcon(
     modifier: Modifier = Modifier,
     title: String,
-    onDismiss: () -> Unit = {},
+    onIconClick: () -> Unit = {},
     icon: Int? = null
 
 ) {
@@ -36,7 +34,7 @@ fun AppbarMLeftIcon(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 8.dp)
                     .size(32.dp)
-                    .clickableSingle { onDismiss() }
+                    .clickableSingle { onIconClick() }
             )
         }
         Text(

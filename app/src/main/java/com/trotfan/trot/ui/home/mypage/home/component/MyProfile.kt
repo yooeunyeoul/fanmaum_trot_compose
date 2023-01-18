@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.home.mypage
+package com.trotfan.trot.ui.home.mypage.home.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,13 +26,17 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 
 @Composable
-fun MyProfile() {
+fun MyProfile(
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(start = 24.dp, end = 24.dp)
             .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Box(
             modifier = Modifier
@@ -117,6 +121,8 @@ fun MyProfile() {
 @Composable
 fun MyProfilePreview() {
     FanwooriTheme {
-        MyProfile()
+        MyProfile({
+
+        })
     }
 }

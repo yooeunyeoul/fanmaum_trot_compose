@@ -16,19 +16,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickable
 
 @Composable
-fun SettingAccount() {
+fun SettingAccount(
+    navController: NavController? = null
+) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
         Column {
-            AppbarMLeftIcon(title = "계정 정보", icon = R.drawable.icon_back)
+            AppbarMLeftIcon(title = "계정 정보", icon = R.drawable.icon_back, onIconClick = {
+                navController?.popBackStack()
+            })
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = "연동계정",
@@ -97,6 +104,7 @@ fun SettingAccount() {
                     style = FanwooriTypography.button1,
                     color = Gray500,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
+                        .clickable { navController?.navigate(Route.SettingSecession.route) }
                 )
                 Spacer(
                     modifier = Modifier
