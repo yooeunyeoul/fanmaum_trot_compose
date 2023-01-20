@@ -7,6 +7,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
@@ -18,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray800
@@ -27,9 +30,12 @@ import java.text.DecimalFormat
 
 @Composable
 fun MyVotingTicket(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    viewModel: MyPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val decimal = DecimalFormat("#,###")
+    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
+    val todayTicket by viewModel.todayTicket.collectAsState()
 
     Surface(
         color = Color.White,
@@ -64,7 +70,11 @@ fun MyVotingTicket(
             }
             Spacer(modifier = Modifier.height(2.dp))
 
-            Text(text = decimal.format(14000), style = FanwooriTypography.h2, color = Gray800)
+            Text(
+                text = decimal.format(unlimitedTicket + todayTicket),
+                style = FanwooriTypography.h2,
+                color = Gray800
+            )
 
             Spacer(modifier = Modifier.height(6.dp))
 

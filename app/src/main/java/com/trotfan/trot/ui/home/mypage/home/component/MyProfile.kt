@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -25,13 +27,19 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun MyProfile(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    viewModel: MyPageViewModel = viewModel()
 ) {
+    val userName by viewModel.userName.collectAsState()
+    val starName by viewModel.starName.collectAsState()
+
     Row(
         modifier = Modifier
             .padding(start = 24.dp, end = 24.dp)
@@ -78,29 +86,33 @@ fun MyProfile(
                         brush = gradient01,
                         shape = RoundedCornerShape(12.dp),
                     )
-                    .size(width = 64.dp, height = 24.dp),
+                    .height(24.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     painter = painterResource(R.drawable.icon_star),
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(width = 10.dp, height = 9.54.dp)
+                    modifier = Modifier.size(12.dp)
                 )
+                Spacer(modifier = Modifier.width(2.dp))
 
                 Text(
-                    text = "임영웅",
+                    text = starName,
                     color = Color.White,
                     style = FanwooriTypography.button2,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 13.sp
+                    fontSize = 13.sp,
                 )
+                Spacer(modifier = Modifier.width(8.dp))
+
             }
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = "닉네임입니다", style = FanwooriTypography.subtitle1, color = Gray900)
+            Text(text = userName, style = FanwooriTypography.subtitle1, color = Gray900)
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -109,8 +121,10 @@ fun MyProfile(
                 Icon(
                     painter = painterResource(id = R.drawable.icon_pen),
                     contentDescription = null,
-                    tint = Gray850,
-                    modifier = Modifier.align(CenterVertically)
+                    tint = Gray650,
+                    modifier = Modifier
+                        .align(CenterVertically)
+                        .size(16.dp)
                 )
             }
         }

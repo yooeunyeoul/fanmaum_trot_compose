@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.model.VoteHistoryItem
@@ -34,7 +35,8 @@ import java.text.DecimalFormat
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MyVoteHistory(
-    navController: NavController? = null
+    navController: NavController? = null,
+    viewModel: MyVoteHistoryViewModel = hiltViewModel()
 ) {
     val decimal = DecimalFormat("#,###")
     val historyItems = listOf<VoteHistoryItem>(
@@ -56,6 +58,8 @@ fun MyVoteHistory(
     var selectTab by remember {
         mutableStateOf(tabs[0])
     }
+    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
+    val todayTicket by viewModel.todayTicket.collectAsState()
 
     Column(
         modifier = Modifier
@@ -103,7 +107,7 @@ fun MyVoteHistory(
                         }
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
-                            text = decimal.format(800400),
+                            text = decimal.format(unlimitedTicket + todayTicket),
                             style = FanwooriTypography.h1,
                             color = Gray900,
                             modifier = Modifier.padding(start = 24.dp)
@@ -141,13 +145,13 @@ fun MyVoteHistory(
                                 horizontalAlignment = Alignment.End
                             ) {
                                 Text(
-                                    text = decimal.format(1000),
+                                    text = decimal.format(unlimitedTicket),
                                     style = FanwooriTypography.button1,
                                     color = Gray800
                                 )
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(
-                                    text = decimal.format(400),
+                                    text = decimal.format(todayTicket),
                                     style = FanwooriTypography.button1,
                                     color = Gray800
                                 )
@@ -160,7 +164,11 @@ fun MyVoteHistory(
             }
 
             stickyHeader {
-                Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                ) {
                     Spacer(modifier = Modifier.height(24.dp))
                     LazyRow {
                         item {

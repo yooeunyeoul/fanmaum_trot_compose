@@ -45,6 +45,7 @@ class VoteHomeViewModel @Inject constructor(
 
     var userInfoManager: UserInfoManager
     var voteMainManager: VoteMainManager
+    var userTicketManager: UserTicketManager
 
     private val context = getApplication<Application>()
 
@@ -102,6 +103,7 @@ class VoteHomeViewModel @Inject constructor(
         getVoteTickets()
         userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
         voteMainManager = VoteMainManager(context.VoteMainDataStore)
+        userTicketManager = UserTicketManager(context.UserTicketStore)
         connectBoardSocket()
         connectRankSocket()
         getStarRank()
@@ -159,6 +161,10 @@ class VoteHomeViewModel @Inject constructor(
                     when (response.result.code) {
                         ResultCodeStatus.Success.code -> {
                             _tickets.emit(response.data?.expired ?: Expired())
+                            userTicketManager.storeUserTicket(
+                                response.data?.expired?.unlimited ?: 0,
+                                response.data?.expired?.unlimited ?: 0
+                            )
                         }
                         ResultCodeStatus.Fail.code -> {
                             Log.e("VoteHomeViewModel", response.result.message.toString())

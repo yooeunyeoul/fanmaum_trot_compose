@@ -1,5 +1,16 @@
 package com.trotfan.trot.ui.home.mypage.modify.component
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -7,7 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,15 +30,42 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
 import com.trotfan.trot.R
-import com.trotfan.trot.ui.theme.FanwooriTheme
-import com.trotfan.trot.ui.theme.Gray100
-import com.trotfan.trot.ui.theme.Gray200
-import com.trotfan.trot.ui.theme.gradient03
+import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
 fun ProfileImgModify(modifier: Modifier) {
-    Box(modifier = modifier.size(136.dp)) {
+    val context = LocalContext.current
+    var profileUri by remember { mutableStateOf<Uri?>(null) }
+    var bitmap by remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            profileUri = result.uriContent
+        }
+    }
+
+    val imagePickerLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+            val cropImageOptions = CropImageOptions()
+            cropImageOptions.toolbarColor = Gray900.hashCode()
+            cropImageOptions.activityBackgroundColor = Gray900.hashCode()
+            cropImageOptions.cropMenuCropButtonTitle = "완료"
+            val cropOptions = CropImageContractOptions(uri, cropImageOptions)
+            imageCropLauncher.launch(cropOptions)
+        }
+
+    Box(modifier = modifier
+        .size(136.dp)
+        .clickableSingle {
+            imagePickerLauncher.launch("image/*")
+        }) {
         Box(
             modifier = Modifier
                 .size(136.dp)
@@ -44,10 +82,10 @@ fun ProfileImgModify(modifier: Modifier) {
             )
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(null)
+                    .data(profileUri)
                     .crossfade(true).build(),
                 contentDescription = null,
-                contentScale = ContentScale.FillHeight,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .clip(CircleShape)

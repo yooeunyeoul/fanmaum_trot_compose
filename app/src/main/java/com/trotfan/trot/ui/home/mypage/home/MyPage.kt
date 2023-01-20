@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarL
+import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.mypage.MyPageList
 import com.trotfan.trot.ui.home.mypage.home.component.MyProfile
 import com.trotfan.trot.ui.home.mypage.home.component.MyVotingTicket
@@ -22,7 +24,8 @@ import com.trotfan.trot.ui.theme.Gray100
 fun MyPageHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    navController: NavController? = null
+    navController: NavController? = null,
+    viewModel: MyPageViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     Column(

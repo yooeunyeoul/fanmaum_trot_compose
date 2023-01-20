@@ -287,7 +287,7 @@ fun SettingSecession(
                                     .weight(1f)
                                     .align(CenterVertically)
                             ) {
-
+                                navController?.popBackStack()
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             BtnFilledLPrimary(
@@ -297,7 +297,7 @@ fun SettingSecession(
                                     .align(CenterVertically),
                                 enabled = isChecked
                             ) {
-
+                                secessionDialogState = true
                             }
                         }
                     }
@@ -345,6 +345,7 @@ fun SettingSecession(
                         val googleSignInClient = GoogleSignIn.getClient(context, gso)
                         googleSignInClient.signOut().addOnCompleteListener {
                             navController?.navigate(Route.Login.route) {
+                                popUpTo(0)
                                 secessionConfirmDialogState = false
                             }
                         }

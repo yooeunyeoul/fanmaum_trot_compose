@@ -100,6 +100,7 @@ fun ProfileModify(
                             val googleSignInClient = GoogleSignIn.getClient(context, gso)
                             googleSignInClient.signOut().addOnCompleteListener {
                                 navController?.navigate(Route.Login.route) {
+                                    popUpTo(0)
                                     logoutDialogState = false
                                 }
                             }
