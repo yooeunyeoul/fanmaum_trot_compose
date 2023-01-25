@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.home.vote.component
+package com.trotfan.trot.ui.components.chip
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
