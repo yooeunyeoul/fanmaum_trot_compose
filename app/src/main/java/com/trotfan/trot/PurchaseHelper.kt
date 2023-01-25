@@ -1,17 +1,23 @@
 package com.trotfan.trot
 
-import android.app.Activity
+import android.content.Context
 import android.util.Log
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Expired
+import com.trotfan.trot.network.ResultCodeStatus
+import com.trotfan.trot.repository.ChargeRepository
+import com.trotfan.trot.ui.MainActivity
+import dagger.hilt.android.qualifiers.ActivityContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 enum class InAppProduct(
@@ -69,9 +75,12 @@ enum class RefreshTicket {
     Need, Unnecessary
 }
 
+class PurchaseHelper @Inject constructor(
+    @ActivityContext private val context: Context,
+    val repository: ChargeRepository
+) {
 
-data class PurchaseHelper(val activity: Activity) {
-
+    private var activity: MainActivity
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private lateinit var billingClient: BillingClient
@@ -94,7 +103,9 @@ data class PurchaseHelper(val activity: Activity) {
 
     var mBillingType = BillingClient.ProductType.INAPP
 
+
     init {
+        activity = (context as MainActivity)
         billingSetup()
     }
 
@@ -110,6 +121,47 @@ data class PurchaseHelper(val activity: Activity) {
                         for (purchase in purchseList) {
                             completePurchase(purchase)
                             //서버에 구매성공 요청 날리기
+
+                            coroutineScope.launch {
+                                context.userIdStore.data.collect {
+                                    kotlin.runCatching {
+                                        _statusText.emit(
+                                            _statusText.value + "\n" +
+                                                    "userId = ${it.userId.toInt()}\n," +
+                                                    "purchaseId= ${purchase.orderId}\n," +
+                                                    "purchaseToken =${purchase.purchaseToken}"
+                                        )
+                                        repository?.certificationCharge(
+                                            userId = it.userId.toInt(),
+                                            productId = purchase.orderId,
+                                            purchaseToken = purchase.purchaseToken
+                                        )
+
+                                    }.onSuccess { response ->
+                                        when (response?.result?.code) {
+                                            ResultCodeStatus.Success.code -> {
+                                                coroutineScope.launch {
+                                                    _statusText.emit(
+                                                        _statusText.value + "\n" +
+                                                                "Server Auth Success"
+                                                    )
+                                                }
+                                            }
+                                            ResultCodeStatus.Fail.code -> {
+                                                Log.e("Api Fail", "Charge Fail")
+                                                coroutineScope.launch {
+                                                    _statusText.emit(
+                                                        _statusText.value + "\n" +
+                                                                "Server Auth Fail"
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }.onFailure {
+                                        Log.e("Api Fail", "Api Fail")
+                                    }
+                                }
+                            }
                         }
                     }
                     // 구매 취소 시
@@ -258,7 +310,7 @@ data class PurchaseHelper(val activity: Activity) {
         coroutineScope.launch {
             _statusText.emit(
                 _statusText.value + "\n" +
-                        "이게 나온다면 api 콜이 정상적으로 된다는 뜻이지"
+                        "Votes APi 호출"
             )
         }
         _refreshState.value = RefreshTicket.Unnecessary
