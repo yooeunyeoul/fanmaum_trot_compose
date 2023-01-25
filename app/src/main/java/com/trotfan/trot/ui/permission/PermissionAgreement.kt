@@ -41,7 +41,9 @@ fun PermissionAgreement() {
     Surface {
         ModalBottomSheetLayout(
             sheetContent = {
+                AgreementBottomSheet(modalBottomSheetState = bottomSheetState, onConfirmClick = {
 
+                })
             },
             sheetState = bottomSheetState,
             sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
@@ -91,7 +93,9 @@ fun PermissionAgreement() {
                         .align(BottomCenter)
                         .padding(bottom = 32.dp)
                 ) {
-
+                    coroutineScope.launch {
+                        bottomSheetState.show()
+                    }
                 }
             }
         }

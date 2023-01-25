@@ -32,6 +32,7 @@ import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
+import com.trotfan.trot.ui.components.checkbox.CheckBoxNullText
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
@@ -237,19 +238,10 @@ fun SettingSecession(
                                 .size(22.dp)
                                 .background(Color.White)
                         ) {
-                            Checkbox(
-                                checked = isChecked,
-                                onCheckedChange = {
-                                    isChecked = isChecked.not()
+                            CheckBoxNullText(isChecked = isChecked, onCheckedChange = {
+                                isChecked = isChecked.not()
 
-                                },
-                                colors = CheckboxDefaults.colors(
-                                    checkedColor = Primary500,
-                                    uncheckedColor = Gray300
-                                ),
-                                modifier = Modifier
-                                    .size(22.dp)
-                            )
+                            })
                         }
                         Text(
                             text = "안내 사항을 모두 확인하였으며,\n" +
