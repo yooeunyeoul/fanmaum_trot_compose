@@ -80,6 +80,7 @@ class PurchaseHelper @Inject constructor(
     val repository: ChargeRepository
 ) {
 
+    private lateinit var mSelectedProductId: String
     private var activity: MainActivity
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -128,12 +129,12 @@ class PurchaseHelper @Inject constructor(
                                         _statusText.emit(
                                             _statusText.value + "\n" +
                                                     "userId = ${it.userId.toInt()}\n," +
-                                                    "purchaseId= ${purchase.orderId}\n," +
+                                                    "purchaseId= ${mSelectedProductId}\n," +
                                                     "purchaseToken =${purchase.purchaseToken}"
                                         )
                                         repository?.certificationCharge(
                                             userId = it.userId.toInt(),
-                                            productId = purchase.orderId,
+                                            productId = mSelectedProductId,
                                             purchaseToken = purchase.purchaseToken
                                         )
 
@@ -159,6 +160,12 @@ class PurchaseHelper @Inject constructor(
                                         }
                                     }.onFailure {
                                         Log.e("Api Fail", "Api Fail")
+                                        coroutineScope.launch {
+                                            _statusText.emit(
+                                                _statusText.value + "\n" +
+                                                        "Api Fail"
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -233,6 +240,7 @@ class PurchaseHelper @Inject constructor(
 
     fun makePurchaseInApp(billingType: String, inAppProduct: InAppProduct) {
         mBillingType = billingType
+        mSelectedProductId = inAppProduct.id
         val product = productDetailList.firstOrNull() { it.productId == inAppProduct.id }
         if (product != null) {
             val billingFlowParams = BillingFlowParams.newBuilder()
@@ -253,7 +261,6 @@ class PurchaseHelper @Inject constructor(
                 }
             }
         }
-
     }
 
     private fun completePurchase(item: Purchase) {
