@@ -31,6 +31,7 @@ import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeR
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
+import com.trotfan.trot.ui.permission.PermissionAgreement
 import com.trotfan.trot.ui.signup.*
 import com.trotfan.trot.ui.webview.PublicWebView
 
@@ -41,6 +42,7 @@ enum class Route(
     Login(route = "login"),
     SearchStar(route = "searchStar"),
     SelectStar(route = "selectStar"),
+    PermissionAgreement(route = "permissionAgreement"),
     CertificationPhoneNumber(route = "certificationPhoneNumber"),
     SettingNickname(route = "settingNickName"),
     InvitationCode(route = "invitationCode"),
@@ -88,6 +90,12 @@ fun NavigationComponent(
             navController = navController,
             lazyListState = lazyListStates
         )
+        composable(Route.PermissionAgreement.route) {
+            PermissionAgreement(
+                navController = navController,
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp)
+            )
+        }
         composable(Route.SelectStar.route) {
             SelectStarScreen(
                 navController = navController,

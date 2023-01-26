@@ -160,6 +160,7 @@ fun LoginScreen(
             LaunchedEffect(userInfo) {
                 if (userInfo!!.star == null) {
                     routeSections(navController, Route.SelectStar.route)
+//                    routeSections(navController, Route.PermissionAgreement.route)
                 } else if (userInfo!!.name == null) {
                     routeSections(navController, Route.SettingNickname.route)
                 } else if (userInfo!!.phone_number == null) {
