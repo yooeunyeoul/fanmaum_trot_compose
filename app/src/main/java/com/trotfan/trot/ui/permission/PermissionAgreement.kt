@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -48,34 +49,34 @@ fun PermissionAgreement(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-
-    val dd = coroutineScope.launch {
-        val permissionAgreementManager =
-            PermissionAgreementManager(context.PermissionAgreeStore)
-        coroutineScope.launch {
-            permissionAgreementManager.permissionCheck(true)
-        }
-
-        if (terms == true) {
-            navController?.navigate(HomeSections.Vote.route) {
-                popUpTo(Route.PermissionAgreement.route) {
-                    inclusive = true
-                }
-            }
-        } else {
-            navController?.navigate(Route.TermsAgreement.route) {
-                popUpTo(Route.PermissionAgreement.route) {
-                    inclusive = true
-                }
-            }
-        }
-    }
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        dd.start()
-
-    }
+//
+//    val dd = coroutineScope.launch {
+//        val permissionAgreementManager =
+//            PermissionAgreementManager(context.PermissionAgreeStore)
+//        coroutineScope.launch {
+//            permissionAgreementManager.permissionCheck(true)
+//        }
+//
+//        if (terms == true) {
+//            navController?.navigate(HomeSections.Vote.route) {
+//                popUpTo(Route.PermissionAgreement.route) {
+//                    inclusive = true
+//                }
+//            }
+//        } else {
+//            navController?.navigate(Route.TermsAgreement.route) {
+//                popUpTo(Route.PermissionAgreement.route) {
+//                    inclusive = true
+//                }
+//            }
+//        }
+//    }
+//    val launcher = rememberLauncherForActivityResult(
+//        ActivityResultContracts.RequestPermission()
+//    ) { isGranted: Boolean ->
+//        dd.start()
+//
+//    }
 
     Surface {
         Box(
@@ -118,15 +119,15 @@ fun PermissionAgreement(
                     .align(BottomCenter)
                     .padding(bottom = 32.dp)
             ) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    askNotificationPermission(
-                        context,
-                        launcher,
-                        dd
-                    )
-                } else {
-                    dd.start()
-                }
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//                    askNotificationPermission(
+//                        context,
+//                        launcher,
+//                        dd
+//                    )
+//                } else {
+//                    dd.start()
+//                }
             }
         }
     }
