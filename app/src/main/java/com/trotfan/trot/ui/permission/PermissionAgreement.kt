@@ -1,8 +1,15 @@
 package com.trotfan.trot.ui.permission
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,16 +32,50 @@ import com.trotfan.trot.datastore.PermissionAgreementManager
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.home.HomeSections
+import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.launch
+import com.trotfan.trot.ui.signup.viewmodel.StarSelectViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 
 @Composable
 fun PermissionAgreement(
     navController: NavController? = null,
-    terms: Boolean? = null
+    terms: Boolean? = null,
+    viewModel: StarSelectViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    val dd = coroutineScope.launch {
+        val permissionAgreementManager =
+            PermissionAgreementManager(context.PermissionAgreeStore)
+        coroutineScope.launch {
+            permissionAgreementManager.permissionCheck(true)
+        }
+
+        if (terms == true) {
+            navController?.navigate(HomeSections.Vote.route) {
+                popUpTo(Route.PermissionAgreement.route) {
+                    inclusive = true
+                }
+            }
+        } else {
+            navController?.navigate(Route.TermsAgreement.route) {
+                popUpTo(Route.PermissionAgreement.route) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        dd.start()
+
+    }
 
     Surface {
         Box(
@@ -77,29 +118,40 @@ fun PermissionAgreement(
                     .align(BottomCenter)
                     .padding(bottom = 32.dp)
             ) {
-                val permissionAgreementManager =
-                    PermissionAgreementManager(context.PermissionAgreeStore)
-                coroutineScope.launch {
-                    permissionAgreementManager.permissionCheck(true)
-                }
-
-                if (terms == true) {
-                    navController?.navigate(HomeSections.Vote.route) {
-                        popUpTo(Route.PermissionAgreement.route) {
-                            inclusive = true
-                        }
-                    }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    askNotificationPermission(
+                        context,
+                        launcher,
+                        dd
+                    )
                 } else {
-                    navController?.navigate(Route.TermsAgreement.route) {
-                        popUpTo(Route.PermissionAgreement.route) {
-                            inclusive = true
-                        }
-                    }
+                    dd.start()
                 }
             }
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterialApi::class)
+fun askNotificationPermission(
+    context: Context,
+    launcher: ManagedActivityResultLauncher<String, Boolean>,
+    dd: Job
+) {
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            dd.start()
+        } else {
+            // Directly ask for the permission
+            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+}
+
 
 @Composable
 fun PermissionItem(title: String, content: String, icon: Int) {
