@@ -93,6 +93,8 @@ class VoteHomeViewModel @Inject constructor(
 
     var today = 1000L
 
+    var socketUrl = "http://3.34.129.230:3000"
+
 
     init {
         getVoteList()
@@ -172,7 +174,7 @@ class VoteHomeViewModel @Inject constructor(
         viewModelScope.launch {
             val options = IO.Options()
             options.transports = arrayOf(WebSocket.NAME)
-            mRankSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/rank", options)
+            mRankSocket = IO.socket("${socketUrl}/rank", options)
             mRankSocket.on(Socket.EVENT_CONNECT) {
                 Log.e("CONNECT", "연결됐다!!!")
             }
@@ -237,7 +239,7 @@ class VoteHomeViewModel @Inject constructor(
         viewModelScope.launch {
             val options = IO.Options()
             options.transports = arrayOf(WebSocket.NAME)
-            mBoardSocket = IO.socket("https://socket.dev.fanmaum.ap.ngrok.io/board", options)
+            mBoardSocket = IO.socket("${socketUrl}/board", options)
 
             mBoardSocket.on(Socket.EVENT_CONNECT) {
                 Log.e("CONNECT", "연결됐다!!!")
