@@ -14,11 +14,11 @@ import javax.inject.Inject
 @OptIn(InternalAPI::class)
 class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) : ChargeService {
 
-
     override suspend fun certificationCharge(
         userId: Int,
         productId: String,
-        purchaseToken: String
+        purchaseToken: String,
+        packageName: String
     ): CommonResponse<Unit> {
 
         val response = httpClient.submitForm(
@@ -29,6 +29,7 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
                 append("user_id", userId.toString())
                 append("product_id", productId)
                 append("purchase_token", purchaseToken)
+                append("package_name", packageName)
             })
         }
         return response.body()

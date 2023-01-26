@@ -86,19 +86,18 @@ fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
                     color = Gray700,
                     style = FanwooriTypography.body2
                 )
-//                Spacer(modifier= Modifier.width(2.dp))
+                Spacer(modifier= Modifier.width(2.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.icon_add),
                     contentDescription = null,
                     tint = Primary500
                 )
-//                Spacer(modifier= Modifier.width(2.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_vote_iconcolored),
                     contentDescription = null,
                     tint = Primary500
                 )
-//                Spacer(modifier= Modifier.width(2.dp))
+                Spacer(modifier = Modifier.width(2.dp))
                 Text(
                     text = product.bonus,
                     color = Primary500,
@@ -106,10 +105,12 @@ fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
                 )
             }
         }
-        
-        BtnFilledMPrimary(text = product.price, modifier = Modifier
-            .align(CenterVertically)
-            .width(104.dp)) {
+
+        BtnFilledMPrimary(
+            text = product.price, modifier = Modifier
+                .align(CenterVertically)
+                .width(104.dp)
+        ) {
             onItemClick.invoke(product)
         }
 

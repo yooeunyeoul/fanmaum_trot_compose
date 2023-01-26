@@ -24,7 +24,7 @@ enum class InAppProduct(
     val id: String,
     val productName: String,
     val price: String,
-    val image: String,
+    val image: Int,
     val votes: String,
     val bonus: String
 ) {
@@ -32,7 +32,7 @@ enum class InAppProduct(
         id = "votes_6000",
         productName = "6,000투표권",
         price = "1,500원",
-        image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
+        image = R.drawable.charge6000,
         votes = "5,500",
         bonus = "500"
 
@@ -41,7 +41,7 @@ enum class InAppProduct(
         "votes_22000",
         productName = "22,000투표권",
         price = "4,400원",
-        image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
+        image = R.drawable.charge22000,
         votes = "2,0000",
         bonus = "2,000"
     ),
@@ -49,7 +49,7 @@ enum class InAppProduct(
         "votes_63000",
         productName = "63,000투표권",
         price = "9,900원",
-        image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
+        image = R.drawable.charge63000,
         votes = "55,000",
         bonus = "8,000"
     ),
@@ -57,7 +57,7 @@ enum class InAppProduct(
         "votes_160000",
         productName = "160,000투표권",
         price = "19,000원",
-        image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
+        image = R.drawable.charge160000,
         votes = "135,000",
         bonus = "25,000"
     ),
@@ -65,7 +65,7 @@ enum class InAppProduct(
         "votes_450000",
         productName = "450,000투표권",
         price = "50,000원",
-        image = "https://play-lh.googleusercontent.com/FYqtvM48ZjqrUOF8dpZTYyY67H2ei4uVwBAZFHpXDS-6vtbQHqf1xf1KbLgZV5V6ScQ",
+        image = R.drawable.charge450000,
         votes = "360,000",
         bonus = "90,000"
     )
@@ -75,11 +75,20 @@ enum class RefreshTicket {
     Need, Unnecessary
 }
 
+enum class BillingResponse(val message: String) {
+    Success("결제완료"),
+    Fail(
+        "결제실패\n" +
+                "처음부터 다시 시도해주세요."
+    )
+}
+
 class PurchaseHelper @Inject constructor(
     @ActivityContext private val context: Context,
     val repository: ChargeRepository
 ) {
 
+    private lateinit var mListener: (BillingResponse) -> Unit
     private lateinit var mSelectedProductId: String
     private var activity: MainActivity
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -120,7 +129,6 @@ class PurchaseHelper @Inject constructor(
                     // 구매 성공 시 처리
                     billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchseList != null -> {
                         for (purchase in purchseList) {
-                            completePurchase(purchase)
                             //서버에 구매성공 요청 날리기
 
                             coroutineScope.launch {
@@ -130,15 +138,23 @@ class PurchaseHelper @Inject constructor(
                                             _statusText.value + "\n" +
                                                     "userId = ${it.userId.toInt()}\n," +
                                                     "purchaseId= ${mSelectedProductId}\n," +
-                                                    "purchaseToken =${purchase.purchaseToken}"
+                                                    "purchaseToken =${purchase.purchaseToken},\n" +
+                                                    "packageName=${context.packageName}"
                                         )
                                         repository?.certificationCharge(
                                             userId = it.userId.toInt(),
                                             productId = mSelectedProductId,
-                                            purchaseToken = purchase.purchaseToken
+                                            purchaseToken = purchase.purchaseToken,
+                                            packageName = context.packageName
                                         )
 
                                     }.onSuccess { response ->
+                                        coroutineScope.launch {
+                                            _statusText.emit(
+                                                _statusText.value + "\n" +
+                                                        "리스폰스값 : ${response?.result}"
+                                            )
+                                        }
                                         when (response?.result?.code) {
                                             ResultCodeStatus.Success.code -> {
                                                 coroutineScope.launch {
@@ -147,6 +163,7 @@ class PurchaseHelper @Inject constructor(
                                                                 "Server Auth Success"
                                                     )
                                                 }
+                                                completePurchase(purchase)
                                             }
                                             ResultCodeStatus.Fail.code -> {
                                                 Log.e("Api Fail", "Charge Fail")
@@ -156,6 +173,7 @@ class PurchaseHelper @Inject constructor(
                                                                 "Server Auth Fail"
                                                     )
                                                 }
+                                                completePurchase(purchase)
                                             }
                                         }
                                     }.onFailure {
@@ -163,9 +181,11 @@ class PurchaseHelper @Inject constructor(
                                         coroutineScope.launch {
                                             _statusText.emit(
                                                 _statusText.value + "\n" +
-                                                        "Api Fail"
+                                                        "Api Fail\n" +
+                                                        "reason : ${it.message}"
                                             )
                                         }
+                                        completePurchase(purchase)
                                     }
                                 }
                             }
@@ -238,7 +258,12 @@ class PurchaseHelper @Inject constructor(
         })
     }
 
-    fun makePurchaseInApp(billingType: String, inAppProduct: InAppProduct) {
+    fun makePurchaseInApp(
+        billingType: String,
+        inAppProduct: InAppProduct,
+        listener: (BillingResponse) -> Unit
+    ) {
+        mListener = listener
         mBillingType = billingType
         mSelectedProductId = inAppProduct.id
         val product = productDetailList.firstOrNull() { it.productId == inAppProduct.id }
@@ -259,6 +284,7 @@ class PurchaseHelper @Inject constructor(
                                 "구매 에러 발생"
                     )
                 }
+                mListener.invoke(BillingResponse.Fail)
             }
         }
     }
@@ -281,8 +307,7 @@ class PurchaseHelper @Inject constructor(
                     )
                 }
                 consumePurchase(isLastIndex = true)
-
-
+                mListener.invoke(BillingResponse.Success)
             }
         }
     }
@@ -296,7 +321,6 @@ class PurchaseHelper @Inject constructor(
             billingClient.consumeAsync(
                 consumeParams
             ) { billingResult, s ->
-
                 Log.e("Purchase Consumed", "Purchase Consumed")
                 if (isLastIndex) {
                     coroutineScope.launch {

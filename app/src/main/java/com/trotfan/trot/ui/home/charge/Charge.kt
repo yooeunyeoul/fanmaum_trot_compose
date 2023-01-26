@@ -15,9 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.android.billingclient.api.BillingClient
+import com.trotfan.trot.BillingResponse
 import com.trotfan.trot.InAppProduct
 import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.PurchaseHelper
+import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.list.StoreItem
 import com.trotfan.trot.ui.components.navigation.AppbarL
 import com.trotfan.trot.ui.home.BottomNavHeight
@@ -25,6 +27,7 @@ import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.charge.component.MyVote
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.theme.FanwooriTypography
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChargeHome(
@@ -39,6 +42,12 @@ fun ChargeHome(
     val tickets by purchaseHelper.tickets.collectAsState()
     val purchaseStatusText by purchaseHelper.statusText.collectAsState()
     val refreshState by purchaseHelper.refreshState.collectAsState()
+    var showSuccessDialog by remember {
+        mutableStateOf(false)
+    }
+    var dialogMessage by remember {
+        mutableStateOf("")
+    }
 
 
     LaunchedEffect(key1 = refreshState, block = {
@@ -47,6 +56,14 @@ fun ChargeHome(
         }
 
     })
+
+    if (showSuccessDialog) {
+        VerticalDialog(
+            contentText = dialogMessage, buttonOneText = "확인"
+        ) {
+            showSuccessDialog = false
+        }
+    }
 
 
 
@@ -94,7 +111,19 @@ fun ChargeHome(
                         onItemClick = { product ->
                             purchaseHelper.makePurchaseInApp(
                                 billingType = BillingClient.ProductType.INAPP,
-                                inAppProduct = product
+                                inAppProduct = product,
+                                listener = {
+                                    when (it) {
+                                        BillingResponse.Success -> {
+                                            showSuccessDialog = true
+                                            dialogMessage = BillingResponse.Success.message
+                                        }
+                                        BillingResponse.Fail -> {
+                                            showSuccessDialog = true
+                                            dialogMessage = BillingResponse.Fail.message
+                                        }
+                                    }
+                                }
                             )
                         },
                         product = InAppProduct.values()[index]

@@ -43,7 +43,6 @@ enum class Route(
     WebView(route = "WebView")
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationComponent(

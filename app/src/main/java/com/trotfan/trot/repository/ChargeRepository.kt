@@ -17,7 +17,8 @@ class ChargeRepository @Inject constructor(
     suspend fun certificationCharge(
         userId: Int,
         productId: String,
-        purchaseToken: String
+        purchaseToken: String,
+        packageName: String
     ): CommonResponse<Unit> =
-        chargeService.certificationCharge(userId, productId, purchaseToken)
+        chargeService.certificationCharge(userId, productId, purchaseToken, packageName)
 }

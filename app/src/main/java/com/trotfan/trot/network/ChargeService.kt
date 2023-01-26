@@ -6,7 +6,8 @@ interface ChargeService {
     suspend fun certificationCharge(
         userId: Int,
         productId: String,
-        purchaseToken: String
+        purchaseToken: String,
+        packageName: String
     ): CommonResponse<Unit>
 
 }
