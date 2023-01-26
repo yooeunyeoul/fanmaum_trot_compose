@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +18,6 @@ import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
-import com.trotfan.trot.ui.home.mypage.home.component.MyProfile
 import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
 import com.trotfan.trot.ui.home.mypage.setting.Setting
 import com.trotfan.trot.ui.home.mypage.setting.SettingAccount
@@ -31,6 +29,8 @@ import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeR
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
+import com.trotfan.trot.ui.permission.PermissionAgreement
+import com.trotfan.trot.ui.signup.TermsAgreement
 import com.trotfan.trot.ui.signup.*
 import com.trotfan.trot.ui.webview.PublicWebView
 
@@ -39,6 +39,8 @@ enum class Route(
     val route: String
 ) {
     Login(route = "login"),
+    PermissionAgreement(route = "permissionAgreement"),
+    TermsAgreement(route = "termsAgreement"),
     SearchStar(route = "searchStar"),
     SelectStar(route = "selectStar"),
     CertificationPhoneNumber(route = "certificationPhoneNumber"),
@@ -162,7 +164,8 @@ fun NavigationComponent(
         }
         composable(Route.MyProfileModify.route) {
             ProfileModify(
-                navController = navController
+                navController = navController,
+                logoutClick = { onNavigateBottomBar.invoke(HomeSections.Vote) }
             )
         }
         composable(Route.MyVoteHistory.route) {
@@ -188,6 +191,31 @@ fun NavigationComponent(
         composable(Route.SettingSecession.route) {
             SettingSecession(
                 navController = navController
+            )
+        }
+        composable(
+            "${Route.PermissionAgreement.route}/{terms}",
+            arguments = listOf(
+                navArgument(name = "terms") {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            PermissionAgreement(
+                navController = navController,
+                backStackEntry.arguments?.getBoolean("terms")
+            )
+        }
+        composable(Route.TermsAgreement.route) {
+            TermsAgreement(
+                navController = navController,
+                onConfirmClick = {
+                    navController.navigate(Route.SelectStar.route) {
+                        popUpTo(Route.TermsAgreement.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
     }

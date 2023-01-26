@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,12 +38,12 @@ fun MyVotingTicket(
 
     Surface(
         color = Color.White,
-        elevation = 30.dp,
+        elevation = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .clickable { onClick() }
+            .clickable { onClick() },
+        shape = RoundedCornerShape(24.dp)
     ) {
         Column(
             Modifier

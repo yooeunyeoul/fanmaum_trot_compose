@@ -14,6 +14,7 @@ interface VoteService {
     ): CommonResponse<FavoriteStarInfo>
 
     suspend fun voteTickets(
-        userId: Long
+        userId: Long,
+        token: String
     ): CommonResponse<Tickets>
 }

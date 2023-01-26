@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.mypage.setting
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -7,6 +8,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -16,17 +19,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 
 @Composable
 fun SettingAccount(
-    navController: NavController? = null
+    navController: NavController? = null,
+    myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
+    val userIdp by myPageViewModel.userIdp.collectAsState()
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +61,7 @@ fun SettingAccount(
                     .background(Gray50)
             ) {
                 Text(
-                    text = "이름",
+                    text = myPageViewModel.userEmail.value,
                     style = FanwooriTypography.body3,
                     color = Gray900,
                     modifier = Modifier
@@ -69,15 +76,24 @@ fun SettingAccount(
                         .align(Alignment.TopEnd)
                         .padding(top = 24.dp, end = 24.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.kakao_symbol),
+                    val icon = when (myPageViewModel.userIdp.value) {
+                        1 -> R.drawable.google_symbol
+                        2 -> R.drawable.apple_symbol
+                        else -> R.drawable.kakao_symbol
+                    }
+                    val company = when (myPageViewModel.userIdp.value) {
+                        1 -> "Google"
+                        2 -> "Apple"
+                        else -> "Kakao"
+                    }
+                    Image(
+                        painter = painterResource(id = icon),
                         contentDescription = null,
-                        tint = Gray900,
                         modifier = Modifier.align(CenterVertically)
                     )
                     Spacer(modifier = Modifier.width(2.dp))
                     Text(
-                        text = "Kakao", style = FanwooriTypography.body2, color = Gray900,
+                        text = company, style = FanwooriTypography.body2, color = Gray900,
                         modifier = Modifier.align(CenterVertically)
                     )
                 }
@@ -103,7 +119,8 @@ fun SettingAccount(
                     text = "회원탈퇴",
                     style = FanwooriTypography.button1,
                     color = Gray500,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
                         .clickable { navController?.navigate(Route.SettingSecession.route) }
                 )
                 Spacer(

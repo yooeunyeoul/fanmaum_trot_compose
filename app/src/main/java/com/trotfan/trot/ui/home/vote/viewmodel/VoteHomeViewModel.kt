@@ -2,17 +2,16 @@ package com.trotfan.trot.ui.home.vote.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.trotfan.trot.datastore.*
-import com.trotfan.trot.extensions.CommonObserve
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.VoteRepository
+import com.trotfan.trot.ui.BaseViewModel
 import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
@@ -37,7 +36,7 @@ enum class Gender {
 class VoteHomeViewModel @Inject constructor(
     private val repository: VoteRepository,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
 
 
     lateinit var mBoardSocket: Socket
@@ -101,7 +100,7 @@ class VoteHomeViewModel @Inject constructor(
     init {
         getVoteList()
         getVoteTickets()
-        userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
+        userInfoManager = UserInfoManager(context.UserInfoDataStore)
         voteMainManager = VoteMainManager(context.VoteMainDataStore)
         userTicketManager = UserTicketManager(context.UserTicketStore)
         connectBoardSocket()
@@ -154,7 +153,8 @@ class VoteHomeViewModel @Inject constructor(
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
-                        userId = it.userId
+                        userId = it.userId,
+                        token = userLocalToken.value?.token ?: ""
                     )
 
                 }.onSuccess { response ->

@@ -136,6 +136,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.compose.compiler:compiler:1.4.0"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
     //로그인
     implementation "com.kakao.sdk:v2-user:2.11.0"

@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.mypage.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +15,7 @@ import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarL
 import com.trotfan.trot.ui.home.HomeSections
-import com.trotfan.trot.ui.home.mypage.MyPageList
+import com.trotfan.trot.ui.home.mypage.home.component.MyPageList
 import com.trotfan.trot.ui.home.mypage.home.component.MyProfile
 import com.trotfan.trot.ui.home.mypage.home.component.MyVotingTicket
 import com.trotfan.trot.ui.theme.FanwooriTheme
@@ -25,9 +26,15 @@ fun MyPageHome(
     onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     navController: NavController? = null,
+    onNavigateClick: (HomeSections) -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
+
+    BackHandler {
+        onNavigateClick.invoke(HomeSections.Vote)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -70,6 +77,6 @@ fun MyPageHome(
 @Composable
 fun MyPagePreview() {
     FanwooriTheme {
-        MyPageHome(onItemClick = {})
+        MyPageHome(onItemClick = {}, onNavigateClick = {})
     }
 }

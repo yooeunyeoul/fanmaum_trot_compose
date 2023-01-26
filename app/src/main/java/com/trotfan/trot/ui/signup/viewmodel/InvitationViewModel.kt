@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
+import com.trotfan.trot.ui.BaseViewModel
 import com.trotfan.trot.ui.signup.viewmodel.InviteCodeCheckStatus.InvalidCodeError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,7 @@ enum class InviteCodeCheckStatus(val code: String) {
 class InvitationViewModel @Inject constructor(
     private val repository: SignUpRepository,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
     val completeStatus: StateFlow<Boolean>
@@ -69,8 +70,9 @@ class InvitationViewModel @Inject constructor(
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.updateUser(
-                        userid = it.userId.toInt(),
-                        redeemCode = _inviteCode.value
+                        userid = it.userId,
+                        redeemCode = _inviteCode.value,
+                        token = userLocalToken.value?.token ?: ""
                     )
                 }.onSuccess {
                     when (it.result.code) {

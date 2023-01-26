@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.home.mypage.modify
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
@@ -12,27 +11,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.trotfan.trot.R
-import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.home.mypage.modify.component.ProfileImgModify
 import com.trotfan.trot.ui.home.mypage.modify.component.ProfileInfo
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Primary500
 import com.trotfan.trot.ui.utils.clickable
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileModify(
-    navController: NavController? = null
+    navController: NavController? = null,
+    logoutClick: () -> Unit,
+    viewModel: MyPageViewModel = hiltViewModel()
 ) {
     var logoutDialogState by remember {
         mutableStateOf(false)
@@ -54,7 +55,7 @@ fun ProfileModify(
             ProfileImgModify(modifier = Modifier.align(CenterHorizontally))
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "닉네임",
+                text = viewModel.userName.value,
                 style = FanwooriTypography.subtitle1,
                 color = Color.Black,
                 modifier = Modifier.align(CenterHorizontally)
@@ -93,21 +94,24 @@ fun ProfileModify(
                     positiveText = "로그아웃",
                     negativeText = "취소",
                     onPositive = {
-                        coroutineScope.launch {
-                            val gso =
-                                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                    .requestEmail().build()
-                            val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                            googleSignInClient.signOut().addOnCompleteListener {
-                                navController?.navigate(Route.Login.route) {
-                                    popUpTo(0)
-                                    logoutDialogState = false
+                        viewModel.postLogout(result = {
+                            coroutineScope.launch {
+                                context.userTokenStore.updateData {
+                                    it.toBuilder().setToken("").build()
+                                }
+                                val gso =
+                                    GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                        .requestEmail().build()
+                                val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                                googleSignInClient.signOut().addOnCompleteListener {
+                                    navController?.navigate(Route.Login.route) {
+                                        logoutClick()
+                                        popUpTo(0)
+                                        logoutDialogState = false
+                                    }
                                 }
                             }
-                            context.userIdStore.updateData {
-                                it.toBuilder().setUserId(0).build()
-                            }
-                        }
+                        })
                     },
                     onDismiss = {
                         logoutDialogState = false
@@ -122,6 +126,6 @@ fun ProfileModify(
 @Composable
 fun ProfileModifyPreview() {
     FanwooriTheme {
-        ProfileModify()
+        ProfileModify(logoutClick = {}, viewModel = hiltViewModel())
     }
 }

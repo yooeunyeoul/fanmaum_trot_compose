@@ -26,7 +26,7 @@ class AuthRepository @Inject constructor(
         return serverStateService.getServerState()
     }
 
-    suspend fun getUserInfo(userId: Int): CommonResponse<UserInfo> {
-        return authService.getUserInfo(userId)
+    suspend fun getUserInfo(userToken: String): CommonResponse<UserInfo> {
+        return authService.getUserInfo(userToken)
     }
 }

@@ -9,11 +9,14 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.*
 import java.text.DecimalFormat
 
 @Composable
-fun ProfileInfo() {
+fun ProfileInfo(
+    viewModel: MyPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -34,10 +37,12 @@ fun ProfileInfo() {
                 text = "내 스타",
                 style = FanwooriTypography.body3,
                 color = Gray700,
-                modifier = Modifier.weight(1f).align(CenterVertically)
+                modifier = Modifier
+                    .weight(1f)
+                    .align(CenterVertically)
             )
             Text(
-                text = "임영웅",
+                text = viewModel.starName.value,
                 style = FanwooriTypography.button1,
                 color = Gray900,
                 modifier = Modifier.align(CenterVertically)

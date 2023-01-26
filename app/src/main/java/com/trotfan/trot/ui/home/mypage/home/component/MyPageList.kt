@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.home.mypage
+package com.trotfan.trot.ui.home.mypage.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,7 +9,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,10 +23,9 @@ import com.trotfan.trot.ui.utils.clickableSingle
 @Composable
 fun MyPageList() {
     Surface(
-        modifier = Modifier
-            .clip(RoundedCornerShape(24.dp))
-            .background(Color.White),
-        elevation = 3.dp
+        color = Color.White,
+        elevation = 1.dp,
+        shape = RoundedCornerShape(24.dp)
     ) {
         Column {
             Spacer(modifier = Modifier.height(24.dp))

@@ -45,31 +45,22 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         return response.body()
     }
 
-    override suspend fun starSearch(
-        page: String,
-        search: String
-    ): CommonResponse<StarsList<FavoriteStar>> {
-
-        val response = httpClient.get(HttpRoutes.GET_STAR_LIST) {
-            contentType(ContentType.Application.Json)
-            url {
-                parameter("page", page)
-                parameter("search", search)
-            }
-        }
-        return response.body()
-    }
-
     @OptIn(InternalAPI::class)
     override suspend fun updateUser(
-        userId: Int,
+        userId: Long,
         nickName: String?,
         starId: Int?,
         phoneNumber: String?,
-        redeemCode: String?
+        redeemCode: String?,
+        agrees_terms: Boolean?,
+        token: String
     ): CommonResponse<Unit> {
         return httpClient.patch(HttpRoutes.USERS + "/${userId}") {
             contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
             val json = JSONObject()
             if (nickName != null) {
                 json.put("name", nickName)
@@ -82,6 +73,10 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
             }
             if (redeemCode != null) {
                 json.put("redeem_code", redeemCode)
+            }
+
+            agrees_terms?.let {
+                json.put("agrees_terms", it)
             }
             body = (json.toString())
         }.body()

@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.datastore.FavoriteStarDataStore
+import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.RankMainDataStore
 import com.trotfan.trot.datastore.RankMainManager
 import com.trotfan.trot.datastore.UserInfoManager
@@ -108,7 +108,7 @@ class RankHomeViewModel @Inject constructor(
     private val _tabIndex = MutableStateFlow(0)
 
     init {
-        userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
+        userInfoManager = UserInfoManager(context.UserInfoDataStore)
         rankMainManager = RankMainManager(context.RankMainDataStore)
         getMonthStarRank()
         getBanners()

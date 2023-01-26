@@ -80,12 +80,10 @@ fun MyVoteHistory(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp)
-                        .clip(
-                            RoundedCornerShape(24.dp)
-                        )
-                        .background(Color.White),
-                    elevation = 4.dp
+                        .padding(start = 16.dp, end = 16.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    backgroundColor = Color.White,
+                    elevation = 1.dp
                 ) {
                     Column {
                         Row(modifier = Modifier.padding(top = 26.dp, start = 24.dp)) {

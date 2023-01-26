@@ -18,8 +18,11 @@ class AuthServiceImpl @Inject constructor(
     ): CommonResponse<UserToken> =
         httpClient.post {
             url(HttpRoutes.KAKAO_LOGIN)
+            header(
+                "Authorization",
+                "Bearer ${kakaoTokens.access_token}"
+            )
             contentType(ContentType.Application.Json)
-            setBody(kakaoTokens)
         }.body()
 
     override suspend fun postGoogleLogin(
@@ -27,8 +30,11 @@ class AuthServiceImpl @Inject constructor(
     ): CommonResponse<UserToken> {
         val responses = httpClient.post {
             url(HttpRoutes.GOOGLE_LOGIN)
+            header(
+                "Authorization",
+                "Bearer ${authCode.auth_code}"
+            )
             contentType(ContentType.Application.Json)
-            setBody(authCode)
         }
         return responses.body()
     }
@@ -42,8 +48,23 @@ class AuthServiceImpl @Inject constructor(
         return response.body()
     }
 
-    override suspend fun getUserInfo(userId: Int): CommonResponse<UserInfo> =
+    override suspend fun getUserInfo(userToken: String): CommonResponse<UserInfo> =
         httpClient.get {
-            url("${HttpRoutes.USERS}/$userId")
+            url(HttpRoutes.USERS)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
         }.body()
+
+    override suspend fun postLogout(userToken: String): CommonResponse<Unit> {
+        val response = httpClient.post {
+            url(HttpRoutes.LOGOUT)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }
+        return response.body()
+    }
 }

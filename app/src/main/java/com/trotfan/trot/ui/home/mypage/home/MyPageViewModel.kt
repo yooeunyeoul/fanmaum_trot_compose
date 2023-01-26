@@ -1,12 +1,13 @@
 package com.trotfan.trot.ui.home.mypage.home
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.datastore.FavoriteStarDataStore
+import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.UserTicketManager
 import com.trotfan.trot.datastore.UserTicketStore
+import com.trotfan.trot.repository.MyPageRepository
+import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
+    private val myPageRepository: MyPageRepository,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
 
     lateinit var userInfoManager: UserInfoManager
     lateinit var userTicketManager: UserTicketManager
@@ -33,6 +35,17 @@ class MyPageViewModel @Inject constructor(
     private val _starName =
         MutableStateFlow("")
 
+    val userIdp: StateFlow<Int>
+        get() = _userIdp
+    private val _userIdp =
+        MutableStateFlow(0)
+
+    val userEmail: StateFlow<String>
+        get() = _userEmail
+    private val _userEmail =
+        MutableStateFlow("")
+
+
     val unlimitedTicket: StateFlow<Long>
         get() = _unlimitedTicket
     private val _unlimitedTicket =
@@ -45,12 +58,26 @@ class MyPageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
+            userInfoManager = UserInfoManager(context.UserInfoDataStore)
             userTicketManager = UserTicketManager(context.UserTicketStore)
             _userName.emit(userInfoManager.userNameFlow.first() ?: "")
             _starName.emit(userInfoManager.favoriteStarNameFlow.first() ?: "")
             _unlimitedTicket.emit(userTicketManager.expiredUnlimited.first() ?: 0)
             _todayTicket.emit(userTicketManager.expiredToday.first() ?: 0)
+            _userEmail.emit(userInfoManager.userMailFlow.first() ?: "")
+            _userIdp.emit(userInfoManager.userIdpFlow.first() ?: 0)
+        }
+    }
+
+    fun postLogout(result:() -> Unit) {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                userLocalToken.value?.token?.let { myPageRepository.postLogout(it) }
+            }.onSuccess {
+                result()
+            }.onFailure {
+
+            }
         }
     }
 }

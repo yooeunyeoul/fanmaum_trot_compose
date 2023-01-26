@@ -20,33 +20,27 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class StarSelectViewModel @Inject constructor(
+class TermsViewModel @Inject constructor(
     private val repository: SignUpRepository,
-    private val dataSource: GetStarDataSource,
     application: Application
 ) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
-    private val _onComplete = MutableStateFlow(false)
-    val onComplete: StateFlow<Boolean>
-        get() = _onComplete
 
-    val starListState =
-        Pager(PagingConfig(pageSize = 15)) { dataSource }.flow.cachedIn(viewModelScope)
-
-    fun selectStar(selectedItem: FavoriteStar?) {
+    fun updateUser() {
         viewModelScope.launch {
-            context.userIdStore.data.collect {
-                val response = repository.updateUser(
-                    userid = it.userId,
-                    starId = selectedItem?.id,
-                    token = userLocalToken.value?.token ?: ""
-                )
-                if (response.result.code == ResultCodeStatus.Success.code) {
-                    _onComplete.emit(true)
-                } else {
-                    Log.e("Return Error", "Message:"+response.result.message)
+            kotlin.runCatching {
+                context.userIdStore.data.collect {
+                    repository.updateUser(
+                        userid = it.userId,
+                        agrees_terms = true,
+                        token = userLocalToken.value?.token ?: ""
+                    )
                 }
+            }.onSuccess {
+
+            }.onFailure {
+
             }
         }
     }

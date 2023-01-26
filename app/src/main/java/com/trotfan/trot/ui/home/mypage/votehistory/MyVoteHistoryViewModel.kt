@@ -3,8 +3,6 @@ package com.trotfan.trot.ui.home.mypage.votehistory
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.datastore.FavoriteStarDataStore
-import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.UserTicketManager
 import com.trotfan.trot.datastore.UserTicketStore
 import dagger.hilt.android.lifecycle.HiltViewModel

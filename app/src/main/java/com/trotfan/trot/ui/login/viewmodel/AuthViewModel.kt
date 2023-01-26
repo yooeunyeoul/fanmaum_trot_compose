@@ -7,14 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.trotfan.trot.datastore.FavoriteStarDataStore
-import com.trotfan.trot.datastore.UserInfoManager
-import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.datastore.userTokenStore
+import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -40,12 +38,7 @@ class AuthViewModel @Inject constructor(
     val userInfo: StateFlow<UserInfo?>
         get() = _userInfo
 
-    var userInfoManager: UserInfoManager
-
-    init {
-        getServerState()
-        userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
-    }
+    var userInfoManager: UserInfoManager = UserInfoManager(context.UserInfoDataStore)
 
     fun getServerState() {
         viewModelScope.launch {
@@ -53,10 +46,9 @@ class AuthViewModel @Inject constructor(
                 repository.getServerStateService()
             }.onSuccess { state ->
                 if (state.isAvailable) {
-                    Log.d("AuthViewModel", state.isAvailable.toString())
-                    context.userIdStore.data.collect {
-                        if (it.userId.toInt() != 0) {
-                            getUserInfo(it.userId)
+                    context.userTokenStore.data.collect {
+                        if (it.token.isNullOrEmpty().not()) {
+                            getUserInfo(it.token)
                         }
                     }
                 } else {
@@ -79,10 +71,12 @@ class AuthViewModel @Inject constructor(
                 handleGoogleLogin.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
                 val userToken = it.data
-                userToken?.let { it1 -> Log.d("AuthViewModel", it1.access_token) }
+                userToken?.token?.let { token ->
+                    Log.d("AuthViewModel", token)
+                    getUserInfo(token)
+                    setUserToken(token)
+                }
                 _userToken.emit(userToken)
-                userToken?.let { it1 -> setUserToken(it1.access_token) }
-                userToken?.user_id?.let { it1 -> setUserId(it1) }
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
             }
@@ -96,9 +90,6 @@ class AuthViewModel @Inject constructor(
             }.onSuccess {
                 val userToken = it.data
                 _userToken.emit(userToken)
-                userToken?.let { it1 -> setUserToken(it1.access_token) }
-                userToken?.let { it1 -> setUserId(it1.user_id) }
-                userToken?.let { it1 -> Log.d("AuthViewModel", it1.access_token) }
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
             }
@@ -112,24 +103,20 @@ class AuthViewModel @Inject constructor(
             }.onSuccess {
                 val userToken = it.data
                 _userToken.emit(userToken)
-                userToken?.let { it1 -> setUserToken(it1.access_token) }
-                userToken?.let { it1 -> setUserId(it1.user_id) }
-                userToken?.let { it1 -> Log.d("AuthViewModel", it1.access_token) }
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
             }
         }
     }
 
-    fun getUserInfo(userId: Long) {
+    fun getUserInfo(token: String) {
         viewModelScope.launch {
             kotlin.runCatching {
-                repository.getUserInfo(userId.toInt())
+                repository.getUserInfo(token)
             }.onSuccess {
                 val userInfo = it.data
                 saveUserInfo(userInfo)
-
-
+                setUserId(it.data?.id ?: 0)
                 _userInfo.emit(userInfo)
                 Log.d("AuthViewModel", userInfo.toString())
             }.onFailure {
@@ -146,7 +133,9 @@ class AuthViewModel @Inject constructor(
                     favoriteGender = it.gender,
                     favoriteStarName = it.name,
                     favoriteStarImage = it.image,
-                    userName = userInfo.name ?: ""
+                    userName = userInfo.name ?: "",
+                    userIdp = userInfo.idp,
+                    userMail = userInfo.email ?: ""
                 )
 
             }
@@ -169,7 +158,7 @@ class AuthViewModel @Inject constructor(
     suspend fun setUserToken(token: String) {
         context.userTokenStore.updateData {
             Log.d("setUserToken", token)
-            it.toBuilder().setAccessToken(token).build()
+            it.toBuilder().setToken(token).build()
         }
     }
 

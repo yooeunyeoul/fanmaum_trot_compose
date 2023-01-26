@@ -9,6 +9,7 @@ import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Result
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
+import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,7 +58,7 @@ enum class CertificationNumberCheckStatus(
 class CertificationPhoneNumberViewModel @Inject constructor(
     private val repository: SignUpRepository,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
 
@@ -128,12 +129,16 @@ class CertificationPhoneNumberViewModel @Inject constructor(
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     val response =
-                        repository.updateUser(userid = it.userId.toInt(), phoneNumber = phoneNum)
+                        repository.updateUser(
+                            userid = it.userId,
+                            phoneNumber = phoneNum,
+                            token = userLocalToken.value?.token ?: ""
+                        )
                     if (response.result.code == ResultCodeStatus.Success.code) {
 //                        _onComplete.emit(true)
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
                     } else {
-                        Log.e("Error",response.result.message)
+                        Log.e("Error", response.result.message)
                     }
 
                 }

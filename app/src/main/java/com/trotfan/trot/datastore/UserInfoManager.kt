@@ -1,7 +1,6 @@
 package com.trotfan.trot.datastore
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -21,6 +20,8 @@ class UserInfoManager(
         val FAVORITE_STAR_NAME = stringPreferencesKey("FAVORITE_STAR_NAME")
         val USER_NAME = stringPreferencesKey("USER_NAME")
         val FAVORITE_STAR_IMAGE = stringPreferencesKey("FAVORITE_STAR_IMAGE")
+        val USER_IDP = intPreferencesKey("USER_IDP")
+        val USER_MAIL = stringPreferencesKey("USER_MAIL")
     }
 
     suspend fun storeUserInfo(
@@ -28,7 +29,9 @@ class UserInfoManager(
         favoriteGender: Int,
         favoriteStarName: String,
         favoriteStarImage: String,
-        userName: String
+        userName: String,
+        userIdp: Int,
+        userMail: String
     ) {
         dataStore.edit {
             it[FAVORITE_STAR_ID] = favoriteStarId
@@ -36,6 +39,8 @@ class UserInfoManager(
             it[FAVORITE_STAR_NAME] = favoriteStarName
             it[FAVORITE_STAR_IMAGE] = favoriteStarImage
             it[USER_NAME] = userName
+            it[USER_IDP] = userIdp
+            it[USER_MAIL] = userMail
         }
     }
 
@@ -54,9 +59,16 @@ class UserInfoManager(
     val userNameFlow: Flow<String?> = dataStore.data.map {
         it[USER_NAME]
     }
+    val userIdpFlow: Flow<Int?> = dataStore.data.map {
+        it[USER_IDP]
+    }
+
+    val userMailFlow: Flow<String?> = dataStore.data.map {
+        it[USER_MAIL]
+    }
 
 }
 
-val Context.FavoriteStarDataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "favorite_star_prefs"
+val Context.UserInfoDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "user_info_prefs"
 )
