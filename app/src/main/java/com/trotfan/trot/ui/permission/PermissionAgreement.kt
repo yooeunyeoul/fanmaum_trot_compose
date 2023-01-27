@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -50,33 +50,11 @@ fun PermissionAgreement(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 //
-//    val dd = coroutineScope.launch {
-//        val permissionAgreementManager =
-//            PermissionAgreementManager(context.PermissionAgreeStore)
-//        coroutineScope.launch {
-//            permissionAgreementManager.permissionCheck(true)
-//        }
-//
-//        if (terms == true) {
-//            navController?.navigate(HomeSections.Vote.route) {
-//                popUpTo(Route.PermissionAgreement.route) {
-//                    inclusive = true
-//                }
-//            }
-//        } else {
-//            navController?.navigate(Route.TermsAgreement.route) {
-//                popUpTo(Route.PermissionAgreement.route) {
-//                    inclusive = true
-//                }
-//            }
-//        }
-//    }
-//    val launcher = rememberLauncherForActivityResult(
-//        ActivityResultContracts.RequestPermission()
-//    ) { isGranted: Boolean ->
-//        dd.start()
-//
-//    }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        checkAgreementManager(coroutineScope, context, navController, terms)
+    }
 
     Surface {
         Box(
@@ -119,33 +97,63 @@ fun PermissionAgreement(
                     .align(BottomCenter)
                     .padding(bottom = 32.dp)
             ) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//                    askNotificationPermission(
-//                        context,
-//                        launcher,
-//                        dd
-//                    )
-//                } else {
-//                    dd.start()
-//                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    askNotificationPermission(
+                        context,
+                        launcher,
+                        permissionGrantedListener = {
+                            checkAgreementManager(coroutineScope, context, navController, terms)
+                        }
+                    )
+                } else {
+                    checkAgreementManager(coroutineScope, context, navController, terms)
+                }
             }
         }
     }
 }
 
+fun checkAgreementManager(
+    coroutineScope: CoroutineScope,
+    context: Context,
+    navController: NavController?,
+    terms: Boolean?
+) {
+    coroutineScope.launch {
+        val permissionAgreementManager =
+            PermissionAgreementManager(context.PermissionAgreeStore)
+        coroutineScope.launch {
+            permissionAgreementManager.permissionCheck(true)
+        }
 
-@OptIn(ExperimentalMaterialApi::class)
+        if (terms == true) {
+            navController?.navigate(HomeSections.Vote.route) {
+                popUpTo(Route.PermissionAgreement.route) {
+                    inclusive = true
+                }
+            }
+        } else {
+            navController?.navigate(Route.TermsAgreement.route) {
+                popUpTo(Route.PermissionAgreement.route) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+
+}
+
 fun askNotificationPermission(
     context: Context,
     launcher: ManagedActivityResultLauncher<String, Boolean>,
-    dd: Job
+    permissionGrantedListener: () -> Unit
 ) {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
             PackageManager.PERMISSION_GRANTED
         ) {
-            dd.start()
+            permissionGrantedListener.invoke()
         } else {
             // Directly ask for the permission
             launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
