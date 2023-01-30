@@ -35,4 +35,8 @@ abstract class BindModule {
     @Singleton
     abstract fun provideRankingHistoryService(rankingHistoryService: RankinHistoryServiceImpl): RankingHistoryService
 
+    @Binds
+    @Singleton
+    abstract fun provideSettingService(settingService: SettingServiceImpl): SettingService
+
 }
