@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Bundle
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -96,7 +95,7 @@ class StarSearchViewModel @Inject constructor(
                     starId = selectedItem?.id,
                     token = userLocalToken.value?.token ?: ""
                 )
-                if (response.result.code == ResultCodeStatus.Success.code) {
+                if (response.result.code == ResultCodeStatus.SuccessWithNoData.code) {
                     _onComplete.emit(true)
                 }
             }

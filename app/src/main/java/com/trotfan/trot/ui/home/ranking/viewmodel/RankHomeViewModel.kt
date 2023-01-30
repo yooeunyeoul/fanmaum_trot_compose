@@ -224,7 +224,7 @@ class RankHomeViewModel @Inject constructor(
                 ResultCodeStatus.EmptySuccess.code -> {
                     _rankStatus.emit(RankStatus.UnAvailable)
                 }
-                ResultCodeStatus.Success.code -> {
+                ResultCodeStatus.SuccessWithData.code -> {
                     val result = response.data
                     _rankStatus.emit(RankStatus.Available)
                     val menList: List<StarRanking> = if ((result?.men?.size ?: 0) > 4) {
@@ -313,7 +313,7 @@ class RankHomeViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.getBanners(group = "rank", platform = "aos")
             when (response.result.code) {
-                ResultCodeStatus.Success.code -> {
+                ResultCodeStatus.SuccessWithData.code -> {
                     val data = response.data
                     _banners.emit(data)
                 }

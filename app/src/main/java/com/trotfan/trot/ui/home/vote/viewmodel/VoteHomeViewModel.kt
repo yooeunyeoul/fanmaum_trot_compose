@@ -137,10 +137,10 @@ class VoteHomeViewModel @Inject constructor(
             userInfoManager?.favoriteStarIdFlow?.collectLatest {
                 val response = repository.getStarRank(it ?: 2)
                 when (response.result.code) {
-                    ResultCodeStatus.StarRankNoResult.code -> {
+                    ResultCodeStatus.SuccessWithNoData.code -> {
                         _favoriteStar.emit(FavoriteStarInfo())
                     }
-                    ResultCodeStatus.Success.code -> {
+                    ResultCodeStatus.SuccessWithData.code -> {
                         _favoriteStar.emit(response.data ?: FavoriteStarInfo())
                     }
                 }
@@ -159,7 +159,7 @@ class VoteHomeViewModel @Inject constructor(
 
                 }.onSuccess { response ->
                     when (response.result.code) {
-                        ResultCodeStatus.Success.code -> {
+                        ResultCodeStatus.SuccessWithData.code -> {
                             _tickets.emit(response.data?.expired ?: Expired())
                             userTicketManager.storeUserTicket(
                                 response.data?.expired?.unlimited ?: 0,
