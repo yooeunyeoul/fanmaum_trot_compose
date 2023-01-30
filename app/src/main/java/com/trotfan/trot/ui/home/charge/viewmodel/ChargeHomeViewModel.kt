@@ -9,6 +9,7 @@ import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
+import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class ChargeHomeViewModel @Inject constructor(
     private val repository: ChargeRepository,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
 
@@ -27,12 +28,13 @@ class ChargeHomeViewModel @Inject constructor(
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
-                        userId = it.userId
+                        userId = it.userId,
+                        userToken = userLocalToken.value?.token ?: ""
                     )
 
                 }.onSuccess { response ->
                     when (response.result.code) {
-                        ResultCodeStatus.Success.code -> {
+                        ResultCodeStatus.SuccessWithData.code -> {
                             purchaseHelper.refreshTickets(response.data?.expired ?: Expired())
                             purchaseHelper.closeApiCall()
                         }

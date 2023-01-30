@@ -156,7 +156,7 @@ class PurchaseHelper @Inject constructor(
                                             )
                                         }
                                         when (response?.result?.code) {
-                                            ResultCodeStatus.Success.code -> {
+                                            ResultCodeStatus.SuccessWithData.code -> {
                                                 coroutineScope.launch {
                                                     _statusText.emit(
                                                         _statusText.value + "\n" +

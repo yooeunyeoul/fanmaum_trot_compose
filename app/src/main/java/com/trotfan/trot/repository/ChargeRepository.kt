@@ -11,8 +11,8 @@ class ChargeRepository @Inject constructor(
     private val chargeService: ChargeService
 ) {
 
-    suspend fun getVoteTickets(userId: Long): CommonResponse<Tickets> =
-        voteService.voteTickets(userId)
+    suspend fun getVoteTickets(userId: Long, userToken: String): CommonResponse<Tickets> =
+        voteService.voteTickets(userId, userToken)
 
     suspend fun certificationCharge(
         userId: Int,

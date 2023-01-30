@@ -99,7 +99,6 @@ class VoteHomeViewModel @Inject constructor(
 
     init {
         getVoteList()
-        getVoteTickets()
         userInfoManager = UserInfoManager(context.UserInfoDataStore)
         voteMainManager = VoteMainManager(context.VoteMainDataStore)
         userTicketManager = UserTicketManager(context.UserTicketStore)
