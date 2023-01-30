@@ -1,15 +1,10 @@
 package com.trotfan.trot.ui.home.mypage.modify.component
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
+import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,26 +29,39 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickableSingle
+import java.io.File
 
 @Composable
-fun ProfileImgModify(modifier: Modifier) {
+fun ProfileImgModify(
+    modifier: Modifier,
+    viewModel: MyPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val context = LocalContext.current
     var profileUri by remember { mutableStateOf<Uri?>(null) }
-    var bitmap by remember {
-        mutableStateOf<Bitmap?>(null)
-    }
 
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             profileUri = result.uriContent
+            val filePath = result.getUriFilePath(context, true)
+            val image = filePath?.let { File(filePath) }
+            image?.let {
+                Log.d("file", it.path + "//" + it.length() + "bytes")
+                viewModel.postUserProfile(image = image)
+            }
         }
     }
 
     val imagePickerLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             val cropImageOptions = CropImageOptions()
+            cropImageOptions.imageSourceIncludeCamera = false
+            cropImageOptions.aspectRatioX = 1
+            cropImageOptions.aspectRatioY = 1
+            cropImageOptions.fixAspectRatio = true
+            cropImageOptions.outputCompressFormat = CompressFormat.PNG
             cropImageOptions.toolbarColor = Gray900.hashCode()
             cropImageOptions.activityBackgroundColor = Gray900.hashCode()
             cropImageOptions.cropMenuCropButtonTitle = "완료"

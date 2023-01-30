@@ -72,7 +72,6 @@ class AuthViewModel @Inject constructor(
             }.onSuccess {
                 val userToken = it.data
                 userToken?.token?.let { token ->
-                    Log.d("AuthViewModel", token)
                     getUserInfo(token)
                     setUserToken(token)
                 }
@@ -89,6 +88,10 @@ class AuthViewModel @Inject constructor(
                 repository.postAppleLogin(token)
             }.onSuccess {
                 val userToken = it.data
+                userToken?.token?.let { token ->
+                    getUserInfo(token)
+                    setUserToken(token)
+                }
                 _userToken.emit(userToken)
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
@@ -102,6 +105,10 @@ class AuthViewModel @Inject constructor(
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
                 val userToken = it.data
+                userToken?.token?.let { token ->
+                    getUserInfo(token)
+                    setUserToken(token)
+                }
                 _userToken.emit(userToken)
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())

@@ -151,7 +151,7 @@ fun TermsAgreement(
                 text = "다음",
                 onClick = {
                     viewModel.updateUser()
-//                    onConfirmClick()
+                    onConfirmClick()
                 },
                 enabled = termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
                 modifier = Modifier
