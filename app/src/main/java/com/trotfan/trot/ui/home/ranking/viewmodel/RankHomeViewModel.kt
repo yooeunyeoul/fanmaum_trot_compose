@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.datastore.FavoriteStarDataStore
+import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.RankMainDataStore
 import com.trotfan.trot.datastore.RankMainManager
 import com.trotfan.trot.datastore.UserInfoManager
@@ -108,7 +108,7 @@ class RankHomeViewModel @Inject constructor(
     private val _tabIndex = MutableStateFlow(0)
 
     init {
-        userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
+        userInfoManager = UserInfoManager(context.UserInfoDataStore)
         rankMainManager = RankMainManager(context.RankMainDataStore)
         getMonthStarRank()
         getBanners()
@@ -224,7 +224,7 @@ class RankHomeViewModel @Inject constructor(
                 ResultCodeStatus.EmptySuccess.code -> {
                     _rankStatus.emit(RankStatus.UnAvailable)
                 }
-                ResultCodeStatus.Success.code -> {
+                ResultCodeStatus.SuccessWithData.code -> {
                     val result = response.data
                     _rankStatus.emit(RankStatus.Available)
                     val menList: List<StarRanking> = if ((result?.men?.size ?: 0) > 4) {
@@ -313,7 +313,7 @@ class RankHomeViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.getBanners(group = "rank", platform = "aos")
             when (response.result.code) {
-                ResultCodeStatus.Success.code -> {
+                ResultCodeStatus.SuccessWithData.code -> {
                     val data = response.data
                     _banners.emit(data)
                 }

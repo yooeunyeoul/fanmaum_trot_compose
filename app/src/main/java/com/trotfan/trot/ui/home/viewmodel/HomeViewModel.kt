@@ -57,7 +57,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             context.userTokenStore.data.collect {
                 kotlin.runCatching {
-                    repository.getMainPopups(it.accessToken)
+                    repository.getMainPopups(it.token)
                 }.onSuccess {
                     _mainPopups.emit(it.data)
                     it.data.let { mainPopups ->
@@ -90,7 +90,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             context.userTokenStore.data.collect {
                 kotlin.runCatching {
-                    repository.postVoteTicket(VoteTicket(voteId, starId, quantity), it.accessToken)
+                    repository.postVoteTicket(VoteTicket(voteId, starId, quantity), it.token)
                 }.onSuccess {
                     votingCompleteState.emit(1)
                     Log.d("HomeViewModel", it.toString())

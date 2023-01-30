@@ -17,6 +17,10 @@ interface AuthService {
     ): CommonResponse<UserToken>
 
     suspend fun getUserInfo(
-        userId: Int
+        userToken: String
     ): CommonResponse<UserInfo>
+
+    suspend fun postLogout(
+        userToken: String
+    ): CommonResponse<Unit>
 }

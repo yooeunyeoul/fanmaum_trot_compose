@@ -25,15 +25,7 @@ object KtorClient {
     @Singleton
     @Provides
     fun provideKtorHttpClient(): HttpClient {
-        return HttpClient(CIO) {
-//            defaultRequest {
-//                headers {
-//                    append("Content-type", "application/json")
-//                }
-//                url {
-//                    protocol = URLProtocol.HTTPS
-//                }
-//            }
+        val client = HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
@@ -48,6 +40,7 @@ object KtorClient {
                         Log.d(ContentValues.TAG, message)
                     }
                 }
+                level = LogLevel.ALL
             }
             install(HttpTimeout) {
                 requestTimeoutMillis = 10_000L
@@ -55,5 +48,6 @@ object KtorClient {
                 socketTimeoutMillis = 10_000L
             }
         }
+        return client
     }
 }

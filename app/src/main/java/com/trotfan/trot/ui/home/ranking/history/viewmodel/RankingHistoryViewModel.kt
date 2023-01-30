@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.datastore.FavoriteStarDataStore
+import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.RankingHistoryRepository
@@ -36,7 +36,7 @@ class RankingHistoryViewModel @Inject constructor(
     val dailyWomanList = MutableStateFlow(listOf<StarRankingDaily>())
 
     private val context = getApplication<Application>()
-    var userInfoManager: UserInfoManager = UserInfoManager(context.FavoriteStarDataStore)
+    var userInfoManager: UserInfoManager = UserInfoManager(context.UserInfoDataStore)
     val endedAt = MutableStateFlow("2022-12")
     val isStared = MutableStateFlow(false)
     val isEnded = MutableStateFlow(true)

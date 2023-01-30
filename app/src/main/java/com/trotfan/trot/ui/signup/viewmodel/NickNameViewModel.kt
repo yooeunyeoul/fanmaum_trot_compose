@@ -2,12 +2,11 @@ package com.trotfan.trot.ui.signup.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
+import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +26,7 @@ enum class NickNameCheckStatus(val message: String) {
 class NickNameViewModel @Inject constructor(
     private val repository: SignUpRepository,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
 
@@ -64,7 +63,11 @@ class NickNameViewModel @Inject constructor(
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 kotlin.runCatching {
-                    val response = repository.updateUser(userid = it.userId.toInt(), nickName)
+                    val response = repository.updateUser(
+                        userid = it.userId,
+                        nickName,
+                        token = userLocalToken.value?.token ?: ""
+                    )
 
                     when (response.result.code) {
                         ResultCodeStatus.UnAcceptableName.code -> {
@@ -73,7 +76,7 @@ class NickNameViewModel @Inject constructor(
                         ResultCodeStatus.AlreadyInUse.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.Duplicate)
                         }
-                        ResultCodeStatus.Success.code -> {
+                        ResultCodeStatus.SuccessWithNoData.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.AuthSuccess)
                         }
                     }

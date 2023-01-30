@@ -47,6 +47,7 @@ import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.model.*
+import com.trotfan.trot.ui.components.chip.ChipCapsuleImg
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
 import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections

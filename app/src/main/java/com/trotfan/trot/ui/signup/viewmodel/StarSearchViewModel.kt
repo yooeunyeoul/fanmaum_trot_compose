@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Bundle
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,6 +16,7 @@ import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
+import com.trotfan.trot.ui.BaseViewModel
 import com.trotfan.trot.ui.components.input.SearchStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +31,7 @@ class StarSearchViewModel @Inject constructor(
     private val repository: SignUpRepository,
     private val dataSource: GetStarDataSource,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
 
@@ -91,10 +91,11 @@ class StarSearchViewModel @Inject constructor(
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 val response = repository.updateUser(
-                    userid = it.userId.toInt(),
-                    starId = selectedItem?.id
+                    userid = it.userId,
+                    starId = selectedItem?.id,
+                    token = userLocalToken.value?.token ?: ""
                 )
-                if (response.result.code == ResultCodeStatus.Success.code) {
+                if (response.result.code == ResultCodeStatus.SuccessWithNoData.code) {
                     _onComplete.emit(true)
                 }
             }

@@ -14,13 +14,15 @@ class SignUpRepository @Inject constructor(
         service.requestCertificationCode(phoneNumber)
 
     suspend fun updateUser(
-        userid: Int,
+        userid: Long,
         nickName: String? = null,
         starId: Int? = null,
         phoneNumber: String? = null,
-        redeemCode: String? = null
+        redeemCode: String? = null,
+        agrees_terms: Boolean? = null,
+        token: String
     ): CommonResponse<Unit> =
-        service.updateUser(userid, nickName, starId, phoneNumber, redeemCode)
+        service.updateUser(userid, nickName, starId, phoneNumber, redeemCode, agrees_terms, token)
 
 
 }

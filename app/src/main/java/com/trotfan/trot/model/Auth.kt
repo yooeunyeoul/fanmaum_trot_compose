@@ -24,20 +24,20 @@ data class AppleToken(
 
 @Serializable
 data class UserToken(
-    @SerializedName("access_token")
-    val access_token: String,
-    @SerializedName("refresh_token")
-    val refresh_token: String?,
-    @SerializedName("user_id")
-    val user_id: Int
+    @SerializedName("token")
+    val token: String
 )
 
 @Serializable
 data class UserInfo(
     @SerializedName("id")
     val id: Int,
+    @SerializedName("idp")
+    val idp: Int,
     @SerializedName("invitation_code")
     val invitation_code: String?,
+    @SerializedName("email")
+    val email: String?,
     @SerializedName("star")
     val star: Star?,
     @SerializedName("name")
@@ -45,5 +45,7 @@ data class UserInfo(
     @SerializedName("phone_number")
     val phone_number: String?,
     @SerializedName("redeem_code")
-    val redeem_code: String?
+    val redeem_code: String?,
+    @SerializedName("agrees_terms")
+    val agrees_terms: Boolean?
 )

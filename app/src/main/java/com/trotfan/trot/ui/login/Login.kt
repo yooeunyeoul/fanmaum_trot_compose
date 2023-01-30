@@ -16,6 +16,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +32,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
-import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.datastore.PermissionAgreeStore
+import com.trotfan.trot.datastore.PermissionAgreementManager
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.home.HomeSections
@@ -42,8 +44,7 @@ import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Secondary800
 import com.trotfan.trot.ui.utils.clickable
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun LoginScreen(
@@ -61,19 +62,14 @@ fun LoginScreen(
                 Log.d("googleAuth", result.toString())
             }
         }
-
-    val userId = flow {
-        context.userIdStore.data.map {
-            it.userId
-        }.collect(collector = {
-            this.emit(it)
-        })
-    }.collectAsState(initial = 0)
-    val userToken by viewModel.userToken.collectAsState()
     val userInfo by viewModel.userInfo.collectAsState()
     val serverAvailable by viewModel.serverAvailable.collectAsState()
 
     var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.getServerState()
+    }
 
     Surface(
         modifier = modifier.fillMaxSize()
@@ -158,8 +154,19 @@ fun LoginScreen(
 
         if (userInfo != null) {
             LaunchedEffect(userInfo) {
-                if (userInfo!!.star == null) {
+                val permissionAgreementManager =
+                    PermissionAgreementManager(context.PermissionAgreeStore)
+
+                if (permissionAgreementManager.isPermissionCheckFlow.first().not()) {
+                    routeSections(
+                        navController,
+                        "${Route.PermissionAgreement.route}/${userInfo!!.agrees_terms}"
+                    )
+                } else if (userInfo!!.agrees_terms?.not() == true) {
+                    routeSections(navController, Route.TermsAgreement.route)
+                } else if (userInfo!!.star == null) {
                     routeSections(navController, Route.SelectStar.route)
+//                    routeSections(navController, Route.PermissionAgreement.route)
                 } else if (userInfo!!.name == null) {
                     routeSections(navController, Route.SettingNickname.route)
                 } else if (userInfo!!.phone_number == null) {

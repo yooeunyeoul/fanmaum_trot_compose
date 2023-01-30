@@ -2,7 +2,6 @@ package com.trotfan.trot.ui.home.vote.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.trotfan.trot.PurchaseHelper
@@ -13,6 +12,7 @@ import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.VoteRepository
+import com.trotfan.trot.ui.BaseViewModel
 import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
@@ -37,7 +37,7 @@ enum class Gender {
 class VoteHomeViewModel @Inject constructor(
     private val repository: VoteRepository,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
 
 
     lateinit var mBoardSocket: Socket
@@ -45,6 +45,7 @@ class VoteHomeViewModel @Inject constructor(
 
     var userInfoManager: UserInfoManager
     var voteMainManager: VoteMainManager
+    var userTicketManager: UserTicketManager
 
     private val context = getApplication<Application>()
 
@@ -98,8 +99,10 @@ class VoteHomeViewModel @Inject constructor(
 
     init {
         getVoteList()
-        userInfoManager = UserInfoManager(context.FavoriteStarDataStore)
+        getVoteTickets()
+        userInfoManager = UserInfoManager(context.UserInfoDataStore)
         voteMainManager = VoteMainManager(context.VoteMainDataStore)
+        userTicketManager = UserTicketManager(context.UserTicketStore)
         connectBoardSocket()
         connectRankSocket()
         getStarRank()
@@ -134,10 +137,10 @@ class VoteHomeViewModel @Inject constructor(
             userInfoManager?.favoriteStarIdFlow?.collectLatest {
                 val response = repository.getStarRank(it ?: 2)
                 when (response.result.code) {
-                    ResultCodeStatus.StarRankNoResult.code -> {
+                    ResultCodeStatus.SuccessWithNoData.code -> {
                         _favoriteStar.emit(FavoriteStarInfo())
                     }
-                    ResultCodeStatus.Success.code -> {
+                    ResultCodeStatus.SuccessWithData.code -> {
                         _favoriteStar.emit(response.data ?: FavoriteStarInfo())
                     }
                 }
@@ -150,12 +153,17 @@ class VoteHomeViewModel @Inject constructor(
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
-                        userId = it.userId
+                        userId = it.userId,
+                        token = userLocalToken.value?.token ?: ""
                     )
 
                 }.onSuccess { response ->
                     when (response.result.code) {
-                        ResultCodeStatus.Success.code -> {
+                        ResultCodeStatus.SuccessWithData.code -> {
+                            userTicketManager.storeUserTicket(
+                                response.data?.expired?.unlimited ?: 0,
+                                response.data?.expired?.unlimited ?: 0
+                            )
                             purchaseHelper.refreshTickets(response.data?.expired ?: Expired())
                             purchaseHelper.closeApiCall()
                         }

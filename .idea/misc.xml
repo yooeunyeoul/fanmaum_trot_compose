@@ -18,6 +18,19 @@
         <entry key="app/src/main/java/com/trotfan/trot/ui/components/dialog/VerticalDialog.kt" value="0.5" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/components/input/InputSearchTextField.kt" value="0.38055555555555554" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/Home.kt" value="0.33240740740740743" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/MyPage.kt" value="0.25" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/MyPageList.kt" value="0.5" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/MyProfile.kt" value="0.29814814814814816" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/MyVotingTicket.kt" value="0.29814814814814816" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/SampleMyPageList.kt" value="0.29814814814814816" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/modify/ProfileModify.kt" value="0.29814814814814816" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/modify/component/ProfileImgModify.kt" value="0.8609625668449198" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/setting/Setting.kt" value="0.29814814814814816" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/setting/SettingAccount.kt" value="0.29814814814814816" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/setting/SettingPush.kt" value="0.33" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/setting/SettingSecession.kt" value="0.25" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/mypage/votehistory/MyVoteHistory.kt" value="0.33" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/components/RankItem.kt" value="0.8460264900662252" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/RankingHistory.kt" value="0.18981481481481483" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/RankingHistoryMonthly.kt" value="0.18981481481481483" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/cumulative/CumulativeRanking.kt" value="0.375" />
@@ -27,11 +40,13 @@
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/monthly/RankingHistoryBanner.kt" value="0.30925925925925923" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/monthly/RankingStarItem.kt" value="0.18055555555555555" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/ranking/history/component/monthly/RankingStarMonthlyItem.kt" value="0.375" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/home/vote/component/ToolTip.kt" value="0.29814814814814816" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/home/vote/component/VoteItem.kt" value="0.7398373983739838" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/invitation/Invitation.kt" value="0.22" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/Login.kt" value="0.22" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/components/GoogleSiginButton.kt" value="1.0" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/components/LoginButton.kt" value="0.2916666666666667" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/permission/PermissionAgreement.kt" value="0.24219409282700421" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/signup/Invitation.kt" value="0.8741007194244604" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/signup/SelectStar.kt" value="0.18431221020092736" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/signup/SettingNickName.kt" value="0.2014358108108108" />
@@ -44,7 +59,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="corretto-11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

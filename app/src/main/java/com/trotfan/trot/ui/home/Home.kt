@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,14 +35,13 @@ import com.trotfan.trot.ui.home.charge.ChargeHome
 import com.trotfan.trot.ui.home.dialog.AutoVotingDialog
 import com.trotfan.trot.ui.home.dialog.FeverTimeDialog
 import com.trotfan.trot.ui.home.dialog.RollingDialog
-import com.trotfan.trot.ui.home.mypage.MyPageHome
+import com.trotfan.trot.ui.home.mypage.home.MyPageHome
 import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -286,7 +284,11 @@ fun NavGraphBuilder.addHomeGraph(
             onItemClick = { id ->
                 onItemSelected(id, from)
             },
-            modifier = modifier
+            onNavigateClick = { section ->
+                onNavigateBottomBar(section)
+            },
+            modifier = modifier,
+            navController = navController
         )
     }
     composable(HomeSections.Ranking.route) { from ->

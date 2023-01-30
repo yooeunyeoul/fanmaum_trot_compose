@@ -19,11 +19,19 @@ import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
+import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
+import com.trotfan.trot.ui.home.mypage.setting.Setting
+import com.trotfan.trot.ui.home.mypage.setting.SettingAccount
+import com.trotfan.trot.ui.home.mypage.setting.SettingPush
+import com.trotfan.trot.ui.home.mypage.setting.SettingSecession
+import com.trotfan.trot.ui.home.mypage.votehistory.MyVoteHistory
 import com.trotfan.trot.ui.home.ranking.history.RankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeRanking
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
+import com.trotfan.trot.ui.permission.PermissionAgreement
+import com.trotfan.trot.ui.signup.TermsAgreement
 import com.trotfan.trot.ui.signup.*
 import com.trotfan.trot.ui.webview.PublicWebView
 
@@ -32,6 +40,8 @@ enum class Route(
     val route: String
 ) {
     Login(route = "login"),
+    PermissionAgreement(route = "permissionAgreement"),
+    TermsAgreement(route = "termsAgreement"),
     SearchStar(route = "searchStar"),
     SelectStar(route = "selectStar"),
     CertificationPhoneNumber(route = "certificationPhoneNumber"),
@@ -39,8 +49,14 @@ enum class Route(
     InvitationCode(route = "invitationCode"),
     VoteBenefits(route = "voteBenefits"),
     RankingHistory(route = "rankingHistory"),
-    RankingHistoryCumulative(route = "RankingHistoryCumulative"),
-    WebView(route = "WebView")
+    RankingHistoryCumulative(route = "rankingHistoryCumulative"),
+    WebView(route = "webView"),
+    MyProfileModify(route = "myProfileModify"),
+    MyVoteHistory(route = "myVoteHistory"),
+    Setting(route = "setting"),
+    SettingAccount(route = "settingAccount"),
+    SettingPush(route = "settingPush"),
+    SettingSecession(route = "SettingSecession")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -146,6 +162,62 @@ fun NavigationComponent(
                 backStackEntry.arguments?.getInt("starId"),
                 backStackEntry.arguments?.getString("starName"),
                 backStackEntry.arguments?.getString("date")
+            )
+        }
+        composable(Route.MyProfileModify.route) {
+            ProfileModify(
+                navController = navController,
+                logoutClick = { onNavigateBottomBar.invoke(HomeSections.Vote) }
+            )
+        }
+        composable(Route.MyVoteHistory.route) {
+            MyVoteHistory(
+                navController = navController
+            )
+        }
+        composable(Route.Setting.route) {
+            Setting(
+                navController = navController
+            )
+        }
+        composable(Route.SettingAccount.route) {
+            SettingAccount(
+                navController = navController
+            )
+        }
+        composable(Route.SettingPush.route) {
+            SettingPush(
+                navController = navController
+            )
+        }
+        composable(Route.SettingSecession.route) {
+            SettingSecession(
+                navController = navController
+            )
+        }
+        composable(
+            "${Route.PermissionAgreement.route}/{terms}",
+            arguments = listOf(
+                navArgument(name = "terms") {
+                    type = NavType.BoolType
+                }
+            )
+        ) { backStackEntry ->
+            PermissionAgreement(
+                navController = navController,
+                backStackEntry.arguments?.getBoolean("terms")
+            )
+        }
+        composable(Route.TermsAgreement.route) {
+            TermsAgreement(
+                navController = navController,
+                onConfirmClick = {
+                    navController.navigate(Route.SelectStar.route) {
+                        popUpTo(Route.TermsAgreement.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
     }

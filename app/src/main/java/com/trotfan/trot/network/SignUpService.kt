@@ -13,17 +13,14 @@ interface SignUpService {
         search: String
     ): CommonResponse<StarsList<FavoriteStar>>
 
-    suspend fun starSearch(
-        cursor: String,
-        name: String
-    ): CommonResponse<StarsList<FavoriteStar>>
-
     suspend fun updateUser(
-        userId: Int,
+        userId: Long,
         nickName: String?,
         starId: Int?,
         phoneNumber: String?,
-        redeemCode: String?
+        redeemCode: String?,
+        agrees_terms: Boolean?,
+        token: String
     ): CommonResponse<Unit>
 
 }

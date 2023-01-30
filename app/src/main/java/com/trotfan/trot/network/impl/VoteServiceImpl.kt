@@ -28,8 +28,12 @@ class VoteServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
         return response.body()
     }
 
-    override suspend fun voteTickets(userId: Long): CommonResponse<Tickets> {
+    override suspend fun voteTickets(userId: Long, token: String): CommonResponse<Tickets> {
         val response = httpClient.get(HttpRoutes.USERS + "/${userId}/tickets") {
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
             contentType(ContentType.Application.Json)
         }
         return response.body()
