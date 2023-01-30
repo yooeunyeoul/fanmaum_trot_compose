@@ -1,5 +1,8 @@
 package com.trotfan.trot.ui.home.mypage.modify
 
+import android.os.Build
+import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
@@ -15,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.ui.Route
@@ -29,6 +33,7 @@ import com.trotfan.trot.ui.theme.Primary500
 import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileModify(
     navController: NavController? = null,
@@ -42,6 +47,13 @@ fun ProfileModify(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    BackHandler {
+        if (viewModel.isLoading.value) {
+            return@BackHandler
+        } else {
+            navController?.popBackStack()
+        }
+    }
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -99,15 +111,36 @@ fun ProfileModify(
                                 context.userTokenStore.updateData {
                                     it.toBuilder().setToken("").build()
                                 }
-                                val gso =
-                                    GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                        .requestEmail().build()
-                                val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                                googleSignInClient.signOut().addOnCompleteListener {
-                                    navController?.navigate(Route.Login.route) {
-                                        logoutClick()
-                                        popUpTo(0)
-                                        logoutDialogState = false
+                                when (viewModel.userIdp.value) {
+                                    //Google 로그아웃
+                                    1 -> {
+                                        val gso =
+                                            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                                .requestEmail().build()
+                                        val googleSignInClient =
+                                            GoogleSignIn.getClient(context, gso)
+                                        googleSignInClient.signOut().addOnCompleteListener {
+                                            navController?.navigate(Route.Login.route) {
+                                                logoutClick()
+                                                popUpTo(0)
+                                            }
+                                        }
+                                    }
+                                    //카카오 로그아웃
+                                    2 -> {
+                                        UserApiClient.instance.logout { _ ->
+                                            navController?.navigate(Route.Login.route) {
+                                                logoutClick()
+                                                popUpTo(0)
+                                            }
+                                        }
+                                    }
+
+                                    else -> {
+                                        navController?.navigate(Route.Login.route) {
+                                            logoutClick()
+                                            popUpTo(0)
+                                        }
                                     }
                                 }
                             }
@@ -122,6 +155,7 @@ fun ProfileModify(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun ProfileModifyPreview() {

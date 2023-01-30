@@ -26,9 +26,9 @@ open class BaseViewModel constructor(
                     userLocalToken.emit(it)
                 }
             }
-            context.userIdStore.data.collect {
-                it.userId.let {
-                    userLocalId.emit(it)
+            context.userIdStore.data.collect { it ->
+                it.userId.let { id ->
+                    userLocalId.emit(id)
                 }
             }
         }

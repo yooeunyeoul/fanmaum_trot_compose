@@ -46,6 +46,7 @@
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/Login.kt" value="0.22" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/components/GoogleSiginButton.kt" value="1.0" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/login/components/LoginButton.kt" value="0.2916666666666667" />
+        <entry key="app/src/main/java/com/trotfan/trot/ui/permission/PermissionAgreement.kt" value="0.24219409282700421" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/signup/Invitation.kt" value="0.8741007194244604" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/signup/SelectStar.kt" value="0.18431221020092736" />
         <entry key="app/src/main/java/com/trotfan/trot/ui/signup/SettingNickName.kt" value="0.2014358108108108" />
@@ -58,7 +59,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="corretto-11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

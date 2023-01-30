@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
@@ -44,8 +45,7 @@ import kotlinx.coroutines.Job
 @Composable
 fun PermissionAgreement(
     navController: NavController? = null,
-    terms: Boolean? = null,
-    viewModel: StarSelectViewModel = hiltViewModel()
+    terms: Boolean? = null
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -128,13 +128,13 @@ fun checkAgreementManager(
 
         if (terms == true) {
             navController?.navigate(HomeSections.Vote.route) {
-                popUpTo(Route.PermissionAgreement.route) {
+                popUpTo(navController.graph.id) {
                     inclusive = true
                 }
             }
         } else {
             navController?.navigate(Route.TermsAgreement.route) {
-                popUpTo(Route.PermissionAgreement.route) {
+                popUpTo(navController.graph.id) {
                     inclusive = true
                 }
             }

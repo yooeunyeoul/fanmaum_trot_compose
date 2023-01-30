@@ -39,4 +39,7 @@ abstract class BindModule {
     @Singleton
     abstract fun provideSettingService(settingService: SettingServiceImpl): SettingService
 
+    @Binds
+    @Singleton
+    abstract fun provideUserService(userService: UserServiceImpl): UserService
 }
