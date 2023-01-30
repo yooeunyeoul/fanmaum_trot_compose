@@ -66,8 +66,8 @@ fun InvitationScreen(
 
         InputTextField(
             text = inviteCode,
-            placeHolder = "#8자리 코드",
-            maxLength = 8,
+            placeHolder = "#6자리 코드",
+            maxLength = 6,
             errorStatus = inviteCodeCheckState != InviteCodeCheckStatus.None,
             onValueChange = {
                 viewModel.checkInviteCodeLocal(it)
@@ -93,7 +93,7 @@ fun InvitationScreen(
 
             BtnFilledLPrimary(
                 text = "완료",
-                enabled = inviteCodeCheckState == InviteCodeCheckStatus.None && inviteCode.length == 8,
+                enabled = inviteCodeCheckState == InviteCodeCheckStatus.None && inviteCode.length == 6,
                 modifier = Modifier.weight(1f)
             ) {
                 viewModel.postInviteCode()
