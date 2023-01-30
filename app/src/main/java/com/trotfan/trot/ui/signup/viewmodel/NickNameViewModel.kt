@@ -2,8 +2,6 @@ package com.trotfan.trot.ui.signup.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
@@ -78,7 +76,7 @@ class NickNameViewModel @Inject constructor(
                         ResultCodeStatus.AlreadyInUse.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.Duplicate)
                         }
-                        ResultCodeStatus.Success.code -> {
+                        ResultCodeStatus.SuccessWithNoData.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.AuthSuccess)
                         }
                     }

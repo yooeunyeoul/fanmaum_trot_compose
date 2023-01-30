@@ -1,7 +1,6 @@
 package com.trotfan.trot.ui.signup.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
@@ -79,7 +78,7 @@ class InvitationViewModel @Inject constructor(
                         ResultCodeStatus.InvalidCode.code -> _inviteCodeCheckStatus.emit(
                             InvalidCodeError
                         )
-                        ResultCodeStatus.Success.code -> {
+                        ResultCodeStatus.SuccessWithNoData.code -> {
                             if (_inviteCode.value != "") _completeStatus.emit(true)
                             else _skipStatus.emit(true)
                         }
