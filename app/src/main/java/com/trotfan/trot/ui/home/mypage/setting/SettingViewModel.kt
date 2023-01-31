@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
 import com.trotfan.trot.datastore.*
+import com.trotfan.trot.di.ApiResult
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.MyPageRepository
 import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 enum class AlarmType {
@@ -47,6 +49,10 @@ class SettingViewModel @Inject constructor(
         MutableStateFlow(false)
     val timeEvent = _timeEvent.asStateFlow()
 
+    private val _secessionConfirmDialogState =
+        MutableStateFlow(false)
+    val secessionConfirmDialogState = _secessionConfirmDialogState.asStateFlow()
+
     init {
         viewModelScope.launch {
             userInfoManager = UserInfoManager(context.UserInfoDataStore)
@@ -73,6 +79,7 @@ class SettingViewModel @Inject constructor(
                     userToken = userToken
                 )
             }.onSuccess {
+                apiStatus.value = ApiResult.Success("Success")
                 when (it.result.code) {
                     ResultCodeStatus.SuccessWithData.code -> {
                         it.data?.run {
@@ -85,6 +92,7 @@ class SettingViewModel @Inject constructor(
                     }
                 }
             }.onFailure {
+                apiStatus.value = ApiResult.Failed(Exception(it.message.toString()))
                 Log.d("SettingViewModel", it.message.toString())
             }
 
@@ -93,6 +101,9 @@ class SettingViewModel @Inject constructor(
     }
 
     fun setPushSetting(alarmType: AlarmType, checked: Boolean) {
+        if (apiStatus.value == ApiResult.Loading) {
+            return
+        }
         viewModelScope.launch {
             kotlin.runCatching {
                 val userToken = context.userTokenStore.data.map {
@@ -101,31 +112,75 @@ class SettingViewModel @Inject constructor(
                 val userId = context.userIdStore.data.map {
                     it.userId
                 }.first()
+                apiStatus.value = ApiResult.Loading
                 myPageRepository.setPushSetting(
                     userToken = userToken,
                     userId = userId,
                     alarmType = alarmType
                 )
             }.onSuccess {
+                apiStatus.value = ApiResult.Success("Success")
                 when (it.result.code) {
                     ResultCodeStatus.SuccessWithNoData.code -> {
                         Log.d("SettingViewModel", "Success")
                         when (alarmType) {
                             AlarmType.day_alarm -> {
+                                if (checked) {
+                                    _timeEvent.emit(true)
+                                    FirebaseMessaging.getInstance()
+                                        .subscribeToTopic(AlarmType.time_event.name)
+                                } else {
+                                    _timeEvent.emit(false)
+                                    FirebaseMessaging.getInstance()
+                                        .unsubscribeFromTopic(AlarmType.time_event.name)
+                                }
                                 _dayEvent.emit(!_dayEvent.value)
+
+                            }
+                            AlarmType.time_event -> {
+                                if (checked) {
+                                    _dayEvent.emit(true)
+                                    FirebaseMessaging.getInstance()
+                                        .unsubscribeFromTopic(AlarmType.day_alarm.name)
+                                }
+                                _timeEvent.emit(!_timeEvent.value)
+
                             }
                             AlarmType.night_alarm -> {
+                                if (checked) {
+                                    _newVotes.emit(true)
+                                    _freeVotes.emit(true)
+                                    FirebaseMessaging.getInstance()
+                                        .subscribeToTopic(AlarmType.new_votes.name)
+                                    FirebaseMessaging.getInstance()
+                                        .subscribeToTopic(AlarmType.free_tickets_gone.name)
+                                } else {
+                                    _newVotes.emit(false)
+                                    _freeVotes.emit(false)
+                                    FirebaseMessaging.getInstance()
+                                        .unsubscribeFromTopic(AlarmType.new_votes.name)
+                                    FirebaseMessaging.getInstance()
+                                        .unsubscribeFromTopic(AlarmType.free_tickets_gone.name)
+                                }
                                 _nightEvent.emit(!_nightEvent.value)
                             }
                             AlarmType.new_votes -> {
+                                if (checked) {
+                                    _nightEvent.emit(true)
+                                    FirebaseMessaging.getInstance()
+                                        .subscribeToTopic(AlarmType.night_alarm.name)
+                                }
                                 _newVotes.emit(!_newVotes.value)
                             }
                             AlarmType.free_tickets_gone -> {
+                                if (checked) {
+                                    _nightEvent.emit(true)
+                                    FirebaseMessaging.getInstance()
+                                        .subscribeToTopic(AlarmType.night_alarm.name)
+                                }
                                 _freeVotes.emit(!_freeVotes.value)
                             }
-                            AlarmType.time_event -> {
-                                _timeEvent.emit(!_timeEvent.value)
-                            }
+
 
                         }
                         if (checked) {
@@ -141,27 +196,34 @@ class SettingViewModel @Inject constructor(
 
             }.onFailure {
                 Log.d("SettingViewModel", it.message.toString())
+                apiStatus.value = ApiResult.Failed(Exception(it.message.toString()))
             }
         }
     }
 
-    fun dayEventPush() {
-
+    fun signOut(reason: Int, etc: String? = null) {
+        viewModelScope.launch {
+            context.userIdStore.data.collect {
+                kotlin.runCatching {
+                    myPageRepository.signOut(
+                        userToken = userLocalToken.value?.token ?: "",
+                        userId = it.userId,
+                        reason = reason,
+                        etc = etc
+                    )
+                }.onSuccess {
+                    _secessionConfirmDialogState.emit(true)
+                }.onFailure {
+                    _secessionConfirmDialogState.emit(false)
+                }
+            }
+        }
     }
 
-    fun nightEventPush() {
-
-    }
-
-    fun freeVotesPush() {
-
-    }
-
-    fun newVotesPush() {
-
-    }
-
-    fun timeEventPush() {
+    fun changeSecessionConfirmDialogState(boolean: Boolean) {
+        viewModelScope.launch {
+            _secessionConfirmDialogState.emit(boolean)
+        }
 
     }
 

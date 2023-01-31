@@ -192,7 +192,8 @@ fun NavigationComponent(
         }
         composable(Route.SettingSecession.route) {
             SettingSecession(
-                navController = navController
+                navController = navController,
+                signOutClick = { onNavigateBottomBar.invoke(HomeSections.Vote) }
             )
         }
         composable(

@@ -20,4 +20,12 @@ interface UserService {
         userId: Long,
         image: File
     ): CommonResponse<ProfileImage>
+
+    suspend fun signOut(
+        token: String,
+        userId: Long,
+        reason: Int,
+        etc: String?
+    ): CommonResponse<Unit>
+
 }

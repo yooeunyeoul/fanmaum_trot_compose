@@ -81,4 +81,26 @@ class UserServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
             }
         }.body()
     }
+
+    override suspend fun signOut(
+        token: String,
+        userId: Long,
+        reason: Int,
+        etc: String?
+    ): CommonResponse<Unit> {
+        return httpClient.delete(HttpRoutes.USERS + "/${userId}") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
+            val json = JSONObject()
+            json.put("reason", reason)
+            if (etc != null) {
+                json.put("ect", etc)
+            }
+            body = (json.toString())
+        }.body()
+
+    }
 }

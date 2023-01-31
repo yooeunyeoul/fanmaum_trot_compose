@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.mypage.setting
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -7,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -17,18 +17,20 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
@@ -43,17 +45,21 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingSecession(
-    navController: NavController? = null
+    navController: NavController? = null,
+    signOutClick: () -> Unit,
+    settingViewModel: SettingViewModel = hiltViewModel()
 ) {
+
     val reasons = listOf(
-        "더 이상 스타에게 관심이 없어요",
-        "원하는 스타가 없어요",
-        "서비스 운영이 마음에 들지 않아요",
-        "금전적인 부담이 돼요",
-        "자주 사용하지 않아요",
-        "다른 계정을 사용하고 싶어요",
-        "기타 (직접입력)"
+        Pair(first = "더 이상 스타에게 관심이 없어요", second = 2),
+        Pair(first = "원하는 스타가 없어요", second = 3),
+        Pair(first = "서비스 운영이 마음에 들지 않아요", second = 4),
+        Pair(first = "금전적인 부담이 돼요", second = 5),
+        Pair(first = "자주 사용하지 않아요", second = 6),
+        Pair(first = "다른 계정을 사용하고 싶어요", second = 7),
+        Pair(first = "기타 (직접입력)", second = 1),
     )
+
     val (selected, setSelected) = remember {
         mutableStateOf("")
     }
@@ -63,6 +69,9 @@ fun SettingSecession(
     }
     var etcText by remember {
         mutableStateOf("")
+    }
+    var selectedNumber by remember {
+        mutableStateOf(0)
     }
 
     var secessionPage by remember {
@@ -80,9 +89,7 @@ fun SettingSecession(
         mutableStateOf(false)
     }
 
-    var secessionConfirmDialogState by remember {
-        mutableStateOf(false)
-    }
+    val secessionConfirmDialogState by settingViewModel.secessionConfirmDialogState.collectAsState()
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -131,6 +138,10 @@ fun SettingSecession(
                         setSelected = setSelected,
                         setEtcState = {
                             isEtc = it
+                        },
+                        selectedNumber = {
+                            selectedNumber = it
+                            Log.e("NUMBER", it.toString())
                         })
                     if (isEtc) {
                         LaunchedEffect(Unit) {
@@ -317,7 +328,10 @@ fun SettingSecession(
                 negativeText = "취소",
                 onPositive = {
                     secessionDialogState = false
-                    secessionConfirmDialogState = true
+                    settingViewModel.signOut(
+                        reason = if (isEtc) 1 else selectedNumber,
+                        etc = if (isEtc) etcText else null
+                    )
                 },
                 onDismiss = {
                     secessionDialogState = false
@@ -338,12 +352,21 @@ fun SettingSecession(
                         googleSignInClient.signOut().addOnCompleteListener {
                             navController?.navigate(Route.Login.route) {
                                 popUpTo(0)
-                                secessionConfirmDialogState = false
+                                settingViewModel.changeSecessionConfirmDialogState(false)
+//                                secessionConfirmDialogState = false
                             }
                         }
                         context.userIdStore.updateData {
                             it.toBuilder().setUserId(0).build()
                         }
+                        context.userTokenStore.updateData {
+                            it.toBuilder().setToken("").build()
+                        }
+                        signOutClick.invoke()
+//                        settingViewModel.signOut(
+//                            reason = if (isEtc) 1 else selectedNumber,
+//                            etc = if (isEtc) etcText else null
+//                        )
                     }
                 }
             )
@@ -372,21 +395,25 @@ fun SecessionCheckText(number: String, text: String) {
 
 @Composable
 fun SecessionRadioGroup(
-    items: List<String>,
+    items: List<Pair<String, Int>>,
     selected: String,
     setSelected: (selected: String) -> Unit,
+    selectedNumber: (number: Int) -> Unit,
     setEtcState: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        items.forEach { item ->
+        items.forEach { pair ->
+            val text = pair.first
+            val number = pair.second
             Box {
                 RadioButton(
-                    selected = selected == item, onClick = {
-                        setSelected(item)
-                        setEtcState(item == "기타 (직접입력)")
+                    selected = selected == text,
+                    onClick = {
+                        setSelected(text)
+                        setEtcState(text == "기타 (직접입력)")
                     },
                     enabled = true,
                     colors = RadioButtonDefaults.colors(
@@ -396,15 +423,16 @@ fun SecessionRadioGroup(
                     modifier = Modifier.padding(start = 8.dp)
                 )
                 Text(
-                    text = item,
+                    text = text,
                     style = FanwooriTypography.body3,
                     color = Gray800,
                     modifier = Modifier
                         .align(CenterStart)
                         .padding(start = 52.dp)
                         .clickableSingle {
-                            setSelected(item)
-                            setEtcState(item == "기타 (직접입력)")
+                            setSelected(text)
+                            setEtcState(text == "기타 (직접입력)")
+                            selectedNumber.invoke(number)
                         }
                 )
             }
@@ -416,6 +444,6 @@ fun SecessionRadioGroup(
 @Composable
 fun SettingSecessionPreview() {
     FanwooriTheme {
-        SettingSecession()
+        SettingSecession(signOutClick = {})
     }
 }

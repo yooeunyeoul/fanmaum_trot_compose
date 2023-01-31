@@ -19,7 +19,11 @@ class MyPageRepository @Inject constructor(
         return authService.postLogout(token)
     }
 
-    suspend fun postUserProfile(token: String, userId: Long, file: File): CommonResponse<ProfileImage> {
+    suspend fun postUserProfile(
+        token: String,
+        userId: Long,
+        file: File
+    ): CommonResponse<ProfileImage> {
         return userService.userProfileUpload(token = token, userId = userId, image = file)
     }
 
@@ -33,5 +37,14 @@ class MyPageRepository @Inject constructor(
         alarmType: AlarmType
     ): CommonResponse<Unit> {
         return settingService.setPushSetting(userToken, userId, alarmType)
+    }
+
+    suspend fun signOut(
+        userToken: String,
+        userId: Long,
+        reason: Int,
+        etc: String?
+    ): CommonResponse<Unit> {
+        return userService.signOut(userToken, userId, reason, etc)
     }
 }

@@ -3,10 +3,12 @@ package com.trotfan.trot.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.protobuf.Api
 import com.trotfan.trot.UserId
 import com.trotfan.trot.UserTokenValue
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
+import com.trotfan.trot.di.ApiResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -18,6 +20,7 @@ open class BaseViewModel constructor(
     private val context = getApplication<Application>()
     var userLocalToken = MutableStateFlow<UserTokenValue?>(null)
     var userLocalId = MutableStateFlow<Long?>(null)
+    var apiStatus = MutableStateFlow<ApiResult<Any>>(ApiResult.Loading)
 
     init {
         viewModelScope.launch {
