@@ -20,5 +20,5 @@ object HttpRoutes {
     val DATE_PICKER = "$BASE_URL/datepickers"
     val BANNER = "$BASE_URL/banners"
     val LOGOUT = "$LOCAL_URL/auth/logout"
-    val GOOGLE_PURCHASE = "$BASE_URL/google-purchase"
+    val GOOGLE_PURCHASE = "$LOCAL_URL/google-purchase"
 }

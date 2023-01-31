@@ -15,6 +15,7 @@ import javax.inject.Inject
 class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) : ChargeService {
 
     override suspend fun certificationCharge(
+        userToken: String,
         userId: Int,
         productId: String,
         purchaseToken: String,
@@ -25,6 +26,10 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
             url = HttpRoutes.GOOGLE_PURCHASE
         ) {
             contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
             body = FormDataContent(Parameters.build {
                 append("user_id", userId.toString())
                 append("product_id", productId)
