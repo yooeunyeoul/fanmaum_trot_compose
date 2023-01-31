@@ -1,35 +1,40 @@
 package com.trotfan.trot.ui.webview
 
 import android.annotation.SuppressLint
-import android.view.ViewGroup
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.*
+import androidx.navigation.NavController
+import com.google.accompanist.web.*
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun PublicWebView(uri: String? = null) {
-    val context = LocalContext.current
+fun PublicWebView(uri: String? = null, navController: NavController?) {
+    val webViewNavigator = rememberWebViewNavigator()
+    val webViewState = rememberWebViewState(url = uri.toString())
+    val webViewClient = AccompanistWebViewClient()
+    val webChromeClient = AccompanistWebChromeClient()
 
-    AndroidView(
-        factory = {
-            WebView(context).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                )
-
-                webViewClient = WebViewClient()
-
-                isVerticalScrollBarEnabled = false
-                isHorizontalScrollBarEnabled = false
-                settings.javaScriptEnabled = true
+    WebView(
+        state = webViewState,
+        client = webViewClient,
+        chromeClient = webChromeClient,
+        navigator = webViewNavigator,
+        onCreated = { webView ->
+            with(webView) {
+                settings.run {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    javaScriptCanOpenWindowsAutomatically = false
+                }
             }
-        },
-        update = {
-            uri?.let { it1 -> it.loadUrl(it1) }
         }
     )
+
+    BackHandler(enabled = true) {
+        if (webViewNavigator.canGoBack) {
+            webViewNavigator.navigateBack()
+        } else {
+            navController?.popBackStack()
+        }
+    }
 }

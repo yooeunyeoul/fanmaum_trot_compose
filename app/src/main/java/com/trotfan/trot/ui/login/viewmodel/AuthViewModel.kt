@@ -143,7 +143,9 @@ class AuthViewModel @Inject constructor(
                     userName = userInfo.name ?: "",
                     userIdp = userInfo.idp,
                     userMail = userInfo.email ?: "",
-                    userProfileImage = userInfo.image ?: ""
+                    userProfileImage = userInfo.image ?: "",
+                    userCreatedAt = userInfo.created_at,
+                    userTotalUsedVote = userInfo.total_used_votes
                 )
 
             }

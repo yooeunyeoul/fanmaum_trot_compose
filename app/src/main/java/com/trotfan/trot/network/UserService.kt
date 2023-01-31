@@ -20,4 +20,11 @@ interface UserService {
         userId: Long,
         image: File
     ): CommonResponse<ProfileImage>
+
+    suspend fun userTicketHistory(
+        cursor: String,
+        token: String,
+        userId: Long,
+        filter: String?
+    ): CommonResponse<TicketsHistory>
 }

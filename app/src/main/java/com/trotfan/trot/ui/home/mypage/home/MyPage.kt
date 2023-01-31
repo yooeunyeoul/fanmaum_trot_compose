@@ -66,7 +66,7 @@ fun MyPageHome(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        MyPageList()
+        MyPageList(navController)
 
         Spacer(modifier = Modifier.height(80.dp))
 

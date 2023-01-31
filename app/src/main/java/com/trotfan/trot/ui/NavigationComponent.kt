@@ -142,7 +142,8 @@ fun NavigationComponent(
             }
         )) { backStackEntry ->
             PublicWebView(
-                backStackEntry.arguments?.getString("uri")
+                navController = navController,
+                uri = backStackEntry.arguments?.getString("uri")
             )
         }
         composable("${Route.RankingHistoryCumulative.route}/{starId}/{starName}/{date}",
@@ -172,7 +173,8 @@ fun NavigationComponent(
         }
         composable(Route.MyVoteHistory.route) {
             MyVoteHistory(
-                navController = navController
+                navController = navController,
+                onChargeClick = { onNavigateBottomBar.invoke(HomeSections.Charge) }
             )
         }
         composable(Route.Setting.route) {

@@ -7,33 +7,55 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.trotfan.trot.R
+import com.trotfan.trot.datastore.UserInfoDataStore
+import com.trotfan.trot.datastore.UserInfoManager.Companion.USER_CREATED_AT
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun SettingAccount(
     navController: NavController? = null,
     myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val userIdp by myPageViewModel.userIdp.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    var userCreatedAt by remember {
+        mutableStateOf("")
+    }
+
+    coroutineScope.launch {
+        context.UserInfoDataStore.data.collect {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+            val dateFormat2 = SimpleDateFormat("yyyy.MM.dd", Locale.KOREA)
+            it[USER_CREATED_AT]?.let { date ->
+                dateFormat.parse(date)?.let { result ->
+                    userCreatedAt = dateFormat2.format(result)
+                }
+            }
+        }
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -105,7 +127,7 @@ fun SettingAccount(
                 ) {
                     Text(text = "연동일", style = FanwooriTypography.caption1, color = Gray600)
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(text = "2022.12.12", style = FanwooriTypography.body2, color = Gray600)
+                    Text(text = userCreatedAt, style = FanwooriTypography.body2, color = Gray600)
                 }
             }
             Column(

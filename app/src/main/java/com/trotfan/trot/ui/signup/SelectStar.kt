@@ -17,12 +17,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -89,8 +87,7 @@ fun SelectStarScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                    ) {
+                    Column {
                         Text(
                             text = "최초 1회",
                             style = FanwooriTypography.h2,
@@ -196,7 +193,7 @@ fun SelectStarScreen(
 
                 }
 
-                when (starListState?.loadState?.refresh) {
+                when (starListState.loadState.refresh) {
                     is LoadState.NotLoading -> {
                         items(items = starListState) { item ->
                             ListItemButton(
@@ -236,14 +233,14 @@ fun SelectStarScreen(
 
                     }
                     is LoadState.Error -> {
-                        item() {
+                        item {
                             Column(verticalArrangement = Arrangement.Center) {
                                 CircularProgressIndicator()
                             }
                         }
                     }
                     else -> {
-                        item() {
+                        item {
                             Column(verticalArrangement = Arrangement.Center) {
                                 CircularProgressIndicator()
                             }

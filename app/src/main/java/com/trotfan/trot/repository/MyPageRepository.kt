@@ -2,6 +2,7 @@ package com.trotfan.trot.repository
 
 import com.trotfan.trot.model.Alarm
 import com.trotfan.trot.model.ProfileImage
+import com.trotfan.trot.model.TicketsHistory
 import com.trotfan.trot.network.AuthService
 import com.trotfan.trot.network.UserService
 import com.trotfan.trot.network.SettingService
@@ -19,7 +20,11 @@ class MyPageRepository @Inject constructor(
         return authService.postLogout(token)
     }
 
-    suspend fun postUserProfile(token: String, userId: Long, file: File): CommonResponse<ProfileImage> {
+    suspend fun postUserProfile(
+        token: String,
+        userId: Long,
+        file: File
+    ): CommonResponse<ProfileImage> {
         return userService.userProfileUpload(token = token, userId = userId, image = file)
     }
 

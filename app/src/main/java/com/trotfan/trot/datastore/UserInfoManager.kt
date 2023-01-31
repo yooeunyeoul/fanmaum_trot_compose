@@ -24,6 +24,8 @@ class UserInfoManager(
         val USER_IDP = intPreferencesKey("USER_IDP")
         val USER_MAIL = stringPreferencesKey("USER_MAIL")
         val USER_PROFILE_IMAGE = stringPreferencesKey("USER_PROFILE_IMAGE")
+        val USER_CREATED_AT = stringPreferencesKey("USER_CREATED_AT")
+        val USER_TOTAL_USED_VOTE = intPreferencesKey("USER_TOTAL_USED_VOTE")
     }
 
     suspend fun storeUserInfo(
@@ -34,7 +36,9 @@ class UserInfoManager(
         userName: String,
         userIdp: Int,
         userMail: String,
-        userProfileImage: String
+        userProfileImage: String,
+        userCreatedAt: String,
+        userTotalUsedVote: Int
     ) {
         dataStore.edit {
             it[FAVORITE_STAR_ID] = favoriteStarId
@@ -45,6 +49,8 @@ class UserInfoManager(
             it[USER_IDP] = userIdp
             it[USER_MAIL] = userMail
             it[USER_PROFILE_IMAGE] = userProfileImage
+            it[USER_CREATED_AT] = userCreatedAt
+            it[USER_TOTAL_USED_VOTE] = userTotalUsedVote
         }
     }
 
@@ -81,6 +87,14 @@ class UserInfoManager(
 
     val userProfileImageFlow: Flow<String?> = dataStore.data.map {
         it[USER_PROFILE_IMAGE]
+    }
+
+    val userCreatedAtFlow: Flow<String?> = dataStore.data.map {
+        it[USER_CREATED_AT]
+    }
+
+    val userTotalUsedVoteFlow: Flow<Int?> = dataStore.data.map {
+        it[USER_TOTAL_USED_VOTE]
     }
 
 }

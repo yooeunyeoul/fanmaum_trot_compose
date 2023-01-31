@@ -11,17 +11,18 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.trotfan.trot.R
-import com.trotfan.trot.ui.theme.FanwooriTheme
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray100
 import com.trotfan.trot.ui.theme.Gray750
 import com.trotfan.trot.ui.utils.clickableSingle
+import java.net.URLEncoder
 
 @Composable
-fun MyPageList() {
+fun MyPageList(navController: NavController?) {
     Surface(
         color = Color.White,
         elevation = 1.dp,
@@ -29,13 +30,29 @@ fun MyPageList() {
     ) {
         Column {
             Spacer(modifier = Modifier.height(24.dp))
-            MyPageListComponent(text = "공지사항", url = "")
+            MyPageListComponent(
+                text = "공지사항",
+                url = "https://mktfanmaum.notion.site/ece846d3b5e04b7589d07b8507f5f134",
+                navController = navController
+            )
             Line()
-            MyPageListComponent(text = "이벤트", url = "")
+            MyPageListComponent(
+                text = "이벤트",
+                url = "https://mktfanmaum.notion.site/7df7c321d0714997894668426354f88a",
+                navController = navController
+            )
             Line()
-            MyPageListComponent(text = "이용가이드", url = "")
+            MyPageListComponent(
+                text = "이용가이드",
+                url = "https://mktfanmaum.notion.site/6abe9c2ead0d4fe6be976cc4d95154c7",
+                navController = navController
+            )
             Line()
-            MyPageListComponent(text = "자주 묻는 질문", url = "")
+            MyPageListComponent(
+                text = "자주 묻는 질문",
+                url = "https://mktfanmaum.notion.site/ad8444ca3f1940b9850dfea79d7f5128",
+                navController = navController
+            )
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
@@ -53,13 +70,13 @@ fun Line() {
 }
 
 @Composable
-fun MyPageListComponent(text: String, url: String) {
+fun MyPageListComponent(text: String, url: String, navController: NavController?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
             .clickableSingle {
-
+                navController?.navigate("${Route.WebView.route}/${ URLEncoder.encode(url)}")
             }
     ) {
         Text(
@@ -79,13 +96,5 @@ fun MyPageListComponent(text: String, url: String) {
                 .align(CenterVertically)
                 .padding(end = 24.dp)
         )
-    }
-}
-
-@Preview
-@Composable
-fun MyPageListPreview() {
-    FanwooriTheme {
-        MyPageList()
     }
 }

@@ -49,5 +49,9 @@ data class UserInfo(
     @SerializedName("agrees_terms")
     val agrees_terms: Boolean?,
     @SerializedName("image")
-    val image: String?
+    val image: String?,
+    @SerializedName("created_at")
+    val created_at: String,
+    @SerializedName("total_used_votes")
+    val total_used_votes: Int
 )

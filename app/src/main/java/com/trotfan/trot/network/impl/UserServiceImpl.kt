@@ -1,6 +1,7 @@
 package com.trotfan.trot.network.impl
 
 import com.trotfan.trot.model.ProfileImage
+import com.trotfan.trot.model.TicketsHistory
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.UserService
 import com.trotfan.trot.network.response.CommonResponse
@@ -60,7 +61,7 @@ class UserServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
         image: File
     ): CommonResponse<ProfileImage> {
         return httpClient.post(HttpRoutes.USERS + "/${userId}/images") {
-            contentType(ContentType.Image.PNG)
+            contentType(ContentType.Image.JPEG)
             header(
                 "Authorization",
                 "Bearer $token"
@@ -79,6 +80,27 @@ class UserServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
             onUpload { bytesSentTotal, contentLength ->
                 println("Sent $bytesSentTotal bytes from $contentLength")
             }
+        }.body()
+    }
+
+    override suspend fun userTicketHistory(
+        cursor: String,
+        token: String,
+        userId: Long,
+        filter: String?
+    ): CommonResponse<TicketsHistory> {
+        return httpClient.get(HttpRoutes.USERS + "/${userId}/tickets") {
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
+            url {
+                parameter("cursor", cursor)
+                filter?.let {
+                    parameter("filter", filter)
+                }
+            }
+            contentType(ContentType.Application.Json)
         }.body()
     }
 }
