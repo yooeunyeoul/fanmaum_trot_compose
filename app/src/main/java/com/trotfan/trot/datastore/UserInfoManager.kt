@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.trotfan.trot.model.ProfileImage
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,6 +23,7 @@ class UserInfoManager(
         val FAVORITE_STAR_IMAGE = stringPreferencesKey("FAVORITE_STAR_IMAGE")
         val USER_IDP = intPreferencesKey("USER_IDP")
         val USER_MAIL = stringPreferencesKey("USER_MAIL")
+        val USER_PROFILE_IMAGE = stringPreferencesKey("USER_PROFILE_IMAGE")
     }
 
     suspend fun storeUserInfo(
@@ -31,7 +33,8 @@ class UserInfoManager(
         favoriteStarImage: String,
         userName: String,
         userIdp: Int,
-        userMail: String
+        userMail: String,
+        userProfileImage: String
     ) {
         dataStore.edit {
             it[FAVORITE_STAR_ID] = favoriteStarId
@@ -41,6 +44,15 @@ class UserInfoManager(
             it[USER_NAME] = userName
             it[USER_IDP] = userIdp
             it[USER_MAIL] = userMail
+            it[USER_PROFILE_IMAGE] = userProfileImage
+        }
+    }
+
+    suspend fun setUserProfileImage(
+        userProfileImage: String
+    ) {
+        dataStore.edit {
+            it[USER_PROFILE_IMAGE] = userProfileImage
         }
     }
 
@@ -65,6 +77,10 @@ class UserInfoManager(
 
     val userMailFlow: Flow<String?> = dataStore.data.map {
         it[USER_MAIL]
+    }
+
+    val userProfileImageFlow: Flow<String?> = dataStore.data.map {
+        it[USER_PROFILE_IMAGE]
     }
 
 }

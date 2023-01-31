@@ -161,7 +161,7 @@ class VoteHomeViewModel @Inject constructor(
                         ResultCodeStatus.SuccessWithData.code -> {
                             userTicketManager.storeUserTicket(
                                 response.data?.expired?.unlimited ?: 0,
-                                response.data?.expired?.unlimited ?: 0
+                                response.data?.expired?.today ?: 0
                             )
                             purchaseHelper.refreshTickets(response.data?.expired ?: Expired())
                             purchaseHelper.closeApiCall()

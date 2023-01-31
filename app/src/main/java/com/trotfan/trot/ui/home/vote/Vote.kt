@@ -644,8 +644,6 @@ fun VoteToStar(
             yield()
             delay(3500)
             try {
-                Log.e("count", "${items.count()}")
-
                 if (items.count() > pagerState.currentPage + 1) {
                     pagerState.animateScrollToPage(
                         page = pagerState.currentPage + 1
@@ -655,8 +653,6 @@ fun VoteToStar(
                     viewModel.clearDataAndAddDummyData()
                 }
                 viewModel.currentBoardPage = pagerState.currentPage
-                Log.e("pagerState.currentPage", "${pagerState.currentPage}")
-
             } catch (_: Throwable) {
 
             }

@@ -47,5 +47,7 @@ data class UserInfo(
     @SerializedName("redeem_code")
     val redeem_code: String?,
     @SerializedName("agrees_terms")
-    val agrees_terms: Boolean?
+    val agrees_terms: Boolean?,
+    @SerializedName("image")
+    val image: String?
 )

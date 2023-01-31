@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -80,7 +81,7 @@ fun TrotBottomBar(
     currentRoute: HomeSections,
     onSelected: (HomeSections) -> Unit,
     lazyListStates: HashMap<String, LazyListState>,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = viewModel()
 ) {
 
     val context = LocalContext.current

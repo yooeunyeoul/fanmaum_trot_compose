@@ -1,13 +1,8 @@
 package com.trotfan.trot.ui.home.mypage.home
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.trotfan.trot.datastore.UserInfoDataStore
-import com.trotfan.trot.datastore.UserInfoManager
-import com.trotfan.trot.datastore.UserTicketManager
-import com.trotfan.trot.datastore.UserTicketStore
-import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.datastore.*
 import com.trotfan.trot.repository.MyPageRepository
 import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,6 +59,11 @@ class MyPageViewModel @Inject constructor(
     private val _isLoading =
         MutableStateFlow(false)
 
+    val profileImage: StateFlow<String?>
+        get() = _profileImage
+    private val _profileImage =
+        MutableStateFlow<String?>(null)
+
     init {
         viewModelScope.launch {
             userInfoManager = UserInfoManager(context.UserInfoDataStore)
@@ -74,6 +74,7 @@ class MyPageViewModel @Inject constructor(
             _todayTicket.emit(userTicketManager.expiredToday.first() ?: 0)
             _userEmail.emit(userInfoManager.userMailFlow.first() ?: "")
             _userIdp.emit(userInfoManager.userIdpFlow.first() ?: 0)
+            _profileImage.emit(userInfoManager.userProfileImageFlow.first() ?: "")
         }
     }
 
@@ -91,19 +92,21 @@ class MyPageViewModel @Inject constructor(
 
     fun postUserProfile(image: File) {
         viewModelScope.launch {
-            kotlin.runCatching {
-                _isLoading.emit(true)
-                userLocalToken.value?.token?.let { token ->
-                    context.userIdStore.data.collect { id ->
+            _isLoading.emit(true)
+            userLocalToken.value?.token?.let { token ->
+                context.userIdStore.data.collect { id ->
+                    kotlin.runCatching {
                         myPageRepository.postUserProfile(token, id.userId, image)
+                    }.onSuccess {
+                        _profileImage.emit(it.data?.image)
+                        _isLoading.emit(false)
+                        userInfoManager.setUserProfileImage(
+                            userProfileImage = it.data?.image ?: ""
+                        )
+                    }.onFailure {
+                        _isLoading.emit(false)
                     }
                 }
-            }.onSuccess {
-                _isLoading.emit(false)
-                Log.d("onSuccess", it.toString())
-            }.onFailure {
-                _isLoading.emit(false)
-                Log.d("onFailure", it.toString())
             }
         }
     }

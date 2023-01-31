@@ -49,11 +49,7 @@ class HomeViewModel @Inject constructor(
     var autoVoteStatus = MutableStateFlow(false)
         private set
 
-    init {
-        getMainPopups()
-    }
-
-    private fun getMainPopups() {
+    fun getMainPopups() {
         viewModelScope.launch {
             context.userTokenStore.data.collect {
                 kotlin.runCatching {

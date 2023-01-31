@@ -8,9 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -31,14 +29,29 @@ import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.trotfan.trot.datastore.UserInfoDataStore
+import com.trotfan.trot.datastore.UserInfoManager.Companion.USER_PROFILE_IMAGE
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyProfile(
     onClick: () -> Unit,
     viewModel: MyPageViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val userName by viewModel.userName.collectAsState()
     val starName by viewModel.starName.collectAsState()
+    var userProfileImage by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    coroutineScope.launch {
+        context.UserInfoDataStore.data.collect {
+            userProfileImage = it[USER_PROFILE_IMAGE]
+        }
+    }
 
     Row(
         modifier = Modifier
@@ -62,7 +75,7 @@ fun MyProfile(
             )
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(null)
+                    .data(userProfileImage)
                     .crossfade(true).build(),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight,

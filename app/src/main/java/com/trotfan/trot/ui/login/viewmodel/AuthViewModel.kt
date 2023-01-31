@@ -142,7 +142,8 @@ class AuthViewModel @Inject constructor(
                     favoriteStarImage = it.image,
                     userName = userInfo.name ?: "",
                     userIdp = userInfo.idp,
-                    userMail = userInfo.email ?: ""
+                    userMail = userInfo.email ?: "",
+                    userProfileImage = userInfo.image ?: ""
                 )
 
             }

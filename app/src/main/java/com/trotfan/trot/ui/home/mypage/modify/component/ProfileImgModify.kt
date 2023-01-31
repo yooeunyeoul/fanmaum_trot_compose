@@ -40,11 +40,10 @@ fun ProfileImgModify(
     viewModel: MyPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val context = LocalContext.current
-    var profileUri by remember { mutableStateOf<Uri?>(null) }
+    val profileUri by viewModel.profileImage.collectAsState()
 
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
-            profileUri = result.uriContent
             val filePath = result.getUriFilePath(context, true)
             val image = filePath?.let { File(filePath) }
             image?.let {
@@ -64,6 +63,7 @@ fun ProfileImgModify(
             cropImageOptions.outputCompressFormat = CompressFormat.JPEG
             cropImageOptions.toolbarColor = Gray900.hashCode()
             cropImageOptions.activityBackgroundColor = Gray900.hashCode()
+            cropImageOptions.outputCompressQuality = 70
             cropImageOptions.cropMenuCropButtonTitle = "완료"
             val cropOptions = CropImageContractOptions(uri, cropImageOptions)
             imageCropLauncher.launch(cropOptions)

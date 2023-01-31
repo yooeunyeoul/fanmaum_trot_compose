@@ -19,5 +19,5 @@ interface UserService {
         token: String,
         userId: Long,
         image: File
-    ): CommonResponse<Unit>
+    ): CommonResponse<ProfileImage>
 }

@@ -1,5 +1,6 @@
 package com.trotfan.trot.network.impl
 
+import com.trotfan.trot.model.ProfileImage
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.UserService
 import com.trotfan.trot.network.response.CommonResponse
@@ -57,7 +58,7 @@ class UserServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
         token: String,
         userId: Long,
         image: File
-    ): CommonResponse<Unit> {
+    ): CommonResponse<ProfileImage> {
         return httpClient.post(HttpRoutes.USERS + "/${userId}/images") {
             contentType(ContentType.Image.PNG)
             header(

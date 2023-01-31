@@ -36,6 +36,9 @@ fun TermsAgreement(
     var allCheck by remember {
         mutableStateOf(false)
     }
+    var childrenCheck by remember {
+        mutableStateOf(false)
+    }
     var termsOfUseCheck by remember {
         mutableStateOf(false)
     }
@@ -99,6 +102,7 @@ fun TermsAgreement(
                     CheckBoxNullText(
                         isChecked = allCheck, onCheckedChange = {
                             allCheck = allCheck.not()
+                            childrenCheck = allCheck
                             termsOfUseCheck = allCheck
                             privacyCollectionCheck = allCheck
                             privacyUseCheck = allCheck
@@ -111,14 +115,22 @@ fun TermsAgreement(
                 }
 
                 allCheck =
-                    termsOfUseCheck && privacyCollectionCheck && privacyUseCheck && dayTimeAdsCheck && nightAdsCheck
+                    childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck && dayTimeAdsCheck && nightAdsCheck
 
                 Spacer(modifier = Modifier.height(16.dp))
+                AgreeItem(
+                    text = "(필수) 만 14세 이상입니다.",
+                    isChecked = childrenCheck,
+                    onCheckedChange = {
+                        childrenCheck = childrenCheck.not()
+                    },
+                    link = ""
+                )
                 AgreeItem(text = "(필수) 이용약관 동의", isChecked = termsOfUseCheck, onCheckedChange = {
                     termsOfUseCheck = termsOfUseCheck.not()
                 }, link = "")
                 AgreeItem(
-                    text = "(필수) 개인정보 수집 및 이용 동의",
+                    text = "(필수) 개인정보 처리방침",
                     isChecked = privacyCollectionCheck,
                     onCheckedChange = {
                         privacyCollectionCheck = privacyCollectionCheck.not()
@@ -153,7 +165,7 @@ fun TermsAgreement(
                     viewModel.updateUser()
                     onConfirmClick()
                 },
-                enabled = termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
+                enabled = childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
                 modifier = Modifier
                     .align(BottomCenter)
                     .padding(bottom = 32.dp)
