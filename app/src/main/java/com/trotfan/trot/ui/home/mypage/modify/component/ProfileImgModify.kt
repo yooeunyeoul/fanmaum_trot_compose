@@ -61,7 +61,7 @@ fun ProfileImgModify(
             cropImageOptions.aspectRatioX = 1
             cropImageOptions.aspectRatioY = 1
             cropImageOptions.fixAspectRatio = true
-            cropImageOptions.outputCompressFormat = CompressFormat.PNG
+            cropImageOptions.outputCompressFormat = CompressFormat.JPEG
             cropImageOptions.toolbarColor = Gray900.hashCode()
             cropImageOptions.activityBackgroundColor = Gray900.hashCode()
             cropImageOptions.cropMenuCropButtonTitle = "완료"

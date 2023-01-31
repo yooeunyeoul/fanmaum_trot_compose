@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.home.mypage.votehistory
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,12 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -140,7 +141,7 @@ fun MyVoteHistory(
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.End
+                                horizontalAlignment = End
                             ) {
                                 Text(
                                     text = decimal.format(unlimitedTicket),
@@ -319,6 +320,65 @@ fun HistoryItem(item: VoteHistoryItem, position: Int, beforeItem: VoteHistoryIte
                 )
             }
         }
+    }
+}
+
+@Composable
+fun EmptyHistory(modifier: Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "투표권 내역이 없어요",
+            style = FanwooriTypography.subtitle1,
+            color = Gray800,
+            modifier = Modifier.align(CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "무료 충전소에서 미션을 수행하고\n" +
+                    "투표권을 모아보세요!", style = FanwooriTypography.body5, color = Gray700,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.align(CenterHorizontally)
+
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Row(
+            modifier = Modifier
+                .height(48.dp)
+                .align(CenterHorizontally)
+                .clip(RoundedCornerShape(14.dp))
+                .background(
+                    Secondary50
+                )
+                .border(1.dp, Secondary300)
+        ) {
+            Spacer(modifier = Modifier.width(22.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.icon_charge),
+                contentDescription = null,
+                modifier = Modifier.align(CenterVertically)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = "충전 하러가기",
+                style = FanwooriTypography.button1,
+                color = Secondary800,
+                modifier = Modifier.align(CenterVertically)
+            )
+            Spacer(modifier = Modifier.width(24.dp))
+        }
+    }
+}
+
+@Preview
+@Composable
+fun EmptyHistoryPreview() {
+    FanwooriTheme {
+        EmptyHistory(modifier = Modifier)
     }
 }
 

@@ -67,9 +67,8 @@ class UserServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
             setBody(
                 MultiPartFormDataContent(
                     formData {
-                        append("description", "user profile")
                         append("image", image.readBytes(), Headers.build {
-                            append(HttpHeaders.ContentType, "image/png")
+                            append(HttpHeaders.ContentType, "image/jpg")
                             append(HttpHeaders.ContentDisposition, "filename=${image.path}")
                         })
                     },
