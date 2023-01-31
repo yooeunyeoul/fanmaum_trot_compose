@@ -123,8 +123,7 @@ fun TermsAgreement(
                     isChecked = childrenCheck,
                     onCheckedChange = {
                         childrenCheck = childrenCheck.not()
-                    },
-                    link = ""
+                    }
                 )
                 AgreeItem(text = "(필수) 이용약관 동의", isChecked = termsOfUseCheck, onCheckedChange = {
                     termsOfUseCheck = termsOfUseCheck.not()
@@ -221,10 +220,10 @@ fun AgreeItem(text: String, isChecked: Boolean, onCheckedChange: () -> Unit, lin
 
 @Preview
 @Composable
-fun MonthlyCalenderPickerPreview() {
+fun TermsAgreementPreview() {
     FanwooriTheme {
         TermsAgreement(
-            onConfirmClick = {}
+            onConfirmClick = {},
         )
     }
 }
