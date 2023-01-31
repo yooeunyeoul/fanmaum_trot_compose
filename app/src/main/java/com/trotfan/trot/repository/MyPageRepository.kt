@@ -39,4 +39,13 @@ class MyPageRepository @Inject constructor(
     ): CommonResponse<Unit> {
         return settingService.setPushSetting(userToken, userId, alarmType)
     }
+
+    suspend fun signOut(
+        userToken: String,
+        userId: Long,
+        reason: Int,
+        etc: String?
+    ): CommonResponse<Unit> {
+        return userService.signOut(userToken, userId, reason, etc)
+    }
 }

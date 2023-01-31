@@ -149,9 +149,10 @@ fun RankHome(
                                     .fillMaxWidth()
                                     .height(94.dp)
                                     .background(color = Color.White)
-                                    .clickable {
-                                        viewModel.changeTime()
-                                    },
+//                                    .clickable {
+//                                        viewModel.changeTime()
+//                                    }
+                                ,
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {

@@ -75,7 +75,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                     phoneNumber = phoneNumber,
                 )
                 when (response.result.code) {
-                    ResultCodeStatus.SuccessWithNoData.code -> {
+                    ResultCodeStatus.SuccessWithData.code -> {
                         _certificationNumber.value = response.data?.code.toString()
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.RequestSuccess)
                     }

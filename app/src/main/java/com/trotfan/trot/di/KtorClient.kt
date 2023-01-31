@@ -51,3 +51,9 @@ object KtorClient {
         return client
     }
 }
+
+sealed class ApiResult<out T : Any> {
+    data class Success<out T : Any>(val data: T) : ApiResult<T>()
+    data class Failed(val exception: Exception) : ApiResult<Nothing>()
+    object Loading : ApiResult<Nothing>()
+}

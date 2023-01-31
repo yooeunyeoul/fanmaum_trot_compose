@@ -2,15 +2,18 @@ package com.trotfan.trot.ui.signup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -62,113 +65,135 @@ fun TermsAgreement(
                 .background(Color.White)
                 .padding(start = 24.dp, end = 24.dp)
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                Spacer(modifier = Modifier.height(64.dp))
-                androidx.compose.material3.Text(
-                    text = "이용약관 동의 안내",
-                    style = FanwooriTypography.h1,
-                    color = Gray900
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                androidx.compose.material3.Text(
-                    text = "팬마음 서비스 이용을 위해\n" +
-                            "약관에 동의해주세요",
-                    style = FanwooriTypography.caption1,
-                    color = Gray700
-                )
+                item {
+                    Spacer(modifier = Modifier.height(64.dp))
+                    androidx.compose.material3.Text(
+                        text = "이용약관 동의 안내",
+                        style = FanwooriTypography.h1,
+                        color = Gray900
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    androidx.compose.material3.Text(
+                        text = "팬마음 서비스 이용을 위해\n" +
+                                "약관에 동의해주세요",
+                        style = FanwooriTypography.caption1,
+                        color = Gray700
+                    )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Gray50)
-                ) {
-                    Text(
-                        text = "모두 확인, 동의합니다.",
-                        style = FanwooriTypography.body3,
-                        color = Gray800,
+                    Row(
                         modifier = Modifier
-                            .align(CenterVertically)
-                            .padding(start = 16.dp)
-                            .weight(1f)
-                    )
+                            .fillMaxWidth()
+                            .height(54.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Gray50)
+                    ) {
+                        Text(
+                            text = "모두 확인, 동의합니다.",
+                            style = FanwooriTypography.body3,
+                            color = Gray800,
+                            modifier = Modifier
+                                .align(CenterVertically)
+                                .padding(start = 16.dp)
+                                .weight(1f)
+                        )
 
-                    CheckBoxNullText(
-                        isChecked = allCheck, onCheckedChange = {
-                            allCheck = allCheck.not()
-                            childrenCheck = allCheck
-                            termsOfUseCheck = allCheck
-                            privacyCollectionCheck = allCheck
-                            privacyUseCheck = allCheck
-                            dayTimeAdsCheck = allCheck
-                            nightAdsCheck = allCheck
-                        }, modifier = Modifier
-                            .align(CenterVertically)
-                            .padding(end = 16.dp)
-                    )
-                }
-
-                allCheck =
-                    childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck && dayTimeAdsCheck && nightAdsCheck
-
-                Spacer(modifier = Modifier.height(16.dp))
-                AgreeItem(
-                    text = "(필수) 만 14세 이상입니다.",
-                    isChecked = childrenCheck,
-                    onCheckedChange = {
-                        childrenCheck = childrenCheck.not()
+                        CheckBoxNullText(
+                            isChecked = allCheck, onCheckedChange = {
+                                allCheck = allCheck.not()
+                                childrenCheck = allCheck
+                                termsOfUseCheck = allCheck
+                                privacyCollectionCheck = allCheck
+                                privacyUseCheck = allCheck
+                                dayTimeAdsCheck = allCheck
+                                nightAdsCheck = allCheck
+                            }, modifier = Modifier
+                                .align(CenterVertically)
+                                .padding(end = 16.dp)
+                        )
                     }
-                )
-                AgreeItem(text = "(필수) 이용약관 동의", isChecked = termsOfUseCheck, onCheckedChange = {
-                    termsOfUseCheck = termsOfUseCheck.not()
-                }, link = "")
-                AgreeItem(
-                    text = "(필수) 개인정보 처리방침",
-                    isChecked = privacyCollectionCheck,
-                    onCheckedChange = {
-                        privacyCollectionCheck = privacyCollectionCheck.not()
-                    }, link = ""
-                )
-                AgreeItem(
-                    text = "(필수) 개인정보 제 3자 제공 동의",
-                    isChecked = privacyUseCheck,
-                    onCheckedChange = {
-                        privacyUseCheck = privacyUseCheck.not()
-                    },
-                    link = ""
-                )
-                AgreeItem(
-                    text = "(선택) 주간 광고성 알림 수신 동의",
-                    isChecked = dayTimeAdsCheck,
-                    onCheckedChange = {
-                        dayTimeAdsCheck = dayTimeAdsCheck.not()
-                    })
-                AgreeItem(
-                    text = "(선택) 야간 광고성 알림 수신 동의",
-                    isChecked = nightAdsCheck,
-                    onCheckedChange = {
-                        nightAdsCheck = nightAdsCheck.not()
-                    })
+
+                    allCheck =
+                        childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck && dayTimeAdsCheck && nightAdsCheck
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    AgreeItem(
+                        text = "(필수) 만 14세 이상입니다.",
+                        isChecked = childrenCheck,
+                        onCheckedChange = {
+                            childrenCheck = childrenCheck.not()
+                        }
+                    )
+                    AgreeItem(
+                        text = "(필수) 이용약관 동의",
+                        isChecked = termsOfUseCheck,
+                        onCheckedChange = {
+                            termsOfUseCheck = termsOfUseCheck.not()
+                        },
+                        link = ""
+                    )
+                    AgreeItem(
+                        text = "(필수) 개인정보 처리방침",
+                        isChecked = privacyCollectionCheck,
+                        onCheckedChange = {
+                            privacyCollectionCheck = privacyCollectionCheck.not()
+                        }, link = ""
+                    )
+                    AgreeItem(
+                        text = "(필수) 개인정보 제 3자 제공 동의",
+                        isChecked = privacyUseCheck,
+                        onCheckedChange = {
+                            privacyUseCheck = privacyUseCheck.not()
+                        },
+                        link = ""
+                    )
+                    AgreeItem(
+                        text = "(선택) 주간 광고성 알림 수신 동의",
+                        isChecked = dayTimeAdsCheck,
+                        onCheckedChange = {
+                            dayTimeAdsCheck = dayTimeAdsCheck.not()
+                        })
+                    AgreeItem(
+                        text = "(선택) 야간 광고성 알림 수신 동의",
+                        isChecked = nightAdsCheck,
+                        onCheckedChange = {
+                            nightAdsCheck = nightAdsCheck.not()
+                        })
+                }
             }
 
 
-            BtnFilledLPrimary(
-                text = "다음",
-                onClick = {
-                    viewModel.updateUser()
-                    onConfirmClick()
-                },
-                enabled = childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
+            Box(
                 modifier = Modifier
-                    .align(BottomCenter)
-                    .padding(bottom = 32.dp)
-            )
+                    .background(
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                Color.Transparent,
+                                Color.White
+                            )
+                        ),
+                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                    )
+                    .height(96.dp)
+                    .align(Alignment.BottomCenter)
+            ) {
+                BtnFilledLPrimary(
+                    text = "다음",
+                    onClick = {
+                        viewModel.updateUser()
+                        onConfirmClick()
+                    },
+                    enabled = childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
+                    modifier = Modifier
+                        .align(BottomCenter)
+                        .padding(bottom = 32.dp)
+                )
+            }
         }
     }
 }

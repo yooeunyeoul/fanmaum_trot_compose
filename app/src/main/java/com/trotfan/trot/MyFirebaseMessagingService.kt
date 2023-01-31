@@ -23,16 +23,27 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-
-        message.run {
-            val from = from ?: ""
-            val title = notification?.title ?: ""
-            val body = notification?.body ?: ""
-            val data = data
-            Log.d(TAG, "message received :${message}")
-            Log.d(TAG, "from:${from}, title:${title}, body:${body}, data:${data}")
-            sendNotification(title, body)
+        Log.d(TAG, message.toString())
+        try {
+            val notification = message.notification
+            val title = notification?.title
+            val body = notification?.body
+            Log.d(TAG, "message title :${title}")
+            Log.d(TAG, "message body :${body}")
+        } catch (e: java.lang.Exception) {
+            Log.d(TAG, "Error Parsing")
         }
+
+
+//        message.run {
+//            val from = from ?: ""
+//            val title = notification?.title ?: ""
+//            val body = notification?.body ?: ""
+//            val data = data
+//            Log.d(TAG, "message received :${message}")
+//            Log.d(TAG, "from:${from}, title:${title}, body:${body}, data:${data}")
+//            sendNotification(title, body)
+//        }
 
 
     }

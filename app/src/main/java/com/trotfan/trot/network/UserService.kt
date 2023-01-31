@@ -27,4 +27,12 @@ interface UserService {
         userId: Long,
         filter: String?
     ): CommonResponse<TicketsHistory>
+
+    suspend fun signOut(
+        token: String,
+        userId: Long,
+        reason: Int,
+        etc: String?
+    ): CommonResponse<Unit>
+
 }
