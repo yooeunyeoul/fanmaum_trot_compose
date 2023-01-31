@@ -15,10 +15,11 @@ class ChargeRepository @Inject constructor(
         voteService.voteTickets(userId, userToken)
 
     suspend fun certificationCharge(
+        userToken: String,
         userId: Int,
         productId: String,
         purchaseToken: String,
         packageName: String
     ): CommonResponse<Unit> =
-        chargeService.certificationCharge(userId, productId, purchaseToken, packageName)
+        chargeService.certificationCharge(userToken, userId, productId, purchaseToken, packageName)
 }

@@ -10,7 +10,7 @@
         android:name=".BaseApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
-        android:icon="@mipmap/appicon_dev"
+        android:icon="@mipmap/ic_app_icon"
         android:label="${appLabel}"
         android:supportsRtl="true"
         android:theme="@style/Theme.TrotApplication">

@@ -6,6 +6,7 @@ import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
@@ -13,9 +14,7 @@ import com.trotfan.trot.ui.MainActivity
 import dagger.hilt.android.qualifiers.ActivityContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -134,14 +133,20 @@ class PurchaseHelper @Inject constructor(
                             coroutineScope.launch {
                                 context.userIdStore.data.collect {
                                     kotlin.runCatching {
+                                        val userToken = context.userTokenStore.data.map {
+                                            it.token
+                                        }.first()
+
                                         _statusText.emit(
                                             _statusText.value + "\n" +
+                                                    "userToken=${userToken},\n" +
                                                     "userId = ${it.userId.toInt()}\n," +
                                                     "purchaseId= ${mSelectedProductId}\n," +
                                                     "purchaseToken =${purchase.purchaseToken},\n" +
                                                     "packageName=${context.packageName}"
                                         )
                                         repository?.certificationCharge(
+                                            userToken = userToken,
                                             userId = it.userId.toInt(),
                                             productId = mSelectedProductId,
                                             purchaseToken = purchase.purchaseToken,
