@@ -115,7 +115,7 @@ class RankHomeViewModel @Inject constructor(
         refreshRank()
         getVoteEndedTime()
         observeGender()
-//        refreshVoteStatus()
+        refreshVoteStatus()
     }
 
     private fun observeGender() {
