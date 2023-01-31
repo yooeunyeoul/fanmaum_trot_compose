@@ -9,6 +9,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.AlertDialog
@@ -72,75 +73,62 @@ fun LoginScreen(
     }
 
     Surface(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(bottom = 64.dp)
     ) {
+
         Column(
-            modifier = Modifier,
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
+            Modifier
+                .fillMaxSize()
         ) {
-            LoginButton(
-                text = "카카오톡 계정으로 계속하기",
-                icon = painterResource(id = R.drawable.kakao_symbol),
-                textColor = Gray800,
-                backgroundColor = Color(0XFFFEE500),
-                borderWidth = 0.dp,
+
+            Column(
+                Modifier
+                    .weight(1f, fill = true)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                handleKakaoLogin(context, viewModel)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            LoginButton(
-                text = "Apple 계정으로 계속하기",
-                icon = painterResource(id = R.drawable.apple_symbol)
-            ) {
-                isAppleLoginDialogOpen = !isAppleLoginDialogOpen
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            LoginButton(
-                text = "Google 계정으로 계속하기",
-                icon = painterResource(id = R.drawable.google_symbol)
-            ) {
-                googleSignIn(googleSignInLauncher, context)
+                Image(
+                    painter = painterResource(id = R.drawable.textlogo),
+                    contentDescription = "로고"
+                )
+
             }
 
-            Text(
-                text = "가입을 진행할 경우,\n" +
-                        "아래의 정책에 동의한 것으로 간주됩니다.",
-                textAlign = TextAlign.Center,
-                style = FanwooriTypography.caption1,
-                color = Gray600,
-                modifier = Modifier.padding(top = 32.dp)
-            )
-
-            Row(
-                modifier = Modifier.padding(bottom = 32.dp, top = 8.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    modifier = Modifier
-                        .padding(end = 10.dp)
-                        .clickable() {},
-                    text = "이용약관",
-                    color = Secondary800,
-                    style = FanwooriTypography.button2,
-                )
-                Spacer(
-                    modifier = Modifier
-                        .background(Secondary800)
-                        .width(1.dp)
-                        .height(8.dp)
-                )
-                Text(
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                        .clickable { },
-                    text = "개인정보처리방침",
-                    color = Secondary800,
-                    style = FanwooriTypography.button2
-                )
+                LoginButton(
+                    text = "카카오톡 계정으로 계속하기",
+                    icon = painterResource(id = R.drawable.kakao_symbol),
+                    textColor = Gray800,
+                    backgroundColor = Color(0XFFFEE500),
+                    borderWidth = 0.dp,
+                ) {
+                    handleKakaoLogin(context, viewModel)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                LoginButton(
+                    text = "Apple 계정으로 계속하기",
+                    icon = painterResource(id = R.drawable.apple_symbol)
+                ) {
+                    isAppleLoginDialogOpen = !isAppleLoginDialogOpen
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                LoginButton(
+                    text = "Google 계정으로 계속하기",
+                    icon = painterResource(id = R.drawable.google_symbol)
+                ) {
+                    googleSignIn(googleSignInLauncher, context)
+                }
+
             }
+
         }
+
 
         if (isAppleLoginDialogOpen) {
             AppleLoginWebViewDialog {
