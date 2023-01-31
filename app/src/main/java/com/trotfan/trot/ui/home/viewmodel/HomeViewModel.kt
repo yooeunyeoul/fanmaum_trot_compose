@@ -49,6 +49,10 @@ class HomeViewModel @Inject constructor(
     var autoVoteStatus = MutableStateFlow(false)
         private set
 
+    init {
+        getMainPopups()
+    }
+
     fun getMainPopups() {
         viewModelScope.launch {
             context.userTokenStore.data.collect {
@@ -66,7 +70,7 @@ class HomeViewModel @Inject constructor(
                             ) {
                                 updateState.emit(true)
                             } else {
-                                autoVoteStatus.emit(it.data?.autoVote?.is_available == true)
+                                autoVoteStatus.emit(it.data?.auto_vote?.is_voted == true)
                                 feverStatus.emit(it.data?.is_rewarded == true)
 
                                 if (it.data?.layers != null) {

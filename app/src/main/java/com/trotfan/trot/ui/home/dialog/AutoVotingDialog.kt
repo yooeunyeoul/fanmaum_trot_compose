@@ -80,7 +80,7 @@ fun AutoVotingDialog(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
                             .background(Secondary50),
-                        text = mainPopups?.autoVote?.star?.name ?: "",
+                        text = "",
                         textColor = Secondary600
                     )
 
@@ -102,7 +102,7 @@ fun AutoVotingDialog(
                     )
 
                     Text(
-                        text = "${mainPopups?.autoVote?.quantity} 투표 완료",
+                        text = "${mainPopups?.auto_vote?.quantity} 투표 완료",
                         style = FanwooriTypography.subtitle1,
                         color = Primary700,
                         modifier = Modifier,

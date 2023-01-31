@@ -108,17 +108,26 @@ fun TrotBottomBar(
                     viewModel.updateState.value = false
                 },
                 onDismiss = {
+//                    coroutineScope.launch {
+//                        context.dateManager.data.collect { date ->
+//                            if (date.rollingDate != LocalDate.now().toString()) {
+//                                viewModel.rollingState.emit(true)
+//                            }
+//                        }
+//                        viewModel.autoVoteStatus.emit(true)
+//                        viewModel.feverStatus.emit(true)
+//                        viewModel.rollingState.emit(true)
+//                        viewModel.updateState.value = false
+//                    }
                     coroutineScope.launch {
                         context.dateManager.data.collect { date ->
                             if (date.rollingDate != LocalDate.now().toString()) {
                                 viewModel.rollingState.emit(true)
                             }
                         }
-                        viewModel.autoVoteStatus.emit(true)
-                        viewModel.feverStatus.emit(true)
-                        viewModel.rollingState.emit(true)
-                        viewModel.updateState.emit(false)
                     }
+
+                    viewModel.updateState.value = false
                 }
             )
         }
