@@ -119,7 +119,7 @@ class UserServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
             val json = JSONObject()
             json.put("reason", reason)
             if (etc != null) {
-                json.put("ect", etc)
+                json.put("etc", etc)
             }
             body = (json.toString())
         }.body()
