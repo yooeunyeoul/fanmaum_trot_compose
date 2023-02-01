@@ -3,6 +3,7 @@
 package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -43,6 +44,10 @@ import com.airbnb.lottie.compose.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.google.firebase.dynamiclinks.ktx.dynamicLink
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
+import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
@@ -180,15 +185,21 @@ fun VoteHome(
                     },
                     onClickEndIcon = {
                         val sendIntent: Intent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(
-                                Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName)
-                            )
+                            Firebase.dynamicLinks.shortLinkAsync {
+                                link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
+                                domainUriPrefix = "https://fanwoori.page.link"
+                            }.addOnSuccessListener {
+                                action = Intent.ACTION_SEND
+                                putExtra(
+                                    Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName, it.shortLink.toString())
+                                )
 
-                            type = "text/plain"
+                                type = "text/plain"
+                                val shareIntent = Intent.createChooser(this, null)
+                                context.startActivity(shareIntent)
+                            }
                         }
-                        val shareIntent = Intent.createChooser(sendIntent, null)
-                        context.startActivity(shareIntent)
+
                     }
                 )
 
@@ -508,19 +519,25 @@ fun VoteHome(
                                     },
                                     onSharedClick = {
                                         val sendIntent: Intent = Intent().apply {
-                                            action = Intent.ACTION_SEND
-                                            putExtra(
-                                                Intent.EXTRA_TEXT,
-                                                voteShareText(
-                                                    sortedList.flatMap { listOf(it.second) },
-                                                    starMap.second.rank ?: 0
+                                            Firebase.dynamicLinks.shortLinkAsync {
+                                                link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
+                                                domainUriPrefix = "https://fanwoori.page.link"
+                                            }.addOnSuccessListener {
+                                                action = Intent.ACTION_SEND
+                                                putExtra(
+                                                    Intent.EXTRA_TEXT,
+                                                    voteShareText(
+                                                        sortedList.flatMap { listOf(it.second) },
+                                                        starMap.second.rank ?: 0,
+                                                        it.shortLink.toString()
+                                                    )
                                                 )
-                                            )
 
-                                            type = "text/plain"
+                                                type = "text/plain"
+                                                val shareIntent = Intent.createChooser(this, null)
+                                                context.startActivity(shareIntent)
+                                            }
                                         }
-                                        val shareIntent = Intent.createChooser(sendIntent, null)
-                                        context.startActivity(shareIntent)
                                     }, isTop3 = (starMap.second.rank ?: 0) < 4,
                                     beforeRank = starMap.second.votes == 0
                                 )
@@ -582,7 +599,7 @@ fun VoteHome(
 }
 
 
-fun voteTopShareText(favoriteStarName: String?): String {
+fun voteTopShareText(favoriteStarName: String?, link: String): String {
     return "#팬마음 ${Calendar.getInstance().get(Calendar.MONTH).plus(1)}월 투표 참여하고\n" +
             "\n" +
             "${favoriteStarName}만을 위한 특별한 광고 한가득 선물하기 \uD83C\uDF81\uD83C\uDF88\n" +
@@ -595,10 +612,10 @@ fun voteTopShareText(favoriteStarName: String?): String {
             "\n" +
             "\uD83D\uDD3B실시간 순위 보러 가기\uD83D\uDD3B\n" +
             "\n" +
-            "투표 링크(딥링크)"
+            link
 }
 
-fun voteShareText(stars: List<VoteMainStar>, rank: Int): String {
+fun voteShareText(stars: List<VoteMainStar>, rank: Int, link: String): String {
     val ticks = getTime()
     val minute: String = (ticks.toLong() / 60 % 60).toString()
     val hour: String = (ticks.toLong() / 3600).toString()
@@ -614,7 +631,7 @@ fun voteShareText(stars: List<VoteMainStar>, rank: Int): String {
                 "2위 ${nextStarCho}\n\n" +
                 "단, ${stars[0].votes?.minus(nextStar.votes!!)}표 차이 \uD83D\uDC40\n\n" +
                 "지금 바로 #팬마음 에서 #${stars[0].name} 에게 투표하세요 ✊\uD83C\uDFFB✊\uD83C\uDFFB\n\n" +
-                "투표 링크(딥링크)"
+                link
     } else {
         val preStar = stars[rank - 1]
         var preStarCho: String? = ""
@@ -626,7 +643,7 @@ fun voteShareText(stars: List<VoteMainStar>, rank: Int): String {
                 "#${stars[rank].name} 현재 ${rank + 1}위 \uD83C\uDFC6\n" +
                 "* ${rank}위 ${preStarCho}과 ${preStar.votes?.minus(stars[rank].votes!!)}표 차이\n\n" +
                 "지금 바로 #팬마음 에서 #${stars[rank].name} 에게 투표하세요 ✊\uD83C\uDFFB✊\uD83C\uDFFB\n\n" +
-                "투표 링크(딥링크)"
+                link
     }
 }
 
