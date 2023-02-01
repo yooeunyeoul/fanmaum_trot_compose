@@ -80,7 +80,7 @@ fun AutoVotingDialog(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
                             .background(Secondary50),
-                        text = "",
+                        text = mainPopups?.auto_vote?.star?.name ?: "",
                         textColor = Secondary600
                     )
 
