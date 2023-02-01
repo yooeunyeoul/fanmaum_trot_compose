@@ -77,11 +77,6 @@ fun RankingHistory(
                 }
 
                 RankingHistoryTab(selectedTabIndex) {
-
-                    if (selectedTabIndex == it) {
-                        monthlyEmptyState = monthlyEmptyState.not()
-                        dailyEmptyState = dailyEmptyState.not()
-                    }
                     selectedTabIndex = it
                 }
 

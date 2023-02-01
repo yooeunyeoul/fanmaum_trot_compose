@@ -1,12 +1,8 @@
 package com.trotfan.trot.ui.home.vote.guide
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -27,7 +23,6 @@ fun FullscreenDialog(
     title: String,
     onDismiss: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
     Dialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -39,19 +34,6 @@ fun FullscreenDialog(
                 ) { onDismiss() }
             }
         ) { innerPadding ->
-//            Column(
-//                modifier = modifier.padding(innerPadding)
-//                    .verticalScroll(scrollState)
-//            ) {
-//                AsyncImage(
-//                    model = ImageRequest.Builder(LocalContext.current)
-//                        .data("https://image.xportsnews.com/contents/images/upload/article/2022/0313/1647169234362908.jpg")
-//                        .crossfade(true).build(),
-//                    contentScale = ContentScale.Crop,
-//                    modifier = Modifier.fillMaxWidth(),
-//                    contentDescription = null
-//                )
-//            }
             LazyColumn(
                 modifier = modifier
                     .padding(innerPadding)
@@ -59,15 +41,7 @@ fun FullscreenDialog(
                 item {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data("https://image.xportsnews.com/contents/images/upload/article/2022/0313/1647169234362908.jpg")
-                            .crossfade(true).build(),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth(),
-                        contentDescription = null
-                    )
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data("https://thumbnews.nateimg.co.kr/view610///news.nateimg.co.kr/orgImg/iz/2021/09/10/vCLCFJbUFOdS637668330000252438.jpg")
+                            .data(R.drawable.ranking_guide)
                             .crossfade(true).build(),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxWidth(),
