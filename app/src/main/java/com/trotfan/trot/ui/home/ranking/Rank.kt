@@ -104,7 +104,7 @@ fun RankHome(
         val screenHeight = maxHeight
         val screenWidth = maxWidth
 
-        Log.e("screenWidth", screenWidth.toString())
+//        Log.e("screenWidth", screenWidth.toString())
         if (isShowingScrollToolTip) {
             ChipCapsuleImg()
         }

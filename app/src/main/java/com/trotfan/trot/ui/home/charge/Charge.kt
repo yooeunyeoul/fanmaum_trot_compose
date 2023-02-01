@@ -87,14 +87,15 @@ fun ChargeHome(
                 Modifier.fillMaxWidth(), state = lazyListState ?: rememberLazyListState(),
                 contentPadding = PaddingValues(bottom = 16.dp)
             ) {
+//                item {
+//                    Text(
+//                        text = purchaseStatusText,
+//                        style = FanwooriTypography.h1,
+//                        color = Color.Black
+//                    )
+//                }
                 item {
-                    Text(
-                        text = purchaseStatusText,
-                        style = FanwooriTypography.h1,
-                        color = Color.Black
-                    )
-                }
-                item {
+                    Spacer(modifier = Modifier.height(24.dp))
                     MyVote(tickets = tickets)
                     Spacer(modifier = Modifier.height(32.dp))
                     Text(
