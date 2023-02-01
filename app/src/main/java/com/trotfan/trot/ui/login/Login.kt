@@ -112,17 +112,17 @@ fun LoginScreen(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 LoginButton(
-                    text = "Apple 계정으로 계속하기",
-                    icon = painterResource(id = R.drawable.apple_symbol)
-                ) {
-                    isAppleLoginDialogOpen = !isAppleLoginDialogOpen
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                LoginButton(
                     text = "Google 계정으로 계속하기",
                     icon = painterResource(id = R.drawable.google_symbol)
                 ) {
                     googleSignIn(googleSignInLauncher, context)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                LoginButton(
+                    text = "Apple 계정으로 계속하기",
+                    icon = painterResource(id = R.drawable.apple_symbol)
+                ) {
+                    isAppleLoginDialogOpen = !isAppleLoginDialogOpen
                 }
 
             }

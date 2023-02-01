@@ -53,7 +53,7 @@ fun MyVoteHistory(
     val historyItems: LazyPagingItems<Ticket>? =
         viewModel.userTicketHistory.value?.collectAsLazyPagingItems()
     val lazyState = rememberLazyListState()
-    val tabs = listOf("전체", "구매", "사용", "소멸", "기타")
+    val tabs = listOf("전체", "미션보상", "구매", "사용", "소멸", "기타")
     var selectTab by remember {
         mutableStateOf(tabs[0])
     }
@@ -208,6 +208,7 @@ fun MyVoteHistory(
                                             selectTab = tabs[index]
                                             val filter: String? = when (selectTab) {
                                                 "전체" -> null
+                                                "미션보상" -> "rewarded"
                                                 "구매" -> "purchased"
                                                 "사용" -> "used"
                                                 "소멸" -> "expired"

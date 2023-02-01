@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
@@ -12,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,10 +31,10 @@ import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.datastore.dateManager
 import com.trotfan.trot.model.Layer
 import com.trotfan.trot.ui.theme.FanwooriTypography
+import com.trotfan.trot.ui.utils.clickable
 import io.ktor.util.date.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalPagerApi::class)
@@ -105,42 +106,50 @@ fun RollingDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.Center
+                    .height(48.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = CenterVertically
             ) {
-                Text(
-                    text = "오늘은 하루 보지 않기",
-                    color = Color.White,
-                    style = FanwooriTypography.button2,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
+                Box(
+                    modifier = modifier
                         .weight(1f)
+                        .height(48.dp)
                         .clickable {
                             coroutineScope.launch {
                                 setDate(context = context)
                             }
                             onDismiss()
                         }
-                        .align(Alignment.CenterVertically)
-                )
+                ) {
+                    Text(
+                        text = "오늘은 하루 보지 않기",
+                        color = Color.White,
+                        style = FanwooriTypography.button2,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .align(Center)
+                    )
+                }
 
                 Spacer(
                     modifier = Modifier
                         .width(1.dp)
                         .height(12.dp)
                         .background(Color.White)
-                        .align(Alignment.CenterVertically)
+                        .align(CenterVertically)
                 )
-                Text(
-                    text = "닫기",
-                    color = Color.White,
-                    style = FanwooriTypography.button2,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { onDismiss() }
-                        .align(Alignment.CenterVertically)
-                )
+                Box(modifier = modifier
+                    .weight(1f)
+                    .height(48.dp)
+                    .clickable { onDismiss() }) {
+                    Text(
+                        text = "닫기",
+                        color = Color.White,
+                        style = FanwooriTypography.button2,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Center)
+                    )
+                }
             }
         }
     }
