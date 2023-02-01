@@ -2,6 +2,7 @@ package com.trotfan.trot.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -20,6 +21,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
+import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
@@ -180,15 +184,20 @@ fun FanwooriApp(
                                 }
                             }, onPositive = {
                                 val sendIntent: Intent = Intent().apply {
-                                    action = Intent.ACTION_SEND
-                                    putExtra(
-                                        Intent.EXTRA_TEXT, voteTopShareText(star?.name)
-                                    )
+                                    Firebase.dynamicLinks.shortLinkAsync {
+                                        link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
+                                        domainUriPrefix = "https://fanwoori.page.link"
+                                    }.addOnSuccessListener {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(
+                                            Intent.EXTRA_TEXT, voteTopShareText(star?.name, it.shortLink.toString())
+                                        )
 
-                                    type = "text/plain"
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(this, null)
+                                    context.startActivity(shareIntent)
                                 }
-                                val shareIntent = Intent.createChooser(sendIntent, null)
-                                context.startActivity(shareIntent)
                             }
                         )
                     }
