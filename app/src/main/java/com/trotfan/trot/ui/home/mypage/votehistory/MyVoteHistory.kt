@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.model.Ticket
 import com.trotfan.trot.ui.components.chip.ChipTab
@@ -45,7 +46,8 @@ import java.util.*
 fun MyVoteHistory(
     navController: NavController? = null,
     viewModel: MyVoteHistoryViewModel = hiltViewModel(),
-    onChargeClick: () -> Unit
+    onChargeClick: () -> Unit,
+    purchaseHelper: PurchaseHelper?
 ) {
     val decimal = DecimalFormat("#,###")
     val historyItems: LazyPagingItems<Ticket>? =
@@ -55,8 +57,9 @@ fun MyVoteHistory(
     var selectTab by remember {
         mutableStateOf(tabs[0])
     }
-    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
-    val todayTicket by viewModel.todayTicket.collectAsState()
+//    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
+//    val todayTicket by viewModel.todayTicket.collectAsState()
+    val ticket by purchaseHelper?.tickets!!.collectAsState()
     var appBarColor by remember {
         mutableStateOf(Gray100)
     }
@@ -127,7 +130,7 @@ fun MyVoteHistory(
                             }
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = decimal.format(unlimitedTicket + todayTicket),
+                                text = decimal.format(ticket.unlimited + ticket.today),
                                 style = FanwooriTypography.h1,
                                 color = Gray900,
                                 modifier = Modifier.padding(start = 24.dp)
@@ -165,13 +168,13 @@ fun MyVoteHistory(
                                     horizontalAlignment = End
                                 ) {
                                     Text(
-                                        text = decimal.format(unlimitedTicket),
+                                        text = decimal.format(ticket.unlimited),
                                         style = FanwooriTypography.button1,
                                         color = Gray800
                                     )
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Text(
-                                        text = decimal.format(todayTicket),
+                                        text = decimal.format(ticket.today),
                                         style = FanwooriTypography.button1,
                                         color = Gray800
                                     )
@@ -435,8 +438,6 @@ fun VoteHistoryItemPreview() {
 @Composable
 fun MyVoteHistoryPreview() {
     FanwooriTheme {
-        MyVoteHistory() {
-
-        }
+        MyVoteHistory(purchaseHelper = null, onChargeClick = {})
     }
 }

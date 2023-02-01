@@ -287,7 +287,8 @@ fun NavGraphBuilder.addHomeGraph(
                 onNavigateBottomBar(section)
             },
             modifier = modifier,
-            navController = navController
+            navController = navController,
+            purchaseHelper = purchaseHelper
         )
     }
     composable(HomeSections.Ranking.route) { from ->

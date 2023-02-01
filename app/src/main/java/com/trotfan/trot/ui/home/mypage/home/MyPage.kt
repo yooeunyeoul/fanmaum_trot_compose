@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarL
@@ -27,7 +28,8 @@ fun MyPageHome(
     modifier: Modifier = Modifier,
     navController: NavController? = null,
     onNavigateClick: (HomeSections) -> Unit,
-    viewModel: MyPageViewModel = hiltViewModel()
+    viewModel: MyPageViewModel = hiltViewModel(),
+    purchaseHelper: PurchaseHelper?
 ) {
     val scrollState = rememberScrollState()
 
@@ -62,7 +64,7 @@ fun MyPageHome(
 
         MyVotingTicket(onClick = {
             navController?.navigate(Route.MyVoteHistory.route)
-        })
+        }, purchaseHelper = purchaseHelper)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -77,6 +79,6 @@ fun MyPageHome(
 @Composable
 fun MyPagePreview() {
     FanwooriTheme {
-        MyPageHome(onItemClick = {}, onNavigateClick = {})
+        MyPageHome(onItemClick = {}, onNavigateClick = {}, purchaseHelper = null)
     }
 }

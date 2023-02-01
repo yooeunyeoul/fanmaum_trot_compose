@@ -174,7 +174,8 @@ fun NavigationComponent(
         composable(Route.MyVoteHistory.route) {
             MyVoteHistory(
                 navController = navController,
-                onChargeClick = { onNavigateBottomBar.invoke(HomeSections.Charge) }
+                onChargeClick = { onNavigateBottomBar.invoke(HomeSections.Charge) },
+                purchaseHelper= purchaseHelper
             )
         }
         composable(Route.Setting.route) {

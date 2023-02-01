@@ -16,7 +16,7 @@ android {
         applicationId "com.trotfan.trot"
         minSdk 24
         targetSdk 33
-        versionCode 42
+        versionCode 44
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -42,7 +42,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-//            debuggable true
         }
     }
 
@@ -55,7 +54,7 @@ android {
             manifestPlaceholders["kakaoKey"] = "kakao0896a83ef914dbc24ad6bdeec31d202d"
         }
         create("qa") {
-//            applicationIdSuffix = ".qa"
+            applicationIdSuffix = ".qa"
             versionNameSuffix = "_qa"
             manifestPlaceholders["appLabel"] = "Fanwoori_qa"
             manifestPlaceholders["kakaoKey"] = "kakaoa85178977eed8c1ed9dae2e47d89a254"
