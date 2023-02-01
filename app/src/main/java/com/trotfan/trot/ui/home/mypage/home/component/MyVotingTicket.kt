@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.FanwooriTheme
@@ -30,11 +31,13 @@ import java.text.DecimalFormat
 @Composable
 fun MyVotingTicket(
     onClick: () -> Unit,
-    viewModel: MyPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: MyPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    purchaseHelper: PurchaseHelper?
 ) {
     val decimal = DecimalFormat("#,###")
-    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
-    val todayTicket by viewModel.todayTicket.collectAsState()
+    val ticket by purchaseHelper?.tickets!!.collectAsState()
+//    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
+//    val todayTicket by viewModel.todayTicket.collectAsState()
 
     Surface(
         color = Color.White,
@@ -70,7 +73,7 @@ fun MyVotingTicket(
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = decimal.format(unlimitedTicket + todayTicket),
+                text = decimal.format(ticket.unlimited + ticket.today),
                 style = FanwooriTypography.h2,
                 color = Gray800
             )
@@ -96,6 +99,6 @@ fun MyVotingTicketPreview() {
     FanwooriTheme {
         MyVotingTicket({
 
-        })
+        }, purchaseHelper = null)
     }
 }

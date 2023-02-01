@@ -20,7 +20,7 @@ class MyPageViewModel @Inject constructor(
 ) : BaseViewModel(application) {
 
     lateinit var userInfoManager: UserInfoManager
-    lateinit var userTicketManager: UserTicketManager
+//    lateinit var userTicketManager: UserTicketManager
     private val context = getApplication<Application>()
 
     val userName: StateFlow<String>
@@ -44,15 +44,15 @@ class MyPageViewModel @Inject constructor(
         MutableStateFlow("")
 
 
-    val unlimitedTicket: StateFlow<Long>
-        get() = _unlimitedTicket
-    private val _unlimitedTicket =
-        MutableStateFlow(0L)
-
-    val todayTicket: StateFlow<Long>
-        get() = _todayTicket
-    private val _todayTicket =
-        MutableStateFlow(0L)
+//    val unlimitedTicket: StateFlow<Long>
+//        get() = _unlimitedTicket
+//    private val _unlimitedTicket =
+//        MutableStateFlow(0L)
+//
+//    val todayTicket: StateFlow<Long>
+//        get() = _todayTicket
+//    private val _todayTicket =
+//        MutableStateFlow(0L)
 
     val isLoading: StateFlow<Boolean>
         get() = _isLoading
@@ -67,11 +67,11 @@ class MyPageViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             userInfoManager = UserInfoManager(context.UserInfoDataStore)
-            userTicketManager = UserTicketManager(context.UserTicketStore)
+//            userTicketManager = UserTicketManager(context.UserTicketStore)
             _userName.emit(userInfoManager.userNameFlow.first() ?: "")
             _starName.emit(userInfoManager.favoriteStarNameFlow.first() ?: "")
-            _unlimitedTicket.emit(userTicketManager.expiredUnlimited.first() ?: 0)
-            _todayTicket.emit(userTicketManager.expiredToday.first() ?: 0)
+//            _unlimitedTicket.emit(userTicketManager.expiredUnlimited.first() ?: 0)
+//            _todayTicket.emit(userTicketManager.expiredToday.first() ?: 0)
             _userEmail.emit(userInfoManager.userMailFlow.first() ?: "")
             _userIdp.emit(userInfoManager.userIdpFlow.first() ?: 0)
             _profileImage.emit(userInfoManager.userProfileImageFlow.first() ?: "")
