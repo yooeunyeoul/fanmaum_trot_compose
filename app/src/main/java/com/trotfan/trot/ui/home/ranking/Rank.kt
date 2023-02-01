@@ -118,9 +118,9 @@ fun RankHome(
                 modifier = Modifier
                     .background(Color.White)
                     .padding(start = 16.dp, end = 16.dp)
-                    .clickable {
-                        viewModel.changeStatus()
-                    }
+//                    .clickable {
+//                        viewModel.changeStatus()
+//                    }
             )
             LazyColumn(
                 modifier = Modifier

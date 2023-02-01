@@ -175,9 +175,11 @@ fun VoteHome(
             ) {
                 CustomTopAppBarWithIcon(
                     title = "일일 투표",
-                    modifier = Modifier.clickable {
+                    modifier = Modifier
+//                        .clickable {
 //                viewModel.changeVoteStatus()
-                    },
+//                    }
+            ,
                     onClickStartIcon = {
                         appGuideStatue = true
                     },
