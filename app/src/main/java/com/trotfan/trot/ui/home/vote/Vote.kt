@@ -93,6 +93,8 @@ fun VoteHome(
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
     val tickets by purchaseHelper.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
+    val ticks by viewModel.ticks.collectAsState()
+
 
     val favoriteStarName by viewModel.userInfoManager.favoriteStarNameFlow.collectAsState(
         initial = ""
@@ -108,7 +110,6 @@ fun VoteHome(
     var appGuideStatue by remember { mutableStateOf(false) }
     var rankGuideStatue by remember { mutableStateOf(false) }
 
-    var ticks by remember { mutableStateOf(getTime()) }
     val second: String = (ticks.toLong() % 60).toString()
     val minute: String = (ticks.toLong() / 60 % 60).toString()
     val hour: String = (ticks.toLong() / 3600).toString()
@@ -134,12 +135,6 @@ fun VoteHome(
 
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(ticks != 0) {
-        while (ticks > 0) {
-            delay(1.seconds)
-            ticks--
-        }
-    }
     LaunchedEffect(key1 = lazyListState?.isScrollInProgress, block = {
 
         if (isShowingScrollToolTip) {
