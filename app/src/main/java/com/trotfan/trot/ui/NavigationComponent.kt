@@ -70,7 +70,7 @@ fun NavigationComponent(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Route.Login.route
+        startDestination = Route.SelectStar.route
     ) {
         composable(Route.Login.route) {
             LoginScreen(

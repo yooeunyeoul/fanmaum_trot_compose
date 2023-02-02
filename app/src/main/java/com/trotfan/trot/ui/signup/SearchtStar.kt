@@ -147,6 +147,7 @@ fun SearchStarScreen(
             titleText = "스타 추가 요청",
             positiveText = "요청",
             negativeText = "취소",
+            coloredShadow = null,
             onInputText = {
                 requestStarName = it
             },

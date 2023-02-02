@@ -18,6 +18,7 @@ import com.trotfan.trot.ui.components.button.BtnFilledMBlackIcon
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray600
+import com.trotfan.trot.ui.theme.Gray750
 
 @Composable
 fun VerticalDialog(
@@ -55,7 +56,7 @@ fun VerticalDialog(
                     text = contentText,
                     textAlign = TextAlign.Center,
                     style = FanwooriTypography.body4,
-                    color = Gray600
+                    color = Gray750
                 )
 
                 BtnFilledLPrimary(
