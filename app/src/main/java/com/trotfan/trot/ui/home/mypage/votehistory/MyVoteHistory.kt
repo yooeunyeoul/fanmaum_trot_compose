@@ -352,7 +352,7 @@ fun HistoryItem(item: Ticket, position: Int, beforeItem: Ticket?) {
                         item.quantity
                     ),
                     style = FanwooriTypography.button1,
-                    color = if (isPlus) SemanticNegative300 else Gray750,
+                    color = if (isPlus) SemanticNegative500 else Gray750,
                     modifier = Modifier.align(End)
                 )
 

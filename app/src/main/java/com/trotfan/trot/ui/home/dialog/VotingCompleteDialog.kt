@@ -90,7 +90,7 @@ fun VotingCompleteDialog(
 
             Text(
                 text = "친구에게 공유하고\n" +
-                        "500투표권 더 받아가세요!",
+                        "2,500투표권 더 받아가세요!",
                 style = FanwooriTypography.body1,
                 color = Gray700,
                 textAlign = TextAlign.Center,

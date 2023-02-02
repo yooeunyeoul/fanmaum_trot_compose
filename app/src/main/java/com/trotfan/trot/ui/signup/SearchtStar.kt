@@ -112,13 +112,13 @@ fun SearchStarScreen(
                         Text(
                             text = "최초 1회",
                             style = FanwooriTypography.h2,
-                            color = Primary500
+                            color = Primary600
                         )
 
                         Box(
                             modifier = Modifier
                                 .background(Primary500)
-                                .width(62.dp)
+                                .width(72.dp)
                                 .height(1.dp)
                         )
                     }
@@ -217,12 +217,15 @@ fun SearchStarScreen(
             is LoadState.Error -> {
                 viewModel.changeSearchState(SearchStatus.NoResult)
             }
+
             is LoadState.Loading -> {
                 viewModel.changeSearchState(SearchStatus.Loading)
             }
+
             is LoadState.NotLoading -> {
                 viewModel.changeSearchState(SearchStatus.SearchResult)
             }
+
             else -> {}
         }
 
@@ -258,7 +261,7 @@ fun SearchStarScreen(
                         starListState?.let {
                             items(it) { item ->
                                 ListItemButton(
-                                    text = item?.name?:"",
+                                    text = item?.name ?: "",
                                     subText = item?.group?.name,
                                     imageUrl = item?.image,
                                     unCheckedTrailingIcon = R.drawable.icon_heart,

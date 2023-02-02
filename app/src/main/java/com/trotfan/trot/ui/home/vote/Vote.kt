@@ -179,19 +179,21 @@ fun VoteHome(
 //                        .clickable {
 //                viewModel.changeVoteStatus()
 //                    }
-            ,
+                    ,
                     onClickStartIcon = {
                         appGuideStatue = true
                     },
                     onClickEndIcon = {
                         val sendIntent: Intent = Intent().apply {
                             Firebase.dynamicLinks.shortLinkAsync {
-                                link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
+                                link =
+                                    Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
                                 domainUriPrefix = "https://fanwoori.page.link"
                             }.addOnSuccessListener {
                                 action = Intent.ACTION_SEND
                                 putExtra(
-                                    Intent.EXTRA_TEXT, voteTopShareText(favoriteStarName, it.shortLink.toString())
+                                    Intent.EXTRA_TEXT,
+                                    voteTopShareText(favoriteStarName, it.shortLink.toString())
                                 )
 
                                 type = "text/plain"
@@ -223,6 +225,7 @@ fun VoteHome(
                             )
 
                         }
+
                         VoteStatus.VoteEnd -> {
                             VoteEndHeader()
 
@@ -289,6 +292,7 @@ fun VoteHome(
                             VoteStatus.VoteEnd -> {
                                 HeaderEndState(myStarName = favoriteStar.name ?: "")
                             }
+
                             VoteStatus.Available -> {
                                 HeaderVoteState(
                                     myStarName = favoriteStar.name ?: "-",
@@ -520,7 +524,8 @@ fun VoteHome(
                                     onSharedClick = {
                                         val sendIntent: Intent = Intent().apply {
                                             Firebase.dynamicLinks.shortLinkAsync {
-                                                link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
+                                                link =
+                                                    Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
                                                 domainUriPrefix = "https://fanwoori.page.link"
                                             }.addOnSuccessListener {
                                                 action = Intent.ACTION_SEND
@@ -536,6 +541,8 @@ fun VoteHome(
                                                 type = "text/plain"
                                                 val shareIntent = Intent.createChooser(this, null)
                                                 context.startActivity(shareIntent)
+                                            }.addOnFailureListener {
+                                                Log.d("shared", it.toString())
                                             }
                                         }
                                     }, isTop3 = (starMap.second.rank ?: 0) < 4,
@@ -543,6 +550,7 @@ fun VoteHome(
                                 )
                             }
                         }
+
                         VoteStatus.VoteEnd -> {
                             item {
                                 Column(
@@ -717,6 +725,7 @@ fun VoteToStar(
                                     append("님에게 투표했어요!")
                                 }
                             }
+
                             else -> {}
                         }
 
@@ -767,6 +776,7 @@ fun VoteToStar(
                         }
 
                     }
+
                     else -> {}
                 }
 
