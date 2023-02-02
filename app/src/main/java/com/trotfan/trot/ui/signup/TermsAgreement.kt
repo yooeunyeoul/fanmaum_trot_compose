@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.signup
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,6 +79,13 @@ fun TermsAgreement(
     }
     var nightAdsCheck by remember {
         mutableStateOf(false)
+    }
+    val apiResult by viewModel.apiResultState.collectAsState()
+
+    LaunchedEffect(apiResult) {
+        if (apiResult) {
+            onConfirmClick()
+        }
     }
 
     Surface {
@@ -207,16 +217,15 @@ fun TermsAgreement(
                     onClick = {
                         viewModel.updateUser()
                         if (nightAdsCheck) {
-                            viewModel.patchPushSetting(AlarmType.night_alarm)
+                            viewModel.patchPushSettingNight()
                             FirebaseMessaging.getInstance()
                                 .subscribeToTopic(AlarmType.night_alarm.name)
                         }
                         if (dayTimeAdsCheck) {
-                            viewModel.patchPushSetting(AlarmType.day_alarm)
+                            viewModel.patchPushSettingDay()
                             FirebaseMessaging.getInstance()
                                 .subscribeToTopic(AlarmType.day_alarm.name)
                         }
-                        onConfirmClick()
                     },
                     enabled = childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
                     modifier = Modifier
