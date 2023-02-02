@@ -57,7 +57,8 @@ fun CustomTopAppBarWithIcon(
                 .size(32.dp)
                 .clickable {
                     onClickStartIcon.invoke()
-                }
+                },
+            tint = Gray800
         )
         Spacer(modifier = Modifier.width(20.dp))
 

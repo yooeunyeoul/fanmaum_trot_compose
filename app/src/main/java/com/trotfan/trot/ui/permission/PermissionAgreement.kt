@@ -68,7 +68,7 @@ fun PermissionAgreement(
                 Text(text = "앱 접근 권한 안내", style = FanwooriTypography.h1, color = Gray900)
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "팬우리 서비스 사용을 위해\n" +
+                    text = "팬마음 서비스 사용을 위해\n" +
                             "동의가 필요한 내용을 확인해주세요",
                     style = FanwooriTypography.caption1,
                     color = Gray700
