@@ -149,8 +149,9 @@ class RankingHistoryViewModel @Inject constructor(
             } else {
                 monthlyMonth.value
             }
+            Log.d("range", "${monthlyYear.value}-${monthlyMonth.value}//${endedAt.value}")
             isEnded.emit(
-                "${monthlyYear.value}-${tempMonth}" == endedAt.value
+                "${monthlyYear.value}-${monthlyMonth.value}" == endedAt.value
             )
             isStared.emit(
                 "${monthlyYear.value}-${tempMonth}" == datePickerRange.value?.started_at?.substring(
