@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,6 +17,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.button.BtnOutlineLGray
+import com.trotfan.trot.ui.components.chip.ChipFilledLSecondary
 import com.trotfan.trot.ui.theme.*
 
 @Composable
@@ -59,27 +61,14 @@ fun HorizontalDialogSelectStar(
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row() {
-                    Box(
-                        Modifier
-                            .background(
-                                shape = RoundedCornerShape(8.dp),
-                                color = Secondary100
-                            )
-                            .padding(
-                                start = 16.dp,
-                                end = 16.dp,
-                                bottom = 8.dp,
-                                top = 8.dp
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = contentText,
-                            style = FanwooriTypography.subtitle1,
-                            color = Secondary600,
-                            maxLines = 1
-                        )
-                    }
+                    ChipFilledLSecondary(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Secondary50),
+                        text = contentText ?: "",
+                        textColor = Secondary600
+                    )
+
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         modifier = Modifier.align(Alignment.CenterVertically),

@@ -34,6 +34,7 @@ fun HorizontalDialog(
     maxLength: Int = 8,
     positiveText: String,
     negativeText: String,
+    coloredShadow: Color? = Primary700,
     onPositive: () -> Unit = { },
     onPositiveWithInputText: (String) -> Unit = { },
     positiveButtonEnabled: Boolean = true,
@@ -110,8 +111,9 @@ fun HorizontalDialog(
                     BtnFilledLPrimary(
                         text = positiveText,
                         enabled = positiveButtonEnabled,
-                        modifier = Modifier.weight(1f)
-                            .drawColoredShadow(color = Primary700)
+                        modifier = Modifier
+                            .weight(1f)
+                            .drawColoredShadow(color = coloredShadow ?: Color.White)
                     ) {
                         if (inputText.isEmpty()) {
                             onPositive()

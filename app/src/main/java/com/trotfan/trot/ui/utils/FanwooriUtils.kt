@@ -169,7 +169,7 @@ fun getTime(
         cal.set(Calendar.SECOND, targetSecond)
     }
     cal.set(Calendar.HOUR_OF_DAY, targetHour)
-    cal.set(Calendar.SECOND, targetMinute)
+    cal.set(Calendar.MINUTE, targetMinute)
     val diff = abs(cal.timeInMillis - System.currentTimeMillis()) / 1000;
     return diff.toInt()
 }
