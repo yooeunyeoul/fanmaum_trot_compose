@@ -1,13 +1,26 @@
 package com.trotfan.trot.ui.signup
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -21,12 +34,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.firebase.messaging.FirebaseMessaging
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.checkbox.CheckBoxNullText
-import com.trotfan.trot.ui.login.viewmodel.AuthViewModel
+import com.trotfan.trot.ui.home.mypage.setting.AlarmType
 import com.trotfan.trot.ui.signup.viewmodel.TermsViewModel
-import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.theme.FanwooriTheme
+import com.trotfan.trot.ui.theme.FanwooriTypography
+import com.trotfan.trot.ui.theme.Gray50
+import com.trotfan.trot.ui.theme.Gray700
+import com.trotfan.trot.ui.theme.Gray750
+import com.trotfan.trot.ui.theme.Gray800
+import com.trotfan.trot.ui.theme.Gray900
 
 @Composable
 fun TermsAgreement(
@@ -186,6 +206,16 @@ fun TermsAgreement(
                     text = "다음",
                     onClick = {
                         viewModel.updateUser()
+                        if (nightAdsCheck) {
+                            viewModel.patchPushSetting(AlarmType.night_alarm)
+                            FirebaseMessaging.getInstance()
+                                .subscribeToTopic(AlarmType.night_alarm.name)
+                        }
+                        if (dayTimeAdsCheck) {
+                            viewModel.patchPushSetting(AlarmType.day_alarm)
+                            FirebaseMessaging.getInstance()
+                                .subscribeToTopic(AlarmType.day_alarm.name)
+                        }
                         onConfirmClick()
                     },
                     enabled = childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
