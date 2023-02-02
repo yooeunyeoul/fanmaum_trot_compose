@@ -87,7 +87,7 @@ fun HeaderVoteState(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = if (dayRank == -1) "-" else "${dayRank}위",
+                    text = if (dayRank == 0) "-" else "${dayRank}위",
                     style = FanwooriTypography.h2,
                     color = Gray800,
                     fontSize = 22.sp,
@@ -116,7 +116,7 @@ fun HeaderVoteState(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = if (monthRank == -1) "-" else "${monthRank}위",
+                    text = if (monthRank == 0) "-" else "${monthRank}위",
                     style = FanwooriTypography.h2,
                     color = Gray800,
                     fontSize = 22.sp,
