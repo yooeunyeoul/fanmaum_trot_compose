@@ -41,7 +41,7 @@ enum class InAppProduct(
         productName = "22,000투표권",
         price = "4,400원",
         image = R.drawable.charge22000,
-        votes = "2,0000",
+        votes = "20,000",
         bonus = "2,000"
     ),
     Votes_63000(
