@@ -194,9 +194,9 @@ fun FanwooriApp(
                                         )
 
                                         type = "text/plain"
+                                        val shareIntent = Intent.createChooser(this, null)
+                                        context.startActivity(shareIntent)
                                     }
-                                    val shareIntent = Intent.createChooser(this, null)
-                                    context.startActivity(shareIntent)
                                 }
                             }
                         )

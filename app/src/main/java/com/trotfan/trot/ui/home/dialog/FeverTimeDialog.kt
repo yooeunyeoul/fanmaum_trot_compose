@@ -25,7 +25,7 @@ fun FeverTimeDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Column(
-            modifier.fillMaxWidth(),
+            modifier.widthIn(0.dp, 500.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
