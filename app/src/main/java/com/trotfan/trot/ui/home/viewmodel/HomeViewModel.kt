@@ -12,6 +12,7 @@ import com.trotfan.trot.model.MainPopups
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.model.VoteTicket
 import com.trotfan.trot.repository.HomeRepository
+import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val repository: HomeRepository,
     application: Application
-) : AndroidViewModel(application) {
+) : BaseViewModel(application) {
     private val context = getApplication<Application>()
 
     private val _mainPopups = MutableStateFlow<MainPopups?>(null)
@@ -65,7 +66,7 @@ class HomeViewModel @Inject constructor(
                             if (version.replace(".", "")
                                     .toInt() > BuildConfig.VERSION_NAME.replace(".", "")
                                     .replace("_dev", "")
-                                    .replace("_qa","")
+                                    .replace("_qa", "")
                                     .toInt()
                             ) {
                                 updateState.emit(true)
@@ -88,16 +89,17 @@ class HomeViewModel @Inject constructor(
 
     fun postVoteTicket(voteId: Int, starId: Int, quantity: Long) {
         viewModelScope.launch {
-            context.userTokenStore.data.collect {
-                kotlin.runCatching {
-                    repository.postVoteTicket(VoteTicket(voteId, starId, quantity), it.token)
-                }.onSuccess {
-                    votingCompleteState.emit(1)
-                    Log.d("HomeViewModel", it.toString())
-                }.onFailure {
-                    votingCompleteState.emit(2)
-                    Log.d("HomeViewModel", it.message.toString())
-                }
+            kotlin.runCatching {
+                repository.postVoteTicket(
+                    VoteTicket(voteId, starId, quantity),
+                    userLocalToken.value?.token ?: ""
+                )
+            }.onSuccess {
+                votingCompleteState.emit(1)
+                Log.d("HomeViewModel", it.toString())
+            }.onFailure {
+                votingCompleteState.emit(2)
+                Log.d("HomeViewModel", it.message.toString())
             }
         }
     }
