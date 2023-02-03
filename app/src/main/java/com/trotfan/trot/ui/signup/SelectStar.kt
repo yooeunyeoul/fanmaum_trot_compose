@@ -97,7 +97,7 @@ fun SelectStarScreen(
                         Box(
                             modifier = Modifier
                                 .background(Primary500)
-                                .width(62.dp)
+                                .width(72.dp)
                                 .height(1.dp)
                         )
                     }

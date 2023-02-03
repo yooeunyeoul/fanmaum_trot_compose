@@ -315,7 +315,11 @@ fun SettingSecession(
                     .fillMaxWidth()
                     .padding(start = 24.dp, end = 24.dp, bottom = 32.dp)
             ) {
-                BtnFilledLPrimary(text = "다음", enabled = selected.isEmpty().not()) {
+                BtnFilledLPrimary(
+                    text = "다음",
+                    enabled = (!isEtc && selected.isEmpty()
+                        .not()) || (isEtc && etcText.length >= 20)
+                ) {
                     secessionPage = 2
                 }
             }

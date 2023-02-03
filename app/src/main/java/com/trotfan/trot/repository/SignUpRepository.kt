@@ -1,12 +1,15 @@
 package com.trotfan.trot.repository
 
 import com.trotfan.trot.model.*
+import com.trotfan.trot.network.SettingService
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.response.CommonResponse
+import com.trotfan.trot.ui.home.mypage.setting.AlarmType
 import javax.inject.Inject
 
 class SignUpRepository @Inject constructor(
-    private val service: SignUpService
+    private val service: SignUpService,
+    private val settingService: SettingService
 ) {
     suspend fun requestSmsCertification(
         phoneNumber: String,
@@ -25,4 +28,10 @@ class SignUpRepository @Inject constructor(
         service.updateUser(userid, nickName, starId, phoneNumber, redeemCode, agrees_terms, token)
 
 
+    suspend fun patchPushSetting(
+        token: String,
+        id: Long,
+        type: AlarmType
+    ): CommonResponse<Unit> =
+        settingService.setPushSetting(userToken = token, userId = id, alarmType = type)
 }
