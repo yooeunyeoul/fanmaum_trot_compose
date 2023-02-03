@@ -16,7 +16,7 @@ android {
         applicationId "com.trotfan.trot"
         minSdk 24
         targetSdk 33
-        versionCode 44
+        versionCode 49
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -45,22 +45,22 @@ android {
         }
     }
 
-    flavorDimensions "fanwoori"
+    flavorDimensions.add("fanmaum")
     productFlavors {
         create("dev") {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "_dev"
-            manifestPlaceholders["appLabel"] = "Fanwoori_dev"
+            manifestPlaceholders["appLabel"] = "Fanmaum_dev"
             manifestPlaceholders["kakaoKey"] = "kakao0896a83ef914dbc24ad6bdeec31d202d"
         }
         create("qa") {
             applicationIdSuffix = ".qa"
             versionNameSuffix = "_qa"
-            manifestPlaceholders["appLabel"] = "Fanwoori_qa"
+            manifestPlaceholders["appLabel"] = "Fanmaum_qa"
             manifestPlaceholders["kakaoKey"] = "kakaoa85178977eed8c1ed9dae2e47d89a254"
         }
         create("product") {
-            manifestPlaceholders["appLabel"] = "Fanwoori_product"
+            manifestPlaceholders["appLabel"] = "Fanmaum_product"
             manifestPlaceholders["kakaoKey"] = "kakaoa85178977eed8c1ed9dae2e47d89a254"
         }
     }

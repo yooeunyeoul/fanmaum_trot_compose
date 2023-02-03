@@ -56,7 +56,7 @@ fun InvitationScreen(
         )
 
         Text(
-            text = "나와 친구 모두 500 투표권을 받을 수 있어요!",
+            text = "나와 친구 모두 2,500 투표권을 받을 수 있어요!",
             color = Gray700,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
@@ -66,7 +66,7 @@ fun InvitationScreen(
 
         InputTextField(
             text = inviteCode,
-            placeHolder = "#6자리 코드",
+            placeHolder = "#포함 6자리 코드",
             maxLength = 6,
             errorStatus = inviteCodeCheckState != InviteCodeCheckStatus.None,
             onValueChange = {
@@ -116,7 +116,7 @@ fun InvitationScreen(
 
         if (completeDialogState) {
             VerticalDialogInvitationComplete(
-                contentText = "타임투표권 500표 받았어요!",
+                contentText = "타임투표권 2,500표 받았어요!",
                 buttonOneText = "확인",
                 onDismiss = {
                     navController.navigate(HomeSections.Vote.route) {

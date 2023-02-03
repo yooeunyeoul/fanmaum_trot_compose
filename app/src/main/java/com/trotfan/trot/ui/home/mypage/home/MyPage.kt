@@ -41,7 +41,6 @@ fun MyPageHome(
         modifier = Modifier
             .fillMaxSize()
             .background(Gray100)
-            .verticalScroll(scrollState)
     ) {
         AppbarL(
             title = "마이페이지",
@@ -54,24 +53,29 @@ fun MyPageHome(
             }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+        ) {
+            Spacer(modifier = Modifier.height(24.dp))
 
-        MyProfile(onClick = {
-            navController?.navigate(Route.MyProfileModify.route)
-        })
+            MyProfile(onClick = {
+                navController?.navigate(Route.MyProfileModify.route)
+            })
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        MyVotingTicket(onClick = {
-            navController?.navigate(Route.MyVoteHistory.route)
-        }, purchaseHelper = purchaseHelper)
+            MyVotingTicket(onClick = {
+                navController?.navigate(Route.MyVoteHistory.route)
+            }, purchaseHelper = purchaseHelper)
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        MyPageList(navController)
+            MyPageList(navController)
 
-        Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(80.dp))
 
+        }
     }
 }
 

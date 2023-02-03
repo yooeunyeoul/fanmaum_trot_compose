@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
 fun BtnFilledMPrimary(
@@ -35,9 +36,7 @@ fun BtnFilledMPrimary(
             .fillMaxWidth()
             .height(40.dp)
             .clip(RoundedCornerShape(20.dp))
-            .clickable(
-                indication = null,
-                interactionSource = interactionSource
+            .clickableSingle (
             ) {
                 if (enabled) {
                     onClick()

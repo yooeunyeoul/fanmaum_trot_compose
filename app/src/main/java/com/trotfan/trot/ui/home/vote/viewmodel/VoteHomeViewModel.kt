@@ -18,6 +18,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.WebSocket
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -83,6 +85,10 @@ class VoteHomeViewModel @Inject constructor(
     private val _voteDataListCount =
         MutableStateFlow(1)
 
+    private val _ticks =
+        MutableStateFlow(0)
+    val ticks = _ticks.asStateFlow()
+
     private val dummyData = VoteData(quantity = -1, star_name = "null", user_name = "null")
 
     val gender: StateFlow<Gender>
@@ -105,7 +111,7 @@ class VoteHomeViewModel @Inject constructor(
         connectBoardSocket()
         connectRankSocket()
         getStarRank()
-        getTime()
+        tickRemainingTime()
         observeGender()
     }
 
@@ -374,6 +380,21 @@ class VoteHomeViewModel @Inject constructor(
             }
             _womenHashMap.value[star?.id]?.let {
                 it.votes = it.votes?.plus(votes)
+            }
+        }
+    }
+
+    private fun tickRemainingTime() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _ticks.value = getTime(targetSecond = 0)
+            while (true) {
+                delay(1000)
+                val tick = _ticks.value.minus(1)
+                if (tick < 0) {
+                    _ticks.value = getTime(targetSecond = 0)
+                } else {
+                    _ticks.value = tick
+                }
             }
         }
     }

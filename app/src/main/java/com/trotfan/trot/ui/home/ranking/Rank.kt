@@ -309,7 +309,27 @@ fun RankHome(
 }
 
 fun navigateRankingHistory(navController: NavController, starRanking: StarRanking) {
-    navController.navigate("${Route.RankingHistoryCumulative.route}/${starRanking.id}/${starRanking.name}/${""}-${""}")
+    var month = ""
+    var year = ""
+
+    if (LocalDate.now().dayOfMonth == 1) {
+        month = if (LocalDate.now().month.value == 1) {
+            "12"
+        } else {
+            LocalDate.now().month.value.minus(
+                1
+            ).toString()
+        }
+        year = if (LocalDate.now().month.value == 1) {
+            LocalDate.now().year.minus(
+                1
+            ).toString()
+        } else {
+            LocalDate.now().year.toString()
+        }
+    }
+
+    navController.navigate("${Route.RankingHistoryCumulative.route}/${starRanking.id}/${starRanking.name}/${year}-${month}")
 
 }
 
@@ -466,7 +486,7 @@ fun HorizontalImagePager(
                         .crossfade(true).build(),
                     contentDescription = null,
                     error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
-                    contentScale = ContentScale.FillHeight,
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()
