@@ -65,23 +65,26 @@ class InvitationViewModel @Inject constructor(
         }
     }
 
-    fun postInviteCode() {
+    fun postInviteCode(isSkip: Boolean) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.updateUser(
                         userid = it.userId,
-                        redeemCode = _inviteCode.value,
+                        redeemCode = if (isSkip) "" else _inviteCode.value,
                         token = userLocalToken.value?.token ?: ""
                     )
                 }.onSuccess {
                     when (it.result.code) {
-                        ResultCodeStatus.InvalidCode.code -> _inviteCodeCheckStatus.emit(
+                        ResultCodeStatus.InvalidCode.code, ResultCodeStatus.InvalidCode2.code -> _inviteCodeCheckStatus.emit(
                             InvalidCodeError
                         )
                         ResultCodeStatus.SuccessWithNoData.code -> {
-                            if (_inviteCode.value != "") _completeStatus.emit(true)
-                            else _skipStatus.emit(true)
+                            if (isSkip) {
+                                _skipStatus.emit(true)
+                            } else {
+                                _completeStatus.emit(true)
+                            }
                         }
                     }
                 }

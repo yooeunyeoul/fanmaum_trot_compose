@@ -54,6 +54,13 @@ class UserInfoManager(
         }
     }
 
+    suspend fun setUserName(name: String) {
+        dataStore.edit {
+            it[USER_NAME] = name
+        }
+
+    }
+
     suspend fun setUserProfileImage(
         userProfileImage: String
     ) {

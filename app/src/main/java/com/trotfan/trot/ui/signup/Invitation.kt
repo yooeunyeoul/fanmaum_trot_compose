@@ -96,7 +96,7 @@ fun InvitationScreen(
                 enabled = inviteCodeCheckState == InviteCodeCheckStatus.None && inviteCode.length == 6,
                 modifier = Modifier.weight(1f)
             ) {
-                viewModel.postInviteCode()
+                viewModel.postInviteCode(isSkip = false)
             }
         }
 
@@ -109,7 +109,7 @@ fun InvitationScreen(
                 negativeText = "취소",
                 onDismiss = { skipDialogState = false },
                 onPositive = {
-                    viewModel.postInviteCode()
+                    viewModel.postInviteCode(isSkip = true)
                 }
             )
         }

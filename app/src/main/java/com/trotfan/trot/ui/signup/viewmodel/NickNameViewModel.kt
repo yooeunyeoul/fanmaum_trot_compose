@@ -3,6 +3,8 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.datastore.UserInfoDataStore
+import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
@@ -28,6 +30,7 @@ class NickNameViewModel @Inject constructor(
     application: Application
 ) : BaseViewModel(application) {
 
+    lateinit var userInfoManager: UserInfoManager
     private val context = getApplication<Application>()
 
     val nickNameCheckStatus: StateFlow<NickNameCheckStatus>
@@ -42,6 +45,7 @@ class NickNameViewModel @Inject constructor(
 
     init {
         Log.d("Initializing", "MainViewModel")
+        userInfoManager = UserInfoManager(context.UserInfoDataStore)
     }
 
     fun checkNickNameLocal(nickName: String) {
@@ -78,6 +82,7 @@ class NickNameViewModel @Inject constructor(
                         }
                         ResultCodeStatus.SuccessWithNoData.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.AuthSuccess)
+                            userInfoManager.setUserName(nickName)
                         }
                     }
                 }
