@@ -30,7 +30,7 @@ fun HeaderVoteState(
         Row(
             Modifier
                 .fillMaxWidth()
-                .clickableSingle {
+                .clickableSingle(hideRipple = true) {
                     onVotingClick()
                 },
             verticalAlignment = Alignment.CenterVertically,

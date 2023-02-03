@@ -252,9 +252,10 @@ fun VoteHome(
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
+                                    .clip(CircleShape)
                                     .padding(top = 4.dp)
                                     .size(112.dp)
-                                    .clickableSingle {
+                                    .clickableSingle() {
                                         onVotingClick(
                                             voteId,
                                             tickets,

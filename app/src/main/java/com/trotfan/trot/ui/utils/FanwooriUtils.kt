@@ -50,7 +50,8 @@ fun Modifier.clickableSingle(
     enabled: Boolean = true,
     onClickLabel: String? = null,
     role: Role? = null,
-    onClick: () -> Unit
+    hideRipple: Boolean = false,
+    onClick: () -> Unit,
 ) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "clickable"
@@ -66,7 +67,7 @@ fun Modifier.clickableSingle(
         onClickLabel = onClickLabel,
         onClick = { multipleEventsCutter.processEvent { onClick() } },
         role = role,
-        indication = LocalIndication.current,
+        indication = if (hideRipple) null else LocalIndication.current,
         interactionSource = remember { MutableInteractionSource() }
     )
 }
@@ -190,7 +191,27 @@ fun convertStringToTime(date: String): Long {
     }
 }
 
-val CHO = listOf("ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ")
+val CHO = listOf(
+    "ㄱ",
+    "ㄲ",
+    "ㄴ",
+    "ㄷ",
+    "ㄸ",
+    "ㄹ",
+    "ㅁ",
+    "ㅂ",
+    "ㅃ",
+    "ㅅ",
+    "ㅆ",
+    "ㅇ",
+    "ㅈ",
+    "ㅉ",
+    "ㅊ",
+    "ㅋ",
+    "ㅌ",
+    "ㅍ",
+    "ㅎ"
+)
 
 fun getShareChar(char: Char): String {
     return try {
