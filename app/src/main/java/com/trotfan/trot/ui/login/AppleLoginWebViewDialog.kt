@@ -65,10 +65,8 @@ class AppleWebViewClient(private val onDismissRequest: (AppleToken?) -> Unit) : 
 
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
         Log.d("AuthViewModel", request?.url?.toString() + "")
-        val idToken = request?.url?.getQueryParameter("id-token")
-        val accessToken = request?.url?.getQueryParameter("access-token")
-        val refreshToken = request?.url?.getQueryParameter("refresh-token")
-        onDismissRequest(AppleToken(idToken, accessToken, refreshToken))
+        val idToken = request?.url?.getQueryParameter("id_token")
+        onDismissRequest(AppleToken(idToken))
         return super.shouldOverrideUrlLoading(view, request)
     }
 }
