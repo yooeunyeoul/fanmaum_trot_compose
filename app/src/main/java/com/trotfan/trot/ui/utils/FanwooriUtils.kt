@@ -87,6 +87,8 @@ fun addDynamicLink(
         socialMetaTagParameters {
             title = titleText
             description = descriptionText
+            imageUrl =
+                Uri.parse("https://cdn.fanmaum-dev.com/Thumbnail/6Yt1U6X7Nfn4HhkcAWQB3UZcnE4SR5iuVC0Ngf3b.png")
         }
     }.addOnSuccessListener {
         onSuccess(it)

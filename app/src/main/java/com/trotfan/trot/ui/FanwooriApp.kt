@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
+import com.google.firebase.dynamiclinks.ktx.socialMetaTagParameters
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.model.Expired
@@ -187,6 +188,10 @@ fun FanwooriApp(
                                     Firebase.dynamicLinks.shortLinkAsync {
                                         link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
                                         domainUriPrefix = "https://fanwoori.page.link"
+                                        socialMetaTagParameters {
+                                            imageUrl =
+                                                Uri.parse("https://cdn.fanmaum-dev.com/Thumbnail/6Yt1U6X7Nfn4HhkcAWQB3UZcnE4SR5iuVC0Ngf3b.png")
+                                        }
                                     }.addOnSuccessListener {
                                         action = Intent.ACTION_SEND
                                         putExtra(

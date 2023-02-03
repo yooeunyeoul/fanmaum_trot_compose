@@ -47,6 +47,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
+import com.google.firebase.dynamiclinks.ktx.socialMetaTagParameters
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.PurchaseHelper
@@ -184,6 +185,10 @@ fun VoteHome(
                                 link =
                                     Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
                                 domainUriPrefix = "https://fanwoori.page.link"
+                                socialMetaTagParameters {
+                                    imageUrl =
+                                        Uri.parse("https://cdn.fanmaum-dev.com/Thumbnail/6Yt1U6X7Nfn4HhkcAWQB3UZcnE4SR5iuVC0Ngf3b.png")
+                                }
                             }.addOnSuccessListener {
                                 action = Intent.ACTION_SEND
                                 putExtra(
@@ -523,6 +528,10 @@ fun VoteHome(
                                                 link =
                                                     Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
                                                 domainUriPrefix = "https://fanwoori.page.link"
+                                                socialMetaTagParameters {
+                                                    imageUrl =
+                                                        Uri.parse("https://cdn.fanmaum-dev.com/Thumbnail/6Yt1U6X7Nfn4HhkcAWQB3UZcnE4SR5iuVC0Ngf3b.png")
+                                                }
                                             }.addOnSuccessListener {
                                                 action = Intent.ACTION_SEND
                                                 putExtra(
