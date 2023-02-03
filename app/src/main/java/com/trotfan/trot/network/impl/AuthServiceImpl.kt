@@ -43,7 +43,10 @@ class AuthServiceImpl @Inject constructor(
         val response = httpClient.post {
             url(HttpRoutes.APPLE_LOGIN)
             contentType(ContentType.Application.Json)
-            setBody(authCode)
+            header(
+                "Authorization",
+                "Bearer ${authCode.id_token}"
+            )
         }
         return response.body()
     }

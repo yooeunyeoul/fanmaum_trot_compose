@@ -185,6 +185,7 @@ fun VoteItem(
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             Column(
                 Modifier
+                    .clip(RoundedCornerShape(20.dp))
                     .background(
                         color = if (isMyStar) Color.White else Gray100,
                         shape = RoundedCornerShape(20.dp)

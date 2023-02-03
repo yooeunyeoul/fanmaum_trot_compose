@@ -9,7 +9,7 @@ object HttpRoutes {
 
     val KAKAO_LOGIN = "$LOCAL_URL/auth/login/kakao"
     val GOOGLE_LOGIN = "$LOCAL_URL/auth/login/google"
-    val APPLE_LOGIN = "$BASE_URL/auth/login/apple"
+    val APPLE_LOGIN = "$LOCAL_URL/auth/login/apple"
     val SERVER_STATE = "https://fanwoori-develop-api.services"
     val GET_STAR_LIST = "$BASE_URL/stars"
     val USERS = "$LOCAL_URL/users"

@@ -21,6 +21,7 @@ import com.trotfan.trot.ui.components.navigation.CustomTopAppBar
 fun FullscreenDialog(
     modifier: Modifier = Modifier,
     title: String,
+    image: Int,
     onDismiss: () -> Unit
 ) {
     Dialog(
@@ -41,7 +42,7 @@ fun FullscreenDialog(
                 item {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(R.drawable.ranking_guide)
+                            .data(image)
                             .crossfade(true).build(),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxWidth(),
