@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.signup
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -39,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.messaging.FirebaseMessaging
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.checkbox.CheckBoxNullText
 import com.trotfan.trot.ui.home.mypage.setting.AlarmType
@@ -50,6 +50,8 @@ import com.trotfan.trot.ui.theme.Gray700
 import com.trotfan.trot.ui.theme.Gray750
 import com.trotfan.trot.ui.theme.Gray800
 import com.trotfan.trot.ui.theme.Gray900
+import com.trotfan.trot.ui.utils.clickable
+import java.net.URLEncoder
 
 @Composable
 fun TermsAgreement(
@@ -165,14 +167,16 @@ fun TermsAgreement(
                         onCheckedChange = {
                             termsOfUseCheck = termsOfUseCheck.not()
                         },
-                        link = ""
+                        link = "https://terms.fanmaum.com/",
+                        navController = navController
                     )
                     AgreeItem(
                         text = "(필수) 개인정보 처리방침",
                         isChecked = privacyCollectionCheck,
                         onCheckedChange = {
                             privacyCollectionCheck = privacyCollectionCheck.not()
-                        }, link = ""
+                        }, link = "https://privacy.fanmaum.com/",
+                        navController = navController
                     )
                     AgreeItem(
                         text = "(필수) 개인정보 제 3자 제공 동의",
@@ -180,7 +184,8 @@ fun TermsAgreement(
                         onCheckedChange = {
                             privacyUseCheck = privacyUseCheck.not()
                         },
-                        link = ""
+                        link = "https://thirdparty.fanmaum.com/",
+                        navController = navController
                     )
                     AgreeItem(
                         text = "(선택) 주간 광고성 알림 수신 동의",
@@ -238,7 +243,13 @@ fun TermsAgreement(
 }
 
 @Composable
-fun AgreeItem(text: String, isChecked: Boolean, onCheckedChange: () -> Unit, link: String? = null) {
+fun AgreeItem(
+    text: String,
+    isChecked: Boolean,
+    navController: NavController? = null,
+    onCheckedChange: () -> Unit,
+    link: String? = null
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -248,6 +259,11 @@ fun AgreeItem(text: String, isChecked: Boolean, onCheckedChange: () -> Unit, lin
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
+                .clickable {
+                    link?.let { url ->
+                        navController?.navigate("${Route.WebView.route}/${URLEncoder.encode(url)}")
+                    }
+                }
         ) {
             Text(
                 text = text,
