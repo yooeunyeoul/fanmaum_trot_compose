@@ -60,7 +60,7 @@ android {
             manifestPlaceholders["kakaoKey"] = "kakaoa85178977eed8c1ed9dae2e47d89a254"
         }
         create("product") {
-            manifestPlaceholders["appLabel"] = "Fanmaum_product"
+            manifestPlaceholders["appLabel"] = "팬마음"
             manifestPlaceholders["kakaoKey"] = "kakaoa85178977eed8c1ed9dae2e47d89a254"
         }
     }
