@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.trotfan.trot.model.FavoriteStar
+import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.ui.components.input.SearchStatus
 import retrofit2.HttpException
@@ -27,20 +28,30 @@ class GetStarDataSource @Inject constructor(
         return try {
 
             val data = service.getStarList(params.key ?: "", search = starName).data
-            Log.e("cursor", "nextCursor::::" + params.key.toString())
-            val starList = data?.stars
-            var nextCursor = data?.meta?.nextCursor
-            var prevCursor = data?.meta?.prevCursor
+            val result = service.getStarList(params.key ?: "", search = starName).result
 
-            if (starList?.isEmpty() == true && nextCursor?.isEmpty() == true && prevCursor?.isEmpty() == true) {
-                LoadResult.Error(Exception(SearchStatus.NoResult.name))
-            } else {
-                LoadResult.Page(
-                    data = starList?: listOf(),
-                    prevKey = if (prevCursor?.isEmpty() == true) null else prevCursor,
-                    nextKey = if (nextCursor?.isEmpty() == true) null else nextCursor
-                )
+            when (result.code) {
+                ResultCodeStatus.SuccessWithData.code -> {
+                    Log.e("cursor", "nextCursor::::" + params.key.toString())
+                    val starList = data?.stars
+                    var nextCursor = data?.meta?.nextCursor
+                    var prevCursor = data?.meta?.prevCursor
+
+                    if (starList?.isEmpty() == true && nextCursor?.isEmpty() == true && prevCursor?.isEmpty() == true) {
+                        LoadResult.Error(Exception(SearchStatus.NoResult.name))
+                    } else {
+                        LoadResult.Page(
+                            data = starList ?: listOf(),
+                            prevKey = if (prevCursor?.isEmpty() == true) null else prevCursor,
+                            nextKey = if (nextCursor?.isEmpty() == true) null else nextCursor
+                        )
+                    }
+                }
+                else -> {
+                    LoadResult.Error(Exception(SearchStatus.NoResult.name))
+                }
             }
+
         } catch (e: HttpException) {
             LoadResult.Error(Exception(e.localizedMessage))
         } catch (e: Exception) {
