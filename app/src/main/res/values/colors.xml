@@ -1,10 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="gray_50">#F9FAFA</color>
+    <color name="gray_100">#F2F4F5</color>
+    <color name="gray_200">#E6EAEB</color>
+    <color name="gray_300">#CFD5D8</color>
+    <color name="gray_400">#BDC6C9</color>
+    <color name="gray_500">#ABB6BA</color>
+    <color name="gray_600">#819298</color>
+    <color name="gray_700">#5C6B70</color>
+    <color name="gray_750">#475357</color>
+    <color name="gray_800">#394346</color>
+    <color name="gray_900">#22282A</color>
+
+    <color name="primary_30">#FFFAFA</color>
+    <color name="primary_50">#FEF5F5</color>
+    <color name="primary_100">#FDEAEB</color>
+    <color name="primary_200">#FACBCC</color>
+    <color name="primary_300">#F7ACAE</color>
+    <color name="primary_400">#F48D8F</color>
+    <color name="primary_500">#F26F72</color>
+    <color name="primary_600">#D0515F</color>
+    <color name="primary_700">#AE374F</color>
+    <color name="primary_800">#8C2341</color>
+    <color name="primary_900">#741538</color>
+
+    <color name="secondary_50">#F7F6FF</color>
+    <color name="secondary_100">#F0EEFE</color>
+    <color name="secondary_200">#D9D3FD</color>
+    <color name="secondary_300">#C2B9FC</color>
+    <color name="secondary_400">#AB9FFB</color>
+    <color name="secondary_500">#9485FA</color>
+    <color name="secondary_600">#6E61D7</color>
+    <color name="secondary_700">#4E43B3</color>
+    <color name="secondary_800">#332A90</color>
+    <color name="secondary_900">#201977</color>
+
+    <color name="semantic_positive_500">#2DC4B3</color>
+    <color name="semantic_positive_300">#81E2D7</color>
+    <color name="semantic_negative_500">#F76C1B</color>
+    <color name="semantic_negative_300">#FFAC7C</color>
 </resources>

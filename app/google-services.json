@@ -1,0 +1,143 @@
+{
+  "project_info": {
+    "project_number": "27320645027",
+    "project_id": "trot-467a8",
+    "storage_bucket": "trot-467a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27320645027:android:16bea77971272f9c439616",
+        "android_client_info": {
+          "package_name": "com.trotfan.trot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUlQHHRGC9cS9o0Hrct5MplwOSd62mM6c"
+        },
+        {
+          "current_key": "AIzaSyDT_fWT0jhXROBC30tlSiVvLj09P5PWCOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "27320645027-idan8iuvuqs8q9ahvak4r9mpl5v13l46.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trotfan.trot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27320645027:android:5e066abb025ae1bf439616",
+        "android_client_info": {
+          "package_name": "com.trotfan.trot.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27320645027-8non81gge9hmgamaom4af5fh8b47n1u2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.dev",
+            "certificate_hash": "1f2452745a587ac9baaee1dd41d1b55c1deadb96"
+          }
+        },
+        {
+          "client_id": "27320645027-a6kab9s9po2i0e0e7oqi289u2gspmjfr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.dev",
+            "certificate_hash": "f34456907af32a1305ad6e47378741b7f87ea03c"
+          }
+        },
+        {
+          "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUlQHHRGC9cS9o0Hrct5MplwOSd62mM6c"
+        },
+        {
+          "current_key": "AIzaSyDT_fWT0jhXROBC30tlSiVvLj09P5PWCOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "27320645027-idan8iuvuqs8q9ahvak4r9mpl5v13l46.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trotfan.trot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27320645027:android:82fad52fd848902f439616",
+        "android_client_info": {
+          "package_name": "com.trotfan.trot.qa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUlQHHRGC9cS9o0Hrct5MplwOSd62mM6c"
+        },
+        {
+          "current_key": "AIzaSyDT_fWT0jhXROBC30tlSiVvLj09P5PWCOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "27320645027-idan8iuvuqs8q9ahvak4r9mpl5v13l46.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trotfan.trot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
