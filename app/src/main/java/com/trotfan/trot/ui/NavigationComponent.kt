@@ -19,6 +19,8 @@ import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
+import com.trotfan.trot.ui.home.charge.mission.AttendanceCheck
+import com.trotfan.trot.ui.home.charge.mission.TodayMission
 import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
 import com.trotfan.trot.ui.home.mypage.setting.Setting
 import com.trotfan.trot.ui.home.mypage.setting.SettingAccount
@@ -56,7 +58,9 @@ enum class Route(
     Setting(route = "setting"),
     SettingAccount(route = "settingAccount"),
     SettingPush(route = "settingPush"),
-    SettingSecession(route = "SettingSecession")
+    SettingSecession(route = "SettingSecession"),
+    TodayMission(route = "TodayMission"),
+    AttendanceCheck(route = "AttendanceCheck")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -222,6 +226,16 @@ fun NavigationComponent(
                         }
                     }
                 }
+            )
+        }
+        composable(Route.TodayMission.route) {
+            TodayMission(
+                navController = navController
+            )
+        }
+        composable(Route.AttendanceCheck.route) {
+            AttendanceCheck(
+                navController = navController
             )
         }
     }

@@ -13,7 +13,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -28,6 +27,7 @@ import androidx.navigation.NavController
 import com.android.billingclient.api.BillingClient
 import com.trotfan.trot.*
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.list.StoreItem
 import com.trotfan.trot.ui.components.navigation.AppbarL
@@ -69,7 +69,7 @@ fun ChargeHome(
             }, tabs = listOf("무료충전소", "스토어"))
 
             if (selectedTabIndex == 0) {
-                FreeChargeView()
+                FreeChargeView(navController)
             } else {
                 StoreView(purchaseHelper = purchaseHelper)
             }
@@ -80,7 +80,7 @@ fun ChargeHome(
 }
 
 @Composable
-fun FreeChargeView() {
+fun FreeChargeView(navController: NavController) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -131,6 +131,10 @@ fun FreeChargeView() {
                         .height(52.dp)
                         .padding(start = 34.dp, end = 34.dp)
                         .border(width = 2.dp, brush = gradient04, shape = RoundedCornerShape(26.dp))
+                        .clip(RoundedCornerShape(26.dp))
+                        .clickable {
+                            navController.navigate(Route.TodayMission.route)
+                        }
                 ) {
                     Row(
                         verticalAlignment = CenterVertically,
@@ -190,7 +194,7 @@ fun FreeChargeView() {
                 title = "출석체크 (200투표권)",
                 count = 1
             ) {
-
+                navController.navigate(Route.AttendanceCheck.route)
             }
             Spacer(modifier = Modifier.height(16.dp))
             FreeChargeItem(

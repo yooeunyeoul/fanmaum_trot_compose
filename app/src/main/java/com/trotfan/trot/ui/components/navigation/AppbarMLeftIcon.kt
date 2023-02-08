@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -17,8 +18,9 @@ fun AppbarMLeftIcon(
     modifier: Modifier = Modifier,
     title: String,
     onIconClick: () -> Unit = {},
-    icon: Int? = null
-
+    icon: Int? = null,
+    textColor: Color? = null,
+    iconColor: Color? = null
 ) {
     Row(
         modifier = modifier
@@ -30,7 +32,7 @@ fun AppbarMLeftIcon(
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = Gray800,
+                tint = iconColor ?: Gray800,
                 modifier = Modifier
                     .padding(start = 16.dp, end = 8.dp)
                     .size(32.dp)
@@ -39,7 +41,7 @@ fun AppbarMLeftIcon(
         }
         Text(
             text = title,
-            color = Gray800,
+            color = textColor ?: Gray800,
             style = FanwooriTypography.body3,
             modifier = Modifier.weight(1f)
         )
