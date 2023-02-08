@@ -23,3 +23,6 @@
 #카카오톡 프로가드
 -keep class com.kakao.sdk.**.model.* { <fields>; }
 -keep class * extends com.google.gson.TypeAdapter
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+# https://github.com/protocolbuffers/protobuf/issues/6463#ref-pullrequest-510817469
+#-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite { <fields>; }
