@@ -21,6 +21,7 @@ import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.charge.mission.AttendanceCheck
 import com.trotfan.trot.ui.home.charge.mission.TodayMission
+import com.trotfan.trot.ui.home.charge.mission.VideoAd
 import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
 import com.trotfan.trot.ui.home.mypage.setting.Setting
 import com.trotfan.trot.ui.home.mypage.setting.SettingAccount
@@ -60,7 +61,8 @@ enum class Route(
     SettingPush(route = "settingPush"),
     SettingSecession(route = "SettingSecession"),
     TodayMission(route = "TodayMission"),
-    AttendanceCheck(route = "AttendanceCheck")
+    AttendanceCheck(route = "AttendanceCheck"),
+    VideoAd(route = "VideoAd")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -235,6 +237,11 @@ fun NavigationComponent(
         }
         composable(Route.AttendanceCheck.route) {
             AttendanceCheck(
+                navController = navController
+            )
+        }
+        composable(Route.VideoAd.route) {
+            VideoAd(
                 navController = navController
             )
         }

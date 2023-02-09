@@ -12,6 +12,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -25,13 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.android.billingclient.api.BillingClient
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.*
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.list.StoreItem
 import com.trotfan.trot.ui.components.navigation.AppbarL
-import com.trotfan.trot.ui.components.tab.CustomTabLayout
 import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.charge.component.MyVote
@@ -39,7 +43,9 @@ import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.textBrush
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ChargeHome(
     onItemClick: (Long) -> Unit,
@@ -49,7 +55,9 @@ fun ChargeHome(
     viewModel: ChargeHomeViewModel = hiltViewModel(),
     purchaseHelper: PurchaseHelper
 ) {
-    var selectedTabIndex by remember { mutableStateOf(0) }
+    val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+    val tabs = listOf("무료충전소", "스토어")
 
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
@@ -64,14 +72,56 @@ fun ChargeHome(
                 .fillMaxSize()
         ) {
             AppbarL(title = "충전", modifier = Modifier.padding(start = 16.dp))
-            CustomTabLayout(selectedTabIndex = selectedTabIndex, onTabClick = {
-                selectedTabIndex = it
-            }, tabs = listOf("무료충전소", "스토어"))
 
-            if (selectedTabIndex == 0) {
-                FreeChargeView(navController)
-            } else {
-                StoreView(purchaseHelper = purchaseHelper)
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp),
+                indicator = { tabPositions ->
+                    Box(
+                        modifier = Modifier
+                            .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                            .height(3.dp)
+                            .clip(RoundedCornerShape(1.5.dp))
+                            .background(Primary300)
+                    )
+                },
+                divider = {}
+            ) {
+                tabs.forEachIndexed { tabIndex, tab ->
+                    androidx.compose.material3.Tab(
+                        selected = pagerState.currentPage == tabIndex,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.scrollToPage(tabIndex)
+                            }
+                        },
+                        selectedContentColor = Color.White,
+                        unselectedContentColor = Color.White,
+                        text = {
+                            Text(
+                                text = tab,
+                                color = if (tabIndex == pagerState.currentPage) Primary900 else Gray700,
+                                style = if (tabIndex == pagerState.currentPage) FanwooriTypography.button1 else FanwooriTypography.body3
+                            )
+                        },
+                        modifier = Modifier.background(Color.White)
+                    )
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Gray200)
+            )
+
+            HorizontalPager(count = tabs.size, state = pagerState) { page ->
+                when (page) {
+                    0 -> FreeChargeView(navController)
+                    else -> StoreView(purchaseHelper = purchaseHelper)
+                }
             }
 
         }
@@ -84,79 +134,82 @@ fun FreeChargeView(navController: NavController) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .background(Gray50)
+            .fillMaxSize()
+            .background(Color.White)
             .verticalScroll(scrollState)
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            shape = RoundedCornerShape(24.dp),
-            backgroundColor = Color.White,
-            elevation = 1.dp
-        ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(
-                    text = "일일미션 완료하고",
-                    style = FanwooriTypography.subtitle2,
-                    color = Gray800,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(modifier = Modifier.align(CenterHorizontally)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.icon_vote),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
+        Box(modifier = Modifier.fillMaxWidth().background(Gray50)) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                shape = RoundedCornerShape(24.dp),
+                backgroundColor = Color.White,
+                elevation = 1.dp
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.height(32.dp))
                     Text(
-                        text = "3,200 투표권",
+                        text = "일일미션 완료하고",
                         style = FanwooriTypography.subtitle2,
-                        modifier = Modifier.textBrush(
-                            gradient04
+                        color = Gray800,
+                        modifier = Modifier.align(CenterHorizontally)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(modifier = Modifier.align(CenterHorizontally)) {
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_vote),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
                         )
-                    )
-
-                    Text(
-                        text = "받으세요!",
-                        style = FanwooriTypography.subtitle2,
-                        color = Gray800
-                    )
-                }
-                Spacer(modifier = Modifier.height(24.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp)
-                        .padding(start = 34.dp, end = 34.dp)
-                        .border(width = 2.dp, brush = gradient04, shape = RoundedCornerShape(26.dp))
-                        .clip(RoundedCornerShape(26.dp))
-                        .clickable {
-                            navController.navigate(Route.TodayMission.route)
-                        }
-                ) {
-                    Row(
-                        verticalAlignment = CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
                         Text(
-                            text = "참여하고 투표권받기",
-                            style = FanwooriTypography.subtitle4,
+                            text = "3,200 투표권",
+                            style = FanwooriTypography.subtitle2,
                             modifier = Modifier.textBrush(
                                 gradient04
                             )
                         )
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_top),
-                            contentDescription = null,
-                            tint = Secondary500,
-                            modifier = Modifier.rotate(90f)
+
+                        Text(
+                            text = "받으세요!",
+                            style = FanwooriTypography.subtitle2,
+                            color = Gray800
                         )
                     }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .padding(start = 34.dp, end = 34.dp)
+                            .border(width = 2.dp, brush = gradient04, shape = RoundedCornerShape(26.dp))
+                            .clip(RoundedCornerShape(26.dp))
+                            .clickable {
+                                navController.navigate(Route.TodayMission.route)
+                            }
+                    ) {
+                        Row(
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Text(
+                                text = "참여하고 투표권받기",
+                                style = FanwooriTypography.subtitle4,
+                                modifier = Modifier.textBrush(
+                                    gradient04
+                                )
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_top),
+                                contentDescription = null,
+                                tint = Secondary500,
+                                modifier = Modifier.rotate(90f)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(34.dp))
                 }
-                Spacer(modifier = Modifier.height(34.dp))
             }
         }
 
@@ -203,7 +256,7 @@ fun FreeChargeView(navController: NavController) {
                 title = "동영상 광고 (최대 6,000투표권)",
                 count = 16
             ) {
-
+                navController.navigate(Route.VideoAd.route)
             }
             Spacer(modifier = Modifier.height(16.dp))
             FreeChargeItem(
@@ -301,7 +354,7 @@ fun StoreView(
 
 
     LazyColumn(
-        Modifier.fillMaxWidth(),
+        Modifier.fillMaxSize(),
         state = lazyListState,
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
     ) {
@@ -327,6 +380,7 @@ fun StoreView(
                                     showSuccessDialog = true
                                     dialogMessage = BillingResponse.Success.message
                                 }
+
                                 BillingResponse.Fail -> {
                                     showSuccessDialog = true
                                     dialogMessage = BillingResponse.Fail.message

@@ -75,7 +75,7 @@ fun TodayMission(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 MissionItem(title = "동영상광고 보기 1회", number = 3) {
-
+                    navController?.navigate(Route.VideoAd.route)
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 MissionItem(title = "행운의 룰렛 돌리기 1회", number = 4) {
