@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +36,10 @@ fun AttendanceCheck(
         "팬마음 정책에 어긋나거나 부정한 방법으로 이벤트 참여가 의심되는 경우, 투표권은 지급되지 않으며 지급된 투표권은 회수 처리됩니다.",
         "투표권 미지급 관련 문의는 마이페이지 > 문의하기를 통해 가능합니다."
     )
+    var attendanceState by remember {
+        mutableStateOf(false)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -75,22 +79,26 @@ fun AttendanceCheck(
             Spacer(modifier = Modifier.height(48.dp))
             Box {
                 Image(
-                    painter = painterResource(id = R.drawable.charge_calender_check01),
+                    painter = painterResource(id = if (attendanceState) R.drawable.charge_calender_check02 else R.drawable.charge_calender_check01),
                     contentDescription = null,
                     modifier = Modifier.size(144.dp)
                 )
                 Text(
-                    text = "출석 전",
+                    text = if (attendanceState) "출석완료" else "출석 전",
                     style = FanwooriTypography.subtitle1,
-                    color = Gray750,
+                    color = if (attendanceState) Color.White else Gray750,
                     modifier = Modifier.align(
                         Alignment.Center
                     )
                 )
             }
             Spacer(modifier = Modifier.height(48.dp))
-            BtnFilledLPrimary(text = "출석하기", modifier = Modifier.width(248.dp), enabled = true) {
-
+            BtnFilledLPrimary(
+                text = if (attendanceState) "출석완료" else "출석하기",
+                modifier = Modifier.width(248.dp),
+                enabled = attendanceState.not()
+            ) {
+                attendanceState = true
             }
             Spacer(modifier = Modifier.height(48.dp))
             Column(

@@ -240,9 +240,14 @@ fun NavigationComponent(
                 navController = navController
             )
         }
-        composable(Route.VideoAd.route) {
+        composable("${Route.VideoAd.route}/{count}", arguments = listOf(
+            navArgument(name = "count") {
+                type = NavType.IntType
+            }
+        )) { backStackEntry ->
             VideoAd(
-                navController = navController
+                navController = navController,
+                backStackEntry.arguments?.getInt("count")
             )
         }
     }

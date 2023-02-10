@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.charge.mission
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,7 +57,10 @@ import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.textBrush
 
 @Composable
-fun VideoAd(navController: NavController?) {
+fun VideoAd(
+    navController: NavController?,
+    count: Int? = 0
+) {
     val configuration = LocalConfiguration.current
     val itemWidth = (configuration.screenWidthDp.dp - 56.dp) / 4
     var adCount by remember {
@@ -102,6 +106,8 @@ fun VideoAd(navController: NavController?) {
         }
 
     })
+
+    adCount = 20 - (count ?: 0)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -153,7 +159,7 @@ fun VideoAd(navController: NavController?) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     content = {
                         items(20) { index ->
-                            if (index < adCount) {
+                            if (index < adCount!!) {
                                 CompleteButton(height = itemWidth)
                             } else if (index == adCount) {
                                 PlayButton(height = itemWidth)
@@ -196,6 +202,7 @@ fun VideoAd(navController: NavController?) {
             title = "동영상 광고", icon = R.drawable.icon_back, modifier = Modifier.background(
                 Secondary50
             ), onIconClick = {
+                navController?.previousBackStackEntry?.savedStateHandle?.set("count", 20 - adCount)
                 navController?.popBackStack()
             }
         )

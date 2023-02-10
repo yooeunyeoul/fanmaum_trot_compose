@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -30,6 +31,7 @@ import com.android.billingclient.api.BillingClient
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.ironsource.mediationsdk.T
 import com.trotfan.trot.*
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
@@ -130,15 +132,26 @@ fun ChargeHome(
 }
 
 @Composable
-fun FreeChargeView(navController: NavController) {
+fun FreeChargeView(
+    navController: NavController,
+    viewModel: ChargeHomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val scrollState = rememberScrollState()
+    val missionState by viewModel.missionState.collectAsState()
+    val adCount = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("count")
+        ?.observeAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
             .verticalScroll(scrollState)
     ) {
-        Box(modifier = Modifier.fillMaxWidth().background(Gray50)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Gray50)
+        ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -182,7 +195,11 @@ fun FreeChargeView(navController: NavController) {
                             .fillMaxWidth()
                             .height(52.dp)
                             .padding(start = 34.dp, end = 34.dp)
-                            .border(width = 2.dp, brush = gradient04, shape = RoundedCornerShape(26.dp))
+                            .border(
+                                width = 2.dp,
+                                brush = gradient04,
+                                shape = RoundedCornerShape(26.dp)
+                            )
                             .clip(RoundedCornerShape(26.dp))
                             .clickable {
                                 navController.navigate(Route.TodayMission.route)
@@ -245,7 +262,7 @@ fun FreeChargeView(navController: NavController) {
                 icon = R.drawable.charge_calender,
                 bgColor = Primary50,
                 title = "출석체크 (200투표권)",
-                count = 1
+                count = missionState?.remaining?.attendance ?: 0
             ) {
                 navController.navigate(Route.AttendanceCheck.route)
             }
@@ -254,16 +271,16 @@ fun FreeChargeView(navController: NavController) {
                 icon = R.drawable.charge_video,
                 bgColor = Secondary50,
                 title = "동영상 광고 (최대 6,000투표권)",
-                count = 16
+                count = adCount?.value ?: missionState?.remaining?.video_reward ?: 0
             ) {
-                navController.navigate(Route.VideoAd.route)
+                navController.navigate("${Route.VideoAd.route}/${adCount?.value ?: missionState?.remaining?.video_reward ?: 0}")
             }
             Spacer(modifier = Modifier.height(16.dp))
             FreeChargeItem(
                 icon = R.drawable.charge_roulette,
                 bgColor = Primary50,
                 title = "행운룰렛 (최대 30,000투표권)",
-                count = 0
+                count = missionState?.remaining?.roulette ?: 0
             ) {
 
             }

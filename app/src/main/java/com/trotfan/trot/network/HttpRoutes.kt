@@ -21,4 +21,5 @@ object HttpRoutes {
     val BANNER = "$BASE_URL/banners"
     val LOGOUT = "$LOCAL_URL/auth/logout"
     val GOOGLE_PURCHASE = "$LOCAL_URL/google-purchase"
+    val MISSIONS = "$BASE_URL/missions"
 }

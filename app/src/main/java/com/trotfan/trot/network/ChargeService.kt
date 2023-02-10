@@ -1,5 +1,6 @@
 package com.trotfan.trot.network
 
+import com.trotfan.trot.model.MissionState
 import com.trotfan.trot.network.response.CommonResponse
 
 interface ChargeService {
@@ -11,4 +12,7 @@ interface ChargeService {
         packageName: String
     ): CommonResponse<Unit>
 
+    suspend fun getMissions(
+        userToken: String
+    ): CommonResponse<MissionState>
 }

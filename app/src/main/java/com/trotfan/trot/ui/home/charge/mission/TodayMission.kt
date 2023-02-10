@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -53,7 +54,7 @@ fun TodayMission(
                 .fillMaxWidth()
                 .verticalScroll(scrollState)
         ) {
-            Column {
+            Column(horizontalAlignment = CenterHorizontally) {
                 Image(
                     painter = painterResource(id = R.drawable.charge_missionbg),
                     contentDescription = null,
@@ -75,7 +76,7 @@ fun TodayMission(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 MissionItem(title = "동영상광고 보기 1회", number = 3) {
-                    navController?.navigate(Route.VideoAd.route)
+                    navController?.navigate("${Route.VideoAd.route}/20")
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 MissionItem(title = "행운의 룰렛 돌리기 1회", number = 4) {

@@ -22,4 +22,7 @@ class ChargeRepository @Inject constructor(
         packageName: String
     ): CommonResponse<Unit> =
         chargeService.certificationCharge(userToken, userId, productId, purchaseToken, packageName)
+
+    suspend fun getMissions(userToken: String): CommonResponse<MissionState> =
+        chargeService.getMissions(userToken)
 }
