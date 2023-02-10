@@ -55,7 +55,7 @@ fun TodayMission(
         ) {
             Column {
                 Image(
-                    painter = painterResource(id = R.drawable.charge_mission_bg),
+                    painter = painterResource(id = R.drawable.charge_missionbg),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
