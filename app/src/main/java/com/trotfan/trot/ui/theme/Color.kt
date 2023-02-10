@@ -66,3 +66,13 @@ val gradient03 = Brush.linearGradient(
     0.48f to Color(0xFFB1A0F6),
     1.0f to Color(0xFF4E43B3),
 )
+
+val gradient04 = Brush.linearGradient(
+    0.0f to Color(0xFFF26F72),
+    1.0f to Color(0xFF8473FF)
+)
+
+val gradient05 = Brush.verticalGradient(
+    0.0f to Color(0xFFF7F6FF),
+    1.0f to Color(0xFFFFFFFF)
+)
