@@ -23,10 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.ironsource.mediationsdk.IronSource
+import com.ironsource.mediationsdk.logger.IronSourceError
+import com.ironsource.mediationsdk.model.Placement
+import com.ironsource.mediationsdk.sdk.RewardedVideoListener
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
@@ -51,14 +52,15 @@ import com.trotfan.trot.ui.theme.Primary700
 import com.trotfan.trot.ui.theme.Secondary50
 import com.trotfan.trot.ui.theme.gradient04
 import com.trotfan.trot.ui.theme.gradient05
+import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.textBrush
 
 @Composable
 fun VideoAd(navController: NavController?) {
     val configuration = LocalConfiguration.current
     val itemWidth = (configuration.screenWidthDp.dp - 56.dp) / 4
-    val adCount by remember {
-        mutableStateOf(5)
+    var adCount by remember {
+        mutableStateOf(0)
     }
     val scrollState = rememberScrollState()
     val infoList = listOf(
@@ -72,6 +74,34 @@ fun VideoAd(navController: NavController?) {
         "팬마음 정책에 어긋나거나 부정한 방법으로 이벤트 참여가 의심되는 경우, 투표권은 지급되지 않으며 지급된 투표권은 회수 처리됩니다.",
         "투표권 미지급 관련 문의는 마이페이지 > 문의하기를 통해 가능합니다."
     )
+
+    IronSource.setRewardedVideoListener(object : RewardedVideoListener {
+        override fun onRewardedVideoAdOpened() {
+        }
+
+        override fun onRewardedVideoAdClosed() {
+        }
+
+        override fun onRewardedVideoAvailabilityChanged(p0: Boolean) {
+        }
+
+        override fun onRewardedVideoAdStarted() {
+        }
+
+        override fun onRewardedVideoAdEnded() {
+        }
+
+        override fun onRewardedVideoAdRewarded(p0: Placement?) {
+            adCount = adCount.plus(1)
+        }
+
+        override fun onRewardedVideoAdShowFailed(p0: IronSourceError?) {
+        }
+
+        override fun onRewardedVideoAdClicked(p0: Placement?) {
+        }
+
+    })
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -133,8 +163,7 @@ fun VideoAd(navController: NavController?) {
                         }
                     },
                     modifier = Modifier
-                        .widthIn(0.dp, 500.dp)
-                        .heightIn(452.dp, 500.dp)
+                        .heightIn(configuration.screenWidthDp.dp, 1200.dp)
                         .padding(start = 16.dp, end = 16.dp),
                     userScrollEnabled = false
                 )
@@ -185,6 +214,10 @@ fun PlayButton(height: Dp) {
             )
             .clip(RoundedCornerShape(16.dp))
             .background(Primary100)
+            .clickable {
+                if (IronSource.isRewardedVideoAvailable())
+                    IronSource.showRewardedVideo()
+            }
     ) {
         Column(
             modifier = Modifier.align(Alignment.Center),
