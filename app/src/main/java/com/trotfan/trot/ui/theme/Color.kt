@@ -48,6 +48,8 @@ val SemanticNegative300 = Color(0XFFFFAC7C)
 
 val TooltipTriangle = Color(0XFF6357CB)
 
+val textYellow = Color(0XFFFFE55A)
+
 val gradient01 = Brush.linearGradient(
     0.0f to Color(0xFF4E43B3),
     0.37f to Color(0xFF6E61D7),

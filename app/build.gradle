@@ -79,9 +79,10 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerVersion "1.7.0"
-        kotlinCompilerExtensionVersion "1.2.0"
+        kotlinCompilerVersion "$compose_compiler_version"
+        kotlinCompilerExtensionVersion "$compose_compiler_extension_version"
     }
+
 
 }
 
@@ -99,6 +100,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-dynamic-links-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
+
 
 
     //dagger hilt
@@ -125,12 +127,9 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
 
-    //Compose
-    def compose_version = "1.4.0-alpha04"
-
     implementation "androidx.navigation:navigation-compose:2.5.3"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
-    implementation "androidx.compose.material3:material3:1.1.0-alpha04"
+    implementation "androidx.compose.material3:material3:$compose_material_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
@@ -177,6 +176,8 @@ dependencies {
     implementation "com.airbnb.android:lottie-compose:5.2.0"
 
     implementation "com.android.billingclient:billing:5.1.0"
+
+    implementation project(path: ':roullete')
 
 }
 
