@@ -62,9 +62,6 @@ fun ChargeHome(
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf("무료충전소", "스토어")
 
-    LaunchedEffect(true) {
-        viewModel.getMissions()
-    }
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
     }

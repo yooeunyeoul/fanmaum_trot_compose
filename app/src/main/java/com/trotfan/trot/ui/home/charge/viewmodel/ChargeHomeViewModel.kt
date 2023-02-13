@@ -62,6 +62,11 @@ class ChargeHomeViewModel @Inject constructor(
     private val _videoCount =
         MutableStateFlow<Int?>(maxAdCount.minus(_missionState.value?.remaining?.video_reward ?: 0))
 
+    init {
+        if (_missionState.value == null) {
+            getMissions()
+        }
+    }
 
     fun getVoteTickets(purchaseHelper: PurchaseHelper) {
         viewModelScope.launch {
