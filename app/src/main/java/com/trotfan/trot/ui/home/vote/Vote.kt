@@ -35,6 +35,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -61,6 +62,7 @@ import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -76,9 +78,9 @@ fun VoteHome(
     onNavigateClick: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: VoteHomeViewModel = composableActivityViewModel("VoteHomeViewModel"),
+    viewModel: VoteHomeViewModel = hiltViewModel(),
     chargeHomeViewModel: ChargeHomeViewModel = composableActivityViewModel("ChargeHomeViewModel"),
-    onVotingClick: (vote_id: Int, unlimitedTicket: Long, todayTicket: Long, star: VoteMainStar?) -> Unit,
+    onVotingClick: (vote_id: Int, unlimitedTicket: Long, todayTicket: Long, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
     lazyListState: LazyListState?,
     purchaseHelper: PurchaseHelper
 ) {
@@ -260,7 +262,7 @@ fun VoteHome(
                                                 VoteMainStar(
                                                     id = favoriteStar.id,
                                                     name = favoriteStarName
-                                                )
+                                                ), viewModel
                                             )
                                         }
                                         .clip(CircleShape)
@@ -299,7 +301,7 @@ fun VoteHome(
                                             VoteMainStar(
                                                 id = favoriteStar.id,
                                                 name = favoriteStarName
-                                            )
+                                            ), viewModel
                                         )
                                     }
                                 }
@@ -524,7 +526,7 @@ fun VoteHome(
                                             onVotingClick(
                                                 voteId,
                                                 unLimitedTickets ?: 0, todayTickets ?: 0,
-                                                mainStar
+                                                mainStar, viewModel
                                             )
                                         },
                                         onSharedClick = {

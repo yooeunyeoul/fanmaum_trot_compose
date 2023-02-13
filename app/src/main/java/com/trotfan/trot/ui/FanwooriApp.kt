@@ -37,6 +37,7 @@ import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 object Destinations {
     const val HOME_ROUTE = "home"
@@ -51,7 +52,6 @@ object Destinations {
 @Composable
 fun FanwooriApp(
     viewModel: HomeViewModel = hiltViewModel(),
-    voteHomeViewModel: VoteHomeViewModel = composableActivityViewModel("VoteHomeViewModel"),
     purchaseHelper: PurchaseHelper
 ) {
     FanwooriTheme {
@@ -79,7 +79,9 @@ fun FanwooriApp(
             Pair(first = HomeSections.Charge.route, rememberLazyListState()),
             Pair(first = HomeSections.MyPage.route, rememberLazyListState())
         )
-//        var voteHomeViewModel: VoteHomeViewModel? = null
+        var voteHomeViewModel by remember {
+            mutableStateOf<VoteHomeViewModel?>(null)
+        }
 
         var votesQuantity by remember {
             mutableStateOf(0L)
@@ -140,9 +142,11 @@ fun FanwooriApp(
                 }
                 NavigationComponent(
                     navController = navController,
-                    onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar? ->
+                    onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
                         coroutineScope.launch {
                             star?.let {
+                                voteHomeViewModel = voteViewModel
+                                Timber.e(voteHomeViewModel.toString())
                                 viewModel.voteTickets.emit(Tickets(unlimitedTickets, todayTickets))
                                 viewModel.voteStar.emit(star)
                                 viewModel.voteId.emit(voteId)
