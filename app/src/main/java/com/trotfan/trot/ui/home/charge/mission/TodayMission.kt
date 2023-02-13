@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.charge.mission
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,12 +11,16 @@ import androidx.compose.material.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -29,23 +34,30 @@ import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.drawColoredShadow
 import com.trotfan.trot.ui.utils.textBrush
 
 @Composable
 fun TodayMission(
-    navController: NavController? = null
+    navController: NavController? = null,
+    viewModel: ChargeHomeViewModel = composableActivityViewModel(key = "ChargeHomeViewModel")
 ) {
+    val missionState by viewModel.missionState.collectAsState()
+    val attendanceState by viewModel.attendanceState.collectAsState()
+    val starShareState by viewModel.starShareState.collectAsState()
+    val videoRewardState by viewModel.videoRewardState.collectAsState()
+    val rouletteState by viewModel.rouletteState.collectAsState()
+    val missionCompleteCount by viewModel.missionCompleteCount.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Gray50)
     ) {
-        val completeMissionCount by remember {
-            mutableStateOf(4)
-        }
         val scrollState = rememberScrollState()
 
         Box(
@@ -53,9 +65,9 @@ fun TodayMission(
                 .fillMaxWidth()
                 .verticalScroll(scrollState)
         ) {
-            Column {
+            Column(horizontalAlignment = CenterHorizontally) {
                 Image(
-                    painter = painterResource(id = R.drawable.charge_mission_bg),
+                    painter = painterResource(id = R.drawable.charge_missionbg),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -66,19 +78,19 @@ fun TodayMission(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                MissionItem(title = "출석체크하기 1회", number = 1) {
+                MissionItem(title = "출석체크하기 1회", number = 1, state = attendanceState) {
                     navController?.navigate(Route.AttendanceCheck.route)
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                MissionItem(title = "내 스타 공유하기 1회", number = 2) {
+                MissionItem(title = "내 스타 공유하기 1회", number = 2, state = starShareState) {
 
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                MissionItem(title = "동영상광고 보기 1회", number = 3) {
-                    navController?.navigate(Route.VideoAd.route)
+                MissionItem(title = "동영상광고 보기 1회", number = 3, state = videoRewardState) {
+                    navController?.navigate("${Route.VideoAd.route}/20")
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                MissionItem(title = "행운의 룰렛 돌리기 1회", number = 4) {
+                MissionItem(title = "행운의 룰렛 돌리기 1회", number = 4, state = rouletteState) {
 
                 }
                 Spacer(modifier = Modifier.height(40.dp))
@@ -99,7 +111,7 @@ fun TodayMission(
                         color = Color.White
                     )
                     Text(
-                        text = "$completeMissionCount/4",
+                        text = "$missionCompleteCount/4",
                         style = FanwooriTypography.h3,
                         color = Color.White,
                         modifier = Modifier.padding(start = 8.dp)
@@ -113,7 +125,7 @@ fun TodayMission(
                             alpha = 0.93f,
                             offsetY = 0.dp,
                             offsetX = 0.dp,
-                            shadowRadius = if (completeMissionCount == 4) 10.dp else 0.dp
+                            shadowRadius = if (missionCompleteCount == 4) 10.dp else 0.dp
                         )
                 ) {
                     Box(
@@ -126,7 +138,7 @@ fun TodayMission(
                             )
                             .align(Center)
                     ) {
-                        if (completeMissionCount == 4) {
+                        if (missionCompleteCount == 4) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = CenterVertically,
@@ -179,7 +191,7 @@ fun TodayMission(
 }
 
 @Composable
-fun MissionItem(title: String, number: Int, onItemClick: () -> Unit) {
+fun MissionItem(title: String, number: Int, state: Boolean, onItemClick: () -> Unit) {
     Card(
         modifier = Modifier
             .widthIn(0.dp, 500.dp)
@@ -224,15 +236,40 @@ fun MissionItem(title: String, number: Int, onItemClick: () -> Unit) {
                 modifier = Modifier
                     .width(92.dp)
                     .fillMaxHeight()
-                    .background(Primary500)
+                    .background(if (state) Color.White else Primary500)
                     .align(CenterEnd)
             ) {
-                Text(
-                    text = "바로가기",
-                    style = FanwooriTypography.subtitle2,
-                    color = Color.White,
-                    modifier = Modifier.align(Center)
-                )
+                if (state) {
+                    Box(
+                        modifier = Modifier
+                            .align(CenterStart)
+                            .height(49.dp)
+                            .width(1.dp)
+                            .background(
+                                Gray200
+                            )
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_check),
+                            contentDescription = null,
+                            tint = Gray200,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(text = "완료", style = FanwooriTypography.subtitle2, color = Gray400)
+                    }
+                } else {
+                    Text(
+                        text = "바로가기",
+                        style = FanwooriTypography.subtitle2,
+                        color = Color.White,
+                        modifier = Modifier.align(Center)
+                    )
+                }
             }
         }
     }

@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import com.android.billingclient.api.BillingClient
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -42,6 +44,7 @@ import com.trotfan.trot.ui.home.charge.component.MyVote
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
 import kotlinx.coroutines.launch
 
@@ -52,13 +55,16 @@ fun ChargeHome(
     navController: NavController,
     onNavigateClick: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ChargeHomeViewModel = hiltViewModel(),
+    viewModel: ChargeHomeViewModel = composableActivityViewModel(key = "ChargeHomeViewModel"),
     purchaseHelper: PurchaseHelper
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf("무료충전소", "스토어")
 
+    LaunchedEffect(true) {
+        viewModel.getMissions()
+    }
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
     }
@@ -119,8 +125,8 @@ fun ChargeHome(
 
             HorizontalPager(count = tabs.size, state = pagerState) { page ->
                 when (page) {
-                    0 -> FreeChargeView(navController)
-                    else -> StoreView(purchaseHelper = purchaseHelper)
+                    0 -> FreeChargeView(navController, viewModel = viewModel)
+                    else -> StoreView(purchaseHelper = purchaseHelper, viewModel = viewModel)
                 }
             }
 
@@ -130,15 +136,26 @@ fun ChargeHome(
 }
 
 @Composable
-fun FreeChargeView(navController: NavController) {
+fun FreeChargeView(
+    navController: NavController,
+    viewModel: ChargeHomeViewModel
+) {
     val scrollState = rememberScrollState()
+    val missionState by viewModel.missionState.collectAsState()
+    val adCount = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("count")
+        ?.observeAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
             .verticalScroll(scrollState)
     ) {
-        Box(modifier = Modifier.fillMaxWidth().background(Gray50)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Gray50)
+        ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -182,7 +199,11 @@ fun FreeChargeView(navController: NavController) {
                             .fillMaxWidth()
                             .height(52.dp)
                             .padding(start = 34.dp, end = 34.dp)
-                            .border(width = 2.dp, brush = gradient04, shape = RoundedCornerShape(26.dp))
+                            .border(
+                                width = 2.dp,
+                                brush = gradient04,
+                                shape = RoundedCornerShape(26.dp)
+                            )
                             .clip(RoundedCornerShape(26.dp))
                             .clickable {
                                 navController.navigate(Route.TodayMission.route)
@@ -245,7 +266,7 @@ fun FreeChargeView(navController: NavController) {
                 icon = R.drawable.charge_calender,
                 bgColor = Primary50,
                 title = "출석체크 (200투표권)",
-                count = 1
+                count = missionState?.remaining?.attendance ?: 0
             ) {
                 navController.navigate(Route.AttendanceCheck.route)
             }
@@ -254,16 +275,16 @@ fun FreeChargeView(navController: NavController) {
                 icon = R.drawable.charge_video,
                 bgColor = Secondary50,
                 title = "동영상 광고 (최대 6,000투표권)",
-                count = 16
+                count = adCount?.value ?: missionState?.remaining?.video_reward ?: 0
             ) {
-                navController.navigate(Route.VideoAd.route)
+                navController.navigate("${Route.VideoAd.route}/${adCount?.value ?: missionState?.remaining?.video_reward ?: 0}")
             }
             Spacer(modifier = Modifier.height(16.dp))
             FreeChargeItem(
                 icon = R.drawable.charge_roulette,
                 bgColor = Primary50,
                 title = "행운룰렛 (최대 30,000투표권)",
-                count = 0
+                count = missionState?.remaining?.roulette ?: 0
             ) {
                 navController.navigate(Route.LuckyRoulette.route)
             }
@@ -324,7 +345,7 @@ fun FreeChargeItem(icon: Int, bgColor: Color, title: String, count: Int, onItemC
 @Composable
 fun StoreView(
     purchaseHelper: PurchaseHelper,
-    viewModel: ChargeHomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: ChargeHomeViewModel
 ) {
     val lazyListState: LazyListState = rememberLazyListState()
     val tickets by purchaseHelper.tickets.collectAsState()

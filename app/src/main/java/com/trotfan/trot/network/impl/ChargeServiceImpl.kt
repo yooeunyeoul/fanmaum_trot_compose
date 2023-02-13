@@ -1,6 +1,7 @@
 package com.trotfan.trot.network.impl
 
 import com.trotfan.trot.model.LuckyTicket
+import com.trotfan.trot.model.MissionState
 import com.trotfan.trot.network.ChargeService
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.response.CommonResponse
@@ -59,5 +60,35 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
             })
         }
         return response.body()
+    }
+
+    override suspend fun getMissions(userToken: String): CommonResponse<MissionState> {
+        return httpClient.get(HttpRoutes.MISSIONS) {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun postRewardVideo(userToken: String): CommonResponse<Unit> {
+        return httpClient.post("${HttpRoutes.CHARGES}/video-reward") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun postAttendance(userToken: String): CommonResponse<Unit> {
+        return httpClient.post("${HttpRoutes.CHARGES}/attendance") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
     }
 }

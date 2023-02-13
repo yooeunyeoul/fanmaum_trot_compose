@@ -10,6 +10,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+import com.ironsource.mediationsdk.IronSource
+import com.ironsource.mediationsdk.integration.IntegrationHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.ui.home.charge.roullete.luckyRoulette
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +29,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getDynamicLink()
+        settingIronSource()
 
         setContent {
 
@@ -54,5 +57,20 @@ class MainActivity : ComponentActivity() {
             .addOnFailureListener {
                 Log.d("dynamicLinkTest", it.toString())
             }
+    }
+
+    private fun settingIronSource() {
+        IronSource.init(this, "17f942e2d", IronSource.AD_UNIT.REWARDED_VIDEO)
+        IntegrationHelper.validateIntegration(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        IronSource.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        IronSource.onPause(this)
     }
 }

@@ -2,15 +2,21 @@ package com.trotfan.trot.ui.home.charge.viewmodel
 
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.Expired
+import com.trotfan.trot.model.MissionState
+import com.trotfan.trot.model.Missions
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
 import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +27,40 @@ class ChargeHomeViewModel @Inject constructor(
 ) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
+    val missionState: StateFlow<MissionState?>
+        get() = _missionState
+    private val _missionState = MutableStateFlow<MissionState?>(null)
+
+    val attendanceState: StateFlow<Boolean>
+        get() = _attendanceState
+    private val _attendanceState =
+        MutableStateFlow(_missionState.value?.missions?.attendance ?: false)
+
+    val starShareState: StateFlow<Boolean>
+        get() = _starShareState
+    private val _starShareState =
+        MutableStateFlow(_missionState.value?.missions?.star_share ?: false)
+
+    val videoRewardState: StateFlow<Boolean>
+        get() = _videoRewardState
+    private val _videoRewardState =
+        MutableStateFlow(_missionState.value?.missions?.video_reward ?: false)
+
+    val rouletteState: StateFlow<Boolean>
+        get() = _rouletteState
+    private val _rouletteState =
+        MutableStateFlow(_missionState.value?.missions?.roulette ?: false)
+
+    val missionCompleteCount: StateFlow<Int>
+        get() = _missionCompleteCount
+    private val _missionCompleteCount =
+        MutableStateFlow(0)
+
+    private val maxAdCount = 20
+    val videoCount: StateFlow<Int?>
+        get() = _videoCount
+    private val _videoCount =
+        MutableStateFlow<Int?>(maxAdCount.minus(_missionState.value?.remaining?.video_reward ?: 0))
 
 
     fun getVoteTickets(purchaseHelper: PurchaseHelper) {
@@ -38,6 +78,7 @@ class ChargeHomeViewModel @Inject constructor(
                             purchaseHelper.refreshTickets(response.data?.expired ?: Expired())
                             purchaseHelper.closeApiCall()
                         }
+
                         ResultCodeStatus.Fail.code -> {
                             Log.e("ChargeHomeViewModel", response.result.message.toString())
                         }
@@ -49,4 +90,62 @@ class ChargeHomeViewModel @Inject constructor(
         }
     }
 
+    fun getMissions() {
+        viewModelScope.launch {
+            context.userTokenStore.data.collect {
+                kotlin.runCatching {
+                    repository.getMissions(
+                        userToken = it.token
+                    )
+                }.onSuccess {
+                    _missionState.emit(it.data)
+                    _videoCount.emit(maxAdCount - (it.data?.remaining?.video_reward ?: 0))
+                    var count = 0
+                    it.data?.missions?.let { missions ->
+                        _attendanceState.emit(missions.attendance)
+                        _starShareState.emit(missions.star_share)
+                        _videoRewardState.emit(missions.video_reward)
+                        _rouletteState.emit(missions.roulette)
+                        if (missions.attendance) count++
+                        if (missions.star_share) count++
+                        if (missions.video_reward) count++
+                        if (missions.roulette) count++
+                    }
+                    _missionCompleteCount.emit(count)
+                }.onFailure {
+
+                }
+            }
+        }
+    }
+
+    fun postRewardVideo() {
+        viewModelScope.launch {
+            context.userTokenStore.data.collect {
+                kotlin.runCatching {
+                    repository.postRewardVideo(
+                        userToken = it.token
+                    )
+                }.onSuccess {
+                    _videoCount.emit(_videoCount.value?.plus(1))
+                }.onFailure {
+                    _videoCount.emit(_videoCount.value?.plus(1))
+                }
+            }
+        }
+    }
+
+    fun postAttendance() {
+        viewModelScope.launch {
+            context.userTokenStore.data.collect {
+                kotlin.runCatching {
+                    repository.postAttendance(it.token)
+                }.onSuccess {
+                    _attendanceState.emit(true)
+                }.onFailure {
+
+                }
+            }
+        }
+    }
 }

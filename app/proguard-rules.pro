@@ -26,3 +26,25 @@
 -keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
 # https://github.com/protocolbuffers/protobuf/issues/6463#ref-pullrequest-510817469
 #-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite { <fields>; }
+
+
+#아이언소스 프로가드
+-keepclassmembers class com.ironsource.sdk.controller.IronSourceWebView$JSInterface {
+    public *;
+}
+-keepclassmembers class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+-keep public class com.google.android.gms.ads.** {
+   public *;
+}
+-keep class com.ironsource.adapters.** { *;
+}
+-dontwarn com.ironsource.mediationsdk.**
+-dontwarn com.ironsource.adapters.**
+-keepattributes JavascriptInterface
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+-keep public class com.ironsource.**
+-keep class com.ironsource.adapters.** { *;
+}

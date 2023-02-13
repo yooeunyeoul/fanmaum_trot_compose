@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.ironsource.mediationsdk.IronSource
 import com.trotfan.trot.BuildConfig
+import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.MainPopups
@@ -16,6 +18,7 @@ import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -52,6 +55,15 @@ class HomeViewModel @Inject constructor(
 
     init {
         getMainPopups()
+        settingIronSourceUserId()
+    }
+
+    fun settingIronSourceUserId() {
+        viewModelScope.launch {
+            context.userIdStore.data.collect {
+                IronSource.setUserId(it.userId.toString())
+            }
+        }
     }
 
     fun getMainPopups() {
