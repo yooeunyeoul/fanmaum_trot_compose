@@ -19,18 +19,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.fanmaum.roullete.SpinWheel
 import com.fanmaum.roullete.SpinWheelDefaults
 import com.fanmaum.roullete.SpinWheelVisibleState
 import com.fanmaum.roullete.state.rememberSpinWheelState
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.home.charge.viewmodel.RouletteViewModel
+import com.trotfan.trot.ui.home.charge.viewmodel.TicketKind
 import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.NumberComma
 import kotlinx.coroutines.launch
 
 
@@ -38,14 +42,19 @@ val screenPadding = 24.dp
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun luckyRoulette() {
-    var visibleState by remember {
-        mutableStateOf(SpinWheelVisibleState.Available)
-    }
+fun luckyRoulette(
+    navController: NavController,
+    viewModel: RouletteViewModel = hiltViewModel()
+) {
 
     var dialogShowing by remember {
         mutableStateOf(false)
     }
+    val happyTicket by viewModel.luckyTicket.collectAsState()
+
+    val visibleState by viewModel.visibleState.collectAsState()
+    val resultDegree by viewModel.resultDegree.collectAsState()
+    val remainTime by viewModel.remainingTime.collectAsState()
 
 
     val textList by remember {
@@ -87,27 +96,19 @@ fun luckyRoulette() {
         )
     }
 
-    val pieColorList = listOf(
-        Color(0xFFFFF5D3),
-        Color(0xFFFFFFFF),
-        Color(0xFFFFF5D3),
-        Color(0xFFFFFFFF),
-        Color(0xFFFFF5D3),
-        Color(0xFFFFFFFF)
+    val endPieColorList = listOf(
+        Gray100,
+        Color.White,
+        Gray100,
+        Color.White,
+        Gray100,
+        Color.White
     )
 
-    val endPieColorList = listOf(
-        Color(0xFFFFD5D3),
-        Color(0xFFFFFFFF),
-        Color(0xFFFFD5D3),
-        Color(0xFFFFFFFF),
-        Color(0xFFFFD5D3),
-        Color(0xFFFFFFFF)
-    )
     val state = rememberSpinWheelState(
-        pieCount = iconList.count(),
-        durationMillis = 6000,
-        resultDegree = 130f,
+        pieCount = TicketKind.values().count(),
+        durationMillis = 5000,
+        resultDegree = resultDegree,
         startDegree = 30f
     )
     val scope = rememberCoroutineScope()
@@ -115,12 +116,13 @@ fun luckyRoulette() {
     if (dialogShowing) {
         VerticalDialogReceiveGift(
             contentText = "행운룰렛 당첨!",
-            gradientText = "3,200 투표권",
+            gradientText = "${NumberComma.decimalFormat.format(happyTicket.rouletteQuantity)} 투표권",
             buttonOneText = "확인"
         ) {
             dialogShowing = false
-            pieColorListState = endPieColorList
-            visibleState = SpinWheelVisibleState.Waiting
+//            pieColorListState = endPieColorList
+//            visibleState = SpinWheelVisibleState.Waiting
+            viewModel.testRoulette()
         }
 
     }
@@ -236,7 +238,7 @@ fun luckyRoulette() {
 
                                 }
                                 else -> {
-
+                                    pieColorListState = endPieColorList
                                 }
                             }
                         },
@@ -286,7 +288,7 @@ fun luckyRoulette() {
                                         )
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Text(
-                                            text = "02:04:11",
+                                            text = remainTime,
                                             color = Primary500,
                                             style = FanwooriTypography.h4
                                         )
@@ -341,7 +343,7 @@ fun luckyRoulette() {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "2 / 3 ",
+                            text = "${happyTicket.chance} / 3 ",
                             color = textYellow,
                             style = FanwooriTypography.h1
                         )
@@ -394,10 +396,4 @@ fun ItemRow(text: String) {
             style = FanwooriTypography.caption2
         )
     }
-}
-
-@Preview
-@Composable
-fun PreviewLuckyRoulette() {
-    luckyRoulette()
 }

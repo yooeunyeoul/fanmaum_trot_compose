@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,6 +21,7 @@ import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.charge.mission.AttendanceCheck
 import com.trotfan.trot.ui.home.charge.mission.TodayMission
 import com.trotfan.trot.ui.home.charge.mission.VideoAd
+import com.trotfan.trot.ui.home.charge.roullete.luckyRoulette
 import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
 import com.trotfan.trot.ui.home.mypage.setting.Setting
 import com.trotfan.trot.ui.home.mypage.setting.SettingAccount
@@ -62,7 +62,8 @@ enum class Route(
     SettingSecession(route = "SettingSecession"),
     TodayMission(route = "TodayMission"),
     AttendanceCheck(route = "AttendanceCheck"),
-    VideoAd(route = "VideoAd")
+    VideoAd(route = "VideoAd"),
+    LuckyRoulette(route = "luckyRoulette")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -242,6 +243,11 @@ fun NavigationComponent(
         }
         composable(Route.VideoAd.route) {
             VideoAd(
+                navController = navController
+            )
+        }
+        composable(Route.LuckyRoulette.route) {
+            luckyRoulette(
                 navController = navController
             )
         }

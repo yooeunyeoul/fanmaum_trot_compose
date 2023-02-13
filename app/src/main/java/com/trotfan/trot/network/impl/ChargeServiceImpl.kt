@@ -1,5 +1,6 @@
 package com.trotfan.trot.network.impl
 
+import com.trotfan.trot.model.LuckyTicket
 import com.trotfan.trot.network.ChargeService
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.response.CommonResponse
@@ -39,5 +40,24 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         }
         return response.body()
 
+    }
+
+    override suspend fun checkRoulette(
+        userToken: String,
+        userId: Int
+    ): CommonResponse<LuckyTicket> {
+        val response = httpClient.submitForm(
+            url = HttpRoutes.GOOGLE_PURCHASE
+        ) {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+            body = FormDataContent(Parameters.build {
+                append("user_id", userId.toString())
+            })
+        }
+        return response.body()
     }
 }

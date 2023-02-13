@@ -22,4 +22,9 @@ class ChargeRepository @Inject constructor(
         packageName: String
     ): CommonResponse<Unit> =
         chargeService.certificationCharge(userToken, userId, productId, purchaseToken, packageName)
+
+    suspend fun checkRoulette(
+        userToken: String,
+        userId: Int,
+    ): CommonResponse<LuckyTicket> = chargeService.checkRoulette(userToken, userId)
 }

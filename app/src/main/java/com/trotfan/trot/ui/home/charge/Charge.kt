@@ -265,7 +265,7 @@ fun FreeChargeView(navController: NavController) {
                 title = "행운룰렛 (최대 30,000투표권)",
                 count = 0
             ) {
-
+                navController.navigate(Route.LuckyRoulette.route)
             }
             Spacer(modifier = Modifier.height(24.dp))
         }

@@ -178,7 +178,7 @@ fun getTime(
 fun getTime(
     targetMilliSecond: Long?
 ): Int {
-    val diff = abs((targetMilliSecond ?: 0)).minus(System.currentTimeMillis()) / 1000;
+    val diff = abs((targetMilliSecond ?: 0).minus(System.currentTimeMillis())) / 1000;
     return diff.toInt()
 }
 
