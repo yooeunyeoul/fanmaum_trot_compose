@@ -26,12 +26,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import com.android.billingclient.api.BillingClient
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.ironsource.mediationsdk.T
 import com.trotfan.trot.*
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
@@ -44,6 +44,7 @@ import com.trotfan.trot.ui.home.charge.component.MyVote
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
 import kotlinx.coroutines.launch
 
@@ -54,13 +55,16 @@ fun ChargeHome(
     navController: NavController,
     onNavigateClick: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ChargeHomeViewModel = hiltViewModel(),
+    viewModel: ChargeHomeViewModel = composableActivityViewModel(key = "ChargeHomeViewModel"),
     purchaseHelper: PurchaseHelper
 ) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf("무료충전소", "스토어")
 
+    LaunchedEffect(true) {
+        viewModel.getMissions()
+    }
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
     }
@@ -121,8 +125,8 @@ fun ChargeHome(
 
             HorizontalPager(count = tabs.size, state = pagerState) { page ->
                 when (page) {
-                    0 -> FreeChargeView(navController)
-                    else -> StoreView(purchaseHelper = purchaseHelper)
+                    0 -> FreeChargeView(navController, viewModel = viewModel)
+                    else -> StoreView(purchaseHelper = purchaseHelper, viewModel = viewModel)
                 }
             }
 
@@ -134,7 +138,7 @@ fun ChargeHome(
 @Composable
 fun FreeChargeView(
     navController: NavController,
-    viewModel: ChargeHomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: ChargeHomeViewModel
 ) {
     val scrollState = rememberScrollState()
     val missionState by viewModel.missionState.collectAsState()
@@ -341,7 +345,7 @@ fun FreeChargeItem(icon: Int, bgColor: Color, title: String, count: Int, onItemC
 @Composable
 fun StoreView(
     purchaseHelper: PurchaseHelper,
-    viewModel: ChargeHomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: ChargeHomeViewModel
 ) {
     val lazyListState: LazyListState = rememberLazyListState()
     val tickets by purchaseHelper.tickets.collectAsState()

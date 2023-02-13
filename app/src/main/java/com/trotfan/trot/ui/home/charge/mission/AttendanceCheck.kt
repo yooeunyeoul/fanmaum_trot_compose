@@ -17,13 +17,16 @@ import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
 
 @Composable
 fun AttendanceCheck(
-    navController: NavController?
+    navController: NavController?,
+    chargeHomeViewModel: ChargeHomeViewModel = composableActivityViewModel("ChargeHomeViewModel")
 ) {
     val scrollState = rememberScrollState()
     val infoList = listOf(
@@ -36,9 +39,7 @@ fun AttendanceCheck(
         "팬마음 정책에 어긋나거나 부정한 방법으로 이벤트 참여가 의심되는 경우, 투표권은 지급되지 않으며 지급된 투표권은 회수 처리됩니다.",
         "투표권 미지급 관련 문의는 마이페이지 > 문의하기를 통해 가능합니다."
     )
-    var attendanceState by remember {
-        mutableStateOf(false)
-    }
+    val attendanceState by chargeHomeViewModel.attendanceState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -98,7 +99,7 @@ fun AttendanceCheck(
                 modifier = Modifier.width(248.dp),
                 enabled = attendanceState.not()
             ) {
-                attendanceState = true
+                chargeHomeViewModel.postAttendance()
             }
             Spacer(modifier = Modifier.height(48.dp))
             Column(

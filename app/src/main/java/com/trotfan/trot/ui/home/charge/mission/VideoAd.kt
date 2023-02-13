@@ -1,6 +1,6 @@
 package com.trotfan.trot.ui.home.charge.mission
 
-import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
@@ -24,7 +23,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +42,7 @@ import com.ironsource.mediationsdk.model.Placement
 import com.ironsource.mediationsdk.sdk.RewardedVideoListener
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -54,18 +56,18 @@ import com.trotfan.trot.ui.theme.Secondary50
 import com.trotfan.trot.ui.theme.gradient04
 import com.trotfan.trot.ui.theme.gradient05
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
 
 @Composable
 fun VideoAd(
     navController: NavController?,
-    count: Int? = 0
+    count: Int? = 0,
+    videoViewModel: ChargeHomeViewModel = composableActivityViewModel("ChargeHomeViewModel")
 ) {
     val configuration = LocalConfiguration.current
     val itemWidth = (configuration.screenWidthDp.dp - 56.dp) / 4
-    var adCount by remember {
-        mutableStateOf(0)
-    }
+    val adCount by videoViewModel.videoCount.collectAsState()
     val scrollState = rememberScrollState()
     val infoList = listOf(
         "본 이벤트는 팬마음 회원 대상으로 진행되며, 팬마음 회원 로그인 및 전자금융거래 이용약관, 개인정보 수집 이용 동의 시에만 지급 및 사용이 가능합니다.",
@@ -96,7 +98,7 @@ fun VideoAd(
         }
 
         override fun onRewardedVideoAdRewarded(p0: Placement?) {
-            adCount = adCount.plus(1)
+            videoViewModel.postRewardVideo()
         }
 
         override fun onRewardedVideoAdShowFailed(p0: IronSourceError?) {
@@ -107,7 +109,13 @@ fun VideoAd(
 
     })
 
-    adCount = 20 - (count ?: 0)
+    BackHandler {
+        navController?.previousBackStackEntry?.savedStateHandle?.set(
+            "count",
+            20 - (adCount ?: 0)
+        )
+        navController?.popBackStack()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -202,7 +210,10 @@ fun VideoAd(
             title = "동영상 광고", icon = R.drawable.icon_back, modifier = Modifier.background(
                 Secondary50
             ), onIconClick = {
-                navController?.previousBackStackEntry?.savedStateHandle?.set("count", 20 - adCount)
+                navController?.previousBackStackEntry?.savedStateHandle?.set(
+                    "count",
+                    20 - (adCount ?: 0)
+                )
                 navController?.popBackStack()
             }
         )

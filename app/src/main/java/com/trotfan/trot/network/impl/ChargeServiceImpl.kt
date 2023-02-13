@@ -51,4 +51,24 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
             )
         }.body()
     }
+
+    override suspend fun postRewardVideo(userToken: String): CommonResponse<Unit> {
+        return httpClient.post("${HttpRoutes.CHARGES}/video-reward") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun postAttendance(userToken: String): CommonResponse<Unit> {
+        return httpClient.post("${HttpRoutes.CHARGES}/attendance") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
 }

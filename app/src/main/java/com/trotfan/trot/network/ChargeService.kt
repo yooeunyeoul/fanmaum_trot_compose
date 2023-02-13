@@ -15,4 +15,12 @@ interface ChargeService {
     suspend fun getMissions(
         userToken: String
     ): CommonResponse<MissionState>
+
+    suspend fun postRewardVideo(
+        userToken: String
+    ): CommonResponse<Unit>
+
+    suspend fun postAttendance(
+        userToken: String
+    ): CommonResponse<Unit>
 }

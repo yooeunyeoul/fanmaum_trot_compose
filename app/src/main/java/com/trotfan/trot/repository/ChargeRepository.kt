@@ -25,4 +25,10 @@ class ChargeRepository @Inject constructor(
 
     suspend fun getMissions(userToken: String): CommonResponse<MissionState> =
         chargeService.getMissions(userToken)
+
+    suspend fun postRewardVideo(userToken: String): CommonResponse<Unit> =
+        chargeService.postRewardVideo(userToken = userToken)
+
+    suspend fun postAttendance(userToken: String): CommonResponse<Unit> =
+        chargeService.postAttendance(userToken = userToken)
 }
