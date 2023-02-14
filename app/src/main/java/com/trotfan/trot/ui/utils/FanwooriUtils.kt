@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.utils
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -37,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
+import com.trotfan.trot.ui.home.vote.voteTopShareText
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -82,14 +84,13 @@ fun addDynamicLink(
     titleText: String,
     uri: String,
     descriptionText: String,
-    packageName: String,
     onSuccess: (ShortDynamicLink) -> Unit
 ) {
     Firebase.dynamicLinks.shortLinkAsync {
         link = Uri.parse(uri)
-        domainUriPrefix = "https://fanwoori.page.link"
-        androidParameters(packageName) {}
-        iosParameters("com.trotfan.trotDev") {}
+        domainUriPrefix = "https://fanmaum.page.link"
+        androidParameters("com.trotfan.trot") {}
+        iosParameters("com.trotfan.trot") {}
         socialMetaTagParameters {
             title = titleText
             description = descriptionText

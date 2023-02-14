@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -62,9 +63,6 @@ fun ChargeHome(
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf("무료충전소", "스토어")
 
-    LaunchedEffect(true) {
-        viewModel.getMissions()
-    }
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
     }
@@ -144,6 +142,7 @@ fun FreeChargeView(
     val missionState by viewModel.missionState.collectAsState()
     val adCount = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("count")
         ?.observeAsState()
+    val rewardedState by viewModel.rewardedState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -200,11 +199,32 @@ fun FreeChargeView(
                             .height(52.dp)
                             .padding(start = 34.dp, end = 34.dp)
                             .border(
-                                width = 2.dp,
+                                width = if (rewardedState == 0) 2.dp else 0.dp,
                                 brush = gradient04,
                                 shape = RoundedCornerShape(26.dp)
                             )
                             .clip(RoundedCornerShape(26.dp))
+                            .background(
+                                when (rewardedState) {
+                                    0 -> Brush.linearGradient(
+                                        0.0f to Color(
+                                            0xFFFFFFFF
+                                        ),
+                                        1.0f to Color(
+                                            0xFFFFFFFF
+                                        )
+                                    )
+                                    1 -> gradient04
+                                    else -> Brush.linearGradient(
+                                        0.0f to Color(
+                                            0xFF5C6B70
+                                        ),
+                                        1.0f to Color(
+                                            0xFF5C6B70
+                                        )
+                                    )
+                                }
+                            )
                             .clickable {
                                 navController.navigate(Route.TodayMission.route)
                             }
@@ -214,19 +234,43 @@ fun FreeChargeView(
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            Text(
-                                text = "참여하고 투표권받기",
-                                style = FanwooriTypography.subtitle4,
-                                modifier = Modifier.textBrush(
-                                    gradient04
-                                )
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.icon_top),
-                                contentDescription = null,
-                                tint = Secondary500,
-                                modifier = Modifier.rotate(90f)
-                            )
+                            when (rewardedState) {
+                                0 -> {
+                                    Text(
+                                        text = "참여하고 투표권받기",
+                                        style = FanwooriTypography.subtitle4,
+                                        modifier = Modifier.textBrush(
+                                            gradient04
+                                        )
+                                    )
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icon_top),
+                                        contentDescription = null,
+                                        tint = Secondary500,
+                                        modifier = Modifier.rotate(90f)
+                                    )
+                                }
+                                1 -> {
+                                    Text(
+                                        text = "지금 바로 보상받기",
+                                        style = FanwooriTypography.subtitle4,
+                                        color = Color.White
+                                    )
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icon_top),
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.rotate(90f)
+                                    )
+                                }
+                                else -> {
+                                    Text(
+                                        text = "일일미션 완료!",
+                                        style = FanwooriTypography.subtitle4,
+                                        color = Color.White
+                                    )
+                                }
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(34.dp))

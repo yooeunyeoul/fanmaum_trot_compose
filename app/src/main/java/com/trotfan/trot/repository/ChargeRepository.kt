@@ -36,4 +36,7 @@ class ChargeRepository @Inject constructor(
 
     suspend fun postAttendance(userToken: String): CommonResponse<Unit> =
         chargeService.postAttendance(userToken = userToken)
+
+    suspend fun postShareStar(userToken: String): CommonResponse<Unit> =
+        chargeService.postShareStar(userToken = userToken)
 }

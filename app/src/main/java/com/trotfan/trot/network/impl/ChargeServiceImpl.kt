@@ -91,4 +91,14 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
             )
         }.body()
     }
+
+    override suspend fun postShareStar(userToken: String): CommonResponse<Unit> {
+        return httpClient.post("${HttpRoutes.CHARGES}/star-share-reward") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
 }

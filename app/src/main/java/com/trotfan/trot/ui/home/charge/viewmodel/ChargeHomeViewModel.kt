@@ -2,21 +2,21 @@ package com.trotfan.trot.ui.home.charge.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.PurchaseHelper
+import com.trotfan.trot.datastore.UserInfoDataStore
+import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.MissionState
-import com.trotfan.trot.model.Missions
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
 import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,6 +27,7 @@ class ChargeHomeViewModel @Inject constructor(
 ) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
+    lateinit var userInfoManager: UserInfoManager
     val missionState: StateFlow<MissionState?>
         get() = _missionState
     private val _missionState = MutableStateFlow<MissionState?>(null)
@@ -62,6 +63,27 @@ class ChargeHomeViewModel @Inject constructor(
     private val _videoCount =
         MutableStateFlow<Int?>(maxAdCount.minus(_missionState.value?.remaining?.video_reward ?: 0))
 
+    val starName: StateFlow<String>
+        get() = _starName
+    private val _starName =
+        MutableStateFlow("")
+
+    val rewardedState: StateFlow<Int>
+        get() = _rewardedState
+    private val _rewardedState =
+        MutableStateFlow(0)
+
+    val missionSnackBarState = MutableStateFlow(false)
+
+    init {
+        if (_missionState.value == null) {
+            getMissions()
+        }
+        viewModelScope.launch {
+            userInfoManager = UserInfoManager(context.UserInfoDataStore)
+            _starName.emit(userInfoManager.favoriteStarNameFlow.first() ?: "")
+        }
+    }
 
     fun getVoteTickets(purchaseHelper: PurchaseHelper) {
         viewModelScope.launch {
@@ -80,7 +102,7 @@ class ChargeHomeViewModel @Inject constructor(
                         }
 
                         ResultCodeStatus.Fail.code -> {
-                            Log.e("ChargeHomeViewModel", response.result.message.toString())
+                            Log.e("ChargeHomeViewModel", response.result.message)
                         }
                     }
                 }.onFailure {
@@ -112,6 +134,14 @@ class ChargeHomeViewModel @Inject constructor(
                         if (missions.roulette) count++
                     }
                     _missionCompleteCount.emit(count)
+
+                    if (it.data?.rewarded == true) {
+                        _rewardedState.emit(2)
+                    } else if (count == 4) {
+                        _rewardedState.emit(1)
+                    } else {
+                        _rewardedState.emit(0)
+                    }
                 }.onFailure {
 
                 }
@@ -128,8 +158,11 @@ class ChargeHomeViewModel @Inject constructor(
                     )
                 }.onSuccess {
                     _videoCount.emit(_videoCount.value?.plus(1))
+                    if (!_videoRewardState.value) {
+                        _videoRewardState.emit(true)
+                        missionSnackBarState.emit(true)
+                    }
                 }.onFailure {
-                    _videoCount.emit(_videoCount.value?.plus(1))
                 }
             }
         }
@@ -142,6 +175,24 @@ class ChargeHomeViewModel @Inject constructor(
                     repository.postAttendance(it.token)
                 }.onSuccess {
                     _attendanceState.emit(true)
+                    missionSnackBarState.emit(true)
+                }.onFailure {
+
+                }
+            }
+        }
+    }
+
+    fun postShareStar() {
+        viewModelScope.launch {
+            context.userTokenStore.data.collect {
+                kotlin.runCatching {
+                    repository.postShareStar(it.token)
+                }.onSuccess {
+                    if (_starShareState.value.not()) {
+                        _starShareState.emit(true)
+                        missionSnackBarState.emit(true)
+                    }
                 }.onFailure {
 
                 }
