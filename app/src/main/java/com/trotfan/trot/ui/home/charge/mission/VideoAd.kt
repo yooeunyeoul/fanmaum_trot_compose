@@ -28,14 +28,18 @@ import com.ironsource.mediationsdk.model.Placement
 import com.ironsource.mediationsdk.sdk.RewardedVideoListener
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
+import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
+import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @Composable
@@ -62,6 +66,9 @@ fun VideoAd(
     val scaffoldState = rememberScaffoldState()
     val missionSnackBarState by videoViewModel.missionSnackBarState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    var dialogShowing by remember {
+        mutableStateOf(false)
+    }
 
     IronSource.setRewardedVideoListener(object : RewardedVideoListener {
         override fun onRewardedVideoAdOpened() {
@@ -81,6 +88,7 @@ fun VideoAd(
 
         override fun onRewardedVideoAdRewarded(p0: Placement?) {
             videoViewModel.postRewardVideo()
+            dialogShowing = true
         }
 
         override fun onRewardedVideoAdShowFailed(p0: IronSourceError?) {
@@ -97,6 +105,16 @@ fun VideoAd(
             20 - (adCount ?: 0)
         )
         navController?.popBackStack()
+    }
+
+    if (dialogShowing) {
+        VerticalDialogReceiveGift(
+            contentText = "동영상 광고 시청 완료!",
+            gradientText = "${NumberComma.decimalFormat.format(300)} 투표권",
+            buttonOneText = "확인"
+        ) {
+            dialogShowing = false
+        }
     }
 
     Scaffold(
@@ -227,6 +245,9 @@ fun VideoAd(
 
 @Composable
 fun PlayButton(height: Dp) {
+    var failDialogState by remember {
+        mutableStateOf(false)
+    }
     Box(
         modifier = Modifier
             .height(height)
@@ -238,8 +259,11 @@ fun PlayButton(height: Dp) {
             .clip(RoundedCornerShape(16.dp))
             .background(Primary100)
             .clickable {
-                if (IronSource.isRewardedVideoAvailable())
+                if (IronSource.isRewardedVideoAvailable()) {
                     IronSource.showRewardedVideo()
+                } else {
+                    failDialogState = true
+                }
             }
     ) {
         Column(
@@ -252,6 +276,16 @@ fun PlayButton(height: Dp) {
                 contentDescription = null
             )
             Text(text = "재생", style = FanwooriTypography.button1, color = Primary700)
+        }
+    }
+
+    if (failDialogState) {
+        VerticalDialog(
+            contentText = "잠깐!\n" +
+                    "동영상 광고를 불러올 수 없어요.\n" +
+                    "잠시 후 다시 시도해주세요.", buttonOneText = "확인"
+        ) {
+            failDialogState = false
         }
     }
 }

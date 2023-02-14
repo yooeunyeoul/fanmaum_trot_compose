@@ -74,6 +74,7 @@ class ChargeHomeViewModel @Inject constructor(
         MutableStateFlow(0)
 
     val missionSnackBarState = MutableStateFlow(false)
+    val attendanceRewardDialogState = MutableStateFlow(false)
 
     init {
         if (_missionState.value == null) {
@@ -176,6 +177,7 @@ class ChargeHomeViewModel @Inject constructor(
                 }.onSuccess {
                     _attendanceState.emit(true)
                     missionSnackBarState.emit(true)
+                    attendanceRewardDialogState.emit(true)
                 }.onFailure {
 
                 }

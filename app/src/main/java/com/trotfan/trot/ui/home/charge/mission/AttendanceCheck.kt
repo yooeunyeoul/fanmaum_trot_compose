@@ -24,7 +24,9 @@ import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
+import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
 import kotlinx.coroutines.launch
@@ -49,6 +51,7 @@ fun AttendanceCheck(
     val scaffoldState = rememberScaffoldState()
     val missionSnackBarState by chargeHomeViewModel.missionSnackBarState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    val dialogShowing by chargeHomeViewModel.attendanceRewardDialogState.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -64,6 +67,18 @@ fun AttendanceCheck(
         },
         snackbarHost = CustomSnackBarHost
     ) {
+        if (dialogShowing) {
+            VerticalDialogReceiveGift(
+                contentText = "출석체크 완료!",
+                gradientText = "${NumberComma.decimalFormat.format(200)} 투표권",
+                buttonOneText = "확인"
+            ) {
+                coroutineScope.launch {
+                    chargeHomeViewModel.attendanceRewardDialogState.emit(false)
+                }
+            }
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

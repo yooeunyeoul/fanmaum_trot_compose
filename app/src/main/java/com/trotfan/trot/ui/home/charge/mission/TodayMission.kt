@@ -114,7 +114,7 @@ fun TodayMission(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 MissionItem(title = "행운의 룰렛 돌리기 1회", number = 4, state = rouletteState) {
-
+                    navController?.navigate(Route.LuckyRoulette.route)
                 }
                 Spacer(modifier = Modifier.height(40.dp))
             }
