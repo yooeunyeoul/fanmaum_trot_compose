@@ -5,6 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarResult
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,13 +18,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
+import kotlinx.coroutines.launch
 
 @Composable
 fun AttendanceCheck(
@@ -40,97 +46,122 @@ fun AttendanceCheck(
         "투표권 미지급 관련 문의는 마이페이지 > 문의하기를 통해 가능합니다."
     )
     val attendanceState by chargeHomeViewModel.attendanceState.collectAsState()
+    val scaffoldState = rememberScaffoldState()
+    val missionSnackBarState by chargeHomeViewModel.missionSnackBarState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Primary50)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(80.dp))
-            Image(
-                painter = painterResource(id = R.drawable.charge_calender_title),
-                contentDescription = null
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
+        topBar = {
+            AppbarMLeftIcon(
+                title = "출석체크", icon = R.drawable.icon_back, modifier = Modifier.background(
+                    Primary50
+                ), onIconClick = {
+                    navController?.popBackStack()
+                }
             )
-            Spacer(modifier = Modifier.height(2.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "매일 출석하고", style = FanwooriTypography.button1, color = Gray800)
-                Spacer(modifier = Modifier.width(2.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.icon_vote),
-                    contentDescription = null
-                )
-                Text(
-                    text = "200 투표권",
-                    style = FanwooriTypography.subtitle4,
-                    modifier = Modifier
-                        .textBrush(
-                            gradient04
-                        )
-                )
-                Spacer(modifier = Modifier.width(2.dp))
-                Text(text = "받으세요!", style = FanwooriTypography.button1, color = Gray800)
-            }
-
-            Spacer(modifier = Modifier.height(48.dp))
-            Box {
-                Image(
-                    painter = painterResource(id = if (attendanceState) R.drawable.charge_calender_check02 else R.drawable.charge_calender_check01),
-                    contentDescription = null,
-                    modifier = Modifier.size(144.dp)
-                )
-                Text(
-                    text = if (attendanceState) "출석완료" else "출석 전",
-                    style = FanwooriTypography.subtitle1,
-                    color = if (attendanceState) Color.White else Gray750,
-                    modifier = Modifier.align(
-                        Alignment.Center
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.height(48.dp))
-            BtnFilledLPrimary(
-                text = if (attendanceState) "출석완료" else "출석하기",
-                modifier = Modifier.width(248.dp),
-                enabled = attendanceState.not()
-            ) {
-                chargeHomeViewModel.postAttendance()
-            }
-            Spacer(modifier = Modifier.height(48.dp))
+        },
+        snackbarHost = CustomSnackBarHost
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Primary50)
+        ) {
             Column(
                 modifier = Modifier
-                    .background(Color.White)
                     .fillMaxWidth()
-                    .padding(top = 32.dp, bottom = 32.dp)
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "상세안내",
-                    style = FanwooriTypography.subtitle3,
-                    color = Gray700,
-                    modifier = Modifier.padding(start = 24.dp)
+                Spacer(modifier = Modifier.height(80.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.charge_calender_title),
+                    contentDescription = null
                 )
-                for (i in infoList) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HyphenText(
-                        first = "-",
-                        text = i,
-                        color = Gray700
+                Spacer(modifier = Modifier.height(2.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "매일 출석하고", style = FanwooriTypography.button1, color = Gray800)
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_vote),
+                        contentDescription = null
                     )
+                    Text(
+                        text = "200 투표권",
+                        style = FanwooriTypography.subtitle4,
+                        modifier = Modifier
+                            .textBrush(
+                                gradient04
+                            )
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(text = "받으세요!", style = FanwooriTypography.button1, color = Gray800)
+                }
+
+                Spacer(modifier = Modifier.height(48.dp))
+                Box {
+                    Image(
+                        painter = painterResource(id = if (attendanceState) R.drawable.charge_calender_check02 else R.drawable.charge_calender_check01),
+                        contentDescription = null,
+                        modifier = Modifier.size(144.dp)
+                    )
+                    Text(
+                        text = if (attendanceState) "출석완료" else "출석 전",
+                        style = FanwooriTypography.subtitle1,
+                        color = if (attendanceState) Color.White else Gray750,
+                        modifier = Modifier.align(
+                            Alignment.Center
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(48.dp))
+                BtnFilledLPrimary(
+                    text = if (attendanceState) "출석완료" else "출석하기",
+                    modifier = Modifier.width(248.dp),
+                    enabled = attendanceState.not()
+                ) {
+                    chargeHomeViewModel.postAttendance()
+                }
+                Spacer(modifier = Modifier.height(48.dp))
+                Column(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth()
+                        .padding(top = 32.dp, bottom = 32.dp)
+                ) {
+                    Text(
+                        text = "상세안내",
+                        style = FanwooriTypography.subtitle3,
+                        color = Gray700,
+                        modifier = Modifier.padding(start = 24.dp)
+                    )
+                    for (i in infoList) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        HyphenText(
+                            first = "-",
+                            text = i,
+                            color = Gray700
+                        )
+                    }
+                }
+            }
+
+            if (missionSnackBarState) {
+                coroutineScope.launch {
+                    when (scaffoldState.snackbarHostState.showSnackbar("일일미션 하고 투표권 받기", "더보기")) {
+                        SnackbarResult.Dismissed -> {
+                            chargeHomeViewModel.missionSnackBarState.emit(false)
+                        }
+                        SnackbarResult.ActionPerformed -> {
+                            navController?.navigate(Route.TodayMission.route)
+                            chargeHomeViewModel.missionSnackBarState.emit(false)
+                        }
+                    }
                 }
             }
         }
-        AppbarMLeftIcon(
-            title = "출석체크", icon = R.drawable.icon_back, modifier = Modifier.background(
-                Primary50
-            ), onIconClick = {
-                navController?.popBackStack()
-            }
-        )
     }
 }
 

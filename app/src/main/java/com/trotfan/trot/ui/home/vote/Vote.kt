@@ -52,10 +52,13 @@ import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.model.*
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.chip.ChipCapsuleImg
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
+import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
+import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.vote.component.*
 import com.trotfan.trot.ui.home.vote.guide.FullscreenDialog
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
@@ -72,7 +75,7 @@ import kotlin.time.Duration.Companion.seconds
 
 val tabData = listOf<String>("남자스타", "여자스타")
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VoteHome(
@@ -80,6 +83,7 @@ fun VoteHome(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
+    chargeHomeViewModel: ChargeHomeViewModel = composableActivityViewModel("ChargeHomeViewModel"),
     onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
     lazyListState: LazyListState?,
     purchaseHelper: PurchaseHelper
@@ -94,6 +98,9 @@ fun VoteHome(
     val tickets by purchaseHelper.tickets.collectAsState()
     val favoriteStar by viewModel.favoriteStar.collectAsState()
     val ticks by viewModel.ticks.collectAsState()
+    val starShareState by chargeHomeViewModel.starShareState.collectAsState()
+    val missionSnackBarState by chargeHomeViewModel.missionSnackBarState.collectAsState()
+    val scaffoldState = rememberScaffoldState()
 
 
     val favoriteStarName by viewModel.userInfoManager.favoriteStarNameFlow.collectAsState(
@@ -154,6 +161,12 @@ fun VoteHome(
 
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
 
+        Scaffold(
+            snackbarHost = CustomSnackBarHost,
+            scaffoldState = scaffoldState
+        ) {
+
+        }
         Box(
             Modifier
                 .fillMaxSize()
@@ -170,21 +183,17 @@ fun VoteHome(
             ) {
                 CustomTopAppBarWithIcon(
                     title = "일일 투표",
-                    modifier = Modifier
-//                        .clickable {
-//                viewModel.changeVoteStatus()
-//                    }
-                    ,
+                    modifier = Modifier,
                     onClickStartIcon = {
                         appGuideStatue = true
                     },
                     onClickEndIcon = {
-                        val sendIntent: Intent = Intent().apply {
-                            Firebase.dynamicLinks.shortLinkAsync {
-                                link =
-                                    Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
-                                domainUriPrefix = "https://fanwoori.page.link"
-                            }.addOnSuccessListener {
+                        addDynamicLink(
+                            titleText = "내 스타 공유",
+                            uri = "https://play.google.com/store/apps/details?id=com.trotfan.trot",
+                            descriptionText = "내 스타 공유하기"
+                        ) {
+                            Intent().apply {
                                 action = Intent.ACTION_SEND
                                 putExtra(
                                     Intent.EXTRA_TEXT,
@@ -194,12 +203,13 @@ fun VoteHome(
                                 type = "text/plain"
                                 val shareIntent = Intent.createChooser(this, null)
                                 context.startActivity(shareIntent)
+                                if (starShareState.not()) {
+                                    chargeHomeViewModel.postShareStar()
+                                }
                             }
                         }
-
                     }
                 )
-
                 Box(modifier = Modifier.height(80.dp)) {
                     Image(
                         painter = painterResource(id = R.drawable.board_upper),
@@ -518,12 +528,12 @@ fun VoteHome(
                                         onVotingClick(voteId, tickets, mainStar, viewModel)
                                     },
                                     onSharedClick = {
-                                        val sendIntent: Intent = Intent().apply {
-                                            Firebase.dynamicLinks.shortLinkAsync {
-                                                link =
-                                                    Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
-                                                domainUriPrefix = "https://fanwoori.page.link"
-                                            }.addOnSuccessListener {
+                                        addDynamicLink(
+                                            titleText = "내 스타 공유",
+                                            uri = "https://play.google.com/store/apps/details?id=com.trotfan.trot",
+                                            descriptionText = "내 스타 공유하기"
+                                        ) {
+                                            Intent().apply {
                                                 action = Intent.ACTION_SEND
                                                 putExtra(
                                                     Intent.EXTRA_TEXT,
@@ -537,8 +547,9 @@ fun VoteHome(
                                                 type = "text/plain"
                                                 val shareIntent = Intent.createChooser(this, null)
                                                 context.startActivity(shareIntent)
-                                            }.addOnFailureListener {
-                                                Log.d("shared", it.toString())
+                                                if (starShareState.not()) {
+                                                    chargeHomeViewModel.postShareStar()
+                                                }
                                             }
                                         }
                                     }, isTop3 = (starMap.second.rank ?: 0) < 4,
@@ -583,6 +594,20 @@ fun VoteHome(
                             }
 
                         }
+                    }
+                }
+            }
+        }
+
+        if (missionSnackBarState) {
+            coroutineScope.launch {
+                when (scaffoldState.snackbarHostState.showSnackbar("일일미션 하고 투표권 받기", "더보기")) {
+                    SnackbarResult.Dismissed -> {
+                        chargeHomeViewModel.missionSnackBarState.emit(false)
+                    }
+                    SnackbarResult.ActionPerformed -> {
+                        navController.navigate(Route.TodayMission.route)
+                        chargeHomeViewModel.missionSnackBarState.emit(false)
                     }
                 }
             }

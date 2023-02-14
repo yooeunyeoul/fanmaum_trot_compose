@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.charge.mission
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +28,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,23 +37,24 @@ import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
+import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.theme.*
-import com.trotfan.trot.ui.utils.clickable
-import com.trotfan.trot.ui.utils.composableActivityViewModel
-import com.trotfan.trot.ui.utils.drawColoredShadow
-import com.trotfan.trot.ui.utils.textBrush
+import com.trotfan.trot.ui.utils.*
 
 @Composable
 fun TodayMission(
     navController: NavController? = null,
     viewModel: ChargeHomeViewModel = composableActivityViewModel(key = "ChargeHomeViewModel")
 ) {
+    val context = LocalContext.current
     val missionState by viewModel.missionState.collectAsState()
     val attendanceState by viewModel.attendanceState.collectAsState()
     val starShareState by viewModel.starShareState.collectAsState()
     val videoRewardState by viewModel.videoRewardState.collectAsState()
     val rouletteState by viewModel.rouletteState.collectAsState()
     val missionCompleteCount by viewModel.missionCompleteCount.collectAsState()
+    val rewardedState by viewModel.rewardedState.collectAsState()
+    val starName by viewModel.starName.collectAsState()
 
     Box(
         modifier = Modifier
@@ -83,7 +86,27 @@ fun TodayMission(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 MissionItem(title = "내 스타 공유하기 1회", number = 2, state = starShareState) {
+                    addDynamicLink(
+                        "내 스타 공유",
+                        "https://play.google.com/store/apps/details?id=com.trotfan.trot",
+                        "내 스타 공유하기"
+                    ) {
+                        Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                voteTopShareText(starName, it.shortLink.toString())
+                            )
 
+                            type = "text/plain"
+                            val shareIntent = Intent.createChooser(this, null)
+                            context.startActivity(shareIntent)
+                            if (starShareState.not()) {
+                                viewModel.postShareStar()
+                            }
+                        }
+
+                    }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 MissionItem(title = "동영상광고 보기 1회", number = 3, state = videoRewardState) {
@@ -125,7 +148,7 @@ fun TodayMission(
                             alpha = 0.93f,
                             offsetY = 0.dp,
                             offsetX = 0.dp,
-                            shadowRadius = if (missionCompleteCount == 4) 10.dp else 0.dp
+                            shadowRadius = if (rewardedState == 1) 10.dp else 0.dp
                         )
                 ) {
                     Box(
@@ -134,47 +157,60 @@ fun TodayMission(
                             .clip(RoundedCornerShape(28.dp))
                             .alpha(0.93f)
                             .background(
-                                Color.White
+                                if (rewardedState == 2) Gray300 else Color.White
                             )
                             .align(Center)
                     ) {
-                        if (missionCompleteCount == 4) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
+                        when (rewardedState) {
+                            0 -> {
                                 Text(
-                                    text = "눌러서",
-                                    style = FanwooriTypography.subtitle4,
-                                    color = Primary500
-                                )
-                                Image(
-                                    painter = painterResource(id = R.drawable.icon_vote),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
-                                )
-                                Text(
-                                    text = "3,200투표권 받기",
+                                    text = "미션 완료하고  3,200투표권 받기",
                                     style = FanwooriTypography.subtitle4,
                                     modifier = Modifier
                                         .textBrush(
-                                            gradient04
+                                            gradient01
                                         )
                                         .padding(top = 17.5.dp, bottom = 17.5.dp)
+                                        .align(Alignment.Center)
                                 )
                             }
-                        } else {
-                            Text(
-                                text = "미션 완료하고  3,200투표권 받기",
-                                style = FanwooriTypography.subtitle4,
-                                modifier = Modifier
-                                    .textBrush(
-                                        gradient01
+                            1 -> {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "눌러서",
+                                        style = FanwooriTypography.subtitle4,
+                                        color = Primary500
                                     )
-                                    .padding(top = 17.5.dp, bottom = 17.5.dp)
-                                    .align(Alignment.Center)
-                            )
+                                    Image(
+                                        painter = painterResource(id = R.drawable.icon_vote),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(24.dp),
+                                    )
+                                    Text(
+                                        text = "3,200투표권 받기",
+                                        style = FanwooriTypography.subtitle4,
+                                        modifier = Modifier
+                                            .textBrush(
+                                                gradient04
+                                            )
+                                            .padding(top = 17.5.dp, bottom = 17.5.dp)
+                                    )
+                                }
+                            }
+                            else -> {
+                                Text(
+                                    text = "일일미션 보상완료",
+                                    style = FanwooriTypography.subtitle4,
+                                    color = Gray650,
+                                    modifier = Modifier
+                                        .padding(top = 17.5.dp, bottom = 17.5.dp)
+                                        .align(Alignment.Center)
+                                )
+                            }
                         }
                     }
                 }

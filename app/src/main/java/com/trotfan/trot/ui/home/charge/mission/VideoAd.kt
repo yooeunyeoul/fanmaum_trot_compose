@@ -1,31 +1,17 @@
 package com.trotfan.trot.ui.home.charge.mission
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarResult
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,23 +27,16 @@ import com.ironsource.mediationsdk.logger.IronSourceError
 import com.ironsource.mediationsdk.model.Placement
 import com.ironsource.mediationsdk.sdk.RewardedVideoListener
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
-import com.trotfan.trot.ui.theme.FanwooriTheme
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray200
-import com.trotfan.trot.ui.theme.Gray500
-import com.trotfan.trot.ui.theme.Gray700
-import com.trotfan.trot.ui.theme.Gray800
-import com.trotfan.trot.ui.theme.Primary100
-import com.trotfan.trot.ui.theme.Primary700
-import com.trotfan.trot.ui.theme.Secondary50
-import com.trotfan.trot.ui.theme.gradient04
-import com.trotfan.trot.ui.theme.gradient05
+import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
+import kotlinx.coroutines.launch
 
 @Composable
 fun VideoAd(
@@ -80,6 +59,9 @@ fun VideoAd(
         "팬마음 정책에 어긋나거나 부정한 방법으로 이벤트 참여가 의심되는 경우, 투표권은 지급되지 않으며 지급된 투표권은 회수 처리됩니다.",
         "투표권 미지급 관련 문의는 마이페이지 > 문의하기를 통해 가능합니다."
     )
+    val scaffoldState = rememberScaffoldState()
+    val missionSnackBarState by videoViewModel.missionSnackBarState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     IronSource.setRewardedVideoListener(object : RewardedVideoListener {
         override fun onRewardedVideoAdOpened() {
@@ -117,106 +99,129 @@ fun VideoAd(
         navController?.popBackStack()
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
+        topBar = {
+            AppbarMLeftIcon(
+                title = "동영상 광고", icon = R.drawable.icon_back, modifier = Modifier.background(
+                    Secondary50
+                ), onIconClick = {
+                    navController?.previousBackStackEntry?.savedStateHandle?.set(
+                        "count",
+                        20 - (adCount ?: 0)
+                    )
+                    navController?.popBackStack()
+                }
+
+            )
+        },
+        snackbarHost = CustomSnackBarHost
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(brush = gradient05),
+                    .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(80.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.charge_video_title),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "1회 시청 시 300투표권 x 20회 ",
-                    style = FanwooriTypography.button1,
-                    color = Gray800
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "매일 최대", style = FanwooriTypography.button1, color = Gray800)
-                    Spacer(modifier = Modifier.width(2.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(brush = gradient05),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(80.dp))
                     Image(
-                        painter = painterResource(id = R.drawable.icon_vote),
+                        painter = painterResource(id = R.drawable.charge_video_title),
                         contentDescription = null
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "6,000 투표권",
-                        style = FanwooriTypography.subtitle4,
-                        modifier = Modifier
-                            .textBrush(
-                                gradient04
-                            )
+                        text = "1회 시청 시 300투표권 x 20회 ",
+                        style = FanwooriTypography.button1,
+                        color = Gray800
                     )
-                    Spacer(modifier = Modifier.width(2.dp))
-                    Text(text = "받으세요!", style = FanwooriTypography.button1, color = Gray800)
-                }
-                Spacer(modifier = Modifier.height(40.dp))
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    content = {
-                        items(20) { index ->
-                            if (index < adCount!!) {
-                                CompleteButton(height = itemWidth)
-                            } else if (index == adCount) {
-                                PlayButton(height = itemWidth)
-                            } else {
-                                LockButton(height = itemWidth)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "매일 최대", style = FanwooriTypography.button1, color = Gray800)
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_vote),
+                            contentDescription = null
+                        )
+                        Text(
+                            text = "6,000 투표권",
+                            style = FanwooriTypography.subtitle4,
+                            modifier = Modifier
+                                .textBrush(
+                                    gradient04
+                                )
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(text = "받으세요!", style = FanwooriTypography.button1, color = Gray800)
+                    }
+                    Spacer(modifier = Modifier.height(40.dp))
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(4),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        content = {
+                            items(20) { index ->
+                                if (index < adCount!!) {
+                                    CompleteButton(height = itemWidth)
+                                } else if (index == adCount) {
+                                    PlayButton(height = itemWidth)
+                                } else {
+                                    LockButton(height = itemWidth)
+                                }
                             }
-                        }
-                    },
-                    modifier = Modifier
-                        .heightIn(configuration.screenWidthDp.dp, 1200.dp)
-                        .padding(start = 16.dp, end = 16.dp),
-                    userScrollEnabled = false
-                )
-                Spacer(modifier = Modifier.height(40.dp))
-            }
-
-            Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth()
-                    .padding(top = 32.dp, bottom = 32.dp)
-            ) {
-                Text(
-                    text = "상세안내",
-                    style = FanwooriTypography.subtitle3,
-                    color = Gray700,
-                    modifier = Modifier.padding(start = 24.dp)
-                )
-                for (i in infoList) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    HyphenText(
-                        first = "-",
-                        text = i,
-                        color = Gray700
+                        },
+                        modifier = Modifier
+                            .heightIn(configuration.screenWidthDp.dp, 1200.dp)
+                            .padding(start = 16.dp, end = 16.dp),
+                        userScrollEnabled = false
                     )
+                    Spacer(modifier = Modifier.height(40.dp))
+                }
+
+                Column(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth()
+                        .padding(top = 32.dp, bottom = 32.dp)
+                ) {
+                    Text(
+                        text = "상세안내",
+                        style = FanwooriTypography.subtitle3,
+                        color = Gray700,
+                        modifier = Modifier.padding(start = 24.dp)
+                    )
+                    for (i in infoList) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        HyphenText(
+                            first = "-",
+                            text = i,
+                            color = Gray700
+                        )
+                    }
                 }
             }
         }
-        AppbarMLeftIcon(
-            title = "동영상 광고", icon = R.drawable.icon_back, modifier = Modifier.background(
-                Secondary50
-            ), onIconClick = {
-                navController?.previousBackStackEntry?.savedStateHandle?.set(
-                    "count",
-                    20 - (adCount ?: 0)
-                )
-                navController?.popBackStack()
+
+        if (missionSnackBarState) {
+            coroutineScope.launch {
+                when (scaffoldState.snackbarHostState.showSnackbar("일일미션 하고 투표권 받기", "더보기")) {
+                    SnackbarResult.Dismissed -> {
+                        videoViewModel.missionSnackBarState.emit(false)
+                    }
+                    SnackbarResult.ActionPerformed -> {
+                        navController?.navigate(Route.TodayMission.route)
+                        videoViewModel.missionSnackBarState.emit(false)
+                    }
+                }
             }
-        )
+        }
     }
 }
 

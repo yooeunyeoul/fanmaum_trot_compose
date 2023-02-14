@@ -186,7 +186,7 @@ fun FanwooriApp(
                                 val sendIntent: Intent = Intent().apply {
                                     Firebase.dynamicLinks.shortLinkAsync {
                                         link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
-                                        domainUriPrefix = "https://fanwoori.page.link"
+                                        domainUriPrefix = "https://fanmaum.page.link"
                                     }.addOnSuccessListener {
                                         action = Intent.ACTION_SEND
                                         putExtra(
