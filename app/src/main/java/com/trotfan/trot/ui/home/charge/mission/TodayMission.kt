@@ -11,12 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
@@ -40,6 +35,8 @@ import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TodayMission(
@@ -55,6 +52,16 @@ fun TodayMission(
     val missionCompleteCount by viewModel.missionCompleteCount.collectAsState()
     val rewardedState by viewModel.rewardedState.collectAsState()
     val starName by viewModel.starName.collectAsState()
+    val simpleDateFormat = SimpleDateFormat("dd")
+    val dateString = simpleDateFormat.format(Date()).toString()
+    val localDate by viewModel.lastApiTime.collectAsState()
+
+    LaunchedEffect(key1 = dateString, block = {
+        if (dateString != localDate) {
+            viewModel.getMissions()
+        }
+
+    })
 
     Box(
         modifier = Modifier
@@ -221,7 +228,10 @@ fun TodayMission(
             title = "일일미션",
             icon = R.drawable.icon_back,
             textColor = Color.White,
-            iconColor = Color.White
+            iconColor = Color.White,
+            onIconClick = {
+                navController?.popBackStack()
+            }
         )
     }
 }

@@ -27,7 +27,7 @@ val CustomSnackBarHost: @Composable (SnackbarHostState) -> Unit =
                     .fillMaxWidth()
                     .padding(16.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .alpha(0.8f)
+                    .alpha(0.88f)
                     .background(Color(0XFF22282A))
                     .clickable {
                         data.performAction()

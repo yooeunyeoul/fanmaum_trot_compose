@@ -49,9 +49,11 @@ fun AttendanceCheck(
     )
     val attendanceState by chargeHomeViewModel.attendanceState.collectAsState()
     val scaffoldState = rememberScaffoldState()
-    val missionSnackBarState by chargeHomeViewModel.missionSnackBarState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val dialogShowing by chargeHomeViewModel.attendanceRewardDialogState.collectAsState()
+    var missionSnackBarState by remember {
+        mutableStateOf(false)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -75,6 +77,7 @@ fun AttendanceCheck(
             ) {
                 coroutineScope.launch {
                     chargeHomeViewModel.attendanceRewardDialogState.emit(false)
+                    missionSnackBarState = true
                 }
             }
         }
@@ -118,7 +121,7 @@ fun AttendanceCheck(
                 Spacer(modifier = Modifier.height(48.dp))
                 Box {
                     Image(
-                        painter = painterResource(id = if (attendanceState) R.drawable.charge_calender_check02 else R.drawable.charge_calender_check01),
+                        painter = painterResource(id = if (attendanceState) R.drawable.charge_calendercheck02 else R.drawable.charge_calendercheck01),
                         contentDescription = null,
                         modifier = Modifier.size(144.dp)
                     )
@@ -165,15 +168,19 @@ fun AttendanceCheck(
 
             if (missionSnackBarState) {
                 coroutineScope.launch {
-                    when (scaffoldState.snackbarHostState.showSnackbar("일일미션 하고 투표권 받기", "더보기")) {
-                        SnackbarResult.Dismissed -> {
-                            chargeHomeViewModel.missionSnackBarState.emit(false)
+                    missionSnackBarState =
+                        when (scaffoldState.snackbarHostState.showSnackbar(
+                            "일일미션 하고 투표권 받기",
+                            "더보기"
+                        )) {
+                            SnackbarResult.Dismissed -> {
+                                false
+                            }
+                            SnackbarResult.ActionPerformed -> {
+                                navController?.navigate(Route.TodayMission.route)
+                                false
+                            }
                         }
-                        SnackbarResult.ActionPerformed -> {
-                            navController?.navigate(Route.TodayMission.route)
-                            chargeHomeViewModel.missionSnackBarState.emit(false)
-                        }
-                    }
                 }
             }
         }

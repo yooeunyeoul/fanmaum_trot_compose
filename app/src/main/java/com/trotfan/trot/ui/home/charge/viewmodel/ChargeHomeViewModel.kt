@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,10 +60,10 @@ class ChargeHomeViewModel @Inject constructor(
         MutableStateFlow(0)
 
     private val maxAdCount = 20
-    val videoCount: StateFlow<Int?>
+    val videoCount: StateFlow<Int>
         get() = _videoCount
     private val _videoCount =
-        MutableStateFlow<Int?>(maxAdCount.minus(_missionState.value?.remaining?.video_reward ?: 0))
+        MutableStateFlow(maxAdCount.minus(_missionState.value?.remaining?.video_reward ?: 0))
 
     val starName: StateFlow<String>
         get() = _starName
@@ -72,6 +74,11 @@ class ChargeHomeViewModel @Inject constructor(
         get() = _rewardedState
     private val _rewardedState =
         MutableStateFlow(0)
+
+    val lastApiTime: StateFlow<String>
+        get() = _lastApiTime
+    private val _lastApiTime =
+        MutableStateFlow("")
 
     val missionSnackBarState = MutableStateFlow(false)
     val attendanceRewardDialogState = MutableStateFlow(false)
@@ -143,6 +150,10 @@ class ChargeHomeViewModel @Inject constructor(
                     } else {
                         _rewardedState.emit(0)
                     }
+
+                    val simpleDateFormat = SimpleDateFormat("dd")
+                    val dateString = simpleDateFormat.format(Date()).toString()
+                    _lastApiTime.emit(dateString)
                 }.onFailure {
 
                 }
@@ -158,7 +169,7 @@ class ChargeHomeViewModel @Inject constructor(
                         userToken = it.token
                     )
                 }.onSuccess {
-                    _videoCount.emit(_videoCount.value?.plus(1))
+                    _videoCount.emit(_videoCount.value.plus(1))
                     if (!_videoRewardState.value) {
                         _videoRewardState.emit(true)
                         missionSnackBarState.emit(true)
@@ -194,6 +205,7 @@ class ChargeHomeViewModel @Inject constructor(
                     if (_starShareState.value.not()) {
                         _starShareState.emit(true)
                         missionSnackBarState.emit(true)
+                        _missionCompleteCount.emit(_missionCompleteCount.value.plus(1))
                     }
                 }.onFailure {
 

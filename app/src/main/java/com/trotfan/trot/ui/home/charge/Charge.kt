@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.charge
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -48,6 +49,8 @@ import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -66,6 +69,7 @@ fun ChargeHome(
     BackHandler {
         onNavigateClick.invoke(HomeSections.Vote)
     }
+
     Surface(
         color = Color.White, modifier = Modifier
             .fillMaxSize()
@@ -140,9 +144,19 @@ fun FreeChargeView(
 ) {
     val scrollState = rememberScrollState()
     val missionState by viewModel.missionState.collectAsState()
-    val adCount = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("count")
-        ?.observeAsState()
+    val adCount by viewModel.videoCount.collectAsState()
     val rewardedState by viewModel.rewardedState.collectAsState()
+    val attendanceState by viewModel.attendanceState.collectAsState()
+    val simpleDateFormat = SimpleDateFormat("dd")
+    val dateString = simpleDateFormat.format(Date()).toString()
+    val localDate by viewModel.lastApiTime.collectAsState()
+
+    LaunchedEffect(key1 = dateString, block = {
+        if (dateString != localDate) {
+            viewModel.getMissions()
+        }
+
+    })
 
     Column(
         modifier = Modifier
@@ -310,7 +324,7 @@ fun FreeChargeView(
                 icon = R.drawable.charge_calender,
                 bgColor = Primary50,
                 title = "출석체크 (200투표권)",
-                count = missionState?.remaining?.attendance ?: 0
+                count = if (attendanceState) 0 else 1
             ) {
                 navController.navigate(Route.AttendanceCheck.route)
             }
@@ -319,9 +333,9 @@ fun FreeChargeView(
                 icon = R.drawable.charge_video,
                 bgColor = Secondary50,
                 title = "동영상 광고 (최대 6,000투표권)",
-                count = adCount?.value ?: missionState?.remaining?.video_reward ?: 0
+                count = 20 - adCount
             ) {
-                navController.navigate("${Route.VideoAd.route}/${adCount?.value ?: missionState?.remaining?.video_reward ?: 0}")
+                navController.navigate("${Route.VideoAd.route}/${20 - adCount}")
             }
             Spacer(modifier = Modifier.height(16.dp))
             FreeChargeItem(

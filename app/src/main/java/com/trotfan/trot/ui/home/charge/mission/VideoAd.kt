@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.charge.mission
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -64,7 +65,9 @@ fun VideoAd(
         "투표권 미지급 관련 문의는 마이페이지 > 문의하기를 통해 가능합니다."
     )
     val scaffoldState = rememberScaffoldState()
-    val missionSnackBarState by videoViewModel.missionSnackBarState.collectAsState()
+    var missionSnackBarState by remember {
+        mutableStateOf(false)
+    }
     val coroutineScope = rememberCoroutineScope()
     var dialogShowing by remember {
         mutableStateOf(false)
@@ -114,6 +117,9 @@ fun VideoAd(
             buttonOneText = "확인"
         ) {
             dialogShowing = false
+            if (adCount == 1) {
+                missionSnackBarState = true
+            }
         }
     }
 
@@ -229,15 +235,16 @@ fun VideoAd(
 
         if (missionSnackBarState) {
             coroutineScope.launch {
-                when (scaffoldState.snackbarHostState.showSnackbar("일일미션 하고 투표권 받기", "더보기")) {
-                    SnackbarResult.Dismissed -> {
-                        videoViewModel.missionSnackBarState.emit(false)
+                missionSnackBarState =
+                    when (scaffoldState.snackbarHostState.showSnackbar("일일미션 하고 투표권 받기", "더보기")) {
+                        SnackbarResult.Dismissed -> {
+                            false
+                        }
+                        SnackbarResult.ActionPerformed -> {
+                            navController?.navigate(Route.TodayMission.route)
+                            false
+                        }
                     }
-                    SnackbarResult.ActionPerformed -> {
-                        navController?.navigate(Route.TodayMission.route)
-                        videoViewModel.missionSnackBarState.emit(false)
-                    }
-                }
             }
         }
     }
