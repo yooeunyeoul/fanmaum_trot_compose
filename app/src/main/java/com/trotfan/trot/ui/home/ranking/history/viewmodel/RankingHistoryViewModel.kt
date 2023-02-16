@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.model.*
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RankingHistoryViewModel @Inject constructor(
     private val repository: RankingHistoryRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : AndroidViewModel(application) {
     private val calender: Calendar = Calendar.getInstance()
@@ -65,18 +67,22 @@ class RankingHistoryViewModel @Inject constructor(
 
     fun getBannerList() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getBanners("last", "aos")
             }.onSuccess {
                 banners.emit(it.data)
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("RankingHistoryViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getMonthlyStarRankingList() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getMonthlyStarList(
                     monthlyYear.value.toString(),
@@ -89,14 +95,17 @@ class RankingHistoryViewModel @Inject constructor(
                 it.data?.women?.let { womans ->
                     monthlyWomanList.emit(womans)
                 }
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("RankingHistoryViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getDailyStarRankingList() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getDailyStarList(
                     dailyYear.value.toString(),
@@ -110,14 +119,16 @@ class RankingHistoryViewModel @Inject constructor(
                 it.data?.women?.let { womans ->
                     dailyWomanList.emit(womans)
                 }
+                loadingHelper.hideProgress()
             }.onFailure {
-
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getDatePickerRange() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getDatePickerRange()
             }.onSuccess {
@@ -135,8 +146,10 @@ class RankingHistoryViewModel @Inject constructor(
                     dailyDay.emit(tempDate[2].toInt())
                     getDailyStarRankingList()
                 }
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("RankingHistoryViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }

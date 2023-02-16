@@ -1,6 +1,8 @@
 package com.trotfan.trot.repository
 
-import com.trotfan.trot.model.*
+import com.trotfan.trot.model.LuckyTicket
+import com.trotfan.trot.model.MissionState
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.network.ChargeService
 import com.trotfan.trot.network.VoteService
 import com.trotfan.trot.network.response.CommonResponse
@@ -39,4 +41,5 @@ class ChargeRepository @Inject constructor(
 
     suspend fun postShareStar(userToken: String): CommonResponse<Unit> =
         chargeService.postShareStar(userToken = userToken)
+
 }

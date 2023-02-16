@@ -84,7 +84,8 @@ enum class BillingResponse(val message: String) {
 
 class PurchaseHelper @Inject constructor(
     @ActivityContext private val context: Context,
-    val repository: ChargeRepository
+    val repository: ChargeRepository,
+    private val loadingHelper: LoadingHelper
 ) {
 
     private lateinit var mListener: (BillingResponse) -> Unit
@@ -131,6 +132,7 @@ class PurchaseHelper @Inject constructor(
                             //서버에 구매성공 요청 날리기
 
                             coroutineScope.launch {
+                                loadingHelper.showProgress()
                                 context.userIdStore.data.collect {
                                     kotlin.runCatching {
                                         val userToken = context.userTokenStore.data.map {
@@ -181,6 +183,7 @@ class PurchaseHelper @Inject constructor(
                                                 completePurchase(purchase)
                                             }
                                         }
+                                        loadingHelper.hideProgress()
                                     }.onFailure {
                                         Log.e("Api Fail", "Api Fail")
                                         coroutineScope.launch {
@@ -191,6 +194,7 @@ class PurchaseHelper @Inject constructor(
                                             )
                                         }
                                         completePurchase(purchase)
+                                        loadingHelper.hideProgress()
                                     }
                                 }
                             }
@@ -205,6 +209,7 @@ class PurchaseHelper @Inject constructor(
                                         "User Cancelled"
                             )
                         }
+                        loadingHelper.hideProgress()
                     }
                     // 에러
                     else -> {
@@ -215,6 +220,7 @@ class PurchaseHelper @Inject constructor(
                                         "Purchase Error"
                             )
                         }
+                        loadingHelper.hideProgress()
                     }
                 }
             }

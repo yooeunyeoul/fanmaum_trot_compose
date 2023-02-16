@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ironsource.mediationsdk.IronSource
 import com.trotfan.trot.BuildConfig
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.Expired
@@ -25,6 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: HomeRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
     private val context = getApplication<Application>()
@@ -68,6 +70,7 @@ class HomeViewModel @Inject constructor(
 
     fun getMainPopups() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userTokenStore.data.collect {
                 kotlin.runCatching {
                     repository.getMainPopups(it.token)
@@ -92,8 +95,10 @@ class HomeViewModel @Inject constructor(
                             }
                         }
                     }
+                    loadingHelper.hideProgress()
                 }.onFailure {
                     Log.d("HomeViewModel", it.message.toString())
+                    loadingHelper.hideProgress()
                 }
             }
         }
@@ -101,6 +106,7 @@ class HomeViewModel @Inject constructor(
 
     fun postVoteTicket(voteId: Int, starId: Int, quantity: Long) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.postVoteTicket(
                     VoteTicket(voteId, starId, quantity),
@@ -109,9 +115,11 @@ class HomeViewModel @Inject constructor(
             }.onSuccess {
                 votingCompleteState.emit(1)
                 Log.d("HomeViewModel", it.toString())
+                loadingHelper.hideProgress()
             }.onFailure {
                 votingCompleteState.emit(2)
                 Log.d("HomeViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }

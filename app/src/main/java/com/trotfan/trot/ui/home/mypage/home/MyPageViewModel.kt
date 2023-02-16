@@ -2,6 +2,7 @@ package com.trotfan.trot.ui.home.mypage.home
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.*
 import com.trotfan.trot.repository.MyPageRepository
 import com.trotfan.trot.ui.BaseViewModel
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -43,17 +45,6 @@ class MyPageViewModel @Inject constructor(
     private val _userEmail =
         MutableStateFlow("")
 
-
-//    val unlimitedTicket: StateFlow<Long>
-//        get() = _unlimitedTicket
-//    private val _unlimitedTicket =
-//        MutableStateFlow(0L)
-//
-//    val todayTicket: StateFlow<Long>
-//        get() = _todayTicket
-//    private val _todayTicket =
-//        MutableStateFlow(0L)
-
     val isLoading: StateFlow<Boolean>
         get() = _isLoading
     private val _isLoading =
@@ -80,18 +71,21 @@ class MyPageViewModel @Inject constructor(
 
     fun postLogout(result: () -> Unit) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 userLocalToken.value?.token?.let { myPageRepository.postLogout(it) }
             }.onSuccess {
                 result()
+                loadingHelper.hideProgress()
             }.onFailure {
-
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun postUserProfile(image: File) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             _isLoading.emit(true)
             userLocalToken.value?.token?.let { token ->
                 context.userIdStore.data.collect { id ->
@@ -103,8 +97,10 @@ class MyPageViewModel @Inject constructor(
                         userInfoManager.setUserProfileImage(
                             userProfileImage = it.data?.image ?: ""
                         )
+                        loadingHelper.hideProgress()
                     }.onFailure {
                         _isLoading.emit(false)
+                        loadingHelper.hideProgress()
                     }
                 }
             }

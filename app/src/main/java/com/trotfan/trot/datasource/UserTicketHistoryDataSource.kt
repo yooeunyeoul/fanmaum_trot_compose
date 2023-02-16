@@ -3,6 +3,7 @@ package com.trotfan.trot.datasource
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.model.Ticket
 import com.trotfan.trot.network.SignUpService
@@ -12,7 +13,8 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class UserTicketHistoryDataSource @Inject constructor(
-    private val service: UserService
+    private val service: UserService,
+    private val loadingHelper: LoadingHelper,
 ) : PagingSource<String, Ticket>() {
 
     var token: String = ""
@@ -21,6 +23,7 @@ class UserTicketHistoryDataSource @Inject constructor(
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, Ticket> {
         return try {
+            loadingHelper.showProgress()
             val data =
                 service.userTicketHistory(
                     params.key ?: "",
@@ -32,9 +35,10 @@ class UserTicketHistoryDataSource @Inject constructor(
             val ticketsHistory = data?.tickets
             val nextCursor = data?.meta?.nextCursor
             val prevCursor = data?.meta?.prevCursor
-
+            loadingHelper.hideProgress()
             if (ticketsHistory?.isEmpty() == true && nextCursor?.isEmpty() == true && prevCursor?.isEmpty() == true) {
                 LoadResult.Error(Exception(SearchStatus.NoResult.name))
+
             } else {
                 LoadResult.Page(
                     data = ticketsHistory ?: listOf(),
@@ -42,9 +46,12 @@ class UserTicketHistoryDataSource @Inject constructor(
                     nextKey = if (nextCursor?.isEmpty() == true) null else nextCursor
                 )
             }
+
         } catch (e: HttpException) {
+            loadingHelper.hideProgress()
             LoadResult.Error(Exception(e.localizedMessage))
         } catch (e: Exception) {
+            loadingHelper.hideProgress()
             LoadResult.Error(Exception(e.localizedMessage))
         }
     }

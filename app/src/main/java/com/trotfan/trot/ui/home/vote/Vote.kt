@@ -3,7 +3,6 @@
 package com.trotfan.trot.ui.home.vote
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -44,13 +43,9 @@ import com.airbnb.lottie.compose.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.google.firebase.dynamiclinks.ktx.dynamicLink
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
-import com.google.firebase.ktx.Firebase
-import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
+import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.model.*
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.chip.ChipCapsuleImg
@@ -71,7 +66,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import java.time.LocalDate
 import java.util.*
-import kotlin.time.Duration.Companion.seconds
 
 val tabData = listOf<String>("남자스타", "여자스타")
 
@@ -154,6 +148,7 @@ fun VoteHome(
     })
     LaunchedEffect(key1 = refreshState, block = {
         if (refreshState == RefreshTicket.Need) {
+            Log.e("asdf","ㅁㄴㅇㄹㅁㅇㄴㄹㅁㄴㅇㄹㅇㄴㅁㄹㅇㄴㅁㄹㄴㅁㄹ")
             viewModel.getVoteTickets(purchaseHelper)
         }
     })
