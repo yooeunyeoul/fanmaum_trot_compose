@@ -204,8 +204,8 @@ class ChargeHomeViewModel @Inject constructor(
                     missionSnackBarState.emit(true)
                     attendanceRewardDialogState.emit(true)
                     userTicketManager.storeUserTicket(
-                        it.data?.tickets?.unlimited ?: 0,
-                        it.data?.tickets?.limited ?: 0
+                        it.data?.unlimited ?: 0,
+                        it.data?.limited ?: 0
                     )
                     loadingHelper.hideProgress()
                 }.onFailure {

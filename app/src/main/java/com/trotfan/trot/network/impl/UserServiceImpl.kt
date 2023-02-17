@@ -1,5 +1,6 @@
 package com.trotfan.trot.network.impl
 
+import com.trotfan.trot.model.InviteInfo
 import com.trotfan.trot.model.ProfileImage
 import com.trotfan.trot.model.TicketsHistory
 import com.trotfan.trot.network.HttpRoutes
@@ -124,5 +125,18 @@ class UserServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
             body = (json.toString())
         }.body()
 
+    }
+
+    override suspend fun getUserInviteInfo(
+        token: String,
+        userId: Long
+    ): CommonResponse<InviteInfo> {
+        return httpClient.get(HttpRoutes.USERS + "/${userId}/code") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
+        }.body()
     }
 }

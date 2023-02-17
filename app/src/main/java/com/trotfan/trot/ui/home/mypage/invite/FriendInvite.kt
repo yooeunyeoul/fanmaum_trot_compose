@@ -1,8 +1,11 @@
 package com.trotfan.trot.ui.home.mypage.invite
 
-import android.view.Gravity
-import android.widget.Toast
-import androidx.compose.animation.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,8 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,21 +25,25 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
-import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
+import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.delay
 
 @Composable
-fun FriendInvite(navController: NavController? = null) {
+fun FriendInvite(
+    navController: NavController? = null,
+    viewModel: FriendInviteViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
+    val inviteInfo by viewModel.inviteInfo.collectAsState()
     val scrollState = rememberScrollState()
     val infoList = listOf(
         "친구 초대 이벤트는 팬마음 앱 내에서만 진행하며, 앱 로그인 후 참여할 수 있습니다",
@@ -129,7 +134,11 @@ fun FriendInvite(navController: NavController? = null) {
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(text = "#Code", style = FanwooriTypography.h1, color = Gray900)
+                    Text(
+                        text = inviteInfo?.code ?: "",
+                        style = FanwooriTypography.h1,
+                        color = Gray900
+                    )
                     Spacer(modifier = Modifier.height(24.dp))
                     Box(
                         modifier = Modifier
@@ -172,7 +181,13 @@ fun FriendInvite(navController: NavController? = null) {
                                 .weight(1f)
                                 .fillMaxHeight()
                                 .clickable {
+                                    val clipboardManager: ClipboardManager =
+                                        context.getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
+                                    val clipData: ClipData =
+                                        ClipData.newPlainText("code", inviteInfo?.code.toString())
+                                    clipboardManager.setPrimaryClip(clipData)
                                     toastState = true
+
                                 },
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = CenterVertically
@@ -210,7 +225,11 @@ fun FriendInvite(navController: NavController? = null) {
                     ) {
                         Text(text = "초대한 친구", style = FanwooriTypography.body3, color = Gray700)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = "0", style = FanwooriTypography.subtitle1, color = Gray900)
+                        Text(
+                            text = inviteInfo?.invited.toString(),
+                            style = FanwooriTypography.subtitle1,
+                            color = Gray900
+                        )
                     }
 
                     Box(
@@ -226,7 +245,11 @@ fun FriendInvite(navController: NavController? = null) {
                     ) {
                         Text(text = "총 적립 투표권", style = FanwooriTypography.body3, color = Gray700)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = "0", style = FanwooriTypography.subtitle1, color = Gray900)
+                        Text(
+                            text = inviteInfo?.tickets.toString(),
+                            style = FanwooriTypography.subtitle1,
+                            color = Gray900
+                        )
                     }
                 }
             }
