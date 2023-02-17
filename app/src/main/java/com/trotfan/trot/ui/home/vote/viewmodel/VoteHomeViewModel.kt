@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.*
@@ -395,12 +396,13 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun tickRemainingTime() {
         viewModelScope.launch(Dispatchers.IO) {
-            _ticks.value = getTime(targetSecond = 0)
+            _ticks.value = getTime(targetSecond = 0, application = context as BaseApplication)
             while (true) {
                 delay(1000)
                 val tick = _ticks.value.minus(1)
                 if (tick < 0) {
-                    _ticks.value = getTime(targetSecond = 0)
+                    _ticks.value =
+                        getTime(targetSecond = 0, application = context as BaseApplication)
                 } else {
                     _ticks.value = tick
                 }

@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.utils
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -12,8 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
@@ -32,13 +32,17 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
+import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.ui.home.vote.voteTopShareText
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -163,7 +167,8 @@ fun getTime(
     targetDay: Int? = null,
     targetSecond: Int? = null,
     targetHour: Int = 23,
-    targetMinute: Int = 30
+    targetMinute: Int = 30,
+    application: BaseApplication
 
 ): Int {
     val cal = Calendar.getInstance()
@@ -178,14 +183,22 @@ fun getTime(
     }
     cal.set(Calendar.HOUR_OF_DAY, targetHour)
     cal.set(Calendar.MINUTE, targetMinute)
-    val diff = abs(cal.timeInMillis - System.currentTimeMillis()) / 1000;
+    val diff = abs(
+        cal.timeInMillis.minus(
+            application.kronosClock.getCurrentNtpTimeMs() ?: 0
+        )
+    ) / 1000;
     return diff.toInt()
 }
 
 fun getTime(
-    targetMilliSecond: Long?
+    targetMilliSecond: Long?,
+    application: BaseApplication
 ): Int {
-    val diff = abs((targetMilliSecond ?: 0).minus(System.currentTimeMillis())) / 1000;
+    val diff = abs(
+        (targetMilliSecond
+            ?: 0).minus(application.kronosClock.getCurrentNtpTimeMs() ?: 0) / 1000
+    )
     return diff.toInt()
 }
 
@@ -280,3 +293,18 @@ inline fun <reified VM : ViewModel> composableActivityViewModel(
     key,
     factory
 )
+
+@Composable
+fun Lifecycle.observeAsState(): State<Lifecycle.Event> {
+    val state = remember { mutableStateOf(Lifecycle.Event.ON_ANY) }
+    DisposableEffect(this) {
+        val observer = LifecycleEventObserver { _, event ->
+            state.value = event
+        }
+        this@observeAsState.addObserver(observer)
+        onDispose {
+            this@observeAsState.removeObserver(observer)
+        }
+    }
+    return state
+}

@@ -2,6 +2,7 @@
 
 package com.trotfan.trot.ui.home.vote
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -43,10 +44,12 @@ import com.airbnb.lottie.compose.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.model.*
+import com.trotfan.trot.ui.MainActivity
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.chip.ChipCapsuleImg
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
@@ -148,7 +151,7 @@ fun VoteHome(
     })
     LaunchedEffect(key1 = refreshState, block = {
         if (refreshState == RefreshTicket.Need) {
-            Log.e("asdf","ㅁㄴㅇㄹㅁㅇㄴㄹㅁㄴㅇㄹㅇㄴㅁㄹㅇㄴㅁㄹㄴㅁㄹ")
+            Log.e("asdf", "ㅁㄴㅇㄹㅁㅇㄴㄹㅁㄴㅇㄹㅇㄴㅁㄹㅇㄴㅁㄹㄴㅁㄹ")
             viewModel.getVoteTickets(purchaseHelper)
         }
     })
@@ -535,7 +538,8 @@ fun VoteHome(
                                                     voteShareText(
                                                         sortedList.flatMap { listOf(it.second) },
                                                         starMap.second.rank ?: 0,
-                                                        it.shortLink.toString()
+                                                        it.shortLink.toString(),
+                                                        application = viewModel.getApplication()
                                                     )
                                                 )
 
@@ -639,8 +643,8 @@ fun voteTopShareText(favoriteStarName: String?, link: String): String {
             link
 }
 
-fun voteShareText(stars: List<VoteMainStar>, rank: Int, link: String): String {
-    val ticks = getTime()
+fun voteShareText(stars: List<VoteMainStar>, rank: Int, link: String, application: BaseApplication): String {
+    val ticks = getTime(application = application)
     val minute: String = (ticks.toLong() / 60 % 60).toString()
     val hour: String = (ticks.toLong() / 3600).toString()
     if (rank == 0) {

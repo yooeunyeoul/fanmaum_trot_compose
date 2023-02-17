@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.RankMainDataStore
@@ -139,7 +140,7 @@ class RankHomeViewModel @Inject constructor(
             val response = voteRepository.getVote()
             val milliSecond = convertStringToTime(response?.data?.endedAt ?: "")
 //            val milliSecond = convertStringToTime("2022-12-27 19:11:00")
-            val differenceTime = getTime(milliSecond)
+            val differenceTime = getTime(milliSecond, application = context as BaseApplication)
             remainMonthlyVoteTime = if (differenceTime < 0) StopLoop else differenceTime
 //            Log.e("remain", remainMonthlyVoteTime.toString())
 
@@ -194,13 +195,13 @@ class RankHomeViewModel @Inject constructor(
     }
 
     private fun refreshRank() {
-        remain24HourTime = getTime(targetHour = 24, targetMinute = 0)
+        remain24HourTime = getTime(targetHour = 24, targetMinute = 0, application = context as BaseApplication)
         viewModelScope.launch {
             while (true) {
                 delay(1_000)
                 remain24HourTime -= 1
                 if (remain24HourTime < 0) {
-                    remain24HourTime = getTime(targetHour = 24, targetMinute = 0)
+                    remain24HourTime = getTime(targetHour = 24, targetMinute = 0, application = context as BaseApplication)
                     getMonthStarRank()
                     getVoteEndedTime()
                 }

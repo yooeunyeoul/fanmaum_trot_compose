@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.fanmaum.roullete.SpinWheelVisibleState
+import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.userIdStore
@@ -91,7 +92,10 @@ class RouletteViewModel @Inject constructor(
     }
 
     fun testRoulette() {
-        val dd = getTime(convertStringToTime(_luckyTicket.value.lastTime))
+        val dd = getTime(
+            convertStringToTime(_luckyTicket.value.lastTime),
+            application = context as BaseApplication
+        )
         Log.e("남은 시간 ", dd.toString())
 
         if (_luckyTicket.value.chance > 0) {
@@ -111,19 +115,6 @@ class RouletteViewModel @Inject constructor(
 
         _resultDegree.value = roulette?.degree ?: 30f
 
-
-//        Log.e("dddddd", dd.toString())
-
-//        viewModelScope.launch {
-//            _happyTicket.emit(
-//                HappyTicket(
-//                    chance = _happyTicket.value.chance - 1,
-//                    lastTime = "2023-02-01 12:30:22",
-//                    rouletteQuantity = 3200,
-//                    userId = 92
-//                )
-//            )
-//        }
     }
 
     private fun checkRemainTime(remainTime: Int) {

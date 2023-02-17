@@ -32,6 +32,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.ironsource.mediationsdk.IronSource
 import com.ironsource.mediationsdk.integration.IntegrationHelper
+import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
