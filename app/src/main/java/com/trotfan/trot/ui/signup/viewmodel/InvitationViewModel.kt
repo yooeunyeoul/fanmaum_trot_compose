@@ -72,7 +72,7 @@ class InvitationViewModel @Inject constructor(
             loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
-                    repository.updateUser(
+                    repository.postUserRedeemCode(
                         userid = it.userId,
                         redeemCode = _inviteCode.value,
                         token = userLocalToken.value?.token ?: ""
@@ -87,6 +87,8 @@ class InvitationViewModel @Inject constructor(
                             else _skipStatus.emit(true)
                         }
                     }
+                    loadingHelper.hideProgress()
+                }.onFailure {
                     loadingHelper.hideProgress()
                 }
             }

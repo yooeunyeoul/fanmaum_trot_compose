@@ -10,21 +10,18 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -35,17 +32,15 @@ import com.kakao.sdk.user.UserApiClient
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.PermissionAgreeStore
 import com.trotfan.trot.datastore.PermissionAgreementManager
+import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
 import com.trotfan.trot.ui.login.viewmodel.AuthViewModel
-import com.trotfan.trot.ui.theme.FanwooriTypography
-import com.trotfan.trot.ui.theme.Gray600
 import com.trotfan.trot.ui.theme.Gray800
-import com.trotfan.trot.ui.theme.Secondary800
-import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -54,6 +49,7 @@ fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val googleSignInLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == ComponentActivity.RESULT_OK) {
@@ -67,6 +63,9 @@ fun LoginScreen(
     val serverAvailable by viewModel.serverAvailable.collectAsState()
 
     var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var userTokenState by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getServerState()
@@ -97,36 +96,41 @@ fun LoginScreen(
 
             }
 
-            Column(
-                modifier = Modifier,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LoginButton(
-                    text = "카카오톡 계정으로 계속하기",
-                    icon = painterResource(id = R.drawable.kakao_symbol),
-                    textColor = Gray800,
-                    backgroundColor = Color(0XFFFEE500),
-                    borderWidth = 0.dp,
-                ) {
-                    handleKakaoLogin(context, viewModel)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                LoginButton(
-                    text = "Google 계정으로 계속하기",
-                    icon = painterResource(id = R.drawable.google_symbol)
-                ) {
-                    googleSignIn(googleSignInLauncher, context)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                LoginButton(
-                    text = "Apple 계정으로 계속하기",
-                    icon = painterResource(id = R.drawable.apple_symbol)
-                ) {
-                    isAppleLoginDialogOpen = !isAppleLoginDialogOpen
-                }
-
+            coroutineScope.launch {
+                userTokenState = context.userTokenStore.data.first().token.isNullOrEmpty()
             }
 
+            if (userTokenState) {
+                Column(
+                    modifier = Modifier,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LoginButton(
+                        text = "카카오톡 계정으로 계속하기",
+                        icon = painterResource(id = R.drawable.kakao_symbol),
+                        textColor = Gray800,
+                        backgroundColor = Color(0XFFFEE500),
+                        borderWidth = 0.dp,
+                    ) {
+                        handleKakaoLogin(context, viewModel)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LoginButton(
+                        text = "Google 계정으로 계속하기",
+                        icon = painterResource(id = R.drawable.google_symbol)
+                    ) {
+                        googleSignIn(googleSignInLauncher, context)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LoginButton(
+                        text = "Apple 계정으로 계속하기",
+                        icon = painterResource(id = R.drawable.apple_symbol)
+                    ) {
+                        isAppleLoginDialogOpen = !isAppleLoginDialogOpen
+                    }
+
+                }
+            }
         }
 
 
@@ -159,7 +163,7 @@ fun LoginScreen(
                     routeSections(navController, Route.SettingNickname.route)
                 } else if (userInfo!!.phone_number == null) {
                     routeSections(navController, Route.CertificationPhoneNumber.route)
-                } else if (userInfo!!.redeem_code == null) {
+                } else if (userInfo!!.redeemed_code == false) {
                     routeSections(navController, Route.InvitationCode.route)
                 } else {
                     routeSections(navController, HomeSections.Vote.route)

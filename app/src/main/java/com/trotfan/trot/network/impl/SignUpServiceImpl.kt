@@ -51,7 +51,6 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         nickName: String?,
         starId: Int?,
         phoneNumber: String?,
-        redeemCode: String?,
         agrees_terms: Boolean?,
         token: String
     ): CommonResponse<Unit> {
@@ -71,13 +70,28 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
             if (phoneNumber != null) {
                 json.put("phone_number", phoneNumber)
             }
-            if (redeemCode != null) {
-                json.put("redeem_code", redeemCode)
-            }
 
             agrees_terms?.let {
                 json.put("agrees_terms", it)
             }
+            body = (json.toString())
+        }.body()
+    }
+
+    @OptIn(InternalAPI::class)
+    override suspend fun postUserRedeemCode(
+        userId: Long,
+        redeemCode: String?,
+        token: String
+    ): CommonResponse<Unit> {
+        return httpClient.post(HttpRoutes.USERS + "/${userId}/code") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
+            val json = JSONObject()
+            json.put("code", redeemCode)
             body = (json.toString())
         }.body()
     }

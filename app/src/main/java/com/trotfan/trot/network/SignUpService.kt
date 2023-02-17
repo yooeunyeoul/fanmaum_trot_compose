@@ -18,8 +18,13 @@ interface SignUpService {
         nickName: String?,
         starId: Int?,
         phoneNumber: String?,
-        redeemCode: String?,
         agrees_terms: Boolean?,
+        token: String
+    ): CommonResponse<Unit>
+
+    suspend fun postUserRedeemCode(
+        userId: Long,
+        redeemCode: String?,
         token: String
     ): CommonResponse<Unit>
 

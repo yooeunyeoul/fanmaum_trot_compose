@@ -21,11 +21,10 @@ class SignUpRepository @Inject constructor(
         nickName: String? = null,
         starId: Int? = null,
         phoneNumber: String? = null,
-        redeemCode: String? = null,
         agrees_terms: Boolean? = null,
         token: String
     ): CommonResponse<Unit> =
-        service.updateUser(userid, nickName, starId, phoneNumber, redeemCode, agrees_terms, token)
+        service.updateUser(userid, nickName, starId, phoneNumber, agrees_terms, token)
 
 
     suspend fun patchPushSetting(
@@ -34,4 +33,11 @@ class SignUpRepository @Inject constructor(
         type: AlarmType
     ): CommonResponse<Unit> =
         settingService.setPushSetting(userToken = token, userId = id, alarmType = type)
+
+    suspend fun postUserRedeemCode(
+        userid: Long,
+        redeemCode: String? = null,
+        token: String
+    ): CommonResponse<Unit> =
+        service.postUserRedeemCode(userid, redeemCode, token)
 }
