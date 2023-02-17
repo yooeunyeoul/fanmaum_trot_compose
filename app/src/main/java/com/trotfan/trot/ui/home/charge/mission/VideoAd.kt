@@ -236,7 +236,7 @@ fun VideoAd(
         if (missionSnackBarState) {
             coroutineScope.launch {
                 missionSnackBarState =
-                    when (scaffoldState.snackbarHostState.showSnackbar("일일미션 하고 투표권 받기", "더보기")) {
+                    when (scaffoldState.snackbarHostState.showSnackbar("일일 미션 하고 투표권 받기", "더보기")) {
                         SnackbarResult.Dismissed -> {
                             false
                         }

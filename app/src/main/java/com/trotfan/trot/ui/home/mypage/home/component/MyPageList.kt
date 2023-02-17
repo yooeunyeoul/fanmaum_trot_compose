@@ -46,7 +46,7 @@ fun MyPageList(navController: NavController?) {
             )
             Line()
             MyPageListComponent(
-                text = "이용가이드",
+                text = "이용 가이드",
                 url = "https://mktfanmaum.notion.site/6abe9c2ead0d4fe6be976cc4d95154c7",
                 navController = navController
             )

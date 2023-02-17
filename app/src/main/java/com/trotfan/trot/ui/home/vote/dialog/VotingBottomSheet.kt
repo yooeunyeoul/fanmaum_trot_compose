@@ -279,7 +279,7 @@ fun VotingBottomSheet(
             Spacer(modifier = Modifier.height(16.dp))
 
             BtnOutlineMPrimaryImg(
-                text = "모두사용",
+                text = "모두 사용",
                 onClick = {
                     coroutineScope.launch {
                         homeViewModel.voteCnt.emit(TextFieldValue(decimal.format(tickets.today + tickets.unlimited)))

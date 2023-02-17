@@ -50,7 +50,7 @@ enum class HomeSections(
     val title: String,
     val route: String
 ) {
-    Vote(title = "일일투표", route = "home/vote"),
+    Vote(title = "일일 투표", route = "home/vote"),
     Ranking(title = "순위", route = "home/ranking"),
     Charge(title = "충전", route = "home/charge"),
     MyPage(title = "마이페이지", route = "home/mypage")

@@ -5,10 +5,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
-import com.trotfan.trot.datastore.UserInfoDataStore
-import com.trotfan.trot.datastore.UserInfoManager
-import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.datastore.userTokenStore
+import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.MissionState
 import com.trotfan.trot.network.ResultCodeStatus
@@ -32,6 +29,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     private val context = getApplication<Application>()
     lateinit var userInfoManager: UserInfoManager
+    lateinit var userTicketManager: UserTicketManager
     val missionState: StateFlow<MissionState?>
         get() = _missionState
     private val _missionState = MutableStateFlow<MissionState?>(null)
@@ -91,6 +89,7 @@ class ChargeHomeViewModel @Inject constructor(
         }
         viewModelScope.launch {
             userInfoManager = UserInfoManager(context.UserInfoDataStore)
+            userTicketManager = UserTicketManager(context.UserTicketStore)
             _starName.emit(userInfoManager.favoriteStarNameFlow.first() ?: "")
         }
     }
@@ -178,6 +177,10 @@ class ChargeHomeViewModel @Inject constructor(
                     )
                 }.onSuccess {
                     _videoCount.emit(_videoCount.value.plus(1))
+                    userTicketManager.storeUserTicket(
+                        it.data?.tickets?.unlimited ?: 0,
+                        it.data?.tickets?.limited ?: 0
+                    )
                     if (!_videoRewardState.value) {
                         _videoRewardState.emit(true)
                         missionSnackBarState.emit(true)
@@ -200,6 +203,10 @@ class ChargeHomeViewModel @Inject constructor(
                     _attendanceState.emit(true)
                     missionSnackBarState.emit(true)
                     attendanceRewardDialogState.emit(true)
+                    userTicketManager.storeUserTicket(
+                        it.data?.tickets?.unlimited ?: 0,
+                        it.data?.tickets?.limited ?: 0
+                    )
                     loadingHelper.hideProgress()
                 }.onFailure {
                     loadingHelper.hideProgress()

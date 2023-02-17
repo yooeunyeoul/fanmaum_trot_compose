@@ -81,7 +81,7 @@ fun ProfileInfo(
                 .padding(start = 24.dp, end = 24.dp)
         ) {
             Text(
-                text = "누적 투표수",
+                text = "누적 투표 수",
                 style = FanwooriTypography.body3,
                 color = Gray700,
                 modifier = Modifier

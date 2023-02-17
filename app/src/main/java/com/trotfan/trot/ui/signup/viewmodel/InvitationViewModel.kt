@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 enum class InviteCodeCheckStatus(val code: String) {
     None(""),
-    FirstCharacterError("초대코드는 #으로 시작해요."),
+    FirstCharacterError("초대 코드는 #으로 시작해요."),
     SpecialCharacterEmpty("#을 제외한 특수문자와 공백은 입력할 수 없어요."),
     InvalidCodeError("유효하지 않는 코드에요.")
 }

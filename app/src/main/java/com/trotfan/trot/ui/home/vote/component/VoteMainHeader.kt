@@ -80,7 +80,7 @@ fun HeaderVoteState(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "일일순위",
+                    text = "일일 순위",
                     style = FanwooriTypography.body5,
                     color = Gray900,
                     fontSize = 17.sp,
@@ -109,7 +109,7 @@ fun HeaderVoteState(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "${month}월 현재순위",
+                    text = "${month}월 현재 순위",
                     style = FanwooriTypography.body5,
                     color = Gray900,
                     fontSize = 17.sp,

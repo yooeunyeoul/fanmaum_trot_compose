@@ -39,7 +39,7 @@ fun AttendanceCheck(
     val scrollState = rememberScrollState()
     val infoList = listOf(
         "본 이벤트는 팬마음 회원 대상으로 진행되며, 팬마음 회원 로그인 및 전자금융거래 이용약관, 개인정보 수집 이용 동의 시에만 지급 및 사용이 가능합니다.",
-        "출석체크 참여 완료 시 보상이 지급됩니다.",
+        "출석 체크 참여 완료 시 보상이 지급됩니다.",
         "지급되는 보상의 종류 및 수량은 변경될 수 있습니다.",
         "지급된 투표권은 당일 자정에 소멸되며, 소멸된 투표권은 복구되지 않습니다.",
         "지급된 투표권은 마이페이지 > 내 투표권에서 확인하실 수 있습니다.",
@@ -60,7 +60,7 @@ fun AttendanceCheck(
         scaffoldState = scaffoldState,
         topBar = {
             AppbarMLeftIcon(
-                title = "출석체크", icon = R.drawable.icon_back, modifier = Modifier.background(
+                title = "출석 체크", icon = R.drawable.icon_back, modifier = Modifier.background(
                     Primary50
                 ), onIconClick = {
                     navController?.popBackStack()
@@ -71,7 +71,7 @@ fun AttendanceCheck(
     ) {
         if (dialogShowing) {
             VerticalDialogReceiveGift(
-                contentText = "출석체크 완료!",
+                contentText = "출석 체크 완료!",
                 gradientText = "${NumberComma.decimalFormat.format(200)} 투표권",
                 buttonOneText = "확인"
             ) {
@@ -170,7 +170,7 @@ fun AttendanceCheck(
                 coroutineScope.launch {
                     missionSnackBarState =
                         when (scaffoldState.snackbarHostState.showSnackbar(
-                            "일일미션 하고 투표권 받기",
+                            "일일 미션 하고 투표권 받기",
                             "더보기"
                         )) {
                             SnackbarResult.Dismissed -> {

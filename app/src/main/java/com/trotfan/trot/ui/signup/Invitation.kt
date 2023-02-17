@@ -50,7 +50,7 @@ fun InvitationScreen(
         Text(
             modifier = Modifier
                 .padding(top = 8.dp),
-            text = "친구에게 받은\n초대코드를 입력해주세요",
+            text = "친구에게 받은\n초대 코드를 입력해주세요",
             color = Gray800,
             style = FanwooriTypography.h1
         )
@@ -102,7 +102,7 @@ fun InvitationScreen(
 
         if (skipDialogState) {
             HorizontalDialog(
-                titleText = "초대코드 입력을 건너 뛸까요?",
+                titleText = "초대 코드 입력을 건너 뛸까요?",
                 contentText = "지금 건너뛰면,\n" +
                         "친구 초대 보상을 받을 수 없어요.",
                 positiveText = "건너뛰기",

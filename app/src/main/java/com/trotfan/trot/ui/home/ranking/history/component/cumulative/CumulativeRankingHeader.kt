@@ -52,7 +52,7 @@ fun CumulativeRankingHeader(title: String) {
             )
 
             Text(
-                text = "투표수",
+                text = "투표 수",
                 color = Primary700,
                 style = FanwooriTypography.body2,
                 modifier = Modifier
@@ -62,7 +62,7 @@ fun CumulativeRankingHeader(title: String) {
             )
 
             Text(
-                text = "일일점수",
+                text = "일일 점수",
                 color = Primary700,
                 style = FanwooriTypography.body2,
                 modifier = Modifier

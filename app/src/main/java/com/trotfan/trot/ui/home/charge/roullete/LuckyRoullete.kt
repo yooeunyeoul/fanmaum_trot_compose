@@ -121,7 +121,7 @@ fun luckyRoulette(
 
     if (dialogShowing) {
         VerticalDialogReceiveGift(
-            contentText = "행운룰렛 당첨!",
+            contentText = "행운 룰렛 당첨!",
             gradientText = "${NumberComma.decimalFormat.format(happyTicket.rouletteQuantity)} 투표권",
             buttonOneText = "확인"
         ) {
@@ -147,7 +147,7 @@ fun luckyRoulette(
         ) {
 
             AppbarMLeftIcon(
-                title = "행운룰렛",
+                title = "행운 룰렛",
                 icon = R.drawable.icon_back,
                 modifier = Modifier.background(color = Primary50)
             )
