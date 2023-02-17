@@ -107,7 +107,7 @@ class ChargeHomeViewModel @Inject constructor(
                 }.onSuccess { response ->
                     when (response.result.code) {
                         ResultCodeStatus.SuccessWithData.code -> {
-                            purchaseHelper.refreshTickets(response.data?.expired ?: Expired())
+                            response.data?.let { it1 -> purchaseHelper.refreshTickets(it1) }
                             purchaseHelper.closeApiCall()
                         }
 

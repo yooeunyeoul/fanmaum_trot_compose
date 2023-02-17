@@ -20,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Expired
-import com.trotfan.trot.ui.Route
+import com.trotfan.trot.model.Ticket
+import com.trotfan.trot.model.TicketItem
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray100
@@ -35,7 +35,7 @@ fun MyVote(
     modifier: Modifier = Modifier,
     isHide: Boolean,
     hideState: (Boolean) -> (Unit),
-    tickets: Expired,
+    tickets: Ticket,
     onclick: () -> Unit = {}
 ) {
     val textList = listOf("ㄴ 유효기한 무제한", "ㄴ 오늘 소멸 예정")
@@ -79,7 +79,7 @@ fun MyVote(
 
             Text(
                 text = NumberComma.decimalFormat.format(
-                    tickets.today?.plus(
+                    tickets.limited?.plus(
                         tickets.unlimited ?: 0
                     )
                 ),
@@ -119,7 +119,7 @@ fun MyVote(
 
                         Text(
                             text = if (it == 0) NumberComma.decimalFormat.format(tickets.unlimited) else NumberComma.decimalFormat.format(
-                                tickets.today
+                                tickets.limited
                             ),
                             color = Gray900,
                             style = FanwooriTypography.button1,
@@ -149,5 +149,5 @@ fun Charging(onclick: () -> Unit) {
 @Preview
 @Composable
 fun PreviewMyVote() {
-    MyVote(isHide = true, hideState = {}, tickets = Expired(), onclick = {})
+    MyVote(isHide = true, hideState = {}, tickets = Ticket(0, 0), onclick = {})
 }

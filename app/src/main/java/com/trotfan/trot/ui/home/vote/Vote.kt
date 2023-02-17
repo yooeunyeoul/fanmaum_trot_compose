@@ -2,7 +2,6 @@
 
 package com.trotfan.trot.ui.home.vote
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -49,7 +48,6 @@ import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.RefreshTicket
 import com.trotfan.trot.model.*
-import com.trotfan.trot.ui.MainActivity
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.chip.ChipCapsuleImg
 import com.trotfan.trot.ui.components.navigation.CustomTopAppBarWithIcon
@@ -81,7 +79,7 @@ fun VoteHome(
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
     chargeHomeViewModel: ChargeHomeViewModel = composableActivityViewModel("ChargeHomeViewModel"),
-    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
+    onVotingClick: (vote_id: Int, vote_ticket: Ticket, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
     lazyListState: LazyListState?,
     purchaseHelper: PurchaseHelper
 ) {

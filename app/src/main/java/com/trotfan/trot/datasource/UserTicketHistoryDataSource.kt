@@ -5,7 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.model.FavoriteStar
-import com.trotfan.trot.model.Ticket
+import com.trotfan.trot.model.TicketItem
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.UserService
 import com.trotfan.trot.ui.components.input.SearchStatus
@@ -15,13 +15,13 @@ import javax.inject.Inject
 class UserTicketHistoryDataSource @Inject constructor(
     private val service: UserService,
     private val loadingHelper: LoadingHelper,
-) : PagingSource<String, Ticket>() {
+) : PagingSource<String, TicketItem>() {
 
     var token: String = ""
     var userId: Long = 0
     var filter: String? = null
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, Ticket> {
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, TicketItem> {
         return try {
             loadingHelper.showProgress()
             val data =
@@ -56,7 +56,7 @@ class UserTicketHistoryDataSource @Inject constructor(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, Ticket>): String? =
+    override fun getRefreshKey(state: PagingState<String, TicketItem>): String? =
         state.anchorPosition?.let { anchorPosition ->
             val anchorPageIndex = state.pages.indexOf(state.closestPageToPosition(anchorPosition))
             state.pages.getOrNull(anchorPageIndex + 1)?.prevKey ?: state.pages.getOrNull(

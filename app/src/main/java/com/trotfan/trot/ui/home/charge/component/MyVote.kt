@@ -17,7 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Expired
+import com.trotfan.trot.model.Ticket
+import com.trotfan.trot.model.TicketItem
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray100
@@ -29,7 +30,7 @@ import com.trotfan.trot.ui.utils.clickableSingle
 @Composable
 fun MyVote(
     modifier: Modifier = Modifier,
-    tickets: Expired,
+    tickets: Ticket,
     onclick: () -> Unit = {}
 ) {
     val interactionSource = remember {
@@ -66,7 +67,7 @@ fun MyVote(
 
             Text(
                 text = NumberComma.decimalFormat.format(
-                    tickets.today?.plus(
+                    tickets.limited.plus(
                         tickets.unlimited ?: 0
                     )
                 ),
@@ -94,5 +95,5 @@ fun Charging(onclick: () -> Unit) {
 @Preview
 @Composable
 fun PreviewMyVote() {
-    MyVote(tickets = Expired(), onclick = {})
+    MyVote(tickets = Ticket(0, 0), onclick = {})
 }

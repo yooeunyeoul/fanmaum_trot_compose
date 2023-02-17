@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -25,7 +23,8 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.PurchaseHelper
-import com.trotfan.trot.model.Expired
+import com.trotfan.trot.model.Ticket
+import com.trotfan.trot.model.TicketItem
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.HomeSections
@@ -140,7 +139,7 @@ fun FanwooriApp(
                 }
                 NavigationComponent(
                     navController = navController,
-                    onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
+                    onVotingClick = { voteId: Int, voteTicket: Ticket, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
                         coroutineScope.launch {
                             star?.let {
                                 voteHomeViewModel = voteViewModel

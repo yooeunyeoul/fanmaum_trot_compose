@@ -116,7 +116,7 @@ fun VotingBottomSheet(
                     .padding(top = 8.dp)
             ) {
                 Text(
-                    text = decimal.format((tickets.today + tickets.unlimited) ?: 0),
+                    text = decimal.format((tickets.limited + tickets.unlimited) ?: 0),
                     style = FanwooriTypography.subtitle2,
                     color = Gray800,
                     modifier = Modifier
@@ -168,7 +168,7 @@ fun VotingBottomSheet(
                     )
 
                     Text(
-                        text = decimal.format(tickets.today),
+                        text = decimal.format(tickets.limited),
                         style = FanwooriTypography.subtitle3,
                         color = Primary800,
                         modifier = Modifier.padding(start = 2.dp)
@@ -204,7 +204,7 @@ fun VotingBottomSheet(
                                 if (cnt.text.isBlank().not()) {
                                     var decimalCnt = cnt.text.replace(",", "")
                                     try {
-                                        val myVoteCnt = tickets.today + tickets.unlimited
+                                        val myVoteCnt = tickets.limited + tickets.unlimited
                                         if (decimalCnt.toLong() >= myVoteCnt) {
                                             decimalCnt = myVoteCnt.toString()
                                         }
@@ -282,7 +282,7 @@ fun VotingBottomSheet(
                 text = "모두 사용",
                 onClick = {
                     coroutineScope.launch {
-                        homeViewModel.voteCnt.emit(TextFieldValue(decimal.format(tickets.today + tickets.unlimited)))
+                        homeViewModel.voteCnt.emit(TextFieldValue(decimal.format(tickets.limited + tickets.unlimited)))
                         focusManager.clearFocus()
                     }
                 },

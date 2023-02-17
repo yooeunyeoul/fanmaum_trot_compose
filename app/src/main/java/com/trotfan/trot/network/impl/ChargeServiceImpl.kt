@@ -1,6 +1,5 @@
 package com.trotfan.trot.network.impl
 
-import com.trotfan.trot.di.ApiResult
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.ChargeService
 import com.trotfan.trot.network.HttpRoutes
@@ -83,7 +82,7 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         }.body()
     }
 
-    override suspend fun postAttendance(userToken: String): CommonResponse<RewardTicket> {
+    override suspend fun postAttendance(userToken: String): CommonResponse<Ticket> {
         return httpClient.post("${HttpRoutes.MISSIONS}/attendance") {
             contentType(ContentType.Application.Json)
             header(

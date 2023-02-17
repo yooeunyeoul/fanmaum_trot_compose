@@ -31,7 +31,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Ticket
+import com.trotfan.trot.model.TicketItem
 import com.trotfan.trot.ui.components.chip.ChipTab
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.HomeSections
@@ -50,7 +50,7 @@ fun MyVoteHistory(
     purchaseHelper: PurchaseHelper?
 ) {
     val decimal = DecimalFormat("#,###")
-    val historyItems: LazyPagingItems<Ticket>? =
+    val historyItems: LazyPagingItems<TicketItem>? =
         viewModel.userTicketHistory.value?.collectAsLazyPagingItems()
     val lazyState = rememberLazyListState()
     val tabs = listOf("전체", "미션보상", "구매", "사용", "소멸", "기타")
@@ -130,7 +130,7 @@ fun MyVoteHistory(
                             }
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = decimal.format(ticket.unlimited + ticket.today),
+                                text = decimal.format(ticket.unlimited + ticket.limited),
                                 style = FanwooriTypography.h1,
                                 color = Gray900,
                                 modifier = Modifier.padding(start = 24.dp)
@@ -174,7 +174,7 @@ fun MyVoteHistory(
                                     )
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Text(
-                                        text = decimal.format(ticket.today),
+                                        text = decimal.format(ticket.limited),
                                         style = FanwooriTypography.button1,
                                         color = Gray800
                                     )
@@ -289,7 +289,7 @@ fun HistoryDateItem(date: String) {
 }
 
 @Composable
-fun HistoryItem(item: Ticket, position: Int, beforeItem: Ticket?) {
+fun HistoryItem(item: TicketItem, position: Int, beforeItem: TicketItem?) {
     val decimal = DecimalFormat("#,###")
     val isPlus = item.quantity > 0
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)

@@ -76,7 +76,7 @@ fun MyVotingTicket(
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = decimal.format(ticket.unlimited + ticket.today),
+                text = decimal.format(ticket.unlimited + ticket.limited),
                 style = FanwooriTypography.h2,
                 color = Gray800
             )

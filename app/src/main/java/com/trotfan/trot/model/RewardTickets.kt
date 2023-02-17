@@ -9,7 +9,7 @@ data class RewardTickets(
     @SerializedName("today")
     val today: Today,
     @SerializedName("tickets")
-    val tickets: RewardTicket
+    val tickets: Ticket
 )
 
 @kotlinx.serialization.Serializable
@@ -19,7 +19,7 @@ data class Today(
 )
 
 @kotlinx.serialization.Serializable
-data class RewardTicket(
+data class Ticket(
     @SerializedName("unlimited")
     val unlimited: Long,
     @SerializedName("limited")

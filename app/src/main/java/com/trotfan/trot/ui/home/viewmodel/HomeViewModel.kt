@@ -3,23 +3,18 @@ package com.trotfan.trot.ui.home.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ironsource.mediationsdk.IronSource
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
-import com.trotfan.trot.model.Expired
-import com.trotfan.trot.model.MainPopups
-import com.trotfan.trot.model.VoteMainStar
-import com.trotfan.trot.model.VoteTicket
+import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.HomeRepository
 import com.trotfan.trot.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,7 +33,7 @@ class HomeViewModel @Inject constructor(
     var votingCompleteState = MutableStateFlow(0)
     var voteStar = MutableStateFlow<VoteMainStar?>(null)
     var voteId = MutableStateFlow(0)
-    var voteTicket = MutableStateFlow<Expired>(Expired(0, 0))
+    var voteTicket = MutableStateFlow(Ticket(0, 0))
 
     var myVoteCnt = MutableStateFlow(1000L)
     var voteCnt = MutableStateFlow(TextFieldValue(""))
