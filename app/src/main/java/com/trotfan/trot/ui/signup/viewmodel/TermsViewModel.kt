@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
+import com.trotfan.trot.model.Alarm
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.BaseViewModel
 import com.trotfan.trot.ui.home.mypage.setting.AlarmType
@@ -59,33 +60,27 @@ class TermsViewModel @Inject constructor(
         }
     }
 
-    fun patchPushSettingNight() {
+    fun patchPushSetting(night: Boolean, day: Boolean) {
         viewModelScope.launch {
             kotlin.runCatching {
                 repository.patchPushSetting(
                     token = userLocalToken.value?.token ?: "",
                     id = userId ?: 0,
-                    type = AlarmType.night_alarm
+                    alarm = Alarm(
+                        dayAlarm = day,
+                        freeTicketsGone = false,
+                        newVotes = false,
+                        nightAlarm = night,
+                        timeEvent = false
+                    )
                 )
             }.onSuccess {
-                nightPushUpdateResult = true
-                if (userUpdateResult && dayPushUpdateResult && nightPushUpdateResult) {
-                    apiResultState.emit(true)
+                if (night) {
+                    nightPushUpdateResult = true
                 }
-            }
-        }
-    }
-
-    fun patchPushSettingDay() {
-        viewModelScope.launch {
-            kotlin.runCatching {
-                repository.patchPushSetting(
-                    token = userLocalToken.value?.token ?: "",
-                    id = userId ?: 0,
-                    type = AlarmType.day_alarm
-                )
-            }.onSuccess {
-                dayPushUpdateResult = true
+                if (day) {
+                    dayPushUpdateResult = true
+                }
                 if (userUpdateResult && dayPushUpdateResult && nightPushUpdateResult) {
                     apiResultState.emit(true)
                 }

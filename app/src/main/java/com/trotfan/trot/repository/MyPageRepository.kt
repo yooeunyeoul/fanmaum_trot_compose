@@ -35,9 +35,9 @@ class MyPageRepository @Inject constructor(
     suspend fun setPushSetting(
         userToken: String,
         userId: Long,
-        alarmType: AlarmType
+        alarm: Alarm
     ): CommonResponse<Unit> {
-        return settingService.setPushSetting(userToken, userId, alarmType)
+        return settingService.setPushSetting(userToken, userId, alarm)
     }
 
     suspend fun signOut(

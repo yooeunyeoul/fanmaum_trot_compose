@@ -20,7 +20,6 @@ open class BaseViewModel constructor(
     private val context = getApplication<Application>()
     var userLocalToken = MutableStateFlow<UserTokenValue?>(null)
     var userLocalId = MutableStateFlow<Long?>(null)
-    var apiStatus = MutableStateFlow<ApiResult<Any>>(ApiResult.Loading)
 
     init {
         viewModelScope.launch {

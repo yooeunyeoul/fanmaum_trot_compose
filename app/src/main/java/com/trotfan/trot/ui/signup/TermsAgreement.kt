@@ -222,15 +222,14 @@ fun TermsAgreement(
                     onClick = {
                         viewModel.updateUser()
                         if (nightAdsCheck) {
-                            viewModel.patchPushSettingNight()
                             FirebaseMessaging.getInstance()
                                 .subscribeToTopic(AlarmType.night_alarm.name)
                         }
                         if (dayTimeAdsCheck) {
-                            viewModel.patchPushSettingDay()
                             FirebaseMessaging.getInstance()
                                 .subscribeToTopic(AlarmType.day_alarm.name)
                         }
+                        viewModel.patchPushSetting(nightAdsCheck, dayTimeAdsCheck)
                     },
                     enabled = childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
                     modifier = Modifier

@@ -9,6 +9,8 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.util.*
+import org.json.JSONObject
 import javax.inject.Inject
 
 class SettingServiceImpl @Inject constructor(private val httpClient: HttpClient) : SettingService {
@@ -24,17 +26,27 @@ class SettingServiceImpl @Inject constructor(private val httpClient: HttpClient)
         return response.body()
     }
 
+    @OptIn(InternalAPI::class)
     override suspend fun setPushSetting(
         userToken: String,
         userId: Long,
-        alarmType: AlarmType
+        alarm: Alarm
     ): CommonResponse<Unit> {
-        return httpClient.patch(HttpRoutes.USERS + "/${userId}/alarms/${alarmType.name}") {
+        return httpClient.patch(HttpRoutes.USERS + "/${userId}/alarms") {
             contentType(ContentType.Application.Json)
             header(
                 "Authorization",
                 "Bearer $userToken"
             )
+            val json2 = JSONObject()
+            json2.put("night_alarm", alarm.nightAlarm)
+            json2.put("day_alarm", alarm.dayAlarm)
+            json2.put("free_tickets_gone", alarm.freeTicketsGone)
+            json2.put("new_votes", alarm.newVotes)
+            json2.put("time_event", alarm.timeEvent)
+            val json = JSONObject()
+            json.put("alarm_settings", json2)
+            body = (json.toString())
         }.body()
     }
 }

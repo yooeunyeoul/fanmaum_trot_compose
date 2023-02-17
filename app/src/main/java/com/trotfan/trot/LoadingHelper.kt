@@ -19,11 +19,6 @@ class LoadingHelper @Inject constructor(
         MutableStateFlow<Boolean>(false)
     val progressbar = _progressbar.asStateFlow()
 
-
-    init {
-        Log.e("이거 LoadingHelper", "LoadingHelper")
-    }
-
     fun hideProgress() {
         coroutineScope.launch {
             _progressbar.emit(false)

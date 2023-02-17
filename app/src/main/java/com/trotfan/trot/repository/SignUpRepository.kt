@@ -31,7 +31,7 @@ class SignUpRepository @Inject constructor(
     suspend fun patchPushSetting(
         token: String,
         id: Long,
-        type: AlarmType
+        alarm: Alarm
     ): CommonResponse<Unit> =
-        settingService.setPushSetting(userToken = token, userId = id, alarmType = type)
+        settingService.setPushSetting(userToken = token, userId = id, alarm = alarm)
 }

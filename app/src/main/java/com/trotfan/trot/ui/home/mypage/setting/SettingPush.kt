@@ -1,10 +1,12 @@
 package com.trotfan.trot.ui.home.mypage.setting
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -28,7 +30,20 @@ fun SettingPush(
     val nightAlarm by viewModel.nightEvent.collectAsState()
     val freeTicketsAlarm by viewModel.freeVotes.collectAsState()
     val newVotes by viewModel.newVotes.collectAsState()
+
     val timeEvent by viewModel.timeEvent.collectAsState()
+    val finishState by viewModel.finishState.collectAsState()
+
+    BackHandler(!finishState) {
+        viewModel.setPushSetting()
+    }
+
+    LaunchedEffect(key1 = finishState, block = {
+        if (finishState) {
+            navController?.popBackStack()
+        }
+    })
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +72,7 @@ fun SettingPush(
                 content = "팬마음이 제공하는 이벤트 소식 알림을 받습니다.",
                 isChecked = dayAlarm,
                 onChecked = {
-                    viewModel.setPushSetting(AlarmType.day_alarm, checked = it)
+                    viewModel.changeAlarmSetting(AlarmType.day_alarm, checked = it)
                 }
             )
             PushBody(
@@ -65,7 +80,7 @@ fun SettingPush(
                 content = "접속하기만 해도 무료 투표권을 드리는 타임이벤트 알림을 받습니다.",
                 isChecked = timeEvent,
                 onChecked = {
-                    viewModel.setPushSetting(AlarmType.time_event, checked = it)
+                    viewModel.changeAlarmSetting(AlarmType.time_event, checked = it)
                 }
             )
             Spacer(
@@ -78,7 +93,7 @@ fun SettingPush(
                 content = "야간(오후 9시 ~ 오전 8시)에도 이벤트 소식 알림을 받습니다.",
                 isChecked = nightAlarm,
                 onChecked = {
-                    viewModel.setPushSetting(AlarmType.night_alarm, checked = it)
+                    viewModel.changeAlarmSetting(AlarmType.night_alarm, checked = it)
                 }
             )
 
@@ -87,26 +102,13 @@ fun SettingPush(
                 content = "당일 소멸 예정인 무료투표권이 남았을 때 알림을 받습니다",
                 isChecked = freeTicketsAlarm,
                 onChecked = {
-                    viewModel.setPushSetting(AlarmType.free_tickets_gone, checked = it)
+                    viewModel.changeAlarmSetting(AlarmType.free_tickets_gone, checked = it)
                 }
             )
             PushBody(title = "새 투표 알림", content = "새로운 투표가 올라오면 알림을 받습니다", isChecked = newVotes,
                 onChecked = {
-                    viewModel.setPushSetting(AlarmType.new_votes, checked = it)
+                    viewModel.changeAlarmSetting(AlarmType.new_votes, checked = it)
                 })
-//            Spacer(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(8.dp)
-//            )
-//            PushHead(
-//                title = "타임이벤트 알림",
-//                content = "접속하기만 해도 무료 투표권을 드리는 타임이벤트 알림을 받습니다.",
-//                isChecked = timeEvent,
-//                onChecked = {
-//                    viewModel.setPushSetting(AlarmType.time_event, checked = it)
-//                }
-//            )
         }
     }
 }
