@@ -2,6 +2,7 @@ package com.trotfan.trot.network
 
 import com.trotfan.trot.model.LuckyTicket
 import com.trotfan.trot.model.MissionState
+import com.trotfan.trot.model.RewardTicket
 import com.trotfan.trot.model.RewardTickets
 import com.trotfan.trot.network.response.CommonResponse
 
@@ -30,9 +31,9 @@ interface ChargeService {
 
     suspend fun postAttendance(
         userToken: String
-    ): CommonResponse<RewardTickets>
+    ): CommonResponse<RewardTicket>
 
     suspend fun postShareStar(
         userToken: String
-    ): CommonResponse<RewardTickets>
+    ): CommonResponse<Unit>
 }

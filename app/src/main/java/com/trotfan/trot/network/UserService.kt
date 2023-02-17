@@ -35,4 +35,8 @@ interface UserService {
         etc: String?
     ): CommonResponse<Unit>
 
+    suspend fun getUserInviteInfo(
+        token: String,
+        userId: Long
+    ): CommonResponse<InviteInfo>
 }
