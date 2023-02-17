@@ -3,6 +3,7 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
@@ -53,6 +54,7 @@ enum class CertificationNumberCheckStatus(
 @HiltViewModel
 class CertificationPhoneNumberViewModel @Inject constructor(
     private val repository: SignUpRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -69,7 +71,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
 
     fun requestCertificationCode(phoneNumber: String) {
         viewModelScope.launch(Dispatchers.IO) {
-
+            loadingHelper.showProgress()
             try {
                 val response = repository.requestSmsCertification(
                     phoneNumber = phoneNumber,
@@ -84,8 +86,10 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                     }
 
                 }
+                loadingHelper.hideProgress()
             } catch (e: Exception) {
                 Log.e("Error", e.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }
@@ -122,6 +126,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
 
     fun updateUser(phoneNum: String) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     val response =
@@ -136,7 +141,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                     } else {
                         Log.e("Error", response.result.message)
                     }
-
+                    loadingHelper.hideProgress()
                 }
             }
         }

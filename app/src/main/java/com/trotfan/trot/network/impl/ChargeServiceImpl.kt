@@ -1,5 +1,6 @@
 package com.trotfan.trot.network.impl
 
+import com.trotfan.trot.di.ApiResult
 import com.trotfan.trot.model.LuckyTicket
 import com.trotfan.trot.model.MissionState
 import com.trotfan.trot.network.ChargeService
@@ -47,6 +48,7 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         userToken: String,
         userId: Int
     ): CommonResponse<LuckyTicket> {
+
         val response = httpClient.submitForm(
             url = HttpRoutes.GOOGLE_PURCHASE
         ) {

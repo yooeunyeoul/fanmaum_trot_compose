@@ -4,8 +4,10 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.fanmaum.roullete.SpinWheelVisibleState
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.di.ApiResult
 import com.trotfan.trot.model.LuckyTicket
 import com.trotfan.trot.repository.ChargeRepository
 import com.trotfan.trot.ui.BaseViewModel
@@ -32,6 +34,7 @@ enum class TicketKind(val quantity: Int, val icon: Int, val degree: Float) {
 @HiltViewModel
 class RouletteViewModel @Inject constructor(
     private val repository: ChargeRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -41,9 +44,9 @@ class RouletteViewModel @Inject constructor(
     private val _luckyTicket =
         MutableStateFlow(
             LuckyTicket(
-                chance = 1,
+                chance = 3,
                 lastTime = "2023-02-13 11:18:59",
-                rouletteQuantity = 500,
+                rouletteQuantity = 1000,
                 userId = 92
             )
         )
@@ -70,6 +73,7 @@ class RouletteViewModel @Inject constructor(
 
     fun getRoulette() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collectLatest {
                 kotlin.runCatching {
                     repository.checkRoulette(
@@ -77,9 +81,9 @@ class RouletteViewModel @Inject constructor(
                         userId = it.userId.toInt()
                     )
                 }.onSuccess {
-
+                    loadingHelper.hideProgress()
                 }.onFailure {
-
+                    loadingHelper.hideProgress()
                 }
             }
 

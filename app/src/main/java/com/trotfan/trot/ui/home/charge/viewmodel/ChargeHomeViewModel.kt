@@ -3,6 +3,7 @@ package com.trotfan.trot.ui.home.charge.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.UserInfoManager
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ChargeHomeViewModel @Inject constructor(
     private val repository: ChargeRepository,
-    application: Application
+    application: Application,
+    private val loadingHelper: LoadingHelper
 ) : BaseViewModel(application) {
 
     private val context = getApplication<Application>()
@@ -95,6 +97,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     fun getVoteTickets(purchaseHelper: PurchaseHelper) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
@@ -113,8 +116,10 @@ class ChargeHomeViewModel @Inject constructor(
                             Log.e("ChargeHomeViewModel", response.result.message)
                         }
                     }
+                    loadingHelper.hideProgress()
                 }.onFailure {
                     Log.e("ChargeHomeViewModel", it.message.toString())
+                    loadingHelper.hideProgress()
                 }
             }
         }
@@ -122,6 +127,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     fun getMissions() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userTokenStore.data.collect {
                 kotlin.runCatching {
                     repository.getMissions(
@@ -154,8 +160,9 @@ class ChargeHomeViewModel @Inject constructor(
                     val simpleDateFormat = SimpleDateFormat("dd")
                     val dateString = simpleDateFormat.format(Date()).toString()
                     _lastApiTime.emit(dateString)
+                    loadingHelper.hideProgress()
                 }.onFailure {
-
+                    loadingHelper.hideProgress()
                 }
             }
         }
@@ -163,6 +170,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     fun postRewardVideo() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userTokenStore.data.collect {
                 kotlin.runCatching {
                     repository.postRewardVideo(
@@ -174,7 +182,9 @@ class ChargeHomeViewModel @Inject constructor(
                         _videoRewardState.emit(true)
                         missionSnackBarState.emit(true)
                     }
+                    loadingHelper.hideProgress()
                 }.onFailure {
+                    loadingHelper.hideProgress()
                 }
             }
         }
@@ -182,6 +192,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     fun postAttendance() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userTokenStore.data.collect {
                 kotlin.runCatching {
                     repository.postAttendance(it.token)
@@ -189,8 +200,9 @@ class ChargeHomeViewModel @Inject constructor(
                     _attendanceState.emit(true)
                     missionSnackBarState.emit(true)
                     attendanceRewardDialogState.emit(true)
+                    loadingHelper.hideProgress()
                 }.onFailure {
-
+                    loadingHelper.hideProgress()
                 }
             }
         }
@@ -198,6 +210,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     fun postShareStar() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userTokenStore.data.collect {
                 kotlin.runCatching {
                     repository.postShareStar(it.token)
@@ -207,8 +220,9 @@ class ChargeHomeViewModel @Inject constructor(
                         missionSnackBarState.emit(true)
                         _missionCompleteCount.emit(_missionCompleteCount.value.plus(1))
                     }
+                    loadingHelper.hideProgress()
                 }.onFailure {
-
+                    loadingHelper.hideProgress()
                 }
             }
         }

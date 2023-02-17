@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.*
 import com.trotfan.trot.di.ApiResult
 import com.trotfan.trot.network.ResultCodeStatus
@@ -22,6 +23,7 @@ enum class AlarmType {
 @HiltViewModel
 class SettingViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -63,6 +65,7 @@ class SettingViewModel @Inject constructor(
 
     private fun getPushSetting() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 val userToken = context.userTokenStore.data.map {
                     it.token
@@ -91,9 +94,11 @@ class SettingViewModel @Inject constructor(
                         }
                     }
                 }
+                loadingHelper.hideProgress()
             }.onFailure {
                 apiStatus.value = ApiResult.Failed(Exception(it.message.toString()))
                 Log.d("SettingViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
 
 
@@ -101,10 +106,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun setPushSetting(alarmType: AlarmType, checked: Boolean) {
-        if (apiStatus.value == ApiResult.Loading) {
-            return
-        }
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 val userToken = context.userTokenStore.data.map {
                     it.token
@@ -193,16 +196,18 @@ class SettingViewModel @Inject constructor(
                         Log.d("SettingViewModel", it.toString())
                     }
                 }
-
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("SettingViewModel", it.message.toString())
                 apiStatus.value = ApiResult.Failed(Exception(it.message.toString()))
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun signOut(reason: Int, etc: String? = null) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     myPageRepository.signOut(
@@ -213,8 +218,10 @@ class SettingViewModel @Inject constructor(
                     )
                 }.onSuccess {
                     _secessionConfirmDialogState.emit(true)
+                    loadingHelper.hideProgress()
                 }.onFailure {
                     _secessionConfirmDialogState.emit(false)
+                    loadingHelper.hideProgress()
                 }
             }
         }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.Expired
@@ -38,7 +39,8 @@ enum class Gender {
 @HiltViewModel
 class VoteHomeViewModel @Inject constructor(
     private val repository: VoteRepository,
-    application: Application
+    application: Application,
+    private val loadingHelper: LoadingHelper
 ) : BaseViewModel(application) {
 
 
@@ -125,6 +127,7 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun getVoteList() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             val response = repository.getVote()
             val voteMainStars = response?.data?.voteMainStars
             val menHashMap =
@@ -134,11 +137,13 @@ class VoteHomeViewModel @Inject constructor(
             _voteId.emit(response.data.id)
             _menHashMap.emit(menHashMap)
             _womenHashMap.emit(womenHashMap)
+            loadingHelper.hideProgress()
         }
     }
 
     private fun getStarRank() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             userInfoManager?.favoriteStarIdFlow?.collectLatest {
                 val response = repository.getStarRank(it ?: 2)
                 when (response.result.code) {
@@ -149,12 +154,14 @@ class VoteHomeViewModel @Inject constructor(
                         _favoriteStar.emit(response.data ?: FavoriteStarInfo())
                     }
                 }
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getVoteTickets(purchaseHelper: PurchaseHelper) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
@@ -176,7 +183,9 @@ class VoteHomeViewModel @Inject constructor(
                             Log.e("VoteHomeViewModel", response.result.message.toString())
                         }
                     }
+                    loadingHelper.hideProgress()
                 }.onFailure {
+                    loadingHelper.hideProgress()
                     Log.e("VoteHomeViewModel", it.message.toString())
                 }
             }

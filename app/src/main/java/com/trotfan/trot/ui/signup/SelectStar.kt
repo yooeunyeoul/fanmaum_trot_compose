@@ -218,17 +218,17 @@ fun SelectStarScreen(
 
                     }
                     is LoadState.Loading -> {
-                        item {
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                            ) {
-                                CircularProgressIndicator()
-                            }
-
-                        }
+//                        item {
+//                            Column(
+//                                verticalArrangement = Arrangement.Center,
+//                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                modifier = Modifier
+//                                    .fillMaxSize()
+//                            ) {
+//                                CircularProgressIndicator()
+//                            }
+//
+//                        }
 
 
                     }

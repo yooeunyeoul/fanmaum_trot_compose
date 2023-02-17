@@ -28,14 +28,20 @@ import com.fanmaum.roullete.SpinWheel
 import com.fanmaum.roullete.SpinWheelDefaults
 import com.fanmaum.roullete.SpinWheelVisibleState
 import com.fanmaum.roullete.state.rememberSpinWheelState
+import com.google.protobuf.Api
 import com.trotfan.trot.R
+import com.trotfan.trot.di.ApiResult
+import com.trotfan.trot.model.LuckyTicket
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
+import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.charge.viewmodel.RouletteViewModel
 import com.trotfan.trot.ui.home.charge.viewmodel.TicketKind
 import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 val screenPadding = 24.dp
@@ -44,7 +50,7 @@ val screenPadding = 24.dp
 @Composable
 fun luckyRoulette(
     navController: NavController,
-    viewModel: RouletteViewModel = hiltViewModel()
+    viewModel: RouletteViewModel = hiltViewModel(),
 ) {
 
     var dialogShowing by remember {

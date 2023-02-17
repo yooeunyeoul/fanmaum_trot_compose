@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.RankMainDataStore
 import com.trotfan.trot.datastore.RankMainManager
@@ -42,6 +43,7 @@ const val StopLoop = -1004
 class RankHomeViewModel @Inject constructor(
     private val repository: RankingHistoryRepository,
     private val voteRepository: VoteRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -216,6 +218,7 @@ class RankHomeViewModel @Inject constructor(
 
     private fun getMonthStarRank() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             val response = repository.getMonthlyStarList(
                 null,
                 null
@@ -306,11 +309,13 @@ class RankHomeViewModel @Inject constructor(
 
                 }
             }
+            loadingHelper.hideProgress()
         }
     }
 
     private fun getBanners() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             val response = repository.getBanners(group = "rank", platform = "aos")
             when (response.result.code) {
                 ResultCodeStatus.SuccessWithData.code -> {
@@ -319,6 +324,7 @@ class RankHomeViewModel @Inject constructor(
                 }
 
             }
+            loadingHelper.hideProgress()
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.AuthRepository
@@ -21,6 +22,7 @@ import kotlin.coroutines.suspendCoroutine
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -42,6 +44,7 @@ class AuthViewModel @Inject constructor(
 
     fun getServerState() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getServerStateService()
             }.onSuccess { state ->
@@ -55,6 +58,7 @@ class AuthViewModel @Inject constructor(
                     //서버 점검
                     _serverAvailable.emit(false)
                 }
+                loadingHelper.hideProgress()
             }
         }
     }
@@ -67,6 +71,7 @@ class AuthViewModel @Inject constructor(
 
     fun postGoogleToken(handleGoogleLogin: String?) {
         viewModelScope.launch() {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 handleGoogleLogin.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
@@ -76,14 +81,17 @@ class AuthViewModel @Inject constructor(
                     setUserToken(token)
                 }
                 _userToken.emit(userToken)
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun postAppleToken(token: AppleToken) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.postAppleLogin(token)
             }.onSuccess {
@@ -93,14 +101,17 @@ class AuthViewModel @Inject constructor(
                     setUserToken(token)
                 }
                 _userToken.emit(userToken)
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun postKakaoToken(kakaoTokens: KakaoTokens) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
@@ -110,14 +121,17 @@ class AuthViewModel @Inject constructor(
                     setUserToken(token)
                 }
                 _userToken.emit(userToken)
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getUserInfo(token: String) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getUserInfo(token)
             }.onSuccess {
@@ -126,8 +140,10 @@ class AuthViewModel @Inject constructor(
                 setUserId(it.data?.id ?: 0)
                 _userInfo.emit(userInfo)
                 Log.d("AuthViewModel", userInfo.toString())
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }

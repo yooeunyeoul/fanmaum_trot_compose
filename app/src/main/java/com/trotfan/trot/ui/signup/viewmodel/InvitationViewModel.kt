@@ -3,6 +3,7 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
@@ -25,6 +26,7 @@ enum class InviteCodeCheckStatus(val code: String) {
 @HiltViewModel
 class InvitationViewModel @Inject constructor(
     private val repository: SignUpRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -67,6 +69,7 @@ class InvitationViewModel @Inject constructor(
 
     fun postInviteCode() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.updateUser(
@@ -84,6 +87,7 @@ class InvitationViewModel @Inject constructor(
                             else _skipStatus.emit(true)
                         }
                     }
+                    loadingHelper.hideProgress()
                 }
             }
         }

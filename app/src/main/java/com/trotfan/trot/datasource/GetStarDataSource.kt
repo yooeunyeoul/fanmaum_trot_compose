@@ -3,6 +3,7 @@ package com.trotfan.trot.datasource
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.network.SignUpService
@@ -11,7 +12,8 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class GetStarDataSource @Inject constructor(
-    private val service: SignUpService
+    private val service: SignUpService,
+    private val loadingHelper: LoadingHelper
 ) : PagingSource<String, FavoriteStar>() {
 
     var starName: String = ""
@@ -26,7 +28,7 @@ class GetStarDataSource @Inject constructor(
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, FavoriteStar> {
         return try {
-
+            loadingHelper.showProgress()
             val data = service.getStarList(params.key ?: "", search = starName).data
             val result = service.getStarList(params.key ?: "", search = starName).result
 
@@ -36,7 +38,7 @@ class GetStarDataSource @Inject constructor(
                     val starList = data?.stars
                     var nextCursor = data?.meta?.nextCursor
                     var prevCursor = data?.meta?.prevCursor
-
+                    loadingHelper.hideProgress()
                     if (starList?.isEmpty() == true && nextCursor?.isEmpty() == true && prevCursor?.isEmpty() == true) {
                         LoadResult.Error(Exception(SearchStatus.NoResult.name))
                     } else {
@@ -48,13 +50,16 @@ class GetStarDataSource @Inject constructor(
                     }
                 }
                 else -> {
+                    loadingHelper.hideProgress()
                     LoadResult.Error(Exception(SearchStatus.NoResult.name))
                 }
             }
 
         } catch (e: HttpException) {
+            loadingHelper.hideProgress()
             LoadResult.Error(Exception(e.localizedMessage))
         } catch (e: Exception) {
+            loadingHelper.hideProgress()
             LoadResult.Error(Exception(e.localizedMessage))
         }
     }

@@ -373,13 +373,13 @@ fun SearchStarScreen(
 
             }
             SearchStatus.Loading -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = CenterHorizontally
-                ) {
-                    CircularProgressIndicator()
-                }
+//                Column(
+//                    modifier = Modifier.fillMaxSize(),
+//                    verticalArrangement = Arrangement.Center,
+//                    horizontalAlignment = CenterHorizontally
+//                ) {
+//                    CircularProgressIndicator()
+//                }
 
             }
         }
