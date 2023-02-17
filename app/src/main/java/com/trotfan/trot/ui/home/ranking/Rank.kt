@@ -384,7 +384,7 @@ fun LazyItemScope.NoRankHistory(onNavigateClick: (HomeSections) -> Unit, height:
         )
         Spacer(modifier = Modifier.height(19.dp))
         Text(
-            text = "팬마음 첫 투표 진행중!",
+            text = "팬마음 첫 투표 진행 중!",
             style = FanwooriTypography.subtitle1,
             color = Gray800
         )
@@ -414,7 +414,7 @@ fun LazyItemScope.NoRankHistory(onNavigateClick: (HomeSections) -> Unit, height:
         )
         Spacer(modifier = Modifier.height(32.dp))
         BtnOutlineSecondaryLeftIcon(
-            text = "투표 하러가기",
+            text = "투표하러 가기",
             onClick = { onNavigateClick.invoke(HomeSections.Vote) },
             icon = R.drawable.icon_vote,
             isCircle = false

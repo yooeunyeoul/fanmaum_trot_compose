@@ -410,7 +410,7 @@ fun VoteHome(
                                 ) {
 
                                     Text(
-                                        text = "일일투표 순위",
+                                        text = "일일 투표 순위",
                                         style = FanwooriTypography.h2,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Gray800,
@@ -568,7 +568,7 @@ fun VoteHome(
                                     )
                                     Spacer(modifier = Modifier.height(17.2.dp))
                                     Text(
-                                        text = "일일투표 집계 중",
+                                        text = "일일 투표 집계 중",
                                         style = FanwooriTypography.subtitle2,
                                         color = Gray700,
                                         fontWeight = FontWeight.SemiBold,
@@ -596,7 +596,7 @@ fun VoteHome(
 
         if (missionSnackBarState) {
             coroutineScope.launch {
-                when (scaffoldState.snackbarHostState.showSnackbar("일일미션 하고 투표권 받기", "더보기")) {
+                when (scaffoldState.snackbarHostState.showSnackbar("일일 미션 하고 투표권 받기", "더보기")) {
                     SnackbarResult.Dismissed -> {
                         chargeHomeViewModel.missionSnackBarState.emit(false)
                     }

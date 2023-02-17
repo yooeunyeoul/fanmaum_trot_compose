@@ -180,7 +180,7 @@ fun FreeChargeView(
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.height(32.dp))
                     Text(
-                        text = "일일미션 완료하고",
+                        text = "일일 미션 완료하고",
                         style = FanwooriTypography.subtitle2,
                         color = Gray800,
                         modifier = Modifier.align(CenterHorizontally)
@@ -279,7 +279,7 @@ fun FreeChargeView(
                                 }
                                 else -> {
                                     Text(
-                                        text = "일일미션 완료!",
+                                        text = "일일 미션 완료!",
                                         style = FanwooriTypography.subtitle4,
                                         color = Color.White
                                     )
@@ -323,7 +323,7 @@ fun FreeChargeView(
             FreeChargeItem(
                 icon = R.drawable.charge_calender,
                 bgColor = Primary50,
-                title = "출석체크 (200투표권)",
+                title = "출석 체크 (200투표권)",
                 count = if (attendanceState) 0 else 1
             ) {
                 navController.navigate(Route.AttendanceCheck.route)
@@ -341,7 +341,7 @@ fun FreeChargeView(
             FreeChargeItem(
                 icon = R.drawable.charge_roulette,
                 bgColor = Primary50,
-                title = "행운룰렛 (최대 30,000투표권)",
+                title = "행운 룰렛 (최대 30,000투표권)",
                 count = missionState?.remaining?.roulette ?: 0
             ) {
                 navController.navigate(Route.LuckyRoulette.route)

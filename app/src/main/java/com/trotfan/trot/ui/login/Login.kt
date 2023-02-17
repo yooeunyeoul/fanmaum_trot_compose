@@ -163,7 +163,7 @@ fun LoginScreen(
                     routeSections(navController, Route.SettingNickname.route)
                 } else if (userInfo!!.phone_number == null) {
                     routeSections(navController, Route.CertificationPhoneNumber.route)
-                } else if (userInfo!!.redeemed_code == false) {
+                } else if (userInfo!!.redeemed_code == true) {
                     routeSections(navController, Route.InvitationCode.route)
                 } else {
                     routeSections(navController, HomeSections.Vote.route)

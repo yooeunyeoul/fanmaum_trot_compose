@@ -76,8 +76,8 @@ fun SettingPush(
                 }
             )
             PushBody(
-                title = "타임이벤트 알림",
-                content = "접속하기만 해도 무료 투표권을 드리는 타임이벤트 알림을 받습니다.",
+                title = "타임 이벤트 알림",
+                content = "접속하기만 해도 무료 투표권을 드리는 타임 이벤트 알림을 받습니다.",
                 isChecked = timeEvent,
                 onChecked = {
                     viewModel.changeAlarmSetting(AlarmType.time_event, checked = it)
@@ -109,6 +109,19 @@ fun SettingPush(
                 onChecked = {
                     viewModel.changeAlarmSetting(AlarmType.new_votes, checked = it)
                 })
+//            Spacer(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(8.dp)
+//            )
+//            PushHead(
+//                title = "타임 이벤트 알림",
+//                content = "접속하기만 해도 무료 투표권을 드리는 타임 이벤트 알림을 받습니다.",
+//                isChecked = timeEvent,
+//                onChecked = {
+//                    viewModel.setPushSetting(AlarmType.time_event, checked = it)
+//                }
+//            )
         }
     }
 }

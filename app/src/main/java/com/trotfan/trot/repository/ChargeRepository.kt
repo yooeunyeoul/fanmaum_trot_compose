@@ -2,6 +2,7 @@ package com.trotfan.trot.repository
 
 import com.trotfan.trot.model.LuckyTicket
 import com.trotfan.trot.model.MissionState
+import com.trotfan.trot.model.RewardTickets
 import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.network.ChargeService
 import com.trotfan.trot.network.VoteService
@@ -33,13 +34,13 @@ class ChargeRepository @Inject constructor(
     suspend fun getMissions(userToken: String): CommonResponse<MissionState> =
         chargeService.getMissions(userToken)
 
-    suspend fun postRewardVideo(userToken: String): CommonResponse<Unit> =
+    suspend fun postRewardVideo(userToken: String): CommonResponse<RewardTickets> =
         chargeService.postRewardVideo(userToken = userToken)
 
-    suspend fun postAttendance(userToken: String): CommonResponse<Unit> =
+    suspend fun postAttendance(userToken: String): CommonResponse<RewardTickets> =
         chargeService.postAttendance(userToken = userToken)
 
-    suspend fun postShareStar(userToken: String): CommonResponse<Unit> =
+    suspend fun postShareStar(userToken: String): CommonResponse<RewardTickets> =
         chargeService.postShareStar(userToken = userToken)
 
 }

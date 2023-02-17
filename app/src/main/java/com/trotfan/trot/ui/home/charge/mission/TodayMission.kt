@@ -88,7 +88,7 @@ fun TodayMission(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                MissionItem(title = "출석체크하기 1회", number = 1, state = attendanceState) {
+                MissionItem(title = "출석 체크하기 1회", number = 1, state = attendanceState) {
                     navController?.navigate(Route.AttendanceCheck.route)
                 }
                 Spacer(modifier = Modifier.height(12.dp))
@@ -116,11 +116,11 @@ fun TodayMission(
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                MissionItem(title = "동영상광고 보기 1회", number = 3, state = videoRewardState) {
+                MissionItem(title = "동영상 광고 보기 1회", number = 3, state = videoRewardState) {
                     navController?.navigate("${Route.VideoAd.route}/20")
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                MissionItem(title = "행운의 룰렛 돌리기 1회", number = 4, state = rouletteState) {
+                MissionItem(title = "행운 룰렛 돌리기 1회", number = 4, state = rouletteState) {
                     navController?.navigate(Route.LuckyRoulette.route)
                 }
                 Spacer(modifier = Modifier.height(40.dp))
@@ -132,11 +132,11 @@ fun TodayMission(
                     .padding(top = 88.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "일일미션 완료 현황", style = FanwooriTypography.body3, color = Color.White)
+                Text(text = "일일 미션 완료 현황", style = FanwooriTypography.body3, color = Color.White)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
                     Text(
-                        text = "미션완료",
+                        text = "미션 완료",
                         style = FanwooriTypography.h3,
                         color = Color.White
                     )
@@ -210,7 +210,7 @@ fun TodayMission(
                             }
                             else -> {
                                 Text(
-                                    text = "일일미션 보상완료",
+                                    text = "일일 미션 보상완료",
                                     style = FanwooriTypography.subtitle4,
                                     color = Gray650,
                                     modifier = Modifier
@@ -225,7 +225,7 @@ fun TodayMission(
         }
 
         AppbarMLeftIcon(
-            title = "일일미션",
+            title = "일일 미션",
             icon = R.drawable.icon_back,
             textColor = Color.White,
             iconColor = Color.White,

@@ -383,7 +383,7 @@ fun EmptyHistory(modifier: Modifier, navController: NavController?, onChargeClic
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "무료 충전소에서 미션을 수행하고\n" +
+            text = "무료충전소에서 미션을 수행하고\n" +
                     "투표권을 모아보세요!", style = FanwooriTypography.body5, color = Gray700,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(CenterHorizontally)
@@ -412,7 +412,7 @@ fun EmptyHistory(modifier: Modifier, navController: NavController?, onChargeClic
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-                text = "충전 하러가기",
+                text = "충전하러 가기",
                 style = FanwooriTypography.button1,
                 color = Secondary800,
                 modifier = Modifier.align(CenterVertically)

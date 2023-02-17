@@ -84,7 +84,7 @@ fun MyVotingTicket(
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(modifier = Modifier.align(End)) {
-                Text(text = "이용내역", style = FanwooriTypography.button1, color = Primary900)
+                Text(text = "이용 내역", style = FanwooriTypography.button1, color = Primary900)
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
                     contentDescription = null,
