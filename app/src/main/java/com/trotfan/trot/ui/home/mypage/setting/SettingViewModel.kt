@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 enum class AlarmType {
@@ -60,6 +61,10 @@ class SettingViewModel @Inject constructor(
     private val _finishState =
         MutableStateFlow(false)
     val finishState = _finishState.asStateFlow()
+
+    private val _toastText =
+        MutableStateFlow("")
+    val toastText = _toastText.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -115,8 +120,10 @@ class SettingViewModel @Inject constructor(
                 AlarmType.day_alarm -> {
                     if (checked) {
                         _timeEvent.emit(true)
+                        _toastText.emit("${LocalDate.now().year}.${LocalDate.now().month.value}.${LocalDate.now().dayOfMonth}\n주간 광고/이벤트 정보 수신 동의")
                     } else {
                         _timeEvent.emit(false)
+                        _toastText.emit("${LocalDate.now().year}.${LocalDate.now().month.value}.${LocalDate.now().dayOfMonth}\n주간 광고/이벤트 정보 수신 거부")
                     }
                     _dayEvent.emit(!_dayEvent.value)
                 }
@@ -129,9 +136,11 @@ class SettingViewModel @Inject constructor(
                     if (checked) {
                         _newVotes.emit(true)
                         _freeVotes.emit(true)
+                        _toastText.emit("${LocalDate.now().year}.${LocalDate.now().month.value}.${LocalDate.now().dayOfMonth}\n야간 광고/이벤트 정보 수신 동의")
                     } else {
                         _newVotes.emit(false)
                         _freeVotes.emit(false)
+                        _toastText.emit("${LocalDate.now().year}.${LocalDate.now().month.value}.${LocalDate.now().dayOfMonth}\n야간 광고/이벤트 정보 수신 거부")
                     }
                     _nightEvent.emit(!_nightEvent.value)
                 }

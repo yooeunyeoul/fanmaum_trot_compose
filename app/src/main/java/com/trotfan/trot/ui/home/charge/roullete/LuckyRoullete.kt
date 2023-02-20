@@ -28,20 +28,14 @@ import com.fanmaum.roullete.SpinWheel
 import com.fanmaum.roullete.SpinWheelDefaults
 import com.fanmaum.roullete.SpinWheelVisibleState
 import com.fanmaum.roullete.state.rememberSpinWheelState
-import com.google.protobuf.Api
 import com.trotfan.trot.R
-import com.trotfan.trot.di.ApiResult
-import com.trotfan.trot.model.LuckyTicket
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
-import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.charge.viewmodel.RouletteViewModel
 import com.trotfan.trot.ui.home.charge.viewmodel.TicketKind
 import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
-import com.trotfan.trot.ui.utils.composableActivityViewModel
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 
 val screenPadding = 24.dp
@@ -53,14 +47,12 @@ fun luckyRoulette(
     viewModel: RouletteViewModel = hiltViewModel(),
 ) {
 
-    var dialogShowing by remember {
-        mutableStateOf(false)
-    }
     val happyTicket by viewModel.luckyTicket.collectAsState()
 
     val visibleState by viewModel.visibleState.collectAsState()
     val resultDegree by viewModel.resultDegree.collectAsState()
     val remainTime by viewModel.remainingTime.collectAsState()
+    val rewardDialogShowing by viewModel.rewardDialogShowing.collectAsState()
 
 
     val textList by remember {
@@ -79,12 +71,12 @@ fun luckyRoulette(
     val iconList by remember {
         mutableStateOf(
             listOf(
-                R.drawable.charge_roulette10000,// 300 ~ 360
-                R.drawable.charge_roulette1000,// 240 ~ 300
-                R.drawable.charge_roulette200,// 180 ~ 240
-                R.drawable.charge_roulette500,// 120 ~ 180
-                R.drawable.charge_roulette200,// 60 ~ 120
-                R.drawable.charge_roulette500,// 0~ 60
+                R.drawable.charge_roulette500,// 300 ~ 360
+                R.drawable.charge_roulette200,// 240 ~ 300
+                R.drawable.charge_roulette500,// 180 ~ 240
+                R.drawable.charge_roulette200,// 120 ~ 180
+                R.drawable.charge_roulette1000,// 60 ~ 120
+                R.drawable.charge_roulette10000,// 0~ 60
             )
         )
     }
@@ -114,21 +106,21 @@ fun luckyRoulette(
     val state = rememberSpinWheelState(
         pieCount = TicketKind.values().count(),
         durationMillis = 5000,
-        resultDegree = resultDegree,
         startDegree = 30f
-    )
+    ).apply {
+        this.resultDegree = resultDegree ?: 0f
+    }
+
     val scope = rememberCoroutineScope()
 
-    if (dialogShowing) {
+    if (rewardDialogShowing) {
         VerticalDialogReceiveGift(
             contentText = "행운 룰렛 당첨!",
-            gradientText = "${NumberComma.decimalFormat.format(happyTicket.rouletteQuantity)} 투표권",
+            gradientText = "${NumberComma.decimalFormat.format(happyTicket?.next_reward)} 투표권",
             buttonOneText = "확인"
         ) {
-            dialogShowing = false
-//            pieColorListState = endPieColorList
-//            visibleState = SpinWheelVisibleState.Waiting
-            viewModel.testRoulette()
+//            viewModel.hideRewardDialog()
+            viewModel.callApi()
         }
 
     }
@@ -214,13 +206,16 @@ fun luckyRoulette(
                             scope.launch {
                                 state.animate { pieIndex ->
                                     Log.e("pieIndex", "${pieIndex}")
-                                    dialogShowing = true
+//                                    dialogShowing = true
+                                    viewModel.showRewardDialog()
+//                                    viewModel.callApi()
                                 }
                             }
                         },
+                        isEnabled = visibleState == SpinWheelVisibleState.Available,
                         colors = SpinWheelDefaults.spinWheelColors(
                             frameColor = Color(0xFF403d39),
-                            pieColors = pieColorListState
+                            pieColors = if(visibleState == SpinWheelVisibleState.Available) pieColorListState else endPieColorList
                         ),
                         selectorIcon = R.drawable.charge_roulette_stoper,
                         frameRes = if (visibleState == SpinWheelVisibleState.Available) R.drawable.roulettebg
@@ -243,9 +238,7 @@ fun luckyRoulette(
                                     }
 
                                 }
-                                else -> {
-                                    pieColorListState = endPieColorList
-                                }
+                                else -> {}
                             }
                         },
                         spinWheelCenterContent = {
@@ -349,7 +342,7 @@ fun luckyRoulette(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "${happyTicket.chance} / 3 ",
+                            text = "${happyTicket?.today?.remaining} / ${happyTicket?.today?.max} ",
                             color = textYellow,
                             style = FanwooriTypography.h1
                         )

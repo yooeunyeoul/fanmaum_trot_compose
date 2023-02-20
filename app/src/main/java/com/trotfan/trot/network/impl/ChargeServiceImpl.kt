@@ -47,19 +47,26 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         userId: Int
     ): CommonResponse<LuckyTicket> {
 
-        val response = httpClient.submitForm(
-            url = HttpRoutes.GOOGLE_PURCHASE
-        ) {
+        return httpClient.get(HttpRoutes.ROULETTE) {
             contentType(ContentType.Application.Json)
             header(
                 "Authorization",
                 "Bearer $userToken"
             )
-            body = FormDataContent(Parameters.build {
-                append("user_id", userId.toString())
-            })
-        }
-        return response.body()
+        }.body()
+    }
+
+    override suspend fun rewardRoulette(
+        userToken: String,
+        userId: Int
+    ): CommonResponse<LuckyTicket> {
+        return httpClient.post(HttpRoutes.ROULETTE) {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
     }
 
     override suspend fun getMissions(userToken: String): CommonResponse<MissionState> {

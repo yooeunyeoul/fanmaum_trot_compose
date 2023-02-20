@@ -1,4 +1,6 @@
 package com.fanmaum.roullete.state
+
+import android.util.Log
 import androidx.annotation.IntRange
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
@@ -15,14 +17,14 @@ data class SpinWheelState(
     private val rotationPerSecond: Float,
     private val easing: Easing,
     private val startDegree: Float,
-    private val resultDegree: Float? = null,
     internal val autoSpinDelay: Long? = null,
 ) {
     internal var rotation by mutableStateOf(Animatable(startDegree))
     private var spinAnimationState by mutableStateOf(SpinAnimationState.STOPPED)
+    var resultDegree: Float = 0f
 
     suspend fun animate(onFinish: (pieIndex: Int) -> Unit = {}) {
-        when(spinAnimationState) {
+        when (spinAnimationState) {
             SpinAnimationState.STOPPED -> {
                 spin(onFinish = onFinish)
             }
@@ -33,20 +35,22 @@ data class SpinWheelState(
     }
 
     suspend fun spin(onFinish: (pieIndex: Int) -> Unit = {}) {
-        if(spinAnimationState == SpinAnimationState.STOPPED) {
+        if (spinAnimationState == SpinAnimationState.STOPPED) {
 
             spinAnimationState = SpinAnimationState.SPINNING
 
             val randomRotationDegree = generateRandomRotationDegree()
 
             rotation.animateTo(
-                targetValue = (360f * rotationPerSecond * (durationMillis / 1000)) + (resultDegree ?: randomRotationDegree),
+                targetValue = (360f * rotationPerSecond * (durationMillis / 1000)) + (resultDegree
+                    ?: randomRotationDegree),
                 animationSpec = tween(
                     durationMillis = durationMillis,
                     delayMillis = delayMillis,
                     easing = easing
                 )
             )
+            Log.e("resultDegree2", resultDegree.toString())
 
             val pieDegree = 360f / pieCount
             val quotient = (resultDegree ?: randomRotationDegree).toInt() / pieDegree.toInt()
@@ -55,7 +59,7 @@ data class SpinWheelState(
 
             onFinish(resultIndex)
 
-            rotation.snapTo(resultDegree ?:randomRotationDegree)
+            rotation.snapTo(resultDegree ?: randomRotationDegree)
 
             spinAnimationState = SpinAnimationState.STOPPED
 
@@ -92,7 +96,6 @@ fun rememberSpinWheelState(
     rotationPerSecond: Float = 1f,
     easing: Easing = CubicBezierEasing(0.16f, 1f, 0.3f, 1f),
     startDegree: Float = 0f,
-    resultDegree: Float? = null,
     autoSpinDelay: Long? = null
 ): SpinWheelState {
     return remember {
@@ -103,7 +106,6 @@ fun rememberSpinWheelState(
             rotationPerSecond,
             easing,
             startDegree,
-            resultDegree,
             autoSpinDelay
         )
     }

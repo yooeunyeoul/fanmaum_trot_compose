@@ -8,17 +8,20 @@ import android.net.Uri
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -33,6 +36,7 @@ import com.trotfan.trot.ui.components.button.BtnOutlineSecondaryLeftIcon
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.observeAsState
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -50,6 +54,10 @@ fun SettingPush(
     val finishState by viewModel.finishState.collectAsState()
     val context = LocalContext.current
     val lifecycleState by LocalLifecycleOwner.current.lifecycle.observeAsState()
+    var toastState by remember {
+        mutableStateOf(false)
+    }
+    val toastText by viewModel.toastText.collectAsState()
 
     BackHandler(!finishState) {
         viewModel.setPushSetting()
@@ -61,37 +69,83 @@ fun SettingPush(
         }
     })
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Gray100)
-    ) {
-        Column {
-            AppbarMLeftIcon(
-                title = "앱 알림 설정",
-                icon = R.drawable.icon_back,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Color.White
-                    ),
-                onIconClick = {
-                    navController?.popBackStack()
-                }
-            )
 
-            val state = lifecycleState // 이게 있어야 뷰 onResume 에서 갱신함
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) ==
-                PackageManager.PERMISSION_GRANTED
+    Box() {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Gray100)
+        ) {
+            Column {
+                AppbarMLeftIcon(
+                    title = "앱 알림 설정",
+                    icon = R.drawable.icon_back,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Color.White
+                        ),
+                    onIconClick = {
+                        navController?.popBackStack()
+                    }
+                )
+
+                val state = lifecycleState // 이게 있어야 뷰 onResume 에서 갱신함
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    AlarmScreen(
+                        viewModel,
+                        dayAlarm,
+                        timeEvent,
+                        nightAlarm,
+                        freeTicketsAlarm,
+                        newVotes,
+                        onClick = {
+                            toastState = true
+                        }
+
+                    )
+                } else {
+                    RequireAlarmOn(context)
+                }
+            }
+
+
+        }
+        AnimatedVisibility(
+            visible = toastState,
+            modifier = Modifier.align(Alignment.TopCenter),
+            enter = slideInVertically { -it },
+            exit = slideOutVertically { -it }
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 32.dp)
+                    .height(52.dp)
+                    .alpha(0.88f)
+                    .clip(RoundedCornerShape(52.dp))
+                    .background(Gray900)
+                    .align(Alignment.TopCenter),
+                contentAlignment = Alignment.Center,
             ) {
-                AlarmScreen(viewModel, dayAlarm, timeEvent, nightAlarm, freeTicketsAlarm, newVotes)
-            } else {
-                RequireAlarmOn(context)
+                Text(
+                    text = toastText,
+                    style = FanwooriTypography.body3,
+                    color = Color.White,
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+            LaunchedEffect(toastState) {
+                delay(1000L)
+                toastState = false
             }
         }
+
     }
 }
 
@@ -102,7 +156,8 @@ fun AlarmScreen(
     timeEvent: Boolean,
     nightAlarm: Boolean,
     freeTicketsAlarm: Boolean,
-    newVotes: Boolean
+    newVotes: Boolean,
+    onClick: () -> Unit
 ) {
     Spacer(
         modifier = Modifier
@@ -115,6 +170,7 @@ fun AlarmScreen(
         isChecked = dayAlarm,
         onChecked = {
             viewModel.changeAlarmSetting(AlarmType.day_alarm, checked = it)
+            onClick.invoke()
         }
     )
     PushBody(
@@ -136,6 +192,7 @@ fun AlarmScreen(
         isChecked = nightAlarm,
         onChecked = {
             viewModel.changeAlarmSetting(AlarmType.night_alarm, checked = it)
+            onClick.invoke()
         }
     )
 

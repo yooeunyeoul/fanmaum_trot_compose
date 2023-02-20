@@ -21,6 +21,7 @@ internal fun AnimatedSpinWheel(
     frameWidth: Dp,
     pieColors: List<Color>,
     onClick: () -> Unit,
+    isEnabled: Boolean,
     selectorIcon: Int,
     frameRes: Int,
     spinWheelVisibleState: SpinWheelVisibleState,
@@ -55,6 +56,7 @@ internal fun AnimatedSpinWheel(
                 rotationDegree = state.rotation.value,
                 spinWheelVisibleState = spinWheelVisibleState,
                 onClick = onClick,
+                isEnabled = isEnabled,
                 spinWheelCenterContent = spinWheelCenterContent,
                 spinWheelContent = {
                     SpinWheelContent(
