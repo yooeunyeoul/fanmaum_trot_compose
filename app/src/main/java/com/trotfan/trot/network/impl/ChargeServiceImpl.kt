@@ -101,4 +101,14 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
             )
         }.body()
     }
+
+    override suspend fun postMission(userToken: String): CommonResponse<Ticket> {
+        return httpClient.post("${HttpRoutes.MISSIONS}/mission") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
 }

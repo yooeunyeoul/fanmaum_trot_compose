@@ -33,4 +33,8 @@ interface ChargeService {
     suspend fun postShareStar(
         userToken: String
     ): CommonResponse<Unit>
+
+    suspend fun postMission(
+        userToken: String
+    ): CommonResponse<Ticket>
 }

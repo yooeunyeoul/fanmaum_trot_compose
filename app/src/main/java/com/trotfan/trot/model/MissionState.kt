@@ -18,8 +18,8 @@ data class Missions(
     val attendance: Boolean = false,
     @SerializedName("star_share")
     val star_share: Boolean = false,
-    @SerializedName("video_reward")
-    val video_reward: Boolean = false,
+    @SerializedName("video")
+    val video: Boolean = false,
     @SerializedName("roulette")
     val roulette: Boolean = false
 )
@@ -30,8 +30,8 @@ data class Remaining(
     val attendance: Int = 0,
     @SerializedName("star_share")
     val star_share: Int = 0,
-    @SerializedName("video_reward")
-    val video_reward: Int = 0,
+    @SerializedName("video")
+    val video: Int = 0,
     @SerializedName("roulette")
     val roulette: Int = 0
 )

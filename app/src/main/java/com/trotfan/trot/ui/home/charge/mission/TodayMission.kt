@@ -33,8 +33,10 @@ import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.vote.voteTopShareText
+import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.*
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -55,6 +57,8 @@ fun TodayMission(
     val simpleDateFormat = SimpleDateFormat("dd")
     val dateString = simpleDateFormat.format(Date()).toString()
     val localDate by viewModel.lastApiTime.collectAsState()
+    val dialogShowing by viewModel.missionRewardDialogState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = dateString, block = {
         if (dateString != localDate) {
@@ -183,7 +187,11 @@ fun TodayMission(
                             }
                             1 -> {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            viewModel.postMission()
+                                        },
                                     verticalAlignment = CenterVertically,
                                     horizontalArrangement = Arrangement.Center
                                 ) {
@@ -233,6 +241,18 @@ fun TodayMission(
                 navController?.popBackStack()
             }
         )
+
+        if (dialogShowing) {
+            VerticalDialogReceiveGift(
+                contentText = "일일 미션 완료!",
+                gradientText = "${NumberComma.decimalFormat.format(3200)} 투표권",
+                buttonOneText = "확인"
+            ) {
+                coroutineScope.launch {
+                    viewModel.missionRewardDialogState.emit(false)
+                }
+            }
+        }
     }
 }
 

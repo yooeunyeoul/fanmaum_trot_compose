@@ -241,7 +241,11 @@ fun VideoAd(
                             false
                         }
                         SnackbarResult.ActionPerformed -> {
-                            navController?.navigate(Route.TodayMission.route)
+                            navController?.navigate(Route.TodayMission.route) {
+                                popUpTo(navController.graph.id) {
+                                    inclusive = true
+                                }
+                            }
                             false
                         }
                     }

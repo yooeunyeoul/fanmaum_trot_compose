@@ -40,4 +40,6 @@ class ChargeRepository @Inject constructor(
     suspend fun postShareStar(userToken: String): CommonResponse<Unit> =
         chargeService.postShareStar(userToken = userToken)
 
+    suspend fun postMission(userToken: String): CommonResponse<Ticket> =
+        chargeService.postMission(userToken = userToken)
 }
