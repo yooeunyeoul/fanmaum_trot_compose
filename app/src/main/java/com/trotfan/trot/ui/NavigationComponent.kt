@@ -25,10 +25,7 @@ import com.trotfan.trot.ui.home.charge.mission.VideoAd
 import com.trotfan.trot.ui.home.charge.roullete.luckyRoulette
 import com.trotfan.trot.ui.home.mypage.invite.FriendInvite
 import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
-import com.trotfan.trot.ui.home.mypage.setting.Setting
-import com.trotfan.trot.ui.home.mypage.setting.SettingAccount
-import com.trotfan.trot.ui.home.mypage.setting.SettingPush
-import com.trotfan.trot.ui.home.mypage.setting.SettingSecession
+import com.trotfan.trot.ui.home.mypage.setting.*
 import com.trotfan.trot.ui.home.mypage.votehistory.MyVoteHistory
 import com.trotfan.trot.ui.home.ranking.history.RankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeRanking
@@ -66,7 +63,8 @@ enum class Route(
     AttendanceCheck(route = "AttendanceCheck"),
     VideoAd(route = "VideoAd"),
     LuckyRoulette(route = "luckyRoulette"),
-    FriendInvite(route = "FriendInvite")
+    FriendInvite(route = "FriendInvite"),
+    AppInfo(route = "AppInfo")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -185,7 +183,7 @@ fun NavigationComponent(
             MyVoteHistory(
                 navController = navController,
                 onChargeClick = { onNavigateBottomBar.invoke(HomeSections.Charge) },
-                purchaseHelper= purchaseHelper
+                purchaseHelper = purchaseHelper
             )
         }
         composable(Route.Setting.route) {
@@ -263,6 +261,9 @@ fun NavigationComponent(
             FriendInvite(
                 navController = navController
             )
+        }
+        composable(Route.AppInfo.route) {
+            AppInfo(navController = navController)
         }
     }
 }

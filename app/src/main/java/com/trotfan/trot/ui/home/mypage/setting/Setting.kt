@@ -10,9 +10,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
@@ -52,13 +54,25 @@ fun Setting(
                     .padding(start = 24.dp, end = 24.dp)
                     .background(Gray100)
             )
+
+            val versionName = BuildConfig.VERSION_NAME
+            SettingComponent(text = "앱 정보", version = versionName) {
+                navController?.navigate(Route.AppInfo.route)
+            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .padding(start = 24.dp, end = 24.dp)
+                    .background(Gray100)
+            )
         }
     }
 }
 
 
 @Composable
-fun SettingComponent(text: String, onClick: () -> Unit) {
+fun SettingComponent(text: String, version: String? = null, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,6 +90,20 @@ fun SettingComponent(text: String, onClick: () -> Unit) {
                 .padding(start = 24.dp)
                 .weight(1f)
         )
+
+        version?.let {
+            Text(
+                text = "현재 버전 $it",
+                style = FanwooriTypography.body2,
+                color = Primary500,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 8.dp)
+                    .weight(1f),
+                textAlign = TextAlign.End
+            )
+        }
+
         Icon(
             painter = painterResource(id = R.drawable.icon_arrow),
             contentDescription = null,

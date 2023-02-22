@@ -22,6 +22,7 @@ import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.button.BtnOutlineLGray
 import com.trotfan.trot.ui.components.chip.ChipFilledLSecondary
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.NumberComma
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -81,7 +82,9 @@ fun VotingCompleteDialog(
                 )
 
                 Text(
-                    text = "${quantity} 투표 완료",
+                    text = "${
+                        NumberComma.decimalFormat.format(quantity)
+                    } 투표 완료",
                     style = FanwooriTypography.subtitle1,
                     color = Primary700,
                     modifier = Modifier,

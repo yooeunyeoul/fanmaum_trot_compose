@@ -2,6 +2,7 @@ package com.trotfan.trot.ui.home.mypage.invite
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -33,7 +34,9 @@ import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
+import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.addDynamicLink
 import com.trotfan.trot.ui.utils.clickable
 import kotlinx.coroutines.delay
 
@@ -155,7 +158,34 @@ fun FriendInvite(
                         Row(
                             modifier = Modifier
                                 .weight(1f)
-                                .fillMaxHeight(),
+                                .fillMaxHeight()
+                                .clickable {
+                                    addDynamicLink(
+                                        titleText = "친구 초대",
+                                        uri = "https://play.google.com/store/apps/details?id=com.trotfan.trot",
+                                        descriptionText = "친구 초대"
+                                    ) {
+                                        Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(
+                                                Intent.EXTRA_TEXT,
+                                                "팬마음 초대 선물 도착\uD83C\uDF81 2,500 투표권 받으세요!\n" +
+                                                        "\n" +
+                                                        "내가 응원하는 트롯 스타에게 투표하면,\n" +
+                                                        "내 트롯 스타의 멋짐을 세상에 알릴 광고를 선물로 드립니다!\n" +
+                                                        "\n" +
+                                                        "지금 투표하세요!\n" +
+                                                        "\n" +
+                                                        "초대코드 : ${inviteInfo?.code ?: ""}\n" +
+                                                        "초대코드 입력하기 : ${it.shortLink}"
+                                            )
+
+                                            type = "text/plain"
+                                            val shareIntent = Intent.createChooser(this, null)
+                                            context.startActivity(shareIntent)
+                                        }
+                                    }
+                                },
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = CenterVertically
                         ) {
@@ -225,11 +255,13 @@ fun FriendInvite(
                     ) {
                         Text(text = "초대한 친구", style = FanwooriTypography.body3, color = Gray700)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = inviteInfo?.invited.toString(),
-                            style = FanwooriTypography.subtitle1,
-                            color = Gray900
-                        )
+                        inviteInfo?.let {
+                            Text(
+                                text = it.invited.toString(),
+                                style = FanwooriTypography.subtitle1,
+                                color = Gray900
+                            )
+                        }
                     }
 
                     Box(
@@ -245,11 +277,13 @@ fun FriendInvite(
                     ) {
                         Text(text = "총 적립 투표권", style = FanwooriTypography.body3, color = Gray700)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = inviteInfo?.tickets.toString(),
-                            style = FanwooriTypography.subtitle1,
-                            color = Gray900
-                        )
+                        inviteInfo?.let {
+                            Text(
+                                text = it.tickets.toString(),
+                                style = FanwooriTypography.subtitle1,
+                                color = Gray900
+                            )
+                        }
                     }
                 }
             }

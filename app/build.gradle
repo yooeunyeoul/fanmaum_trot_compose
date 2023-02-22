@@ -7,6 +7,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'kotlinx-serialization'
     id "com.google.protobuf" version "0.8.17"
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 android {
@@ -200,8 +201,12 @@ dependencies {
     implementation 'com.ironsource.adapters:vungleadapter:4.3.19'
     implementation 'com.vungle:publisher-sdk-android:6.12.1'
 
+    //채널톡
+    implementation 'io.channel:plugin-android:10.0.7'
+
     implementation "com.lyft.kronos:kronos-android:0.0.1-alpha11"
 
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
 }
 

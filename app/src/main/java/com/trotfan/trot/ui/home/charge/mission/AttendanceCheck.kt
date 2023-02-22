@@ -167,6 +167,7 @@ fun AttendanceCheck(
             }
 
             if (missionSnackBarState) {
+                val previousQueueIndex = navController!!.backQueue.size.minus(2)
                 coroutineScope.launch {
                     missionSnackBarState =
                         when (scaffoldState.snackbarHostState.showSnackbar(
@@ -177,7 +178,15 @@ fun AttendanceCheck(
                                 false
                             }
                             SnackbarResult.ActionPerformed -> {
-                                navController?.navigate(Route.TodayMission.route)
+                                if (navController.backQueue[previousQueueIndex].destination.route.toString() == Route.TodayMission.route) {
+                                    navController.popBackStack()
+                                } else {
+                                    navController.navigate(Route.TodayMission.route) {
+                                        popUpTo(navController.currentDestination?.route.toString()) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
                                 false
                             }
                         }

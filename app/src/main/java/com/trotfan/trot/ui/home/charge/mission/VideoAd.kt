@@ -234,6 +234,7 @@ fun VideoAd(
         }
 
         if (missionSnackBarState) {
+            val previousQueueIndex = navController!!.backQueue.size.minus(2)
             coroutineScope.launch {
                 missionSnackBarState =
                     when (scaffoldState.snackbarHostState.showSnackbar("일일 미션 하고 투표권 받기", "더보기")) {
@@ -241,7 +242,15 @@ fun VideoAd(
                             false
                         }
                         SnackbarResult.ActionPerformed -> {
-                            navController?.navigate(Route.TodayMission.route)
+                            if (navController.backQueue[previousQueueIndex].destination.route.toString() == Route.TodayMission.route) {
+                                navController.popBackStack()
+                            } else {
+                                navController.navigate(Route.TodayMission.route) {
+                                    popUpTo(navController.currentDestination?.route.toString()) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
                             false
                         }
                     }

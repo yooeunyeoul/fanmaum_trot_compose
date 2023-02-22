@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.*
-import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.MissionState
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
@@ -42,12 +41,12 @@ class ChargeHomeViewModel @Inject constructor(
     val starShareState: StateFlow<Boolean>
         get() = _starShareState
     private val _starShareState =
-        MutableStateFlow(_missionState.value?.missions?.star_share ?: false)
+        MutableStateFlow(_missionState.value?.missions?.share ?: false)
 
     val videoRewardState: StateFlow<Boolean>
         get() = _videoRewardState
     private val _videoRewardState =
-        MutableStateFlow(_missionState.value?.missions?.video_reward ?: false)
+        MutableStateFlow(_missionState.value?.missions?.video ?: false)
 
     val rouletteState: StateFlow<Boolean>
         get() = _rouletteState
@@ -63,7 +62,7 @@ class ChargeHomeViewModel @Inject constructor(
     val videoCount: StateFlow<Int>
         get() = _videoCount
     private val _videoCount =
-        MutableStateFlow(maxAdCount.minus(_missionState.value?.remaining?.video_reward ?: 0))
+        MutableStateFlow(maxAdCount.minus(_missionState.value?.remaining?.video ?: 0))
 
     val starName: StateFlow<String>
         get() = _starName
@@ -82,6 +81,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     val missionSnackBarState = MutableStateFlow(false)
     val attendanceRewardDialogState = MutableStateFlow(false)
+    val missionRewardDialogState = MutableStateFlow(false)
 
     init {
         if (_missionState.value == null) {
@@ -134,16 +134,16 @@ class ChargeHomeViewModel @Inject constructor(
                     )
                 }.onSuccess {
                     _missionState.emit(it.data)
-                    _videoCount.emit(maxAdCount - (it.data?.remaining?.video_reward ?: 0))
+                    _videoCount.emit(maxAdCount - (it.data?.remaining?.video ?: 0))
                     var count = 0
                     it.data?.missions?.let { missions ->
                         _attendanceState.emit(missions.attendance)
-                        _starShareState.emit(missions.star_share)
-                        _videoRewardState.emit(missions.video_reward)
+                        _starShareState.emit(missions.share)
+                        _videoRewardState.emit(missions.video)
                         _rouletteState.emit(missions.roulette)
                         if (missions.attendance) count++
-                        if (missions.star_share) count++
-                        if (missions.video_reward) count++
+                        if (missions.share) count++
+                        if (missions.video) count++
                         if (missions.roulette) count++
                     }
                     _missionCompleteCount.emit(count)
@@ -207,6 +207,27 @@ class ChargeHomeViewModel @Inject constructor(
                         it.data?.unlimited ?: 0,
                         it.data?.limited ?: 0
                     )
+                    loadingHelper.hideProgress()
+                }.onFailure {
+                    loadingHelper.hideProgress()
+                }
+            }
+        }
+    }
+
+    fun postMission() {
+        viewModelScope.launch {
+            loadingHelper.showProgress()
+            context.userTokenStore.data.collect {
+                kotlin.runCatching {
+                    repository.postMission(it.token)
+                }.onSuccess {
+                    missionRewardDialogState.emit(true)
+                    userTicketManager.storeUserTicket(
+                        it.data?.unlimited ?: 0,
+                        it.data?.limited ?: 0
+                    )
+                    _rewardedState.emit(2)
                     loadingHelper.hideProgress()
                 }.onFailure {
                     loadingHelper.hideProgress()

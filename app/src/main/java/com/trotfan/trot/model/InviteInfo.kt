@@ -7,7 +7,7 @@ data class InviteInfo(
     @SerializedName("code")
     val code: String,
     @SerializedName("invited")
-    val invited: Int,
+    val invited: Int = 0,
     @SerializedName("tickets")
-    val tickets: Long
+    val tickets: Long = 0
 )
