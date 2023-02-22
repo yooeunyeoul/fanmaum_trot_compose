@@ -5,6 +5,8 @@ package com.trotfan.trot.ui.home.vote
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -159,7 +161,8 @@ fun VoteHome(
         Scaffold(
             snackbarHost = CustomSnackBarHost,
             scaffoldState = scaffoldState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(bottom = BottomNavHeight)
         ) {
             Box {
@@ -193,9 +196,8 @@ fun VoteHome(
                                     type = "text/plain"
                                     val shareIntent = Intent.createChooser(this, null)
                                     context.startActivity(shareIntent)
-                                    if (starShareState.not()) {
-                                        chargeHomeViewModel.postShareStar()
-                                    }
+
+                                    chargeHomeViewModel.postShareStar()
                                 }
                             }
                         }
@@ -617,8 +619,8 @@ fun VoteHome(
                 }
             }
 
-            if (missionSnackBarState) {
-                coroutineScope.launch {
+            LaunchedEffect(key1 = missionSnackBarState, block = {
+                if (missionSnackBarState) {
                     when (scaffoldState.snackbarHostState.showSnackbar("일일 미션 하고 투표권 받기", "더보기")) {
                         SnackbarResult.Dismissed -> {
                             chargeHomeViewModel.missionSnackBarState.emit(false)
@@ -630,7 +632,7 @@ fun VoteHome(
                         }
                     }
                 }
-            }
+            })
         }
     }
 }
