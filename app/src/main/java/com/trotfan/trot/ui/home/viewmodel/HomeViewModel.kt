@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ironsource.mediationsdk.IronSource
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
+import com.trotfan.trot.datastore.AppVersionManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.*
@@ -73,6 +74,8 @@ class HomeViewModel @Inject constructor(
                     _mainPopups.emit(it.data)
                     it.data.let { mainPopups ->
                         mainPopups?.update?.version?.let { version ->
+                            val versionManager = AppVersionManager(context.AppVersionManager)
+                            versionManager.setStoreVersion(version)
                             if (version.replace(".", "")
                                     .toInt() > BuildConfig.VERSION_NAME.replace(".", "")
                                     .replace("_dev", "")

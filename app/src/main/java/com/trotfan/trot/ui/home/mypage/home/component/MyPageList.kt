@@ -105,7 +105,7 @@ fun FriendInviteComponent(navController: NavController?) {
                     contentAlignment = Center
                 ) {
                     Text(
-                        text = "500 투표권 적립",
+                        text = "2,500 투표권 적립",
                         style = FanwooriTypography.button2,
                         color = Primary800,
                         modifier = Modifier.padding(start = 6.dp, end = 6.dp)
