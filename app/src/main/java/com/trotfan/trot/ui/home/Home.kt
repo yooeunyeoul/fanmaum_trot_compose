@@ -140,14 +140,6 @@ fun TrotBottomBar(
 
     if (rollingState) {
         mainPopups?.layers?.let { it ->
-            LaunchedEffect(mainPopups?.layers) {
-                context.dateManager.data.collect {
-                    if (it.rollingDate == LocalDate.now().toString()) {
-                        viewModel.rollingState.emit(false)
-                    }
-                }
-            }
-
             RollingDialog(
                 layers = it,
                 onDismiss = {

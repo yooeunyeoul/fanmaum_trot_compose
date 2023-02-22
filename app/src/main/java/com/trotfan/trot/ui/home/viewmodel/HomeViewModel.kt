@@ -8,6 +8,7 @@ import com.ironsource.mediationsdk.IronSource
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.AppVersionManager
+import com.trotfan.trot.datastore.dateManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.*
@@ -17,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -87,8 +89,12 @@ class HomeViewModel @Inject constructor(
                                 autoVoteStatus.emit(it.data?.auto_vote?.is_voted == true)
                                 feverStatus.emit(it.data?.is_rewarded == true)
 
-                                if (it.data?.layers != null) {
-                                    rollingState.emit(true)
+                                context.dateManager.data.collect { date ->
+                                    if (date.rollingDate != LocalDate.now()
+                                            .toString() && mainPopups.layers != null
+                                    ) {
+                                        rollingState.emit(true)
+                                    }
                                 }
                             }
                         }
