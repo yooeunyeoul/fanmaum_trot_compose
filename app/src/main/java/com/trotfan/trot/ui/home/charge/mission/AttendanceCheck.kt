@@ -175,9 +175,11 @@ fun AttendanceCheck(
                             "더보기"
                         )) {
                             SnackbarResult.Dismissed -> {
+                                chargeHomeViewModel.missionSnackBarState.emit(false)
                                 false
                             }
                             SnackbarResult.ActionPerformed -> {
+                                chargeHomeViewModel.missionSnackBarState.emit(false)
                                 if (navController.backQueue[previousQueueIndex].destination.route.toString() == Route.TodayMission.route) {
                                     navController.popBackStack()
                                 } else {

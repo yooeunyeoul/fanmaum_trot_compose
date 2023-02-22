@@ -239,9 +239,11 @@ fun VideoAd(
                 missionSnackBarState =
                     when (scaffoldState.snackbarHostState.showSnackbar("일일 미션 하고 투표권 받기", "더보기")) {
                         SnackbarResult.Dismissed -> {
+                            videoViewModel.missionSnackBarState.emit(false)
                             false
                         }
                         SnackbarResult.ActionPerformed -> {
+                            videoViewModel.missionSnackBarState.emit(false)
                             if (navController.backQueue[previousQueueIndex].destination.route.toString() == Route.TodayMission.route) {
                                 navController.popBackStack()
                             } else {
