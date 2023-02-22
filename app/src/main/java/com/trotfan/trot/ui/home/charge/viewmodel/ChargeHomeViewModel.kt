@@ -41,7 +41,7 @@ class ChargeHomeViewModel @Inject constructor(
     val starShareState: StateFlow<Boolean>
         get() = _starShareState
     private val _starShareState =
-        MutableStateFlow(_missionState.value?.missions?.star_share ?: false)
+        MutableStateFlow(_missionState.value?.missions?.share ?: false)
 
     val videoRewardState: StateFlow<Boolean>
         get() = _videoRewardState
@@ -138,11 +138,11 @@ class ChargeHomeViewModel @Inject constructor(
                     var count = 0
                     it.data?.missions?.let { missions ->
                         _attendanceState.emit(missions.attendance)
-                        _starShareState.emit(missions.star_share)
+                        _starShareState.emit(missions.share)
                         _videoRewardState.emit(missions.video)
                         _rouletteState.emit(missions.roulette)
                         if (missions.attendance) count++
-                        if (missions.star_share) count++
+                        if (missions.share) count++
                         if (missions.video) count++
                         if (missions.roulette) count++
                     }

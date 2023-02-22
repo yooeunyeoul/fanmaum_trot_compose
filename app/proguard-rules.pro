@@ -48,3 +48,9 @@
 -keep public class com.ironsource.**
 -keep class com.ironsource.adapters.** { *;
 }
+
+#채널톡
+-keep class com.zoyi.**{ *; }
+-keep class io.channel.**{ *; }
+-dontwarn com.zoyi.**
+-dontwarn io.channel.**
