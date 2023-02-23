@@ -3,6 +3,7 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
@@ -15,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -49,6 +51,10 @@ enum class CertificationNumberCheckStatus(
     RequestSuccess(
         content = "",
         buttonText = ""
+    ),
+    AutoApiRequest(
+        content = "",
+        buttonText = ""
     )
 
 }
@@ -71,13 +77,28 @@ class CertificationPhoneNumberViewModel @Inject constructor(
         get() = _certificationNumberStatus
     private val _certificationNumberStatus =
         MutableStateFlow<CertificationNumberCheckStatus?>(null)
+    private val _inputCertificationNumber =
+        MutableStateFlow<String>("")
+    val inputCertificationNumber = _inputCertificationNumber.asStateFlow()
 
     private val _certificationNumber = MutableStateFlow<String>("")
     val certificationNumber = _certificationNumber
 
 
     init {
-//        startSMSListener()
+        startSmsRetriever()
+    }
+
+    fun startSmsRetriever() {
+        val client = SmsRetriever.getClient(context)
+        val task = client.startSmsRetriever()
+        task.addOnSuccessListener {
+            Timber.e("startSmsRetriever Success: $it")
+            startSMSListener()
+        }
+        task.addOnFailureListener {
+            Timber.e("startSmsRetriever fail: $it")
+        }
     }
 
 
@@ -87,7 +108,8 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                 if (code?.length != 6) {
                     Timber.e("Finish")
                 }
-                Timber.e(code.toString())
+                _inputCertificationNumber.value = code ?: ""
+                _certificationNumberStatus.value = CertificationNumberCheckStatus.AutoApiRequest
             }
 
             override fun onFailure() {
@@ -116,7 +138,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                             FlavorStatus.QA
                         }
                         "product" -> {
-                            FlavorStatus.RELEASE
+                            FlavorStatus.PLAYSTORE
                         }
                         else -> {
                             FlavorStatus.PLAYSTORE
@@ -127,6 +149,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                     ResultCodeStatus.SuccessWithData.code -> {
                         _certificationNumber.value = response.data?.code.toString()
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.RequestSuccess)
+                        startSmsRetriever()
                     }
                     ResultCodeStatus.NumberAlreadyRegistered.code -> {
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.Duplicate)

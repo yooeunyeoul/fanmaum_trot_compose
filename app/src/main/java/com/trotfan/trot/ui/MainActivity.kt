@@ -61,10 +61,9 @@ class MainActivity : ComponentActivity() {
         getDynamicLink()
         AppSignatureHelper
         settingIronSource()
-        startSmsRetriever()
 
-        val appSignature = AppSignatureHelper(this)
-        Log.e("HASH", "\"${appSignature.appSignatures}\"")
+//        val appSignature = AppSignatureHelper(this)
+//        Log.e("HASH", "\"${appSignature.appSignatures}\"")
 
 
         setContent {
@@ -124,33 +123,6 @@ class MainActivity : ComponentActivity() {
     private fun settingIronSource() {
         IronSource.init(this, "17f942e2d", IronSource.AD_UNIT.REWARDED_VIDEO)
         IntegrationHelper.validateIntegration(this)
-    }
-
-    private fun startSmsRetriever() {
-        val client = SmsRetriever.getClient(this)
-        val task = client.startSmsRetriever()
-        task.addOnSuccessListener {
-            Timber.e("startSmsRetriever Success: $it")
-            startSMSListener()
-        }
-        task.addOnFailureListener {
-            Timber.e("startSmsRetriever fail: $it")
-        }
-    }
-
-    private fun startSMSListener() {
-        SmsReceiver.bindListener(object : SmsReceiver.SmsBroadcastReceiverListener {
-            override fun onSuccess(code: String?) {
-                if (code?.length != 6) {
-                    Timber.e("Finish")
-                }
-                Timber.e(code.toString())
-            }
-
-            override fun onFailure() {
-                Timber.e("SmsBroadcastReceiverListener onFailure")
-            }
-        })
     }
 
     override fun onResume() {

@@ -65,9 +65,7 @@ fun CertificationPhoneScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var inputCertificationNumber by remember {
-        mutableStateOf("")
-    }
+    val inputCertificationNumber by viewModel.inputCertificationNumber.collectAsState()
 
 
     when (status) {
@@ -104,6 +102,16 @@ fun CertificationPhoneScreen(
         CertificationNumberCheckStatus.Duplicate -> {
             errorMessage = CertificationNumberCheckStatus.Duplicate.content
             errorState = true
+        }
+        CertificationNumberCheckStatus.AutoApiRequest -> {
+            LaunchedEffect(key1 = Unit, block = {
+                viewModel.checkAuthNumber(
+                    number = inputCertificationNumber,
+                    phoneNumber = inputPhoneNumber,
+                    time = ticks
+                )
+            })
+
         }
         else -> {
 
@@ -198,7 +206,6 @@ fun CertificationPhoneScreen(
             ) {
 
                 ticks = 180
-//                certificationNumberSend = true
                 requestedInputNumber = inputPhoneNumber
                 focusManager.clearFocus()
                 focusRequester.requestFocus()
@@ -231,7 +238,7 @@ fun CertificationPhoneScreen(
                     placeHolder = "인증번호 6자리 입력",
                     maxLength = 6,
                     onValueChange = {
-                        inputCertificationNumber = it
+//                        inputCertificationNumber = it
                     },
                     modifier = Modifier
                         .height(56.dp)

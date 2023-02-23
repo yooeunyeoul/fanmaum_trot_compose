@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clickableSingle
 
 @Composable
 fun BtnOutlineLPrimary(
@@ -40,10 +41,7 @@ fun BtnOutlineLPrimary(
                     if (isPressed) Primary500 else Primary200
                 } else Gray300, RoundedCornerShape(28.dp)
             )
-            .clickable(
-                indication = null,
-                interactionSource = interactionSource
-            ) {
+            .clickableSingle {
                 if (enabled) {
                     onClick()
                 }

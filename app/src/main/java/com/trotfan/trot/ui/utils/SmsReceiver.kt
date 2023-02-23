@@ -33,13 +33,15 @@ class SmsReceiver : BroadcastReceiver() {
                     Timber.e("Success")
                     // 정규표현식을 활용해서 인증번호를 파싱한다
                     var message: String = extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as String
+                    Timber.e(message)
                     message = message.replace("<#> ", "")
                     message = message.split("\n".toRegex())[1]
-                    val regex = """인증번호 (\d+) 를 입력창에 기입해주세요.""".toRegex()
+                    val regex = """인증번호는 (\d+) 입니다.""".toRegex()
                     val matchResult = regex.find(message)
                     matchResult?.destructured?.let {
                         val (authCode) = it
                         smsListener?.onSuccess(authCode)
+                        Timber.e(authCode)
 
                     }
                 }
