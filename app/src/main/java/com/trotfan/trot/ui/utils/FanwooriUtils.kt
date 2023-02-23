@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModel
@@ -41,8 +42,11 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.BaseApplication
+import com.trotfan.trot.datastore.*
 import com.trotfan.trot.ui.home.vote.voteTopShareText
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -250,6 +254,20 @@ fun getShareChar(char: Char): String {
     } catch (e: ArrayIndexOutOfBoundsException) {
         e.printStackTrace()
         ""
+    }
+}
+
+fun clearDataStore(context: Context, coroutineScope: CoroutineScope) {
+    coroutineScope.launch {
+        context.run {
+            AppVersionManager.edit { it.clear() }
+            RankMainDataStore.edit { it.clear() }
+            UserInfoDataStore.edit { it.clear() }
+            VoteMainDataStore.edit { it.clear() }
+            dateManager.updateData { it.toBuilder().clear().build() }
+            userIdStore.updateData { it.toBuilder().clear().build() }
+            userTokenStore.updateData { it.toBuilder().clear().build() }
+        }
     }
 }
 

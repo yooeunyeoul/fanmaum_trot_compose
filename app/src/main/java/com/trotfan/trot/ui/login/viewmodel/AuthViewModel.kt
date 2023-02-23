@@ -11,6 +11,9 @@ import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.AuthRepository
+import com.zoyi.channel.plugin.android.ChannelIO
+import com.zoyi.channel.plugin.android.open.config.BootConfig
+import com.zoyi.channel.plugin.android.open.model.Profile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -139,7 +142,6 @@ class AuthViewModel @Inject constructor(
                 saveUserInfo(userInfo)
                 setUserId(it.data?.id ?: 0)
                 _userInfo.emit(userInfo)
-                Log.d("AuthViewModel", userInfo.toString())
                 loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())

@@ -6,6 +6,7 @@ import com.lyft.kronos.AndroidClockFactory
 import com.lyft.kronos.KronosClock
 import com.lyft.kronos.KronosTime
 import com.zoyi.channel.plugin.android.ChannelIO
+import com.zoyi.channel.plugin.android.open.config.BootConfig
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -27,6 +28,5 @@ class BaseApplication : Application() {
         }
 
         ChannelIO.initialize(this)
-        ChannelIO.showChannelButton()
     }
 }
