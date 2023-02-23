@@ -22,7 +22,7 @@ class MyPageViewModel @Inject constructor(
 ) : BaseViewModel(application) {
 
     lateinit var userInfoManager: UserInfoManager
-//    lateinit var userTicketManager: UserTicketManager
+    lateinit var userTicketManager: UserTicketManager
     private val context = getApplication<Application>()
 
     val userName: StateFlow<String>
@@ -58,11 +58,9 @@ class MyPageViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             userInfoManager = UserInfoManager(context.UserInfoDataStore)
-//            userTicketManager = UserTicketManager(context.UserTicketStore)
+            userTicketManager = UserTicketManager(context.UserTicketStore)
             _userName.emit(userInfoManager.userNameFlow.first() ?: "")
             _starName.emit(userInfoManager.favoriteStarNameFlow.first() ?: "")
-//            _unlimitedTicket.emit(userTicketManager.expiredUnlimited.first() ?: 0)
-//            _todayTicket.emit(userTicketManager.expiredToday.first() ?: 0)
             _userEmail.emit(userInfoManager.userMailFlow.first() ?: "")
             _userIdp.emit(userInfoManager.userIdpFlow.first() ?: 0)
             _profileImage.emit(userInfoManager.userProfileImageFlow.first() ?: "")

@@ -26,12 +26,12 @@ class ChargeRepository @Inject constructor(
     suspend fun checkRoulette(
         userToken: String,
         userId: Int,
-    ): CommonResponse<LuckyTicket> = chargeService.checkRoulette(userToken, userId)
+    ): CommonResponse<GetLuckyTicket> = chargeService.checkRoulette(userToken, userId)
 
     suspend fun rewardRoulette(
         userToken: String,
         userId: Int,
-    ): CommonResponse<LuckyTicket> = chargeService.rewardRoulette(userToken, userId)
+    ): CommonResponse<PostLuckyTicket> = chargeService.rewardRoulette(userToken, userId)
 
     suspend fun getMissions(userToken: String): CommonResponse<MissionState> =
         chargeService.getMissions(userToken)

@@ -9,6 +9,7 @@ import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.FavoriteStarInfo
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.network.ResultCodeStatus
@@ -47,9 +48,9 @@ class VoteHomeViewModel @Inject constructor(
     lateinit var mBoardSocket: Socket
     lateinit var mRankSocket: Socket
 
-    var userInfoManager: UserInfoManager
-    var voteMainManager: VoteMainManager
-    var userTicketManager: UserTicketManager
+    lateinit var userInfoManager: UserInfoManager
+    lateinit var voteMainManager: VoteMainManager
+    lateinit var userTicketManager: UserTicketManager
 
     private val context = getApplication<Application>()
 
@@ -91,6 +92,10 @@ class VoteHomeViewModel @Inject constructor(
         MutableStateFlow(0)
     val ticks = _ticks.asStateFlow()
 
+//    private val _tickets =
+//        MutableStateFlow<Tickets?>(null)
+//    val tickets = _tickets.asStateFlow()
+
     private val dummyData = VoteData(quantity = -1, star_name = "null", user_name = "null")
 
     val gender: StateFlow<Gender>
@@ -106,15 +111,17 @@ class VoteHomeViewModel @Inject constructor(
 
 
     init {
-        getVoteList()
-        userInfoManager = UserInfoManager(context.UserInfoDataStore)
-        voteMainManager = VoteMainManager(context.VoteMainDataStore)
-        userTicketManager = UserTicketManager(context.UserTicketStore)
-        connectBoardSocket()
-        connectRankSocket()
-        getStarRank()
-        tickRemainingTime()
-        observeGender()
+        viewModelScope.launch {
+            getVoteList()
+            userInfoManager = UserInfoManager(context.UserInfoDataStore)
+            voteMainManager = VoteMainManager(context.VoteMainDataStore)
+            userTicketManager = UserTicketManager(context.UserTicketStore)
+            connectBoardSocket()
+            connectRankSocket()
+            getStarRank()
+            tickRemainingTime()
+            observeGender()
+        }
     }
 
     private fun observeGender() {
@@ -176,7 +183,7 @@ class VoteHomeViewModel @Inject constructor(
                                 response.data?.unlimited ?: 0,
                                 response.data?.limited ?: 0
                             )
-                            response.data?.let { it1 -> purchaseHelper.refreshTickets(it1) }
+//                            _tickets.emit(response.data)
                             purchaseHelper.closeApiCall()
                         }
                         ResultCodeStatus.Fail.code -> {

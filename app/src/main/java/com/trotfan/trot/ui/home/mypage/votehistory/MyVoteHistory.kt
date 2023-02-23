@@ -34,7 +34,6 @@ import com.trotfan.trot.R
 import com.trotfan.trot.model.TicketItem
 import com.trotfan.trot.ui.components.chip.ChipTab
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
-import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import java.text.DecimalFormat
@@ -57,9 +56,8 @@ fun MyVoteHistory(
     var selectTab by remember {
         mutableStateOf(tabs[0])
     }
-//    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
-//    val todayTicket by viewModel.todayTicket.collectAsState()
-    val ticket by purchaseHelper?.tickets!!.collectAsState()
+    val unLimitedTickets by viewModel.userTicketManager.expiredUnlimited.collectAsState(initial = 0)
+    val todayTickets by viewModel.userTicketManager.expiredToday.collectAsState(initial = 0)
     var appBarColor by remember {
         mutableStateOf(Gray100)
     }
@@ -130,7 +128,7 @@ fun MyVoteHistory(
                             }
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = decimal.format(ticket.unlimited + ticket.limited),
+                                text = decimal.format(unLimitedTickets?.plus(todayTickets?: 0)),
                                 style = FanwooriTypography.h1,
                                 color = Gray900,
                                 modifier = Modifier.padding(start = 24.dp)
@@ -168,13 +166,13 @@ fun MyVoteHistory(
                                     horizontalAlignment = End
                                 ) {
                                     Text(
-                                        text = decimal.format(ticket.unlimited),
+                                        text = decimal.format(unLimitedTickets),
                                         style = FanwooriTypography.button1,
                                         color = Gray800
                                     )
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Text(
-                                        text = decimal.format(ticket.limited),
+                                        text = decimal.format(todayTickets),
                                         style = FanwooriTypography.button1,
                                         color = Gray800
                                     )

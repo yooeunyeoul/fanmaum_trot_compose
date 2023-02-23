@@ -78,7 +78,7 @@ fun VoteHome(
     navController: NavController,
     viewModel: VoteHomeViewModel = composableActivityViewModel("VoteHomeViewModel"),
     chargeHomeViewModel: ChargeHomeViewModel = composableActivityViewModel("ChargeHomeViewModel"),
-    onVotingClick: (vote_id: Int, vote_ticket: Tickets, star: VoteMainStar?) -> Unit,
+    onVotingClick: (vote_id: Int, unlimitedTicket: Long, todayTicket: Long, star: VoteMainStar?) -> Unit,
     lazyListState: LazyListState?,
     purchaseHelper: PurchaseHelper
 ) {
@@ -89,13 +89,13 @@ fun VoteHome(
     val hashmapWomenList by viewModel.womenHashMap.collectAsState()
     val voteStatusBoardList by viewModel.voteDataList.collectAsState()
     val voteStatusBoardListCount by viewModel.voteDataListCount.collectAsState()
-    val tickets by purchaseHelper.tickets.collectAsState()
+    val unLimitedTickets by viewModel.userTicketManager.expiredUnlimited.collectAsState(initial = 0)
+    val todayTickets by viewModel.userTicketManager.expiredToday.collectAsState(initial = 0)
     val favoriteStar by viewModel.favoriteStar.collectAsState()
     val ticks by viewModel.ticks.collectAsState()
     val starShareState by chargeHomeViewModel.starShareState.collectAsState()
     val missionSnackBarState by chargeHomeViewModel.missionSnackBarState.collectAsState()
     val scaffoldState = rememberScaffoldState()
-
 
     val favoriteStarName by viewModel.userInfoManager.favoriteStarNameFlow.collectAsState(
         initial = ""
@@ -256,7 +256,7 @@ fun VoteHome(
                                         .clickableSingle() {
                                             onVotingClick(
                                                 voteId,
-                                                tickets,
+                                                unLimitedTickets ?: 0, todayTickets ?: 0,
                                                 VoteMainStar(
                                                     id = favoriteStar.id,
                                                     name = favoriteStarName
@@ -295,7 +295,7 @@ fun VoteHome(
                                     ) {
                                         onVotingClick(
                                             voteId,
-                                            tickets,
+                                            unLimitedTickets ?: 0, todayTickets ?: 0,
                                             VoteMainStar(
                                                 id = favoriteStar.id,
                                                 name = favoriteStarName
@@ -310,7 +310,7 @@ fun VoteHome(
                                 isHide = myVoteHide,
                                 hideState = { isHide ->
                                     myVoteHide = isHide
-                                }, tickets = tickets,
+                                }, unLimitedTickets ?: 0, todayTickets ?: 0,
                                 onclick = {
                                     onNavigateClick.invoke(HomeSections.Charge)
                                 }
@@ -521,7 +521,11 @@ fun VoteHome(
                                         star = starMap.second,
                                         isMyStar = starMap.first == favoriteStar.id,
                                         onVotingClick = { mainStar ->
-                                            onVotingClick(voteId, tickets, mainStar)
+                                            onVotingClick(
+                                                voteId,
+                                                unLimitedTickets ?: 0, todayTickets ?: 0,
+                                                mainStar
+                                            )
                                         },
                                         onSharedClick = {
                                             addDynamicLink(

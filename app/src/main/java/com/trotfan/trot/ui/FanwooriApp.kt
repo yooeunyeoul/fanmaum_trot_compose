@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -29,7 +28,6 @@ import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
-import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.dialog.VotingCompleteDialog
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
@@ -142,10 +140,10 @@ fun FanwooriApp(
                 }
                 NavigationComponent(
                     navController = navController,
-                    onVotingClick = { voteId: Int, voteTicket: Tickets, star: VoteMainStar? ->
+                    onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar? ->
                         coroutineScope.launch {
                             star?.let {
-                                viewModel.voteTickets.emit(voteTicket)
+                                viewModel.voteTickets.emit(Tickets(unlimitedTickets, todayTickets))
                                 viewModel.voteStar.emit(star)
                                 viewModel.voteId.emit(voteId)
                                 viewModel.voteCnt.emit(TextFieldValue(""))

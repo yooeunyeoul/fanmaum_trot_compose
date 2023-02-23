@@ -408,7 +408,8 @@ fun StoreView(
     viewModel: ChargeHomeViewModel
 ) {
     val lazyListState: LazyListState = rememberLazyListState()
-    val tickets by purchaseHelper.tickets.collectAsState()
+    val unLimitedTickets by viewModel.userTicketManager.expiredUnlimited.collectAsState(initial = 0)
+    val todayTickets by viewModel.userTicketManager.expiredToday.collectAsState(initial = 0)
     val refreshState by purchaseHelper.refreshState.collectAsState()
     var showSuccessDialog by remember {
         mutableStateOf(false)
@@ -441,7 +442,7 @@ fun StoreView(
     ) {
         item {
             Spacer(modifier = Modifier.height(24.dp))
-            MyVote(tickets = tickets)
+            MyVote(unlimitedTickets = unLimitedTickets ?: 0, todayTickets = todayTickets ?: 0)
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "전체상품", style = FanwooriTypography.body3, color = Color.Black
