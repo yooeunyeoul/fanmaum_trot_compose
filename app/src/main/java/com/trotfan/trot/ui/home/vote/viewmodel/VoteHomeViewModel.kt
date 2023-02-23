@@ -8,7 +8,6 @@ import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.*
-import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.FavoriteStarInfo
 import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.model.VoteMainStar

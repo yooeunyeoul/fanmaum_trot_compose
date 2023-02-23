@@ -7,8 +7,7 @@ import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
-import com.trotfan.trot.model.Ticket
-import com.trotfan.trot.model.TicketItem
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
 import com.trotfan.trot.ui.MainActivity
@@ -101,10 +100,10 @@ class PurchaseHelper @Inject constructor(
     private val _productName = MutableStateFlow("Searching...")
     val productName = _productName.asStateFlow()
 
-    val tickets: StateFlow<Ticket>
+    val tickets: StateFlow<Tickets>
         get() = _tickets
     private val _tickets =
-        MutableStateFlow<Ticket>(Ticket(0, 0))
+        MutableStateFlow<Tickets>(Tickets(0, 0))
 
     private val _refreshState = MutableStateFlow(RefreshTicket.Need)
     val refreshState = _refreshState.asStateFlow()
@@ -428,7 +427,7 @@ class PurchaseHelper @Inject constructor(
         }
     }
 
-    fun refreshTickets(tickets: Ticket) {
+    fun refreshTickets(tickets: Tickets) {
         _tickets.value = tickets
     }
 

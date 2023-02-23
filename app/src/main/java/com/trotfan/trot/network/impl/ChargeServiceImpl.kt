@@ -89,7 +89,7 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         }.body()
     }
 
-    override suspend fun postAttendance(userToken: String): CommonResponse<Ticket> {
+    override suspend fun postAttendance(userToken: String): CommonResponse<Tickets> {
         return httpClient.post("${HttpRoutes.MISSIONS}/attendance") {
             contentType(ContentType.Application.Json)
             header(
@@ -109,7 +109,7 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         }.body()
     }
 
-    override suspend fun postMission(userToken: String): CommonResponse<Ticket> {
+    override suspend fun postMission(userToken: String): CommonResponse<Tickets> {
         return httpClient.post("${HttpRoutes.MISSIONS}/mission") {
             contentType(ContentType.Application.Json)
             header(

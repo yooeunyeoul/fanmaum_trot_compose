@@ -28,8 +28,7 @@ import androidx.navigation.compose.composable
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.dateManager
-import com.trotfan.trot.model.Ticket
-import com.trotfan.trot.model.TicketItem
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.home.charge.ChargeHome
@@ -251,7 +250,7 @@ fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
-    onVotingClick: (vote_id: Int, vote_ticket: Ticket, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
+    onVotingClick: (vote_id: Int, vote_tickets: Tickets, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
     navController: NavController,
     lazyListState: HashMap<String, LazyListState>?,
     purchaseHelper: PurchaseHelper
@@ -263,8 +262,8 @@ fun NavGraphBuilder.addHomeGraph(
             },
             navController = navController,
             modifier = modifier,
-            onVotingClick = { voteId: Int, voteTicket: Ticket, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
-                onVotingClick(voteId, voteTicket, star, voteViewModel)
+            onVotingClick = { voteId: Int, voteTickets: Tickets, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
+                onVotingClick(voteId, voteTickets, star, voteViewModel)
             },
             lazyListState = lazyListState?.get(HomeSections.Vote.route),
             purchaseHelper = purchaseHelper

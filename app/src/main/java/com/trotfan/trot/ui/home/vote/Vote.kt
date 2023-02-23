@@ -5,8 +5,6 @@ package com.trotfan.trot.ui.home.vote
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -81,7 +79,7 @@ fun VoteHome(
     navController: NavController,
     viewModel: VoteHomeViewModel = hiltViewModel(),
     chargeHomeViewModel: ChargeHomeViewModel = composableActivityViewModel("ChargeHomeViewModel"),
-    onVotingClick: (vote_id: Int, vote_ticket: Ticket, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
+    onVotingClick: (vote_id: Int, vote_tickets: Tickets, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
     lazyListState: LazyListState?,
     purchaseHelper: PurchaseHelper
 ) {

@@ -61,7 +61,7 @@ fun VotingBottomSheet(
     var isTextFieldFocused = false
     var placeholder by remember { mutableStateOf("얼마나 투표할까요?") }
     val star by homeViewModel.voteStar.collectAsState()
-    val tickets by homeViewModel.voteTicket.collectAsState()
+    val tickets by homeViewModel.voteTickets.collectAsState()
 
 
     if (votingBottomSheetState.isVisible.not()) {

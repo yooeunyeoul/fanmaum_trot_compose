@@ -23,8 +23,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.PurchaseHelper
-import com.trotfan.trot.model.Ticket
-import com.trotfan.trot.model.TicketItem
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.HomeSections
@@ -139,11 +138,11 @@ fun FanwooriApp(
                 }
                 NavigationComponent(
                     navController = navController,
-                    onVotingClick = { voteId: Int, voteTicket: Ticket, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
+                    onVotingClick = { voteId: Int, voteTickets: Tickets, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
                         coroutineScope.launch {
                             star?.let {
                                 voteHomeViewModel = voteViewModel
-                                viewModel.voteTicket.emit(voteTicket)
+                                viewModel.voteTickets.emit(voteTickets)
                                 viewModel.voteStar.emit(star)
                                 viewModel.voteId.emit(voteId)
                                 viewModel.voteCnt.emit(TextFieldValue(""))

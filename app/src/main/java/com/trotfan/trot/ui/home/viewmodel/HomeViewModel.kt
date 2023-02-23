@@ -36,7 +36,7 @@ class HomeViewModel @Inject constructor(
     var votingCompleteState = MutableStateFlow(0)
     var voteStar = MutableStateFlow<VoteMainStar?>(null)
     var voteId = MutableStateFlow(0)
-    var voteTicket = MutableStateFlow(Ticket(0, 0))
+    var voteTickets = MutableStateFlow(Tickets(0, 0))
 
     var myVoteCnt = MutableStateFlow(1000L)
     var voteCnt = MutableStateFlow(TextFieldValue(""))

@@ -1,8 +1,7 @@
 package com.trotfan.trot.network
 
 import com.trotfan.trot.model.FavoriteStarInfo
-import com.trotfan.trot.model.Ticket
-import com.trotfan.trot.model.TicketItem
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.VoteInfo
 import com.trotfan.trot.network.response.CommonResponse
 
@@ -17,5 +16,5 @@ interface VoteService {
     suspend fun voteTickets(
         userId: Long,
         token: String
-    ): CommonResponse<Ticket>
+    ): CommonResponse<Tickets>
 }

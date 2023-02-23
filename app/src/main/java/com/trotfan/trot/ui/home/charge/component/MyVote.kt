@@ -17,8 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Ticket
-import com.trotfan.trot.model.TicketItem
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.ui.components.button.UnderlineTextButton
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray100
@@ -30,7 +29,7 @@ import com.trotfan.trot.ui.utils.clickableSingle
 @Composable
 fun MyVote(
     modifier: Modifier = Modifier,
-    tickets: Ticket,
+    tickets: Tickets,
     onclick: () -> Unit = {}
 ) {
     val interactionSource = remember {
@@ -95,5 +94,5 @@ fun Charging(onclick: () -> Unit) {
 @Preview
 @Composable
 fun PreviewMyVote() {
-    MyVote(tickets = Ticket(0, 0), onclick = {})
+    MyVote(tickets = Tickets(0, 0), onclick = {})
 }

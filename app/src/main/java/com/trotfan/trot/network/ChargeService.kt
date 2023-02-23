@@ -33,7 +33,7 @@ interface ChargeService {
 
     suspend fun postAttendance(
         userToken: String
-    ): CommonResponse<Ticket>
+    ): CommonResponse<Tickets>
 
     suspend fun postShareStar(
         userToken: String
@@ -41,5 +41,5 @@ interface ChargeService {
 
     suspend fun postMission(
         userToken: String
-    ): CommonResponse<Ticket>
+    ): CommonResponse<Tickets>
 }

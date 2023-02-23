@@ -1,8 +1,7 @@
 package com.trotfan.trot.network.impl
 
 import com.trotfan.trot.model.FavoriteStarInfo
-import com.trotfan.trot.model.Ticket
-import com.trotfan.trot.model.TicketItem
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.VoteInfo
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.VoteService
@@ -29,7 +28,7 @@ class VoteServiceImpl @Inject constructor(private val httpClient: HttpClient) : 
         return response.body()
     }
 
-    override suspend fun voteTickets(userId: Long, token: String): CommonResponse<Ticket> {
+    override suspend fun voteTickets(userId: Long, token: String): CommonResponse<Tickets> {
         val response = httpClient.get(HttpRoutes.USERS + "/${userId}/tickets/total") {
             header(
                 "Authorization",
