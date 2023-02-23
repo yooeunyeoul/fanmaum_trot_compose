@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 @kotlinx.serialization.Serializable
 data class RewardTickets(
     @SerializedName("rewarded_at")
-    val rewarded_at: String,
+    val rewarded_at: String?,
     @SerializedName("today")
     val today: Today,
     @SerializedName("tickets")
