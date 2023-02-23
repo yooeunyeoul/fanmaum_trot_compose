@@ -7,6 +7,7 @@ import com.lyft.kronos.KronosClock
 import com.lyft.kronos.KronosTime
 import com.zoyi.channel.plugin.android.ChannelIO
 import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 
 @HiltAndroidApp
 class BaseApplication : Application() {
@@ -18,7 +19,7 @@ class BaseApplication : Application() {
         kronosClock.syncInBackground()
 
 
-
+        Timber.plant(Timber.DebugTree())
         if (BuildConfig.DEBUG) {
             KakaoSdk.init(this, getString(R.string.kakao_navite_app_key_debug))
         } else {

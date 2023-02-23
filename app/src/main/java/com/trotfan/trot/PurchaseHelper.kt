@@ -90,7 +90,7 @@ class PurchaseHelper @Inject constructor(
 
     private lateinit var mListener: (BillingResponse) -> Unit
     private lateinit var mSelectedProductId: String
-    private var activity: MainActivity
+    private var activity: MainActivity = (context as MainActivity)
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private lateinit var billingClient: BillingClient
@@ -115,7 +115,6 @@ class PurchaseHelper @Inject constructor(
 
 
     init {
-        activity = (context as MainActivity)
         billingSetup()
     }
 

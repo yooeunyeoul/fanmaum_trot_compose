@@ -1,11 +1,10 @@
 package com.trotfan.trot.network.impl
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.response.CommonResponse
+import com.trotfan.trot.ui.signup.viewmodel.FlavorStatus
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -19,13 +18,15 @@ import javax.inject.Inject
 class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) : SignUpService {
     @OptIn(InternalAPI::class)
     override suspend fun requestCertificationCode(
-        phoneNumber: String
+        phoneNumber: String,
+        version: FlavorStatus
     ): CommonResponse<SmsAuth> {
         return httpClient.post {
             url(HttpRoutes.SMS)
             contentType(ContentType.Application.Json)
             val json = JSONObject()
             json.put("to", phoneNumber)
+            json.put("version", version)
             body = (json.toString())
         }.body()
     }

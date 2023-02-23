@@ -39,7 +39,6 @@ import com.trotfan.trot.ui.home.mypage.home.MyPageHome
 import com.trotfan.trot.ui.home.ranking.RankHome
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.VoteHome
-import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -250,7 +249,7 @@ fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
-    onVotingClick: (vote_id: Int, vote_tickets: Tickets, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
+    onVotingClick: (vote_id: Int, vote_ticket: Tickets, star: VoteMainStar?) -> Unit,
     navController: NavController,
     lazyListState: HashMap<String, LazyListState>?,
     purchaseHelper: PurchaseHelper
@@ -262,8 +261,8 @@ fun NavGraphBuilder.addHomeGraph(
             },
             navController = navController,
             modifier = modifier,
-            onVotingClick = { voteId: Int, voteTickets: Tickets, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
-                onVotingClick(voteId, voteTickets, star, voteViewModel)
+            onVotingClick = { voteId: Int, voteTicket: Tickets, star: VoteMainStar? ->
+                onVotingClick(voteId, voteTicket, star)
             },
             lazyListState = lazyListState?.get(HomeSections.Vote.route),
             purchaseHelper = purchaseHelper

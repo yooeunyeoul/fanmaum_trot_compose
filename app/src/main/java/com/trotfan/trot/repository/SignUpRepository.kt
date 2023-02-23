@@ -4,7 +4,7 @@ import com.trotfan.trot.model.*
 import com.trotfan.trot.network.SettingService
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.response.CommonResponse
-import com.trotfan.trot.ui.home.mypage.setting.AlarmType
+import com.trotfan.trot.ui.signup.viewmodel.FlavorStatus
 import javax.inject.Inject
 
 class SignUpRepository @Inject constructor(
@@ -13,8 +13,9 @@ class SignUpRepository @Inject constructor(
 ) {
     suspend fun requestSmsCertification(
         phoneNumber: String,
+        version: FlavorStatus
     ): CommonResponse<SmsAuth> =
-        service.requestCertificationCode(phoneNumber)
+        service.requestCertificationCode(phoneNumber,version)
 
     suspend fun updateUser(
         userid: Long,

@@ -207,6 +207,11 @@ dependencies {
     implementation "com.lyft.kronos:kronos-android:0.0.1-alpha11"
 
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    implementation "com.jakewharton.timber:timber:4.7.1"
+
+    // 문자 인증 자동입력
+    implementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
+
 
 }
 

@@ -70,7 +70,7 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    onVotingClick: (vote_id: Int, voteTickets: Tickets, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
+    onVotingClick: (vote_id: Int, voteTickets: Tickets, star: VoteMainStar?) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     lazyListStates: HashMap<String, LazyListState>,
     purchaseHelper: PurchaseHelper
@@ -92,8 +92,8 @@ fun NavigationComponent(
             onNavigateBottomBar = {
                 onNavigateBottomBar.invoke(it)
             },
-            onVotingClick = { voteId: Int, voteTickets: Tickets, star: VoteMainStar?, viewModel: VoteHomeViewModel ->
-                onVotingClick(voteId, voteTickets, star, viewModel)
+            onVotingClick = { voteId: Int, voteTickets: Tickets, star: VoteMainStar? ->
+                onVotingClick(voteId, voteTickets, star)
             },
             navController = navController,
             lazyListState = lazyListStates,

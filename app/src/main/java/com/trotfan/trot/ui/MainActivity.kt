@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui
 
+import AppSignatureHelper
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.ironsource.mediationsdk.IronSource
@@ -36,9 +38,11 @@ import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.utils.SmsReceiver
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -55,8 +59,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getDynamicLink()
+        AppSignatureHelper
         settingIronSource()
+        startSmsRetriever()
 
+        val appSignature = AppSignatureHelper(this)
+        Log.e("HASH", "\"${appSignature.appSignatures}\"")
 
 
         setContent {
@@ -116,6 +124,33 @@ class MainActivity : ComponentActivity() {
     private fun settingIronSource() {
         IronSource.init(this, "17f942e2d", IronSource.AD_UNIT.REWARDED_VIDEO)
         IntegrationHelper.validateIntegration(this)
+    }
+
+    private fun startSmsRetriever() {
+        val client = SmsRetriever.getClient(this)
+        val task = client.startSmsRetriever()
+        task.addOnSuccessListener {
+            Timber.e("startSmsRetriever Success: $it")
+            startSMSListener()
+        }
+        task.addOnFailureListener {
+            Timber.e("startSmsRetriever fail: $it")
+        }
+    }
+
+    private fun startSMSListener() {
+        SmsReceiver.bindListener(object : SmsReceiver.SmsBroadcastReceiverListener {
+            override fun onSuccess(code: String?) {
+                if (code?.length != 6) {
+                    Timber.e("Finish")
+                }
+                Timber.e(code.toString())
+            }
+
+            override fun onFailure() {
+                Timber.e("SmsBroadcastReceiverListener onFailure")
+            }
+        })
     }
 
     override fun onResume() {

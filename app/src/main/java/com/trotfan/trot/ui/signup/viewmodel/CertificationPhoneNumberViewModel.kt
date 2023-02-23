@@ -3,16 +3,20 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.BaseViewModel
+import com.trotfan.trot.ui.FanwooriApp
+import com.trotfan.trot.ui.utils.SmsReceiver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 enum class CertificationNumberCheckStatus(
@@ -47,7 +51,10 @@ enum class CertificationNumberCheckStatus(
         buttonText = ""
     )
 
+}
 
+enum class FlavorStatus {
+    PLAYSTORE, DEBUG, QA, RELEASE
 }
 
 
@@ -69,12 +76,52 @@ class CertificationPhoneNumberViewModel @Inject constructor(
     val certificationNumber = _certificationNumber
 
 
+    init {
+//        startSMSListener()
+    }
+
+
+    private fun startSMSListener() {
+        SmsReceiver.bindListener(object : SmsReceiver.SmsBroadcastReceiverListener {
+            override fun onSuccess(code: String?) {
+                if (code?.length != 6) {
+                    Timber.e("Finish")
+                }
+                Timber.e(code.toString())
+            }
+
+            override fun onFailure() {
+                Timber.e("SmsBroadcastReceiverListener onFailure")
+            }
+        })
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        SmsReceiver.unbindListener()
+    }
+
+
     fun requestCertificationCode(phoneNumber: String) {
         viewModelScope.launch(Dispatchers.IO) {
             loadingHelper.showProgress()
             try {
                 val response = repository.requestSmsCertification(
                     phoneNumber = phoneNumber,
+                    version = when (BuildConfig.FLAVOR) {
+                        "dev" -> {
+                            FlavorStatus.DEBUG
+                        }
+                        "qa" -> {
+                            FlavorStatus.QA
+                        }
+                        "product" -> {
+                            FlavorStatus.RELEASE
+                        }
+                        else -> {
+                            FlavorStatus.PLAYSTORE
+                        }
+                    }
                 )
                 when (response.result.code) {
                     ResultCodeStatus.SuccessWithData.code -> {

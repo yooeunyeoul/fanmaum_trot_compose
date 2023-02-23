@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -28,12 +29,14 @@ import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.TrotBottomBar
+import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.dialog.VotingCompleteDialog
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.theme.FanwooriTheme
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -50,6 +53,7 @@ object Destinations {
 @Composable
 fun FanwooriApp(
     viewModel: HomeViewModel = hiltViewModel(),
+    voteHomeViewModel: VoteHomeViewModel = composableActivityViewModel("VoteHomeViewModel"),
     purchaseHelper: PurchaseHelper
 ) {
     FanwooriTheme {
@@ -77,7 +81,7 @@ fun FanwooriApp(
             Pair(first = HomeSections.Charge.route, rememberLazyListState()),
             Pair(first = HomeSections.MyPage.route, rememberLazyListState())
         )
-        var voteHomeViewModel: VoteHomeViewModel? = null
+//        var voteHomeViewModel: VoteHomeViewModel? = null
 
         var votesQuantity by remember {
             mutableStateOf(0L)
@@ -138,11 +142,10 @@ fun FanwooriApp(
                 }
                 NavigationComponent(
                     navController = navController,
-                    onVotingClick = { voteId: Int, voteTickets: Tickets, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
+                    onVotingClick = { voteId: Int, voteTicket: Tickets, star: VoteMainStar? ->
                         coroutineScope.launch {
                             star?.let {
-                                voteHomeViewModel = voteViewModel
-                                viewModel.voteTickets.emit(voteTickets)
+                                viewModel.voteTickets.emit(voteTicket)
                                 viewModel.voteStar.emit(star)
                                 viewModel.voteId.emit(voteId)
                                 viewModel.voteCnt.emit(TextFieldValue(""))
@@ -183,12 +186,14 @@ fun FanwooriApp(
                             }, onPositive = {
                                 val sendIntent: Intent = Intent().apply {
                                     Firebase.dynamicLinks.shortLinkAsync {
-                                        link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
+                                        link =
+                                            Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
                                         domainUriPrefix = "https://fanmaum.page.link"
                                     }.addOnSuccessListener {
                                         action = Intent.ACTION_SEND
                                         putExtra(
-                                            Intent.EXTRA_TEXT, voteTopShareText(star?.name, it.shortLink.toString())
+                                            Intent.EXTRA_TEXT,
+                                            voteTopShareText(star?.name, it.shortLink.toString())
                                         )
 
                                         type = "text/plain"
