@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.home.mypage.home.component
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,18 +13,28 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
+import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.clickableSingle
+import com.zoyi.channel.plugin.android.ChannelIO
+import com.zoyi.channel.plugin.android.open.config.BootConfig
+import com.zoyi.channel.plugin.android.open.enumerate.BootStatus
+import com.zoyi.channel.plugin.android.open.model.Profile
+import com.zoyi.channel.plugin.android.open.model.User
 import java.net.URLEncoder
 
 @Composable
-fun MyPageList(navController: NavController?) {
+fun MyPageList(
+    navController: NavController?
+) {
+    val activity = LocalContext.current as Activity
     Surface(
         color = Color.White,
         elevation = 1.dp,
@@ -35,27 +46,29 @@ fun MyPageList(navController: NavController?) {
             Line()
             MyPageListComponent(
                 text = "공지사항",
-                url = "https://mktfanmaum.notion.site/ece846d3b5e04b7589d07b8507f5f134",
+                url = "https://post.naver.com/viewer/postView.naver?volumeNo=35083796&memberNo=24659848",
                 navController = navController
             )
             Line()
             MyPageListComponent(
                 text = "이벤트",
-                url = "https://mktfanmaum.notion.site/7df7c321d0714997894668426354f88a",
+                url = "https://post.naver.com/my/series/detail.naver?seriesNo=706002&memberNo=60167819",
                 navController = navController
             )
             Line()
             MyPageListComponent(
                 text = "이용 가이드",
-                url = "https://mktfanmaum.notion.site/6abe9c2ead0d4fe6be976cc4d95154c7",
+                url = "https://post.naver.com/my/series/detail.naver?seriesNo=706001&memberNo=60167819",
                 navController = navController
             )
             Line()
             MyPageListComponent(
                 text = "자주 묻는 질문",
-                url = "https://mktfanmaum.notion.site/ad8444ca3f1940b9850dfea79d7f5128",
+                url = "https://post.naver.com/my/series/detail.naver?seriesNo=706004&memberNo=60167819",
                 navController = navController
             )
+            Line()
+            ChannelTalkComponent(activity = activity)
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
@@ -139,6 +152,56 @@ fun MyPageListComponent(text: String, url: String, navController: NavController?
     ) {
         Text(
             text = text,
+            style = FanwooriTypography.body3,
+            color = Gray750,
+            modifier = Modifier
+                .align(CenterVertically)
+                .padding(start = 24.dp)
+                .weight(1f)
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.icon_arrow),
+            contentDescription = null,
+            tint = Gray750,
+            modifier = Modifier
+                .align(CenterVertically)
+                .padding(end = 24.dp)
+        )
+    }
+}
+
+
+@Composable
+fun ChannelTalkComponent(
+    activity: Activity,
+    viewModel: MyPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .clickableSingle {
+                if (ChannelIO.isBooted().not()) {
+                    val profile = Profile
+                        .create()
+                        .setName(viewModel.userName.value)
+                        .setEmail(viewModel.userEmail.value)
+                        .setProperty("homepageUrl", "channel.io")
+                    val bootConfig =
+                        BootConfig
+                            .create("4c224817-8771-4e8d-9b0f-40b28cb75da4")
+                            .setProfile(profile)
+                    ChannelIO.boot(bootConfig)
+                    ChannelIO.boot(bootConfig) { _: BootStatus, _: User? ->
+                        ChannelIO.showMessenger(activity)
+                    }
+                } else {
+                    ChannelIO.showMessenger(activity)
+                }
+            }
+    ) {
+        Text(
+            text = "문의하기",
             style = FanwooriTypography.body3,
             color = Gray750,
             modifier = Modifier

@@ -38,8 +38,10 @@ import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clearDataStore
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.clickableSingle
+import com.zoyi.channel.plugin.android.ChannelIO
 import kotlinx.coroutines.launch
 
 @Composable
@@ -359,17 +361,9 @@ fun SettingSecession(
 //                                secessionConfirmDialogState = false
                             }
                         }
-                        context.userIdStore.updateData {
-                            it.toBuilder().setUserId(0).build()
-                        }
-                        context.userTokenStore.updateData {
-                            it.toBuilder().setToken("").build()
-                        }
+                        clearDataStore(context, coroutineScope)
+                        ChannelIO.shutdown()
                         signOutClick.invoke()
-//                        settingViewModel.signOut(
-//                            reason = if (isEtc) 1 else selectedNumber,
-//                            etc = if (isEtc) etcText else null
-//                        )
                     }
                 }
             )
