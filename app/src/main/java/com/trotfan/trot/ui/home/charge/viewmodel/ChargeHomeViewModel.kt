@@ -17,9 +17,11 @@ import com.trotfan.trot.ui.BaseViewModel
 import com.trotfan.trot.ui.utils.convertStringToTime
 import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -130,6 +132,12 @@ class ChargeHomeViewModel @Inject constructor(
     val attendanceRewardDialogState = MutableStateFlow(false)
     val missionRewardDialogState = MutableStateFlow(false)
 
+    private var job = Job()
+        get() {
+            if (field.isCancelled) field = Job()
+            return field
+        }
+
     init {
         if (_missionState.value == null) {
             getMissions()
@@ -216,6 +224,9 @@ class ChargeHomeViewModel @Inject constructor(
     }
 
     fun getRoulette() {
+        if (job.isActive) {
+            job.cancel()
+        }
         viewModelScope.launch {
             loadingHelper.showProgress()
             context.userIdStore.data.collectLatest {
@@ -266,7 +277,6 @@ class ChargeHomeViewModel @Inject constructor(
         val roulette =
             TicketKind.values().filter { it.quantity == luckyTicket?.next_reward }
                 .firstOrNull()
-        Log.e("roullete", roulette.toString())
 
         _resultDegree.value = roulette?.degree ?: 30f
     }
@@ -274,13 +284,13 @@ class ChargeHomeViewModel @Inject constructor(
     private fun checkRemainTime(remainTime: Int) {
         var remainTime = fourHourMilliSecond - remainTime
 
-        viewModelScope.launch {
+        viewModelScope.launch(job) {
             while (true) {
-                Log.e("얘 멈춘거 맞지?", "맞아??")
+//                Log.e("얘 멈춘거 맞지?", "맞아??")
                 delay(1_000)
                 remainTime -= 1
                 if (remainTime < 0) {
-                    Log.e("여기 찍히는거 맞나??", "맞아??")
+//                    Log.e("여기 찍히는거 맞나??", "맞아??")
                     getRoulette()
                     break
 
@@ -304,9 +314,9 @@ class ChargeHomeViewModel @Inject constructor(
                             )
                         }
                         else -> {
-                            _remainTime.emit(
-                                "남은 일수가 1보다 큰데요??"
-                            )
+//                            _remainTime.emit(
+//                                "남은 일수가 1보다 큰데요??"
+//                            )
                         }
                     }
                 }
