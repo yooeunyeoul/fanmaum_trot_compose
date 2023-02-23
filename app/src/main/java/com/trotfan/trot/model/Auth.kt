@@ -53,5 +53,5 @@ data class UserInfo(
     @SerializedName("created_at")
     val created_at: String,
     @SerializedName("total_used_votes")
-    val total_used_votes: Int
+    val total_used_votes: Long
 )

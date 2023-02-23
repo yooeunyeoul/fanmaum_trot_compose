@@ -7,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ironsource.mediationsdk.IronSource
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
-import com.trotfan.trot.datastore.AppVersionManager
-import com.trotfan.trot.datastore.dateManager
-import com.trotfan.trot.datastore.userIdStore
-import com.trotfan.trot.datastore.userTokenStore
+import com.trotfan.trot.datastore.*
 import com.trotfan.trot.model.*
 import com.trotfan.trot.repository.HomeRepository
 import com.trotfan.trot.ui.BaseViewModel
@@ -53,9 +50,17 @@ class HomeViewModel @Inject constructor(
     var autoVoteStatus = MutableStateFlow(false)
         private set
 
+    val userInfoManager = UserInfoManager(context.UserInfoDataStore)
+    var userTotalUsedVote: Long = 0
+
     init {
         getMainPopups()
         settingIronSourceUserId()
+        viewModelScope.launch {
+            context.UserInfoDataStore.data.collect {
+                userTotalUsedVote = it[UserInfoManager.USER_TOTAL_USED_VOTE] ?: 0
+            }
+        }
     }
 
     fun settingIronSourceUserId() {
@@ -118,7 +123,7 @@ class HomeViewModel @Inject constructor(
                 )
             }.onSuccess {
                 votingCompleteState.emit(1)
-                Log.d("HomeViewModel", it.toString())
+                userInfoManager.updateUserTotalUsedVote(userTotalUsedVote.plus(quantity))
                 loadingHelper.hideProgress()
             }.onFailure {
                 votingCompleteState.emit(2)

@@ -23,7 +23,7 @@ fun ProfileInfo(
     viewModel: MyPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     var userTotalUsedVote by remember {
-        mutableStateOf(0)
+        mutableStateOf<Long>(0)
     }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
