@@ -45,7 +45,7 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
     override suspend fun checkRoulette(
         userToken: String,
         userId: Int
-    ): CommonResponse<LuckyTicket> {
+    ): CommonResponse<GetLuckyTicket> {
 
         return httpClient.get(HttpRoutes.ROULETTE) {
             contentType(ContentType.Application.Json)
@@ -59,7 +59,7 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
     override suspend fun rewardRoulette(
         userToken: String,
         userId: Int
-    ): CommonResponse<LuckyTicket> {
+    ): CommonResponse<PostLuckyTicket> {
         return httpClient.post(HttpRoutes.ROULETTE) {
             contentType(ContentType.Application.Json)
             header(

@@ -100,11 +100,6 @@ class PurchaseHelper @Inject constructor(
     private val _productName = MutableStateFlow("Searching...")
     val productName = _productName.asStateFlow()
 
-    val tickets: StateFlow<Tickets>
-        get() = _tickets
-    private val _tickets =
-        MutableStateFlow<Tickets>(Tickets(0, 0))
-
     private val _refreshState = MutableStateFlow(RefreshTicket.Need)
     val refreshState = _refreshState.asStateFlow()
 
@@ -426,9 +421,6 @@ class PurchaseHelper @Inject constructor(
         }
     }
 
-    fun refreshTickets(tickets: Tickets) {
-        _tickets.value = tickets
-    }
 
 
 }

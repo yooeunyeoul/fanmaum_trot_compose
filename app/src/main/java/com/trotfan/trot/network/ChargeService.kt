@@ -15,12 +15,12 @@ interface ChargeService {
     suspend fun checkRoulette(
         userToken: String,
         userId: Int,
-    ): CommonResponse<LuckyTicket>
+    ): CommonResponse<GetLuckyTicket>
 
     suspend fun rewardRoulette(
         userToken: String,
         userId: Int,
-    ): CommonResponse<LuckyTicket>
+    ): CommonResponse<PostLuckyTicket>
 
 
     suspend fun getMissions(

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datasource.UserTicketHistoryDataSource
 import com.trotfan.trot.datastore.UserTicketManager
 import com.trotfan.trot.datastore.UserTicketStore
@@ -41,22 +40,9 @@ class MyVoteHistoryViewModel @Inject constructor(
     private val _isListEmpty =
         MutableStateFlow(null)
 
-
-    val unlimitedTicket: StateFlow<Long>
-        get() = _unlimitedTicket
-    private val _unlimitedTicket =
-        MutableStateFlow(0L)
-
-    val todayTicket: StateFlow<Long>
-        get() = _todayTicket
-    private val _todayTicket =
-        MutableStateFlow(0L)
-
     init {
         viewModelScope.launch {
             userTicketManager = UserTicketManager(context.UserTicketStore)
-            _unlimitedTicket.emit(userTicketManager.expiredUnlimited.first() ?: 0)
-            _todayTicket.emit(userTicketManager.expiredToday.first() ?: 0)
             getUserTicketHistory()
         }
     }

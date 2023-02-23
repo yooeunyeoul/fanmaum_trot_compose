@@ -14,7 +14,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.trotfan.trot.PurchaseHelper
-import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
@@ -31,7 +30,6 @@ import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeR
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
 import com.trotfan.trot.ui.login.LoginScreen
 import com.trotfan.trot.ui.permission.PermissionAgreement
-import com.trotfan.trot.ui.signup.TermsAgreement
 import com.trotfan.trot.ui.signup.*
 import com.trotfan.trot.ui.webview.PublicWebView
 
@@ -69,7 +67,7 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    onVotingClick: (vote_id: Int, voteTickets: Tickets, star: VoteMainStar?) -> Unit,
+    onVotingClick: (vote_id: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     lazyListStates: HashMap<String, LazyListState>,
     purchaseHelper: PurchaseHelper
@@ -91,8 +89,8 @@ fun NavigationComponent(
             onNavigateBottomBar = {
                 onNavigateBottomBar.invoke(it)
             },
-            onVotingClick = { voteId: Int, voteTickets: Tickets, star: VoteMainStar? ->
-                onVotingClick(voteId, voteTickets, star)
+            onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar? ->
+                onVotingClick(voteId, unlimitedTickets, todayTickets, star)
             },
             navController = navController,
             lazyListState = lazyListStates,

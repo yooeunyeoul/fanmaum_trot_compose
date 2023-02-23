@@ -29,7 +29,8 @@ import com.trotfan.trot.ui.utils.clickableSingle
 @Composable
 fun MyVote(
     modifier: Modifier = Modifier,
-    tickets: Tickets,
+    unlimitedTickets: Long,
+    todayTickets: Long,
     onclick: () -> Unit = {}
 ) {
     val interactionSource = remember {
@@ -66,8 +67,8 @@ fun MyVote(
 
             Text(
                 text = NumberComma.decimalFormat.format(
-                    tickets.limited.plus(
-                        tickets.unlimited ?: 0
+                    todayTickets.plus(
+                        unlimitedTickets ?: 0
                     )
                 ),
                 color = Gray900,
@@ -94,5 +95,5 @@ fun Charging(onclick: () -> Unit) {
 @Preview
 @Composable
 fun PreviewMyVote() {
-    MyVote(tickets = Tickets(0, 0), onclick = {})
+    MyVote(unlimitedTickets = 0, todayTickets = 0, onclick = {})
 }

@@ -9,8 +9,10 @@ import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.*
-import com.trotfan.trot.model.LuckyTicket
+import com.trotfan.trot.model.BaseTicket
+import com.trotfan.trot.model.GetLuckyTicket
 import com.trotfan.trot.model.MissionState
+import com.trotfan.trot.model.PostLuckyTicket
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
 import com.trotfan.trot.ui.BaseViewModel
@@ -21,7 +23,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -101,7 +102,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     private val fourHourMilliSecond = 14400
     private val _luckyTicket =
-        MutableStateFlow<LuckyTicket?>(
+        MutableStateFlow<BaseTicket?>(
             null
         )
     val luckyTicket = _luckyTicket.asStateFlow()
@@ -146,6 +147,8 @@ class ChargeHomeViewModel @Inject constructor(
             userInfoManager = UserInfoManager(context.UserInfoDataStore)
             userTicketManager = UserTicketManager(context.UserTicketStore)
             _starName.emit(userInfoManager.favoriteStarNameFlow.first() ?: "")
+//            _unlimitedTicket.emit(userTicketManager.expiredUnlimited.first() ?: 0)
+//            _todayTicket.emit(userTicketManager.expiredToday.first() ?: 0)
         }
     }
 
@@ -162,7 +165,10 @@ class ChargeHomeViewModel @Inject constructor(
                 }.onSuccess { response ->
                     when (response.result.code) {
                         ResultCodeStatus.SuccessWithData.code -> {
-                            response.data?.let { it1 -> purchaseHelper.refreshTickets(it1) }
+                            userTicketManager.storeUserTicket(
+                                response.data?.unlimited ?: 0,
+                                response.data?.limited ?: 0
+                            )
                             purchaseHelper.closeApiCall()
                         }
 
@@ -249,7 +255,16 @@ class ChargeHomeViewModel @Inject constructor(
     }
 
     private fun settingRoulette() {
-        val luckyTicket = _luckyTicket.value
+        lateinit var luckyTicket: BaseTicket
+        when {
+            _luckyTicket.value is GetLuckyTicket -> {
+                luckyTicket = _luckyTicket.value as GetLuckyTicket
+            }
+            _luckyTicket.value is PostLuckyTicket -> {
+                luckyTicket = _luckyTicket.value as PostLuckyTicket
+            }
+        }
+
         when {
             luckyTicket?.rewarded_at == null || luckyTicket.today.max == luckyTicket.today.remaining -> {
                 _visibleState.value = SpinWheelVisibleState.Available
@@ -257,7 +272,7 @@ class ChargeHomeViewModel @Inject constructor(
 
             else -> {
                 val remainTime = getTime(
-                    convertStringToTime(luckyTicket.rewarded_at),
+                    convertStringToTime(luckyTicket.rewarded_at ?: ""),
                     application = context as BaseApplication
                 )
                 Log.e("남은 시간 ", remainTime.toString())
@@ -337,7 +352,12 @@ class ChargeHomeViewModel @Inject constructor(
                     )
                 }.onSuccess {
                     hideRewardDialog()
-                    _luckyTicket.emit(it.data)
+                    val data = it.data as PostLuckyTicket
+                    _luckyTicket.emit(data)
+                    userTicketManager.storeUserTicket(
+                        data.tickets?.unlimited ?: 0,
+                        data.tickets?.limited ?: 0
+                    )
                     if (!_rouletteState.value) {
                         _rouletteState.emit(true)
                         missionSnackBarState.emit(true)
