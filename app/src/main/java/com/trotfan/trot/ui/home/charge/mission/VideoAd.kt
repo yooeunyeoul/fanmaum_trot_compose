@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui.home.charge.mission
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -34,13 +33,12 @@ import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
-import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
+import com.trotfan.trot.ui.components.dialog.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import com.trotfan.trot.ui.utils.textBrush
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @Composable

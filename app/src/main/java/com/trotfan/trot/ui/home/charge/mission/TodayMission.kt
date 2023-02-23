@@ -28,11 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
+import com.trotfan.trot.ui.components.dialog.HorizontalImageDialog
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.charge.viewmodel.MissionRewardState
 import com.trotfan.trot.ui.home.vote.voteTopShareText
-import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
+import com.trotfan.trot.ui.components.dialog.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.*
 import kotlinx.coroutines.launch
@@ -56,6 +57,7 @@ fun TodayMission(
     val dateString = simpleDateFormat.format(Date()).toString()
     val localDate by viewModel.lastApiTime.collectAsState()
     val dialogShowing by viewModel.missionRewardDialogState.collectAsState()
+    val missionCompleteChargeState by viewModel.missionCompleteChargePopupState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = dateString, block = {
@@ -248,8 +250,25 @@ fun TodayMission(
             ) {
                 coroutineScope.launch {
                     viewModel.missionRewardDialogState.emit(false)
+                    viewModel.missionCompleteChargePopupState.emit(true)
                 }
             }
+        }
+
+        if (missionCompleteChargeState) {
+            HorizontalImageDialog(
+                onPositive = {
+                    coroutineScope.launch {
+                        navController?.popBackStack()
+                        viewModel.missionCompleteChargePopupState.emit(false)
+                    }
+                },
+                onDismiss = {
+                    coroutineScope.launch {
+                        viewModel.missionCompleteChargePopupState.emit(false)
+                    }
+                }
+            )
         }
     }
 }

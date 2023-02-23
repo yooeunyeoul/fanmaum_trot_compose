@@ -131,6 +131,7 @@ class ChargeHomeViewModel @Inject constructor(
     val missionSnackBarState = MutableStateFlow(false)
     val attendanceRewardDialogState = MutableStateFlow(false)
     val missionRewardDialogState = MutableStateFlow(false)
+    val missionCompleteChargePopupState = MutableStateFlow(false)
 
     private var job = Job()
         get() {

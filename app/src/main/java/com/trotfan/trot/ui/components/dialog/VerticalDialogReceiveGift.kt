@@ -1,4 +1,4 @@
-package com.trotfan.trot.ui.signup.components
+package com.trotfan.trot.ui.components.dialog
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

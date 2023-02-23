@@ -36,7 +36,7 @@ import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.charge.viewmodel.TicketKind
-import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
+import com.trotfan.trot.ui.components.dialog.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.composableActivityViewModel

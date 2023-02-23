@@ -20,11 +20,11 @@ import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
+import com.trotfan.trot.ui.components.dialog.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.mypage.setting.HyphenText
-import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.composableActivityViewModel
