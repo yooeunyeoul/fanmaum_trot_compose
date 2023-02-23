@@ -21,16 +21,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class TicketKind(val quantity: Int, val icon: Int, val degree: Float) {
-    TenThousand(quantity = 10000, icon = R.drawable.charge_roulette10000, degree = 30f),
-    Thousand(quantity = 1000, icon = R.drawable.charge_roulette1000, degree = 90f),
-    TwoHundred(quantity = 200, icon = R.drawable.charge_roulette200, degree = 150f),
-    FiveHundred(quantity = 500, icon = R.drawable.charge_roulette500, degree = 210f),
-    TwoHundred2(quantity = 200, icon = R.drawable.charge_roulette200, degree = 270f),
-    FiveHundred2(quantity = 500, icon = R.drawable.charge_roulette500, degree = 330f)
-
-}
-
 @HiltViewModel
 class RouletteViewModel @Inject constructor(
     private val repository: ChargeRepository,

@@ -21,7 +21,7 @@ import com.trotfan.trot.ui.home.addHomeGraph
 import com.trotfan.trot.ui.home.charge.mission.AttendanceCheck
 import com.trotfan.trot.ui.home.charge.mission.TodayMission
 import com.trotfan.trot.ui.home.charge.mission.VideoAd
-import com.trotfan.trot.ui.home.charge.roullete.luckyRoulette
+import com.trotfan.trot.ui.home.charge.mission.luckyRoulette
 import com.trotfan.trot.ui.home.mypage.invite.FriendInvite
 import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
 import com.trotfan.trot.ui.home.mypage.setting.*
@@ -29,7 +29,6 @@ import com.trotfan.trot.ui.home.mypage.votehistory.MyVoteHistory
 import com.trotfan.trot.ui.home.ranking.history.RankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeRanking
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
-import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
 import com.trotfan.trot.ui.permission.PermissionAgreement
 import com.trotfan.trot.ui.signup.TermsAgreement

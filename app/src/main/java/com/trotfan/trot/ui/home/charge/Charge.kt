@@ -44,6 +44,7 @@ import com.trotfan.trot.ui.home.BottomNavHeight
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.charge.component.MyVote
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
+import com.trotfan.trot.ui.home.charge.viewmodel.MissionRewardState
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.composableActivityViewModel
@@ -145,6 +146,7 @@ fun FreeChargeView(
     val scrollState = rememberScrollState()
     val missionState by viewModel.missionState.collectAsState()
     val adCount by viewModel.videoCount.collectAsState()
+    val rouletteCount by viewModel.rouletteCount.collectAsState()
     val rewardedState by viewModel.rewardedState.collectAsState()
     val attendanceState by viewModel.attendanceState.collectAsState()
     val simpleDateFormat = SimpleDateFormat("dd")
@@ -213,14 +215,14 @@ fun FreeChargeView(
                             .height(52.dp)
                             .padding(start = 34.dp, end = 34.dp)
                             .border(
-                                width = if (rewardedState == 0) 2.dp else 0.dp,
+                                width = if (rewardedState == MissionRewardState.Incomplete) 2.dp else 0.dp,
                                 brush = gradient04,
                                 shape = RoundedCornerShape(26.dp)
                             )
                             .clip(RoundedCornerShape(26.dp))
                             .background(
                                 when (rewardedState) {
-                                    0 -> Brush.linearGradient(
+                                    MissionRewardState.Incomplete -> Brush.linearGradient(
                                         0.0f to Color(
                                             0xFFFFFFFF
                                         ),
@@ -228,7 +230,7 @@ fun FreeChargeView(
                                             0xFFFFFFFF
                                         )
                                     )
-                                    1 -> gradient04
+                                    MissionRewardState.Complete -> gradient04
                                     else -> Brush.linearGradient(
                                         0.0f to Color(
                                             0xFF5C6B70
@@ -249,7 +251,7 @@ fun FreeChargeView(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             when (rewardedState) {
-                                0 -> {
+                                MissionRewardState.Incomplete -> {
                                     Text(
                                         text = "참여하고 투표권받기",
                                         style = FanwooriTypography.subtitle4,
@@ -264,7 +266,7 @@ fun FreeChargeView(
                                         modifier = Modifier.rotate(90f)
                                     )
                                 }
-                                1 -> {
+                                MissionRewardState.Complete -> {
                                     Text(
                                         text = "지금 바로 보상받기",
                                         style = FanwooriTypography.subtitle4,
@@ -342,7 +344,7 @@ fun FreeChargeView(
                 icon = R.drawable.charge_roulette,
                 bgColor = Primary50,
                 title = "행운 룰렛 (최대 30,000투표권)",
-                count = missionState?.remaining?.roulette ?: 0
+                count = rouletteCount
             ) {
                 navController.navigate(Route.LuckyRoulette.route)
             }

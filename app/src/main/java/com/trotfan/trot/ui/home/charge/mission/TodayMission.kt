@@ -1,7 +1,6 @@
 package com.trotfan.trot.ui.home.charge.mission
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,7 +11,6 @@ import androidx.compose.material.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -32,6 +30,7 @@ import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
+import com.trotfan.trot.ui.home.charge.viewmodel.MissionRewardState
 import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.signup.components.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
@@ -46,7 +45,6 @@ fun TodayMission(
     viewModel: ChargeHomeViewModel = composableActivityViewModel(key = "ChargeHomeViewModel")
 ) {
     val context = LocalContext.current
-    val missionState by viewModel.missionState.collectAsState()
     val attendanceState by viewModel.attendanceState.collectAsState()
     val starShareState by viewModel.starShareState.collectAsState()
     val videoRewardState by viewModel.videoRewardState.collectAsState()
@@ -134,7 +132,7 @@ fun TodayMission(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 88.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = CenterHorizontally
             ) {
                 Text(text = "일일 미션 완료 현황", style = FanwooriTypography.body3, color = Color.White)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -159,7 +157,7 @@ fun TodayMission(
                             alpha = 0.93f,
                             offsetY = 0.dp,
                             offsetX = 0.dp,
-                            shadowRadius = if (rewardedState == 1) 10.dp else 0.dp
+                            shadowRadius = if (rewardedState == MissionRewardState.Complete) 10.dp else 0.dp
                         )
                 ) {
                     Box(
@@ -168,12 +166,12 @@ fun TodayMission(
                             .clip(RoundedCornerShape(28.dp))
                             .alpha(0.93f)
                             .background(
-                                if (rewardedState == 2) Gray300 else Color.White
+                                if (rewardedState == MissionRewardState.Rewarded) Gray300 else Color.White
                             )
                             .align(Center)
                     ) {
                         when (rewardedState) {
-                            0 -> {
+                            MissionRewardState.Incomplete -> {
                                 Text(
                                     text = "미션 완료하고  3,200투표권 받기",
                                     style = FanwooriTypography.subtitle4,
@@ -182,10 +180,10 @@ fun TodayMission(
                                             gradient01
                                         )
                                         .padding(top = 17.5.dp, bottom = 17.5.dp)
-                                        .align(Alignment.Center)
+                                        .align(Center)
                                 )
                             }
-                            1 -> {
+                            MissionRewardState.Complete -> {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -223,7 +221,7 @@ fun TodayMission(
                                     color = Gray650,
                                     modifier = Modifier
                                         .padding(top = 17.5.dp, bottom = 17.5.dp)
-                                        .align(Alignment.Center)
+                                        .align(Center)
                                 )
                             }
                         }
@@ -275,7 +273,7 @@ fun MissionItem(title: String, number: Int, state: Boolean, onItemClick: () -> U
         ) {
             Row(
                 modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = CenterVertically
             ) {
                 Column(
                     modifier = Modifier.padding(start = 24.dp)
@@ -290,7 +288,7 @@ fun MissionItem(title: String, number: Int, state: Boolean, onItemClick: () -> U
                             style = FanwooriTypography.button2,
                             color = Primary800,
                             modifier = Modifier
-                                .align(Alignment.Center)
+                                .align(Center)
                                 .padding(start = 6.dp, end = 6.dp, top = 1.dp, bottom = 1.dp)
                         )
                     }
@@ -318,7 +316,7 @@ fun MissionItem(title: String, number: Int, state: Boolean, onItemClick: () -> U
                     Row(
                         modifier = Modifier.fillMaxSize(),
                         horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = CenterVertically
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_check),
