@@ -46,7 +46,7 @@ fun MyPageList(
             Line()
             MyPageListComponent(
                 text = "공지사항",
-                url = "https://post.naver.com/viewer/postView.naver?volumeNo=35083796&memberNo=24659848",
+                url = "https://post.naver.com/my/series/detail.naver?seriesNo=706003&memberNo=60167819",
                 navController = navController
             )
             Line()
