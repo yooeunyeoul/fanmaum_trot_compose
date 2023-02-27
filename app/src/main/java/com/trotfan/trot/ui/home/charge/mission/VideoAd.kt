@@ -160,7 +160,7 @@ fun VideoAd(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "1회 시청 시 300투표권 x 20회 ",
+                        text = "1회 시청 시 300 투표권 x 20회 ",
                         style = FanwooriTypography.button1,
                         color = Gray800
                     )

@@ -450,7 +450,7 @@ class ChargeHomeViewModel @Inject constructor(
         }
     }
 
-    fun postShareStar() {
+    fun postShareStar(isMissionPage: Boolean = false) {
         viewModelScope.launch {
             loadingHelper.showProgress()
             context.userTokenStore.data.collect {
@@ -459,7 +459,9 @@ class ChargeHomeViewModel @Inject constructor(
                 }.onSuccess {
                     if (_starShareState.value.not()) {
                         _starShareState.emit(true)
-                        missionSnackBarState.emit(true)
+                        if (isMissionPage.not()) {
+                            missionSnackBarState.emit(true)
+                        }
                         _missionCompleteCount.emit(_missionCompleteCount.value.plus(1))
                         checkMissionState()
                     }

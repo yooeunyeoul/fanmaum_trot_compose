@@ -29,7 +29,7 @@ enum class InAppProduct(
 ) {
     Votes_6000(
         id = "votes_6000",
-        productName = "6,000투표권",
+        productName = "6,000 투표권",
         price = "1,500원",
         image = R.drawable.charge6000,
         votes = "5,500",
@@ -38,7 +38,7 @@ enum class InAppProduct(
     ),
     Votes_22000(
         "votes_22000",
-        productName = "22,000투표권",
+        productName = "22,000 투표권",
         price = "4,400원",
         image = R.drawable.charge22000,
         votes = "20,000",
@@ -46,7 +46,7 @@ enum class InAppProduct(
     ),
     Votes_63000(
         "votes_63000",
-        productName = "63,000투표권",
+        productName = "63,000 투표권",
         price = "9,900원",
         image = R.drawable.charge63000,
         votes = "55,000",
@@ -54,7 +54,7 @@ enum class InAppProduct(
     ),
     Votes_160000(
         "votes_160000",
-        productName = "160,000투표권",
+        productName = "160,000 투표권",
         price = "19,000원",
         image = R.drawable.charge160000,
         votes = "135,000",
@@ -62,7 +62,7 @@ enum class InAppProduct(
     ),
     Votes_450000(
         "votes_450000",
-        productName = "450,000투표권",
+        productName = "450,000 투표권",
         price = "50,000원",
         image = R.drawable.charge450000,
         votes = "360,000",

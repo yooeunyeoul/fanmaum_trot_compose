@@ -202,6 +202,8 @@ fun FreeChargeView(
                             )
                         )
 
+                        Spacer(modifier = Modifier.width(4.dp))
+
                         Text(
                             text = "받으세요!",
                             style = FanwooriTypography.subtitle2,
@@ -325,7 +327,7 @@ fun FreeChargeView(
             FreeChargeItem(
                 icon = R.drawable.charge_calender,
                 bgColor = Primary50,
-                title = "출석 체크 (200투표권)",
+                title = "출석 체크 (200 투표권)",
                 count = if (attendanceState) 0 else 1
             ) {
                 navController.navigate(Route.AttendanceCheck.route)
@@ -334,7 +336,7 @@ fun FreeChargeView(
             FreeChargeItem(
                 icon = R.drawable.charge_video,
                 bgColor = Secondary50,
-                title = "동영상 광고 (최대 6,000투표권)",
+                title = "동영상 광고 (최대 6,000 투표권)",
                 count = 20 - adCount
             ) {
                 navController.navigate("${Route.VideoAd.route}/${20 - adCount}")
@@ -343,7 +345,7 @@ fun FreeChargeView(
             FreeChargeItem(
                 icon = R.drawable.charge_roulette,
                 bgColor = Primary50,
-                title = "행운 룰렛 (최대 30,000투표권)",
+                title = "행운 룰렛 (최대 30,000 투표권)",
                 count = rouletteCount
             ) {
                 navController.navigate(Route.LuckyRoulette.route)

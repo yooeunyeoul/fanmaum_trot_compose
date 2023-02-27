@@ -113,7 +113,7 @@ fun TodayMission(
                             val shareIntent = Intent.createChooser(this, null)
                             context.startActivity(shareIntent)
                             if (starShareState.not()) {
-                                viewModel.postShareStar()
+                                viewModel.postShareStar(true)
                             }
                         }
 
@@ -175,7 +175,7 @@ fun TodayMission(
                         when (rewardedState) {
                             MissionRewardState.Incomplete -> {
                                 Text(
-                                    text = "미션 완료하고  3,200투표권 받기",
+                                    text = "미션 완료하고  3,200 투표권 받기",
                                     style = FanwooriTypography.subtitle4,
                                     modifier = Modifier
                                         .textBrush(
@@ -206,7 +206,7 @@ fun TodayMission(
                                         modifier = Modifier.size(24.dp),
                                     )
                                     Text(
-                                        text = "3,200투표권 받기",
+                                        text = "3,200 투표권 받기",
                                         style = FanwooriTypography.subtitle4,
                                         modifier = Modifier
                                             .textBrush(
