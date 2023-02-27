@@ -22,7 +22,6 @@ import com.trotfan.trot.ui.home.vote.viewmodel.Gender
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun RankingHistoryMonthly(
     emptyState: Boolean = false,
@@ -108,7 +107,6 @@ fun RankingHistoryMonthly(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Preview
 @Composable
 fun RankingHistoryMonthlyPreview() {

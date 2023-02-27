@@ -133,12 +133,10 @@ fun NavigationComponent(
             )
         }
         composable(Route.RankingHistory.route) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                RankingHistory(
-                    navController = navController,
-                    onVotingClick = { onNavigateBottomBar.invoke(HomeSections.Vote) }
-                )
-            }
+            RankingHistory(
+                navController = navController,
+                onVotingClick = { onNavigateBottomBar.invoke(HomeSections.Vote) }
+            )
         }
         composable("${Route.WebView.route}/{uri}", arguments = listOf(
             navArgument(name = "uri") {

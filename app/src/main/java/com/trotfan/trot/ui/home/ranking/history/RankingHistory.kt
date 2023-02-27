@@ -23,7 +23,6 @@ import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun RankingHistory(
     navController: NavController? = null,
@@ -114,7 +113,6 @@ fun RankingHistory(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Preview
 @Composable
 fun RankingHistoryPreview() {
