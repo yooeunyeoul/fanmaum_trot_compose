@@ -26,10 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import com.fanmaum.roullete.SpinWheel
-import com.fanmaum.roullete.SpinWheelDefaults
-import com.fanmaum.roullete.SpinWheelVisibleState
-import com.fanmaum.roullete.state.rememberSpinWheelState
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
@@ -37,6 +33,10 @@ import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.charge.viewmodel.TicketKind
 import com.trotfan.trot.ui.components.dialog.VerticalDialogReceiveGift
+import com.trotfan.trot.ui.components.roulette.SpinWheel
+import com.trotfan.trot.ui.components.roulette.SpinWheelDefaults
+import com.trotfan.trot.ui.components.roulette.SpinWheelVisibleState
+import com.trotfan.trot.ui.components.roulette.state.rememberSpinWheelState
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.composableActivityViewModel

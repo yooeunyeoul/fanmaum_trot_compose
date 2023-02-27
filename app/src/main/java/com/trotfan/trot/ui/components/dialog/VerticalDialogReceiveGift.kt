@@ -60,7 +60,7 @@ fun VerticalDialogReceiveGift(
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(com.fanmaum.roullete.R.drawable.charge_rewardpopup)
+                    .data(R.drawable.charge_rewardpopup)
                     .crossfade(true).build(),
                 contentDescription = null,
                 modifier = Modifier

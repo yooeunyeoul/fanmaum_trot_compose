@@ -20,4 +20,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "TrotApplication"
 include ':app'
-include ':roullete'

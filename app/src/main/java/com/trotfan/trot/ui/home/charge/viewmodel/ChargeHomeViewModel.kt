@@ -3,7 +3,6 @@ package com.trotfan.trot.ui.home.charge.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.fanmaum.roullete.SpinWheelVisibleState
 import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
@@ -16,6 +15,7 @@ import com.trotfan.trot.model.PostLuckyTicket
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
 import com.trotfan.trot.ui.BaseViewModel
+import com.trotfan.trot.ui.components.roulette.SpinWheelVisibleState
 import com.trotfan.trot.ui.utils.convertStringToTime
 import com.trotfan.trot.ui.utils.getTime
 import dagger.hilt.android.lifecycle.HiltViewModel
