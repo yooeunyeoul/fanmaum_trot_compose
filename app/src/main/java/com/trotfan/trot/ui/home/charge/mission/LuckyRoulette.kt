@@ -1,6 +1,7 @@
 package com.trotfan.trot.ui.home.charge.mission
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,18 +30,20 @@ import androidx.navigation.NavController
 import com.fanmaum.roullete.SpinWheel
 import com.fanmaum.roullete.SpinWheelDefaults
 import com.fanmaum.roullete.SpinWheelVisibleState
+import com.fanmaum.roullete.state.SpinAnimationState
 import com.fanmaum.roullete.state.rememberSpinWheelState
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
+import com.trotfan.trot.ui.components.dialog.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.components.snackbar.CustomSnackBarHost
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
 import com.trotfan.trot.ui.home.charge.viewmodel.TicketKind
-import com.trotfan.trot.ui.components.dialog.VerticalDialogReceiveGift
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.NumberComma
 import com.trotfan.trot.ui.utils.composableActivityViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 val screenPadding = 24.dp
@@ -61,6 +64,23 @@ fun luckyRoulette(
     val rewardDialogShowing by chargeHomeViewModel.rewardDialogShowing.collectAsState()
     val missionSnackBarState by chargeHomeViewModel.missionSnackBarState.collectAsState()
     val scaffoldState = rememberScaffoldState()
+
+    val state = rememberSpinWheelState(
+        pieCount = TicketKind.values().count(),
+        durationMillis = 5000,
+        startDegree = 30f
+    ).apply {
+        this.resultDegree = resultDegree ?: 0f
+    }
+    val spinAnimationState by state.spinAnimationState.collectAsState()
+
+
+    BackHandler() {
+        if (spinAnimationState == SpinAnimationState.STOPPED) {
+            navController?.popBackStack()
+        }
+        Timber.e(spinAnimationState.toString())
+    }
 
 
     val textList by remember {
@@ -111,13 +131,6 @@ fun luckyRoulette(
         Color.White
     )
 
-    val state = rememberSpinWheelState(
-        pieCount = TicketKind.values().count(),
-        durationMillis = 5000,
-        startDegree = 30f
-    ).apply {
-        this.resultDegree = resultDegree ?: 0f
-    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -235,7 +248,7 @@ fun luckyRoulette(
                             isEnabled = visibleState == SpinWheelVisibleState.Available,
                             colors = SpinWheelDefaults.spinWheelColors(
                                 frameColor = Color(0xFF403d39),
-                                pieColors = if(visibleState == SpinWheelVisibleState.Available) pieColorListState else endPieColorList
+                                pieColors = if (visibleState == SpinWheelVisibleState.Available) pieColorListState else endPieColorList
                             ),
                             selectorIcon = R.drawable.charge_roulette_stoper,
                             frameRes = if (visibleState == SpinWheelVisibleState.Available) R.drawable.roulettebg
@@ -248,12 +261,18 @@ fun luckyRoulette(
                                             Image(
                                                 painter = painterResource(id = iconList[pieIndex]),
                                                 contentDescription = null,
-                                                modifier = Modifier.size(width = 72.dp, height = 48.dp)
+                                                modifier = Modifier.size(
+                                                    width = 72.dp,
+                                                    height = 48.dp
+                                                )
                                             )
                                             Image(
                                                 painter = painterResource(id = R.drawable.charge_roulettevote),
                                                 contentDescription = null,
-                                                modifier = Modifier.size(width = 24.dp, height = 24.dp)
+                                                modifier = Modifier.size(
+                                                    width = 24.dp,
+                                                    height = 24.dp
+                                                )
                                             )
                                         }
 

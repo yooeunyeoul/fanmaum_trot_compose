@@ -8,6 +8,8 @@ import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.*
 
 data class SpinWheelState(
@@ -20,11 +22,13 @@ data class SpinWheelState(
     internal val autoSpinDelay: Long? = null,
 ) {
     internal var rotation by mutableStateOf(Animatable(startDegree))
-    private var spinAnimationState by mutableStateOf(SpinAnimationState.STOPPED)
     var resultDegree: Float = 0f
 
+    private val _spinAnimationState = MutableStateFlow(SpinAnimationState.STOPPED)
+    val spinAnimationState = _spinAnimationState.asStateFlow()
+
     suspend fun animate(onFinish: (pieIndex: Int) -> Unit = {}) {
-        when (spinAnimationState) {
+        when (spinAnimationState.value) {
             SpinAnimationState.STOPPED -> {
                 spin(onFinish = onFinish)
             }
@@ -35,9 +39,9 @@ data class SpinWheelState(
     }
 
     suspend fun spin(onFinish: (pieIndex: Int) -> Unit = {}) {
-        if (spinAnimationState == SpinAnimationState.STOPPED) {
+        if (spinAnimationState.value == SpinAnimationState.STOPPED) {
 
-            spinAnimationState = SpinAnimationState.SPINNING
+            _spinAnimationState.value = SpinAnimationState.SPINNING
 
             val randomRotationDegree = generateRandomRotationDegree()
 
@@ -61,7 +65,7 @@ data class SpinWheelState(
 
             rotation.snapTo(resultDegree ?: randomRotationDegree)
 
-            spinAnimationState = SpinAnimationState.STOPPED
+            _spinAnimationState.value = SpinAnimationState.STOPPED
 
             autoSpinDelay?.let {
                 delay(it)
@@ -75,7 +79,7 @@ data class SpinWheelState(
 
         rotation.snapTo(startDegree)
 
-        spinAnimationState = SpinAnimationState.STOPPED
+        _spinAnimationState.value = SpinAnimationState.STOPPED
 //        }
     }
 
