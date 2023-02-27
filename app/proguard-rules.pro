@@ -29,25 +29,29 @@
 
 
 #아이언소스 프로가드
--keepclassmembers class com.ironsource.sdk.controller.IronSourceWebView$JSInterface {
-    public *;
-}
 -keepclassmembers class * implements android.os.Parcelable {
     public static final android.os.Parcelable$Creator *;
 }
--keep public class com.google.android.gms.ads.** {
-   public *;
-}
--keep class com.ironsource.adapters.** { *;
-}
--dontwarn com.ironsource.mediationsdk.**
+#unity
+-keep class com.ironsource.unity.androidbridge.** { *;}
+-keep class com.google.android.gms.ads.** {public *;}
+-keep class com.google.android.gms.appset.** { *; }
+-keep class com.google.android.gms.tasks.** { *; }
+#adapters
+-keep class com.ironsource.adapters.** { *; }
+#sdk
+-dontwarn com.ironsource.**
 -dontwarn com.ironsource.adapters.**
--keepattributes JavascriptInterface
--keepclassmembers class * {
-    @android.webkit.JavascriptInterface <methods>;
+-keepclassmembers class com.ironsource.** { public *; }
 -keep public class com.ironsource.**
 -keep class com.ironsource.adapters.** { *;
 }
+#omid
+-dontwarn com.iab.omid.**
+-keep class com.iab.omid.** {*;}
+#javascript
+-keepattributes JavascriptInterface
+-keepclassmembers class * { @android.webkit.JavascriptInterface <methods>; }
 
 #채널톡
 -keep class com.zoyi.**{ *; }
