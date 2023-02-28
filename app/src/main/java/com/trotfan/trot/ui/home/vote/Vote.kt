@@ -165,7 +165,9 @@ fun VoteHome(
         ) {
             Box {
                 if (isShowingScrollToolTip) {
-                    ChipCapsuleImg()
+                    ChipCapsuleImg(
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
                 }
                 Column(
                     modifier = Modifier

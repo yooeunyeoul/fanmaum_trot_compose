@@ -106,7 +106,10 @@ fun RankHome(
 
 //        Log.e("screenWidth", screenWidth.toString())
         if (isShowingScrollToolTip) {
-            ChipCapsuleImg()
+            ChipCapsuleImg(
+                modifier = Modifier
+                    .padding(bottom = BottomNavHeight.plus(32.dp))
+            )
         }
         Column(
             Modifier
