@@ -86,7 +86,9 @@ fun SettingPush(
                             Color.White
                         ),
                     onIconClick = {
-                        navController?.popBackStack()
+                        if (!finishState) {
+                            viewModel.setPushSetting()
+                        }
                     }
                 )
 
