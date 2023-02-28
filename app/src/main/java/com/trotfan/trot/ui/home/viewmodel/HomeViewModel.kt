@@ -34,6 +34,8 @@ class HomeViewModel @Inject constructor(
     var voteStar = MutableStateFlow<VoteMainStar?>(null)
     var voteId = MutableStateFlow(0)
     var voteTickets = MutableStateFlow(Tickets(0, 0))
+    var starShareState = MutableStateFlow(false)
+    var isMyStar = MutableStateFlow(false)
 
     var myVoteCnt = MutableStateFlow(1000L)
     var voteCnt = MutableStateFlow(TextFieldValue(""))
@@ -129,6 +131,18 @@ class HomeViewModel @Inject constructor(
                 votingCompleteState.emit(2)
                 Log.d("HomeViewModel", it.message.toString())
                 loadingHelper.hideProgress()
+            }
+        }
+    }
+
+    fun postShareStar() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                repository.postShareStar(userLocalToken.value?.token ?: "")
+            }.onSuccess {
+
+            }.onFailure {
+
             }
         }
     }

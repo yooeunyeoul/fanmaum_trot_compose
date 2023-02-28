@@ -93,7 +93,7 @@ fun AttendanceCheck(
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Image(
                     painter = painterResource(id = R.drawable.charge_calender_title),
                     contentDescription = null

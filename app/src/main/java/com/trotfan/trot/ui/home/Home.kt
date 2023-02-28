@@ -250,7 +250,7 @@ fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
-    onVotingClick: (vote_id: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
+    onVotingClick: (vote_id: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel) -> Unit,
     navController: NavController,
     lazyListState: HashMap<String, LazyListState>?,
     purchaseHelper: PurchaseHelper
@@ -262,8 +262,16 @@ fun NavGraphBuilder.addHomeGraph(
             },
             navController = navController,
             modifier = modifier,
-            onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?,voteViewModel: VoteHomeViewModel ->
-                onVotingClick(voteId, unlimitedTickets, todayTickets, star,voteViewModel)
+            onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel ->
+                onVotingClick(
+                    voteId,
+                    unlimitedTickets,
+                    todayTickets,
+                    star,
+                    isMyStar,
+                    isMission,
+                    voteViewModel
+                )
             },
             lazyListState = lazyListState?.get(HomeSections.Vote.route),
             purchaseHelper = purchaseHelper

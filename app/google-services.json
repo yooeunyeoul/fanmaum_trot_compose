@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "27320645027-0sfadlb656eeptuu15pphnmb81dubg5e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot",
+            "certificate_hash": "f34456907af32a1305ad6e47378741b7f87ea03c"
+          }
+        },
+        {
+          "client_id": "27320645027-hrpbej288c5ue94g9iimfrdhdjpr5c62.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot",
+            "certificate_hash": "151c5d8958f20f4e5c12432b7aac6e5661580b74"
+          }
+        },
+        {
+          "client_id": "27320645027-nc1mclhfi872ohh3un93sk1kk954o6m6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot",
+            "certificate_hash": "1f2452745a587ac9baaee1dd41d1b55c1deadb96"
+          }
+        },
+        {
           "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -52,6 +76,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "27320645027-0m3nvp894eql7pdf3oc1fj817baocsmn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.dev",
+            "certificate_hash": "fb024f4cbdb1ba99ffb2902085fc50dbe2c28de6"
+          }
+        },
+        {
+          "client_id": "27320645027-6l10s7468s4c95k09j7vmbn3mkg0qi26.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.dev",
+            "certificate_hash": "d96d9350a262e47485e71f3b8663dcf602530ad3"
+          }
+        },
         {
           "client_id": "27320645027-8non81gge9hmgamaom4af5fh8b47n1u2.apps.googleusercontent.com",
           "client_type": 1,
@@ -107,6 +147,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "27320645027-lm12pr8l5dkbpfgso8q6jnvs156u5u3o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trotfan.trot.qa",
+            "certificate_hash": "d96d9350a262e47485e71f3b8663dcf602530ad3"
+          }
+        },
         {
           "client_id": "27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com",
           "client_type": 3
