@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
+import com.trotfan.trot.ui.components.chip.ChipFilledSPrimary
 import com.trotfan.trot.ui.components.dialog.HorizontalImageDialog
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.home.charge.viewmodel.ChargeHomeViewModel
@@ -164,7 +165,8 @@ fun TodayMission(
                 ) {
                     Box(
                         modifier = Modifier
-                            .width(280.dp)
+                            .width(296.dp)
+                            .height(56.dp)
                             .clip(RoundedCornerShape(28.dp))
                             .alpha(0.93f)
                             .background(
@@ -181,7 +183,6 @@ fun TodayMission(
                                         .textBrush(
                                             gradient01
                                         )
-                                        .padding(top = 17.5.dp, bottom = 17.5.dp)
                                         .align(Center)
                                 )
                             }
@@ -297,20 +298,7 @@ fun MissionItem(title: String, number: Int, state: Boolean, onItemClick: () -> U
                 Column(
                     modifier = Modifier.padding(start = 24.dp)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(Primary100)
-                    ) {
-                        Text(
-                            text = "미션 $number",
-                            style = FanwooriTypography.button2,
-                            color = Primary800,
-                            modifier = Modifier
-                                .align(Center)
-                                .padding(start = 6.dp, end = 6.dp, top = 1.dp, bottom = 1.dp)
-                        )
-                    }
+                    ChipFilledSPrimary(modifier = Modifier, text = "미션 $number")
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(text = title, style = FanwooriTypography.subtitle2, color = Gray800)
                 }

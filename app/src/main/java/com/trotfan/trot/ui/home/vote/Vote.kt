@@ -2,6 +2,7 @@
 
 package com.trotfan.trot.ui.home.vote
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -61,6 +63,7 @@ import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -76,9 +79,9 @@ fun VoteHome(
     onNavigateClick: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: VoteHomeViewModel = composableActivityViewModel("VoteHomeViewModel"),
+    viewModel: VoteHomeViewModel = hiltViewModel(),
     chargeHomeViewModel: ChargeHomeViewModel = composableActivityViewModel("ChargeHomeViewModel"),
-    onVotingClick: (vote_id: Int, unlimitedTicket: Long, todayTicket: Long, star: VoteMainStar?) -> Unit,
+    onVotingClick: (vote_id: Int, unlimitedTicket: Long, todayTicket: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel) -> Unit,
     lazyListState: LazyListState?,
     purchaseHelper: PurchaseHelper
 ) {
@@ -161,9 +164,12 @@ fun VoteHome(
                 .fillMaxSize()
                 .padding(bottom = BottomNavHeight)
         ) {
+            it.calculateTopPadding()
             Box {
                 if (isShowingScrollToolTip) {
-                    ChipCapsuleImg()
+                    ChipCapsuleImg(
+                        modifier = Modifier.padding(bottom = 32.dp)
+                    )
                 }
                 Column(
                     modifier = Modifier
@@ -192,8 +198,6 @@ fun VoteHome(
                                     type = "text/plain"
                                     val shareIntent = Intent.createChooser(this, null)
                                     context.startActivity(shareIntent)
-
-                                    chargeHomeViewModel.postShareStar()
                                 }
                             }
                         }
@@ -260,7 +264,7 @@ fun VoteHome(
                                                 VoteMainStar(
                                                     id = favoriteStar.id,
                                                     name = favoriteStarName
-                                                )
+                                                ), true, starShareState, viewModel
                                             )
                                         }
                                         .clip(CircleShape)
@@ -295,11 +299,15 @@ fun VoteHome(
                                     ) {
                                         onVotingClick(
                                             voteId,
-                                            unLimitedTickets ?: 0, todayTickets ?: 0,
+                                            unLimitedTickets ?: 0,
+                                            todayTickets ?: 0,
                                             VoteMainStar(
                                                 id = favoriteStar.id,
                                                 name = favoriteStarName
-                                            )
+                                            ),
+                                            true,
+                                            starShareState,
+                                            viewModel
                                         )
                                     }
                                 }
@@ -523,8 +531,12 @@ fun VoteHome(
                                         onVotingClick = { mainStar ->
                                             onVotingClick(
                                                 voteId,
-                                                unLimitedTickets ?: 0, todayTickets ?: 0,
-                                                mainStar
+                                                unLimitedTickets ?: 0,
+                                                todayTickets ?: 0,
+                                                mainStar,
+                                                starMap.first == favoriteStar.id,
+                                                starShareState,
+                                                viewModel
                                             )
                                         },
                                         onSharedClick = {
@@ -549,7 +561,7 @@ fun VoteHome(
                                                     val shareIntent =
                                                         Intent.createChooser(this, null)
                                                     context.startActivity(shareIntent)
-                                                    if (starShareState.not()) {
+                                                    if (starShareState.not() && starMap.first == favoriteStar.id) {
                                                         chargeHomeViewModel.postShareStar()
                                                     }
                                                 }
@@ -643,7 +655,7 @@ fun voteTopShareText(favoriteStarName: String?, link: String): String {
             "\n" +
             " \n" +
             "\n" +
-            "내 ${favoriteStarName}는 현재 ❓❔위\n" +
+            "${favoriteStarName}는 현재 ❓❔위\n" +
             "\n" +
             " \n" +
             "\n" +

@@ -28,6 +28,7 @@ import com.trotfan.trot.ui.home.mypage.votehistory.MyVoteHistory
 import com.trotfan.trot.ui.home.ranking.history.RankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeRanking
 import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
+import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
 import com.trotfan.trot.ui.permission.PermissionAgreement
 import com.trotfan.trot.ui.signup.*
@@ -67,7 +68,7 @@ enum class Route(
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    onVotingClick: (vote_id: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?) -> Unit,
+    onVotingClick: (vote_id: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     lazyListStates: HashMap<String, LazyListState>,
     purchaseHelper: PurchaseHelper
@@ -89,8 +90,8 @@ fun NavigationComponent(
             onNavigateBottomBar = {
                 onNavigateBottomBar.invoke(it)
             },
-            onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar? ->
-                onVotingClick(voteId, unlimitedTickets, todayTickets, star)
+            onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel ->
+                onVotingClick(voteId, unlimitedTickets, todayTickets, star, isMyStar, isMission, voteViewModel)
             },
             navController = navController,
             lazyListState = lazyListStates,

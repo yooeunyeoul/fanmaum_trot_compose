@@ -153,7 +153,7 @@ fun VideoAd(
                         .background(brush = gradient05),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(80.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
                     Image(
                         painter = painterResource(id = R.drawable.charge_video_title),
                         contentDescription = null

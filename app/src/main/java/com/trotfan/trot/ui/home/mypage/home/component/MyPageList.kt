@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.Route
+import com.trotfan.trot.ui.components.chip.ChipFilledSPrimary
 import com.trotfan.trot.ui.home.mypage.home.MyPageViewModel
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
@@ -108,22 +109,7 @@ fun FriendInviteComponent(navController: NavController?) {
                     modifier = Modifier
                         .align(CenterVertically)
                 )
-                Box(
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(
-                            Primary100
-                        ),
-                    contentAlignment = Center
-                ) {
-                    Text(
-                        text = "2,500 투표권 적립",
-                        style = FanwooriTypography.button2,
-                        color = Primary800,
-                        modifier = Modifier.padding(start = 6.dp, end = 6.dp)
-                    )
-                }
+                ChipFilledSPrimary(modifier = Modifier.padding(start = 4.dp), text = "2,500 투표권 적립")
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "친구를 초대하여 투표권을 받아봐요!", style = FanwooriTypography.caption2, color = Gray650)
@@ -181,7 +167,10 @@ fun ChannelTalkComponent(
             .fillMaxWidth()
             .height(64.dp)
             .clickableSingle {
-                if (ChannelIO.isBooted().not()) {
+                if (ChannelIO
+                        .isBooted()
+                        .not()
+                ) {
                     val profile = Profile
                         .create()
                         .setName(viewModel.userName.value)

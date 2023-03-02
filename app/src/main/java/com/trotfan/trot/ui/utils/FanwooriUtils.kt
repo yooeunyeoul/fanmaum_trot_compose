@@ -47,6 +47,7 @@ import com.trotfan.trot.ui.home.vote.voteTopShareText
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -105,6 +106,8 @@ fun addDynamicLink(
         }
     }.addOnSuccessListener {
         onSuccess(it)
+    }.addOnFailureListener {
+        Timber.d(it.message.toString())
     }
 }
 
