@@ -6,6 +6,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -138,6 +140,11 @@ fun VoteHome(
     }
 
     val coroutineScope = rememberCoroutineScope()
+
+    val sharedLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            chargeHomeViewModel.postShareStar()
+        }
 
     LaunchedEffect(key1 = lazyListState?.isScrollInProgress, block = {
 
@@ -560,9 +567,10 @@ fun VoteHome(
                                                     type = "text/plain"
                                                     val shareIntent =
                                                         Intent.createChooser(this, null)
-                                                    context.startActivity(shareIntent)
                                                     if (starShareState.not() && starMap.first == favoriteStar.id) {
-                                                        chargeHomeViewModel.postShareStar()
+                                                        sharedLauncher.launch(shareIntent)
+                                                    } else {
+                                                        context.startActivity(shareIntent)
                                                     }
                                                 }
                                             }
