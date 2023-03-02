@@ -1,6 +1,8 @@
 package com.trotfan.trot.ui.home.charge.mission
 
 import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -60,6 +62,12 @@ fun TodayMission(
     val dialogShowing by viewModel.missionRewardDialogState.collectAsState()
     val missionCompleteChargeState by viewModel.missionCompleteChargePopupState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    val sharedLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (starShareState.not()) {
+                viewModel.postShareStar(true)
+            }
+        }
 
     LaunchedEffect(key1 = dateString, block = {
         if (dateString != localDate) {
@@ -112,10 +120,7 @@ fun TodayMission(
 
                             type = "text/plain"
                             val shareIntent = Intent.createChooser(this, null)
-                            context.startActivity(shareIntent)
-                            if (starShareState.not()) {
-                                viewModel.postShareStar(true)
-                            }
+                            sharedLauncher.launch(shareIntent)
                         }
 
                     }
