@@ -238,7 +238,7 @@ fun CertificationPhoneScreen(
                     placeHolder = "인증번호 6자리 입력",
                     maxLength = 6,
                     onValueChange = {
-//                        inputCertificationNumber = it
+                        viewModel.changeCertificationNumber(it)
                     },
                     modifier = Modifier
                         .height(56.dp)

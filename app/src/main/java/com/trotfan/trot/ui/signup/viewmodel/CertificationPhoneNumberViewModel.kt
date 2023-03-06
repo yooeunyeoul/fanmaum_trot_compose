@@ -118,6 +118,10 @@ class CertificationPhoneNumberViewModel @Inject constructor(
         })
     }
 
+    fun changeCertificationNumber(number: String) {
+        _inputCertificationNumber.value = number
+    }
+
     override fun onCleared() {
         super.onCleared()
         SmsReceiver.unbindListener()
