@@ -158,7 +158,7 @@ fun LoginScreen(
                         "nickname"
                     } else if (userInfo!!.phone_number == null) {
                         "phone"
-                    } else if (userInfo!!.redeemed_code == null) {
+                    } else if (userInfo!!.redeemed_code?.not() == true) {
                         "invite"
                     } else {
                         "complete"
@@ -176,7 +176,7 @@ fun LoginScreen(
                     routeSections(navController, Route.SettingNickname.route)
                 } else if (userInfo!!.phone_number == null) {
                     routeSections(navController, Route.CertificationPhoneNumber.route)
-                } else if (userInfo!!.redeemed_code == true) {
+                } else if (userInfo!!.redeemed_code?.not() == true) {
                     routeSections(navController, Route.InvitationCode.route)
                 } else {
                     routeSections(navController, HomeSections.Vote.route)
