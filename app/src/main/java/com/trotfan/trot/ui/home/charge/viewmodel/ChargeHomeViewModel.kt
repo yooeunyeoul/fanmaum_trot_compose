@@ -155,7 +155,7 @@ class ChargeHomeViewModel @Inject constructor(
 
     fun getVoteTickets(purchaseHelper: PurchaseHelper) {
         viewModelScope.launch {
-            loadingHelper.showProgress()
+//            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
@@ -177,10 +177,10 @@ class ChargeHomeViewModel @Inject constructor(
                             Log.e("ChargeHomeViewModel", response.result.message)
                         }
                     }
-                    loadingHelper.hideProgress()
+//                    loadingHelper.hideProgress()
                 }.onFailure {
                     Log.e("ChargeHomeViewModel", it.message.toString())
-                    loadingHelper.hideProgress()
+//                    loadingHelper.hideProgress()
                 }
             }
         }

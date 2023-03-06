@@ -17,7 +17,7 @@ android {
         applicationId "com.trotfan.trot"
         minSdk 26
         targetSdk 33
-        versionCode 56
+        versionCode 57
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -40,10 +40,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+//            debuggable true
         }
     }
 
