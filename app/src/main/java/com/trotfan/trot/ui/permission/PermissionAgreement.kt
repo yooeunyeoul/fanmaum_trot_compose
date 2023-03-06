@@ -45,7 +45,7 @@ import kotlinx.coroutines.Job
 @Composable
 fun PermissionAgreement(
     navController: NavController? = null,
-    terms: Boolean? = null
+    step: String? = null
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -53,7 +53,7 @@ fun PermissionAgreement(
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        checkAgreementManager(coroutineScope, context, navController, terms)
+        checkAgreementManager(coroutineScope, context, navController, step)
     }
 
     Surface {
@@ -102,11 +102,11 @@ fun PermissionAgreement(
                         context,
                         launcher,
                         permissionGrantedListener = {
-                            checkAgreementManager(coroutineScope, context, navController, terms)
+                            checkAgreementManager(coroutineScope, context, navController, step)
                         }
                     )
                 } else {
-                    checkAgreementManager(coroutineScope, context, navController, terms)
+                    checkAgreementManager(coroutineScope, context, navController, step)
                 }
             }
         }
@@ -117,7 +117,7 @@ fun checkAgreementManager(
     coroutineScope: CoroutineScope,
     context: Context,
     navController: NavController?,
-    terms: Boolean?
+    step: String?
 ) {
     coroutineScope.launch {
         val permissionAgreementManager =
@@ -126,16 +126,47 @@ fun checkAgreementManager(
             permissionAgreementManager.permissionCheck(true)
         }
 
-        if (terms == true) {
-            navController?.navigate(HomeSections.Vote.route) {
-                popUpTo(navController.graph.id) {
-                    inclusive = true
+        when (step) {
+            "terms" -> {
+                navController?.navigate(Route.TermsAgreement.route) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
                 }
             }
-        } else {
-            navController?.navigate(Route.TermsAgreement.route) {
-                popUpTo(navController.graph.id) {
-                    inclusive = true
+            "star" -> {
+                navController?.navigate(Route.SelectStar.route) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            }
+            "nickname" -> {
+                navController?.navigate(Route.SettingNickname.route) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            }
+            "phone" -> {
+                navController?.navigate(Route.CertificationPhoneNumber.route) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            }
+            "invite" -> {
+                navController?.navigate(Route.InvitationCode.route) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+            }
+            else -> {
+                navController?.navigate(HomeSections.Vote.route) {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
                 }
             }
         }

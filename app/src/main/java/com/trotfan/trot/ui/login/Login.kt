@@ -150,15 +150,28 @@ fun LoginScreen(
                     PermissionAgreementManager(context.PermissionAgreeStore)
 
                 if (permissionAgreementManager.isPermissionCheckFlow.first().not()) {
+                    val step: String = if (userInfo!!.agrees_terms?.not() == true) {
+                        "terms"
+                    } else if (userInfo!!.star == null) {
+                        "star"
+                    } else if (userInfo!!.name == null) {
+                        "nickname"
+                    } else if (userInfo!!.phone_number == null) {
+                        "phone"
+                    } else if (userInfo!!.redeemed_code == null) {
+                        "invite"
+                    } else {
+                        "complete"
+                    }
+
                     routeSections(
                         navController,
-                        "${Route.PermissionAgreement.route}/${userInfo!!.agrees_terms}"
+                        "${Route.PermissionAgreement.route}/$step"
                     )
                 } else if (userInfo!!.agrees_terms?.not() == true) {
                     routeSections(navController, Route.TermsAgreement.route)
                 } else if (userInfo!!.star == null) {
                     routeSections(navController, Route.SelectStar.route)
-//                    routeSections(navController, Route.PermissionAgreement.route)
                 } else if (userInfo!!.name == null) {
                     routeSections(navController, Route.SettingNickname.route)
                 } else if (userInfo!!.phone_number == null) {

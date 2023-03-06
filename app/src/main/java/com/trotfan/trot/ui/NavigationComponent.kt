@@ -203,16 +203,16 @@ fun NavigationComponent(
             )
         }
         composable(
-            "${Route.PermissionAgreement.route}/{terms}",
+            "${Route.PermissionAgreement.route}/{step}",
             arguments = listOf(
-                navArgument(name = "terms") {
-                    type = NavType.BoolType
+                navArgument(name = "step") {
+                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             PermissionAgreement(
                 navController = navController,
-                backStackEntry.arguments?.getBoolean("terms")
+                backStackEntry.arguments?.getString("step")
             )
         }
         composable(Route.TermsAgreement.route) {
