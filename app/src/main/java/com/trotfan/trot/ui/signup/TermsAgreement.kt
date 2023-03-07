@@ -199,6 +199,7 @@ fun TermsAgreement(
                         onCheckedChange = {
                             nightAdsCheck = nightAdsCheck.not()
                         })
+                    Spacer(modifier = Modifier.height(80.dp))
                 }
             }
 
@@ -252,7 +253,7 @@ fun AgreeItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .padding(top = 14.dp, bottom = 14.dp)
     ) {
         Row(
             modifier = Modifier
