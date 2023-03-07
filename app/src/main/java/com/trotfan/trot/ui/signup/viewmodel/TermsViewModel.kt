@@ -26,11 +26,11 @@ class TermsViewModel @Inject constructor(
 
     private val context = getApplication<Application>()
     private var userId: Long? = null
-    private var userUpdateResult by mutableStateOf(false)
-    private var dayPushUpdateResult by mutableStateOf(false)
-    private var nightPushUpdateResult by mutableStateOf(false)
-    var apiResultState = MutableStateFlow(
-        userUpdateResult && dayPushUpdateResult && nightPushUpdateResult
+    var apiUserUpdateResultState = MutableStateFlow(
+        false
+    )
+    var apiPushResultState = MutableStateFlow(
+        false
     )
 
     init {
@@ -50,10 +50,7 @@ class TermsViewModel @Inject constructor(
                     token = userLocalToken.value?.token ?: ""
                 )
             }.onSuccess {
-                userUpdateResult = true
-                if (userUpdateResult && dayPushUpdateResult && nightPushUpdateResult) {
-                    apiResultState.emit(true)
-                }
+                apiUserUpdateResultState.emit(true)
             }.onFailure {
 
             }
@@ -75,15 +72,7 @@ class TermsViewModel @Inject constructor(
                     )
                 )
             }.onSuccess {
-                if (night) {
-                    nightPushUpdateResult = true
-                }
-                if (day) {
-                    dayPushUpdateResult = true
-                }
-                if (userUpdateResult && dayPushUpdateResult && nightPushUpdateResult) {
-                    apiResultState.emit(true)
-                }
+                apiPushResultState.emit(true)
             }
         }
     }

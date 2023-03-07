@@ -82,10 +82,17 @@ fun TermsAgreement(
     var nightAdsCheck by remember {
         mutableStateOf(false)
     }
-    val apiResult by viewModel.apiResultState.collectAsState()
+    val apiPushUpdateResult by viewModel.apiPushResultState.collectAsState()
+    val apiUserUpdateResult by viewModel.apiUserUpdateResultState.collectAsState()
 
-    LaunchedEffect(apiResult) {
-        if (apiResult) {
+
+    LaunchedEffect(apiUserUpdateResult) {
+        if (apiUserUpdateResult) {
+            viewModel.patchPushSetting(nightAdsCheck, dayTimeAdsCheck)
+        }
+    }
+    LaunchedEffect(apiPushUpdateResult) {
+        if (apiPushUpdateResult) {
             onConfirmClick()
         }
     }
@@ -230,7 +237,6 @@ fun TermsAgreement(
                             FirebaseMessaging.getInstance()
                                 .subscribeToTopic(AlarmType.day_alarm.name)
                         }
-                        viewModel.patchPushSetting(nightAdsCheck, dayTimeAdsCheck)
                     },
                     enabled = childrenCheck && termsOfUseCheck && privacyCollectionCheck && privacyUseCheck,
                     modifier = Modifier
