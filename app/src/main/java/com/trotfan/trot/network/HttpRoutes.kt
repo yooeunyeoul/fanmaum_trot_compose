@@ -1,26 +1,25 @@
 package com.trotfan.trot.network
 
-import com.trotfan.trot.BuildConfig
-
 object HttpRoutes {
     //    private const val BASE_URL = "https://fanwoori.ap.ngrok.io"
     val BASE_URL = "https://dev.fanmaum.ap.ngrok.io"
     val LOCAL_URL = "https://local.fanmaum.ap.ngrok.io"
+    val PRODUCT_URL = "https://api.fanmaum.com"
 
-    val KAKAO_LOGIN = "$LOCAL_URL/auth/login/kakao"
-    val GOOGLE_LOGIN = "$LOCAL_URL/auth/login/google"
-    val APPLE_LOGIN = "$LOCAL_URL/auth/login/apple"
+    val KAKAO_LOGIN = "$PRODUCT_URL/auth/login/kakao"
+    val GOOGLE_LOGIN = "$PRODUCT_URL/auth/login/google"
+    val APPLE_LOGIN = "$PRODUCT_URL/auth/login/apple"
     val SERVER_STATE = "https://fanwoori-develop-api.services"
-    val GET_STAR_LIST = "$BASE_URL/stars"
-    val USERS = "$LOCAL_URL/users"
-    val SMS = "$BASE_URL/auth/sms"
-    val VOTE = "$BASE_URL/votes"
-    val POPUPS = "$LOCAL_URL/popups"
-    val RANK = "$BASE_URL/rank"
-    val DATE_PICKER = "$BASE_URL/datepickers"
-    val BANNER = "$BASE_URL/banners"
-    val LOGOUT = "$LOCAL_URL/auth/logout"
-    val GOOGLE_PURCHASE = "$LOCAL_URL/google-purchase"
-    val MISSIONS = "$LOCAL_URL/charges/free"
-    val ROULETTE = "$LOCAL_URL/charges/roulette"
+    val GET_STAR_LIST = "$PRODUCT_URL/stars"
+    val USERS = "$PRODUCT_URL/users"
+    val SMS = "$PRODUCT_URL/auth/sms"
+    val VOTE = "$PRODUCT_URL/votes"
+    val POPUPS = "$PRODUCT_URL/popups"
+    val RANK = "$PRODUCT_URL/rank"
+    val DATE_PICKER = "$PRODUCT_URL/datepickers"
+    val BANNER = "$PRODUCT_URL/banners"
+    val LOGOUT = "$PRODUCT_URL/auth/logout"
+    val GOOGLE_PURCHASE = "$PRODUCT_URL/google-purchase"
+    val MISSIONS = "$PRODUCT_URL/charges/free"
+    val ROULETTE = "$PRODUCT_URL/charges/roulette"
 }
