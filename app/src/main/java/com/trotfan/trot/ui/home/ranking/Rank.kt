@@ -52,8 +52,10 @@ import com.trotfan.trot.ui.components.chip.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.clickableSingle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.seconds
 
@@ -139,7 +141,7 @@ fun RankHome(
                             .fillMaxWidth()
                             .background(Color.White)
                     ) {
-                        HorizontalImagePager(scrollState, banners)
+                        HorizontalImagePager(navController, scrollState, banners)
                         LastRankView(navController)
                     }
 
@@ -429,6 +431,7 @@ fun LazyItemScope.NoRankHistory(onNavigateClick: (HomeSections) -> Unit, height:
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HorizontalImagePager(
+    navigationController: NavController,
     scrollState: ScrollState,
     banners: List<Banner>
 ) {
@@ -493,6 +496,17 @@ fun HorizontalImagePager(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()
+                        .clickableSingle {
+                            if (banners[currentPage].path?.isNotEmpty() == true) {
+                                navigationController.navigate(
+                                    "${Route.WebView.route}/${
+                                        URLEncoder.encode(
+                                            banners[currentPage].path
+                                        )
+                                    }"
+                                )
+                            }
+                        }
                 )
             }
 

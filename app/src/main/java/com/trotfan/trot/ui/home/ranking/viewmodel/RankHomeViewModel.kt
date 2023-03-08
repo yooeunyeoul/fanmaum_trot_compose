@@ -225,7 +225,7 @@ class RankHomeViewModel @Inject constructor(
                 null
             )
             when (response.result.code) {
-                ResultCodeStatus.EmptySuccess.code -> {
+                ResultCodeStatus.SuccessWithNoData.code -> {
                     _rankStatus.emit(RankStatus.UnAvailable)
                 }
                 ResultCodeStatus.SuccessWithData.code -> {
@@ -321,7 +321,10 @@ class RankHomeViewModel @Inject constructor(
             when (response.result.code) {
                 ResultCodeStatus.SuccessWithData.code -> {
                     val data = response.data
-                    _banners.emit(data)
+                    _banners.emit(data?: listOf())
+                }
+                ResultCodeStatus.SuccessWithNoData.code -> {
+                    _banners.emit(listOf())
                 }
 
             }
