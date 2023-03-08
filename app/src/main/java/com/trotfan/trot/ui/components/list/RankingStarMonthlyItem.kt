@@ -121,10 +121,10 @@ fun RankingMonthlyDefaultItem(star: StarRanking, onItemClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
             .clickable {
                 onItemClick()
             }
+            .padding(top = 8.dp, bottom = 8.dp)
     ) {
 
         Spacer(modifier = Modifier.width(24.dp))

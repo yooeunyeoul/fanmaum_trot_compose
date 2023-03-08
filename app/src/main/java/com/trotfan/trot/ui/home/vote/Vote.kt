@@ -65,7 +65,6 @@ import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteStatus
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.*
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -763,7 +762,7 @@ fun VoteToStar(
                                         color = Color.White,
                                         style = FanwooriTypography.subtitle4,
                                         maxLines = 1,
-                                        fontSize = 18.sp,
+                                        fontSize = dpToSp(dp = 18.dp),
                                     )
                                 } else {
                                     append("${items[currentPage].user_name}님이")
@@ -771,7 +770,7 @@ fun VoteToStar(
                                         style = SpanStyle(
                                             fontWeight = FontWeight.Bold,
                                             color = Color.White,
-                                            fontSize = 18.sp
+                                            fontSize = dpToSp(dp = 18.dp)
                                         )
                                     ) {
                                         append(" ${items[currentPage].star_name} ")
@@ -784,7 +783,7 @@ fun VoteToStar(
                         }
 
                     }, maxLines = 1, style = FanwooriTypography.body2,
-                    fontSize = 15.sp,
+                    fontSize = dpToSp(dp = 15.dp),
                     color = Color.White
                 )
             }
@@ -804,7 +803,7 @@ fun VoteToStar(
                                 color = Color.White,
                                 style = FanwooriTypography.body2,
                                 maxLines = 1,
-                                fontSize = 15.sp,
+                                fontSize = dpToSp(dp = 15.dp),
                                 overflow = TextOverflow.Ellipsis
                             )
 
@@ -815,7 +814,7 @@ fun VoteToStar(
                                 modifier = Modifier.weight(weight = 1f, fill = false),
                                 style = FanwooriTypography.subtitle4,
                                 maxLines = 1,
-                                fontSize = 18.sp,
+                                fontSize = dpToSp(dp = 18.dp),
                                 overflow = TextOverflow.Ellipsis
                             )
                             Spacer(modifier = Modifier.width(2.dp))
@@ -824,7 +823,7 @@ fun VoteToStar(
                                 color = Color.White,
                                 style = FanwooriTypography.subtitle4,
                                 maxLines = 1,
-                                fontSize = 18.sp,
+                                fontSize = dpToSp(dp = 18.dp),
                                 overflow = TextOverflow.Visible
                             )
                         }
