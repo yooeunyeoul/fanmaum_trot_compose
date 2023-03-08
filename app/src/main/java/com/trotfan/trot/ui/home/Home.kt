@@ -40,6 +40,7 @@ import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.dpToSp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -226,7 +227,7 @@ fun TrotBottomBar(
                         content = {
                             Text(
                                 text = sections.title,
-                                fontSize = 15.sp,
+                                fontSize = dpToSp(dp = 16.dp),
                                 color = if (currentRoute.title == sections.title) Primary500 else Gray500,
                                 style = FanwooriTypography.body2,
                                 maxLines = 1

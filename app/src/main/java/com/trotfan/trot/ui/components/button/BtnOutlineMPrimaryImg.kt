@@ -36,7 +36,6 @@ fun BtnOutlineMPrimaryImg(
     Row(
         modifier = modifier
             .height(40.dp)
-            .defaultMinSize(minWidth = 140.dp, minHeight = 40.dp)
             .clip(RoundedCornerShape(20.dp))
             .border(
                 1.dp,
@@ -64,7 +63,8 @@ fun BtnOutlineMPrimaryImg(
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_vote_iconcolored),
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.padding(start = 16.dp)
         )
 
         Spacer(modifier = Modifier.width(6.dp))
@@ -74,7 +74,8 @@ fun BtnOutlineMPrimaryImg(
                 Primary600
             } else Gray400,
             style = FanwooriTypography.button1,
-            maxLines = 1
+            maxLines = 1,
+            modifier = Modifier.padding(end = 16.dp)
         )
     }
 }

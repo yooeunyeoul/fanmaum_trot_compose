@@ -284,36 +284,43 @@ fun MissionItem(title: String, number: Int, state: Boolean, onItemClick: () -> U
     Card(
         modifier = Modifier
             .widthIn(0.dp, 500.dp)
-            .height(80.dp)
+            .height(116.dp)
             .padding(start = 32.dp, end = 32.dp),
         shape = RoundedCornerShape(24.dp),
         backgroundColor = Color.White,
         elevation = 1.dp
     ) {
-        Box(
+        Row(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(Color.White)
                 .clickable { onItemClick() }
         ) {
-            Row(
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = CenterVertically
+            Column(
+                modifier = Modifier
+                    .padding(start = 24.dp, top = 18.dp, bottom = 18.dp)
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    modifier = Modifier.padding(start = 24.dp)
-                ) {
-                    ChipFilledSPrimary(modifier = Modifier, text = "미션 $number")
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(text = title, style = FanwooriTypography.subtitle2, color = Gray800)
-                }
+                ChipFilledSPrimary(
+                    modifier = Modifier,
+                    text = "미션 $number"
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = title,
+                    style = FanwooriTypography.subtitle2,
+                    color = Gray800,
+                    modifier = Modifier
+                )
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Box(
                 modifier = Modifier
-                    .width(92.dp)
+                    .width(96.dp)
                     .fillMaxHeight()
                     .background(if (state) Color.White else Primary500)
-                    .align(CenterEnd)
             ) {
                 if (state) {
                     Box(

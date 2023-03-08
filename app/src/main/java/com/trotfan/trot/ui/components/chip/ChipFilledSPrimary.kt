@@ -21,7 +21,6 @@ fun ChipFilledSPrimary(
 ) {
     Box(
         modifier = modifier
-            .height(18.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(Primary100),
         contentAlignment = Alignment.Center
@@ -32,7 +31,7 @@ fun ChipFilledSPrimary(
             color = Primary800,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(start = 6.dp, end = 6.dp)
+                .padding(start = 6.dp, end = 6.dp, top = 1.dp, bottom = 1.dp)
         )
     }
 }
