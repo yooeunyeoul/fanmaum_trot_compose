@@ -171,7 +171,6 @@ fun TodayMission(
                     Box(
                         modifier = Modifier
                             .width(296.dp)
-                            .height(56.dp)
                             .clip(RoundedCornerShape(28.dp))
                             .alpha(0.93f)
                             .background(

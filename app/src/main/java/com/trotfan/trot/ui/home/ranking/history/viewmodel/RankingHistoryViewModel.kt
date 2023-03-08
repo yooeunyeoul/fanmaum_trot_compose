@@ -49,6 +49,9 @@ class RankingHistoryViewModel @Inject constructor(
     val monthlyGender = MutableStateFlow(Gender.MEN)
     val dailyGender = MutableStateFlow(Gender.MEN)
 
+    val monthlyDataEmpty = MutableStateFlow(false)
+    val dailyDataEmpty = MutableStateFlow(false)
+
     init {
         getDatePickerRange()
         getBannerList()
@@ -132,19 +135,24 @@ class RankingHistoryViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.getDatePickerRange()
             }.onSuccess {
-                it.data?.let { data ->
-                    datePickerRange.emit(data)
-                    startYear.emit(data.started_at.split("-")[0].toInt())
-                    val calendar = Calendar.getInstance()
-                    calendar.add(Calendar.MONTH, -1)
-                    endedAt.emit("${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}")
-                    monthlyYear.emit(calendar.get(Calendar.YEAR))
-                    monthlyMonth.emit(calendar.get(Calendar.MONTH) + 1)
-                    val tempDate = data.ended_at.split("-")
-                    dailyYear.emit(tempDate[0].toInt())
-                    dailyMonth.emit(tempDate[1].toInt())
-                    dailyDay.emit(tempDate[2].toInt())
-                    getDailyStarRankingList()
+                if (it.result.code == 2) {
+                    monthlyDataEmpty.emit(true)
+                    dailyDataEmpty.emit(true)
+                } else {
+                    it.data?.let { data ->
+                        datePickerRange.emit(data)
+                        startYear.emit(data.started_at.split("-")[0].toInt())
+                        val calendar = Calendar.getInstance()
+                        calendar.add(Calendar.MONTH, -1)
+                        endedAt.emit("${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}")
+                        monthlyYear.emit(calendar.get(Calendar.YEAR))
+                        monthlyMonth.emit(calendar.get(Calendar.MONTH) + 1)
+                        val tempDate = data.ended_at.split("-")
+                        dailyYear.emit(tempDate[0].toInt())
+                        dailyMonth.emit(tempDate[1].toInt())
+                        dailyDay.emit(tempDate[2].toInt())
+                        getDailyStarRankingList()
+                    }
                 }
                 loadingHelper.hideProgress()
             }.onFailure {

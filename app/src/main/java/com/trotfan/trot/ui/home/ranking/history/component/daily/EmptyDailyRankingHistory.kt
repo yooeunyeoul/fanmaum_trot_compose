@@ -53,7 +53,7 @@ fun EmptyDailyRankingHistory(
         Spacer(modifier = Modifier.height(2.dp))
 
         Row(horizontalArrangement = Arrangement.Center) {
-            Text(text = "2일에 공개", color = Primary500, style = FanwooriTypography.button1)
+            Text(text = "다음 날부터 공개", color = Primary500, style = FanwooriTypography.button1)
             Text(text = "됩니다.", color = Gray700, style = FanwooriTypography.body5)
         }
 

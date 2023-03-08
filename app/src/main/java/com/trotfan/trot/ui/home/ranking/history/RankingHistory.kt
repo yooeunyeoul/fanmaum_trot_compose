@@ -30,12 +30,8 @@ fun RankingHistory(
     rankingHistoryViewModel: RankingHistoryViewModel = hiltViewModel()
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
-    var monthlyEmptyState by remember {
-        mutableStateOf(false)
-    }
-    var dailyEmptyState by remember {
-        mutableStateOf(false)
-    }
+    val monthlyEmptyState by rankingHistoryViewModel.monthlyDataEmpty.collectAsState()
+    val dailyEmptyState by rankingHistoryViewModel.dailyDataEmpty.collectAsState()
     val bottomSheetState =
         rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,

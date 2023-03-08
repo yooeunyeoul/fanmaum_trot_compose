@@ -98,7 +98,7 @@ class HomeViewModel @Inject constructor(
 
                                 context.dateManager.data.collect { date ->
                                     if (date.rollingDate != LocalDate.now()
-                                            .toString() && mainPopups.layers != null
+                                            .toString() && mainPopups.layers.isNullOrEmpty().not()
                                     ) {
                                         rollingState.emit(true)
                                     }
