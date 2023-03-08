@@ -70,8 +70,7 @@ fun HeaderVoteState(
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(72.dp)
-                .padding(start = 24.dp, end = 24.dp),
+                .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

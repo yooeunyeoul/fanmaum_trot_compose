@@ -4,10 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,10 +30,9 @@ fun BtnFilledMPrimary(
 
     Row(
         modifier = modifier
-            .fillMaxWidth()
             .height(40.dp)
             .clip(RoundedCornerShape(20.dp))
-            .clickableSingle (
+            .clickableSingle(
             ) {
                 if (enabled) {
                     onClick()
@@ -46,7 +42,8 @@ fun BtnFilledMPrimary(
                 if (enabled) {
                     if (isPressed) Primary600 else Primary500
                 } else Gray200
-            ),
+            )
+            .padding(start = 24.dp, end = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

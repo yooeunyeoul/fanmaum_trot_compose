@@ -32,7 +32,7 @@ fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(96.dp)
+            .padding(top = 16.dp, bottom = 16.dp)
             .drawBehind {
 
                 val y = size.height
@@ -86,7 +86,7 @@ fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
                     color = Gray700,
                     style = FanwooriTypography.body2
                 )
-                Spacer(modifier= Modifier.width(2.dp))
+                Spacer(modifier = Modifier.width(2.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.icon_add),
                     contentDescription = null,
@@ -109,7 +109,7 @@ fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
         BtnFilledMPrimary(
             text = product.price, modifier = Modifier
                 .align(CenterVertically)
-                .width(104.dp)
+
         ) {
             onItemClick.invoke(product)
         }

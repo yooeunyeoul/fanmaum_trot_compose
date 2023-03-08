@@ -140,7 +140,8 @@ fun VoteItem(
                                 brush = gradient01,
                                 shape = RoundedCornerShape(20.dp),
                             )
-                            .size(width = 64.dp, height = 24.dp),
+                            .wrapContentSize()
+                            .padding(start = 6.5.dp, end = 6.5.dp, top = 4.dp, bottom = 4.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
