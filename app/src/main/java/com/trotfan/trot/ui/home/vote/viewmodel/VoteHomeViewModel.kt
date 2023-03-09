@@ -107,7 +107,7 @@ class VoteHomeViewModel @Inject constructor(
 
     var today = 1000L
 
-    var socketUrl = "http://3.34.129.230:3000"
+    var socketUrl = "https://socket.fanmaum.com"
 
 
     init {

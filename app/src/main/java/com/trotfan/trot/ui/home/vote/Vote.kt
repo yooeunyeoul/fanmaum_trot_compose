@@ -2,7 +2,6 @@
 
 package com.trotfan.trot.ui.home.vote
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -523,14 +522,15 @@ fun VoteHome(
                                         }
                                     }
                                 }
-                                val sortedList = if (tabIndex == 0) {
-                                    hashmapMenList.toList().sortedBy { (key, value) -> value.rank }
+                                val starList = if (tabIndex == 0) {
+                                    hashmapMenList.toList()
+                                        .sortedBy { (key, value) -> value.rank }
                                 } else {
                                     hashmapWomenList.toList()
                                         .sortedBy { (key, value) -> value.rank }
                                 }
-                                items(hashmapMenList.toList().size) { index ->
-                                    val starMap = sortedList[index]
+                                items(starList.count()) { index ->
+                                    val starMap = starList[index]
                                     VoteItem(
                                         star = starMap.second,
                                         isMyStar = starMap.first == favoriteStar.id,
@@ -556,7 +556,7 @@ fun VoteHome(
                                                     putExtra(
                                                         Intent.EXTRA_TEXT,
                                                         voteShareText(
-                                                            sortedList.flatMap { listOf(it.second) },
+                                                            starList.flatMap { listOf(it.second) },
                                                             starMap.second.rank ?: 0,
                                                             it.shortLink.toString(),
                                                             application = viewModel.getApplication()
