@@ -34,6 +34,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.ironsource.mediationsdk.IronSource
 import com.ironsource.mediationsdk.integration.IntegrationHelper
+import com.kakao.sdk.common.util.Utility
 import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
@@ -61,6 +62,8 @@ class MainActivity : ComponentActivity() {
         getDynamicLink()
         AppSignatureHelper
         settingIronSource()
+//        var keyHash = Utility.getKeyHash(this)
+//        Timber.tag("kakaohash").d(keyHash)
 
 //        val appSignature = AppSignatureHelper(this)
 //        Log.e("HASH", "\"${appSignature.appSignatures}\"")

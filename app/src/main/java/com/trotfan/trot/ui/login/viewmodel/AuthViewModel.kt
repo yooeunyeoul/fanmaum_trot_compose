@@ -43,6 +43,8 @@ class AuthViewModel @Inject constructor(
     val userInfo: StateFlow<UserInfo?>
         get() = _userInfo
 
+    val secessionUserState = MutableStateFlow(false)
+
     var userInfoManager: UserInfoManager = UserInfoManager(context.UserInfoDataStore)
 
     fun getServerState() {
@@ -78,12 +80,16 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 handleGoogleLogin.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
-                val userToken = it.data
-                userToken?.token?.let { token ->
-                    getUserInfo(token)
-                    setUserToken(token)
+                if (it.result.code == 444) {
+                    secessionUserState.emit(true)
+                } else {
+                    val userToken = it.data
+                    userToken?.token?.let { token ->
+                        getUserInfo(token)
+                        setUserToken(token)
+                    }
+                    _userToken.emit(userToken)
                 }
-                _userToken.emit(userToken)
                 loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("AuthViewModel", it.toString())
@@ -98,12 +104,16 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.postAppleLogin(token)
             }.onSuccess {
-                val userToken = it.data
-                userToken?.token?.let { token ->
-                    getUserInfo(token)
-                    setUserToken(token)
+                if (it.result.code == 444) {
+                    secessionUserState.emit(true)
+                } else {
+                    val userToken = it.data
+                    userToken?.token?.let { token ->
+                        getUserInfo(token)
+                        setUserToken(token)
+                    }
+                    _userToken.emit(userToken)
                 }
-                _userToken.emit(userToken)
                 loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())
@@ -118,12 +128,16 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
-                val userToken = it.data
-                userToken?.token?.let { token ->
-                    getUserInfo(token)
-                    setUserToken(token)
+                if (it.result.code == 444) {
+                    secessionUserState.emit(true)
+                } else {
+                    val userToken = it.data
+                    userToken?.token?.let { token ->
+                        getUserInfo(token)
+                        setUserToken(token)
+                    }
+                    _userToken.emit(userToken)
                 }
-                _userToken.emit(userToken)
                 loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("AuthViewModel", it.message.toString())

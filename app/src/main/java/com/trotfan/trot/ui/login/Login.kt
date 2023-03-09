@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -35,6 +36,7 @@ import com.trotfan.trot.datastore.PermissionAgreementManager
 import com.trotfan.trot.datastore.userTokenStore
 import com.trotfan.trot.model.KakaoTokens
 import com.trotfan.trot.ui.Route
+import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.login.components.LoginButton
 import com.trotfan.trot.ui.login.viewmodel.AuthViewModel
@@ -63,6 +65,7 @@ fun LoginScreen(
     val serverAvailable by viewModel.serverAvailable.collectAsState()
 
     var isAppleLoginDialogOpen by rememberSaveable { mutableStateOf(false) }
+    val secessionUserState by viewModel.secessionUserState.collectAsState()
     var userTokenState by remember {
         mutableStateOf(false)
     }
@@ -70,7 +73,17 @@ fun LoginScreen(
     LaunchedEffect(Unit) {
         viewModel.getServerState()
     }
-
+    if (secessionUserState) {
+        VerticalDialog(
+            contentText = "탈퇴일로부터 90일 동안\n" +
+                    "동일한 계정, 닉네임, 인증된 번호로\n" +
+                    "재가입할 수 없어요.", buttonOneText = "확인"
+        ) {
+            coroutineScope.launch {
+                viewModel.secessionUserState.emit(false)
+            }
+        }
+    }
     Surface(
         modifier = modifier
             .fillMaxSize()
@@ -235,12 +248,14 @@ private fun handleKakaoLogin(context: Context, viewModel: AuthViewModel) {
             if (token != null) {
                 kakaoLoginSuccess(token = token, viewModel)
             } else if (error != null) {
+                Toast.makeText(context, "로그인 실패 + $error", Toast.LENGTH_SHORT).show()
                 Log.d("AuthViewModel", "로그인 실패 + $error")
             }
         }
     } else {
         UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
             if (error != null) {
+                Toast.makeText(context, "로그인 실패 + $error", Toast.LENGTH_SHORT).show()
                 Log.d("AuthViewModel", "로그인 실패 + $error")
             } else if (token != null) {
                 kakaoLoginSuccess(token = token, viewModel)

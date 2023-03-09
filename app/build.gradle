@@ -44,7 +44,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-//            debuggable true
+            debuggable true
         }
     }
 
@@ -64,7 +64,7 @@ android {
         }
         create("product") {
             manifestPlaceholders["appLabel"] = "팬마음"
-            manifestPlaceholders["kakaoKey"] = "kakaoa85178977eed8c1ed9dae2e47d89a254"
+            manifestPlaceholders["kakaoKey"] = "kakao662e4ff94a4caa7b7dabbf3be586f10a"
         }
     }
 

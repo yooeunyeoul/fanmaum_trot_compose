@@ -21,10 +21,12 @@ class BaseApplication : Application() {
 
 
         Timber.plant(Timber.DebugTree())
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.FLAVOR == "dev") {
             KakaoSdk.init(this, getString(R.string.kakao_navite_app_key_debug))
-        } else {
+        } else if (BuildConfig.FLAVOR == "qa") {
             KakaoSdk.init(this, getString(R.string.kakao_navite_app_key_qa))
+        } else {
+            KakaoSdk.init(this, getString(R.string.kakao_navite_app_key))
         }
 
         ChannelIO.initialize(this)

@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Fabwoori</string>
     <string name="kakao_navite_app_key_debug">0896a83ef914dbc24ad6bdeec31d202d</string>
-    <string name="kakao_navite_app_key_qa">662e4ff94a4caa7b7dabbf3be586f10a</string>
+    <string name="kakao_navite_app_key_qa">a85178977eed8c1ed9dae2e47d89a254</string>
+    <string name="kakao_navite_app_key">662e4ff94a4caa7b7dabbf3be586f10a</string>
     <string name="google_server_client_id">27320645027-ctksmc2iblt0k17t2c3upltd8i6ptgup.apps.googleusercontent.com</string>
     <string name="dynamic_link_url">https://fanmaum.page.link</string>
     <string name="hint_search_star">아티스트 또는 그룹 이름</string>
