@@ -95,9 +95,19 @@ fun RankHome(
 
         if (isShowingScrollToolTip) {
             val offset = lazyListState?.firstVisibleItemScrollOffset ?: 0
-            if (offset > 150) {
-                viewModel.saveScrollTooltipState(false)
+            when (rankStatus) {
+                RankStatus.Available->{
+                    if (offset > 100) {
+                        viewModel.saveScrollTooltipState(false)
+                    }
+                }
+                RankStatus.UnAvailable->{
+                    if (offset > 0) {
+                        viewModel.saveScrollTooltipState(false)
+                    }
+                }
             }
+
             Log.e("OFFSE", offset.toString())
         }
     })

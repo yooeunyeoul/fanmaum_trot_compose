@@ -149,7 +149,7 @@ fun VoteHome(
 
         if (isShowingScrollToolTip) {
             val offset = lazyListState?.firstVisibleItemScrollOffset ?: 0
-            if (offset > 150) {
+            if (offset > 100) {
                 viewModel.saveScrollTooltipState(false)
             }
             Log.e("OFFSE", offset.toString())
