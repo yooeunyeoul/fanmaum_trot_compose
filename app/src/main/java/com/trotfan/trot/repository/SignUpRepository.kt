@@ -4,7 +4,6 @@ import com.trotfan.trot.model.*
 import com.trotfan.trot.network.SettingService
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.response.CommonResponse
-import com.trotfan.trot.ui.signup.viewmodel.FlavorStatus
 import javax.inject.Inject
 
 class SignUpRepository @Inject constructor(

@@ -2,7 +2,6 @@ package com.trotfan.trot.network
 
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.response.CommonResponse
-import com.trotfan.trot.ui.signup.viewmodel.FlavorStatus
 
 interface SignUpService {
     suspend fun requestCertificationCode(
