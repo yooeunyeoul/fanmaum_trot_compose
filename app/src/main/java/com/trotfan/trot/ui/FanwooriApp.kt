@@ -5,9 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -21,11 +23,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.PurchaseHelper
-import com.trotfan.trot.model.Expired
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.home.HomeSections
@@ -34,10 +37,14 @@ import com.trotfan.trot.ui.home.dialog.VotingCompleteDialog
 import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.dialog.VotingBottomSheet
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
+import com.trotfan.trot.ui.home.vote.voteShareText
 import com.trotfan.trot.ui.home.vote.voteTopShareText
 import com.trotfan.trot.ui.theme.FanwooriTheme
+import com.trotfan.trot.ui.utils.addDynamicLink
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 object Destinations {
     const val HOME_ROUTE = "home"
@@ -68,6 +75,8 @@ fun FanwooriApp(
         val star: VoteMainStar? by viewModel.voteStar.collectAsState()
         val voteId: Int by viewModel.voteId.collectAsState()
         val votingCompleteState by viewModel.votingCompleteState.collectAsState()
+        val starShareState by viewModel.starShareState.collectAsState()
+        val isMyStar by viewModel.isMyStar.collectAsState()
         val context = LocalContext.current
         var currentRoute by remember {
             mutableStateOf(HomeSections.Vote)
@@ -79,11 +88,21 @@ fun FanwooriApp(
             Pair(first = HomeSections.Charge.route, rememberLazyListState()),
             Pair(first = HomeSections.MyPage.route, rememberLazyListState())
         )
-        var voteHomeViewModel: VoteHomeViewModel? = null
+        var voteHomeViewModel by remember {
+            mutableStateOf<VoteHomeViewModel?>(null)
+        }
 
         var votesQuantity by remember {
             mutableStateOf(0L)
         }
+
+        val sharedLauncher =
+            rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (starShareState.not() && isMyStar) {
+                    viewModel.postShareStar()
+                }
+            }
+
         systemUiController.setSystemBarsColor(color = Color.White)
 
         ModalBottomSheetLayout(
@@ -140,14 +159,17 @@ fun FanwooriApp(
                 }
                 NavigationComponent(
                     navController = navController,
-                    onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
+                    onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, starShareState: Boolean, voteViewModel: VoteHomeViewModel ->
                         coroutineScope.launch {
                             star?.let {
                                 voteHomeViewModel = voteViewModel
-                                viewModel.voteTicket.emit(voteTicket)
+                                Timber.e(voteHomeViewModel.toString())
+                                viewModel.voteTickets.emit(Tickets(unlimitedTickets, todayTickets))
                                 viewModel.voteStar.emit(star)
                                 viewModel.voteId.emit(voteId)
                                 viewModel.voteCnt.emit(TextFieldValue(""))
+                                viewModel.isMyStar.emit(isMyStar)
+                                viewModel.starShareState.emit(starShareState)
                                 votingBottomSheetState.show()
                             }
                         }
@@ -183,19 +205,39 @@ fun FanwooriApp(
                                     voteHomeViewModel?.getVoteTickets(purchaseHelper)
                                 }
                             }, onPositive = {
-                                val sendIntent: Intent = Intent().apply {
-                                    Firebase.dynamicLinks.shortLinkAsync {
-                                        link = Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
-                                        domainUriPrefix = "https://fanwoori.page.link"
-                                    }.addOnSuccessListener {
+//                                val sendIntent: Intent = Intent().apply {
+//                                    Firebase.dynamicLinks.shortLinkAsync {
+//                                        link =
+//                                            Uri.parse("https://play.google.com/store/apps/details?id=com.trotfan.trot")
+//                                        domainUriPrefix = "https://fanmaum.page.link"
+//                                    }.addOnSuccessListener {
+//                                        action = Intent.ACTION_SEND
+//                                        putExtra(
+//                                            Intent.EXTRA_TEXT,
+//                                            voteTopShareText(star?.name, it.shortLink.toString())
+//                                        )
+//
+//                                        type = "text/plain"
+//                                        val shareIntent = Intent.createChooser(this, null)
+//                                        context.startActivity(shareIntent)
+//                                    }
+//                                }
+                                addDynamicLink(
+                                    titleText = "내 스타 공유",
+                                    uri = "https://play.google.com/store/apps/details?id=com.trotfan.trot",
+                                    descriptionText = "내 스타 공유하기"
+                                ) {
+                                    Intent().apply {
                                         action = Intent.ACTION_SEND
                                         putExtra(
-                                            Intent.EXTRA_TEXT, voteTopShareText(star?.name, it.shortLink.toString())
+                                            Intent.EXTRA_TEXT,
+                                            voteTopShareText(star?.name, it.shortLink.toString())
                                         )
 
                                         type = "text/plain"
-                                        val shareIntent = Intent.createChooser(this, null)
-                                        context.startActivity(shareIntent)
+                                        val shareIntent =
+                                            Intent.createChooser(this, null)
+                                        sharedLauncher.launch(shareIntent)
                                     }
                                 }
                             }

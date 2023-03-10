@@ -4,6 +4,8 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.BaseApplication
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.RankMainDataStore
 import com.trotfan.trot.datastore.RankMainManager
@@ -42,6 +44,7 @@ const val StopLoop = -1004
 class RankHomeViewModel @Inject constructor(
     private val repository: RankingHistoryRepository,
     private val voteRepository: VoteRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -137,7 +140,7 @@ class RankHomeViewModel @Inject constructor(
             val response = voteRepository.getVote()
             val milliSecond = convertStringToTime(response?.data?.endedAt ?: "")
 //            val milliSecond = convertStringToTime("2022-12-27 19:11:00")
-            val differenceTime = getTime(milliSecond)
+            val differenceTime = getTime(milliSecond, application = context as BaseApplication)
             remainMonthlyVoteTime = if (differenceTime < 0) StopLoop else differenceTime
 //            Log.e("remain", remainMonthlyVoteTime.toString())
 
@@ -192,13 +195,13 @@ class RankHomeViewModel @Inject constructor(
     }
 
     private fun refreshRank() {
-        remain24HourTime = getTime(targetHour = 24, targetMinute = 0)
+        remain24HourTime = getTime(targetHour = 24, targetMinute = 0, application = context as BaseApplication)
         viewModelScope.launch {
             while (true) {
                 delay(1_000)
                 remain24HourTime -= 1
                 if (remain24HourTime < 0) {
-                    remain24HourTime = getTime(targetHour = 24, targetMinute = 0)
+                    remain24HourTime = getTime(targetHour = 24, targetMinute = 0, application = context as BaseApplication)
                     getMonthStarRank()
                     getVoteEndedTime()
                 }
@@ -216,12 +219,13 @@ class RankHomeViewModel @Inject constructor(
 
     private fun getMonthStarRank() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             val response = repository.getMonthlyStarList(
                 null,
                 null
             )
             when (response.result.code) {
-                ResultCodeStatus.EmptySuccess.code -> {
+                ResultCodeStatus.SuccessWithNoData.code -> {
                     _rankStatus.emit(RankStatus.UnAvailable)
                 }
                 ResultCodeStatus.SuccessWithData.code -> {
@@ -306,19 +310,25 @@ class RankHomeViewModel @Inject constructor(
 
                 }
             }
+            loadingHelper.hideProgress()
         }
     }
 
     private fun getBanners() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             val response = repository.getBanners(group = "rank", platform = "aos")
             when (response.result.code) {
                 ResultCodeStatus.SuccessWithData.code -> {
                     val data = response.data
-                    _banners.emit(data)
+                    _banners.emit(data?: listOf())
+                }
+                ResultCodeStatus.SuccessWithNoData.code -> {
+                    _banners.emit(listOf())
                 }
 
             }
+            loadingHelper.hideProgress()
         }
     }
 

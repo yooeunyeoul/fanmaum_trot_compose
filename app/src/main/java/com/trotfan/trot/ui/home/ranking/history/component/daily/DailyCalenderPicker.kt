@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DailyCalenderPicker(
@@ -165,7 +164,6 @@ fun PickerChip(text: String) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable

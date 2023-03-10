@@ -58,7 +58,7 @@ fun SettingNicknameScreen(
         )
 
         Spacer(modifier = Modifier.height(32.dp))
-        Box(modifier = Modifier.height(80.dp)) {
+        Column {
             InputTextField(
                 text = inputNickname,
                 placeHolder = "닉네임 2~10자 입력",
@@ -81,7 +81,6 @@ fun SettingNicknameScreen(
                 color = Gray700,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomEnd)
             )
         }
         BtnOutlineLPrimary(

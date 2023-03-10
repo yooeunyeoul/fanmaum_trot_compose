@@ -13,7 +13,7 @@ import com.trotfan.trot.datastore.UserTicketManager
 import com.trotfan.trot.datastore.UserTicketStore
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
-import com.trotfan.trot.model.Ticket
+import com.trotfan.trot.model.TicketItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +31,8 @@ class MyVoteHistoryViewModel @Inject constructor(
     lateinit var userTicketManager: UserTicketManager
     private val context = getApplication<Application>()
 
-    private val _userTicketHistory = mutableStateOf<Flow<PagingData<Ticket>>?>((null))
-    val userTicketHistory: State<Flow<PagingData<Ticket>>?>
+    private val _userTicketHistory = mutableStateOf<Flow<PagingData<TicketItem>>?>((null))
+    val userTicketHistory: State<Flow<PagingData<TicketItem>>?>
         get() = _userTicketHistory
 
     val isListEmpty: StateFlow<Boolean?>
@@ -40,22 +40,9 @@ class MyVoteHistoryViewModel @Inject constructor(
     private val _isListEmpty =
         MutableStateFlow(null)
 
-
-    val unlimitedTicket: StateFlow<Long>
-        get() = _unlimitedTicket
-    private val _unlimitedTicket =
-        MutableStateFlow(0L)
-
-    val todayTicket: StateFlow<Long>
-        get() = _todayTicket
-    private val _todayTicket =
-        MutableStateFlow(0L)
-
     init {
         viewModelScope.launch {
             userTicketManager = UserTicketManager(context.UserTicketStore)
-            _unlimitedTicket.emit(userTicketManager.expiredUnlimited.first() ?: 0)
-            _todayTicket.emit(userTicketManager.expiredToday.first() ?: 0)
             getUserTicketHistory()
         }
     }

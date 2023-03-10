@@ -37,9 +37,8 @@ fun MyVotingTicket(
     purchaseHelper: PurchaseHelper?
 ) {
     val decimal = DecimalFormat("#,###")
-    val ticket by purchaseHelper?.tickets!!.collectAsState()
-//    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
-//    val todayTicket by viewModel.todayTicket.collectAsState()
+    val unLimitedTickets by viewModel.userTicketManager.expiredUnlimited.collectAsState(initial = 0)
+    val todayTickets by viewModel.userTicketManager.expiredToday.collectAsState(initial = 0)
 
     Surface(
         color = Color.White,
@@ -76,7 +75,7 @@ fun MyVotingTicket(
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = decimal.format(ticket.unlimited + ticket.today),
+                text = decimal.format(unLimitedTickets?.plus(todayTickets ?: 0)),
                 style = FanwooriTypography.h2,
                 color = Gray800
             )
@@ -84,7 +83,7 @@ fun MyVotingTicket(
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(modifier = Modifier.align(End)) {
-                Text(text = "이용내역", style = FanwooriTypography.button1, color = Primary900)
+                Text(text = "이용 내역", style = FanwooriTypography.button1, color = Primary900)
                 Icon(
                     painter = painterResource(id = R.drawable.icon_arrow),
                     contentDescription = null,

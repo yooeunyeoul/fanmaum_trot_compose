@@ -1,6 +1,7 @@
 package com.trotfan.trot.repository
 
 import com.trotfan.trot.model.Alarm
+import com.trotfan.trot.model.InviteInfo
 import com.trotfan.trot.model.ProfileImage
 import com.trotfan.trot.model.TicketsHistory
 import com.trotfan.trot.network.AuthService
@@ -35,9 +36,9 @@ class MyPageRepository @Inject constructor(
     suspend fun setPushSetting(
         userToken: String,
         userId: Long,
-        alarmType: AlarmType
+        alarm: Alarm
     ): CommonResponse<Unit> {
-        return settingService.setPushSetting(userToken, userId, alarmType)
+        return settingService.setPushSetting(userToken, userId, alarm)
     }
 
     suspend fun signOut(
@@ -47,5 +48,12 @@ class MyPageRepository @Inject constructor(
         etc: String?
     ): CommonResponse<Unit> {
         return userService.signOut(userToken, userId, reason, etc)
+    }
+
+    suspend fun getUserInviteInfo(
+        userToken: String,
+        userId: Long
+    ): CommonResponse<InviteInfo> {
+        return userService.getUserInviteInfo(token = userToken, userId = userId)
     }
 }

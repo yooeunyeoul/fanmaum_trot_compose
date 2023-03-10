@@ -37,7 +37,7 @@ fun EmptyDailyRankingHistory(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "팬마음 첫 투표 진행중!",
+            text = "팬마음 첫 투표 진행 중!",
             color = Gray800,
             style = FanwooriTypography.subtitle1,
             modifier = Modifier.align(CenterHorizontally)
@@ -53,7 +53,7 @@ fun EmptyDailyRankingHistory(
         Spacer(modifier = Modifier.height(2.dp))
 
         Row(horizontalArrangement = Arrangement.Center) {
-            Text(text = "2일에 공개", color = Primary500, style = FanwooriTypography.button1)
+            Text(text = "다음 날부터 공개", color = Primary500, style = FanwooriTypography.button1)
             Text(text = "됩니다.", color = Gray700, style = FanwooriTypography.body5)
         }
 
@@ -67,7 +67,7 @@ fun EmptyDailyRankingHistory(
         Spacer(modifier = Modifier.height(32.dp))
 
         BtnOutlineSecondaryLeftIcon(
-            text = "투표 하러가기",
+            text = "투표하러 가기",
             onClick = {
                 navController?.popBackStack()
                 onVotingClick()

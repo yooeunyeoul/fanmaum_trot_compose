@@ -2,10 +2,12 @@ package com.trotfan.trot.network
 
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.response.CommonResponse
+import com.trotfan.trot.ui.signup.viewmodel.FlavorStatus
 
 interface SignUpService {
     suspend fun requestCertificationCode(
-        phoneNumber: String
+        phoneNumber: String,
+        version: FlavorStatus
     ): CommonResponse<SmsAuth>
 
     suspend fun getStarList(
@@ -18,8 +20,13 @@ interface SignUpService {
         nickName: String?,
         starId: Int?,
         phoneNumber: String?,
-        redeemCode: String?,
         agrees_terms: Boolean?,
+        token: String
+    ): CommonResponse<Unit>
+
+    suspend fun postUserRedeemCode(
+        userId: Long,
+        redeemCode: String?,
         token: String
     ): CommonResponse<Unit>
 

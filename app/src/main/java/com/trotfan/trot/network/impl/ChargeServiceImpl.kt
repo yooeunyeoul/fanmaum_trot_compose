@@ -1,5 +1,6 @@
 package com.trotfan.trot.network.impl
 
+import com.trotfan.trot.model.*
 import com.trotfan.trot.network.ChargeService
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.response.CommonResponse
@@ -39,5 +40,82 @@ class ChargeServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         }
         return response.body()
 
+    }
+
+    override suspend fun checkRoulette(
+        userToken: String,
+        userId: Int
+    ): CommonResponse<GetLuckyTicket> {
+
+        return httpClient.get(HttpRoutes.ROULETTE) {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun rewardRoulette(
+        userToken: String,
+        userId: Int
+    ): CommonResponse<PostLuckyTicket> {
+        return httpClient.post(HttpRoutes.ROULETTE) {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun getMissions(userToken: String): CommonResponse<MissionState> {
+        return httpClient.get(HttpRoutes.MISSIONS) {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun postRewardVideo(userToken: String): CommonResponse<RewardTickets> {
+        return httpClient.post("${HttpRoutes.MISSIONS}/video") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun postAttendance(userToken: String): CommonResponse<Tickets> {
+        return httpClient.post("${HttpRoutes.MISSIONS}/attendance") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun postShareStar(userToken: String): CommonResponse<Unit> {
+        return httpClient.post("${HttpRoutes.MISSIONS}/share") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
+    }
+
+    override suspend fun postMission(userToken: String): CommonResponse<Tickets> {
+        return httpClient.post("${HttpRoutes.MISSIONS}/mission") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $userToken"
+            )
+        }.body()
     }
 }

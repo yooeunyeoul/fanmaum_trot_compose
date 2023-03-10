@@ -23,7 +23,6 @@ import com.trotfan.trot.ui.theme.FanwooriTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun RankingHistory(
     navController: NavController? = null,
@@ -31,12 +30,8 @@ fun RankingHistory(
     rankingHistoryViewModel: RankingHistoryViewModel = hiltViewModel()
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
-    var monthlyEmptyState by remember {
-        mutableStateOf(false)
-    }
-    var dailyEmptyState by remember {
-        mutableStateOf(false)
-    }
+    val monthlyEmptyState by rankingHistoryViewModel.monthlyDataEmpty.collectAsState()
+    val dailyEmptyState by rankingHistoryViewModel.dailyDataEmpty.collectAsState()
     val bottomSheetState =
         rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
@@ -114,7 +109,6 @@ fun RankingHistory(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Preview
 @Composable
 fun RankingHistoryPreview() {

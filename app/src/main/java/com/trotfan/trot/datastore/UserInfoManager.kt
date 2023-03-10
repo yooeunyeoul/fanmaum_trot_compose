@@ -2,10 +2,7 @@ package com.trotfan.trot.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.trotfan.trot.model.ProfileImage
 import com.trotfan.trot.ui.home.vote.viewmodel.Gender
@@ -25,7 +22,7 @@ class UserInfoManager(
         val USER_MAIL = stringPreferencesKey("USER_MAIL")
         val USER_PROFILE_IMAGE = stringPreferencesKey("USER_PROFILE_IMAGE")
         val USER_CREATED_AT = stringPreferencesKey("USER_CREATED_AT")
-        val USER_TOTAL_USED_VOTE = intPreferencesKey("USER_TOTAL_USED_VOTE")
+        val USER_TOTAL_USED_VOTE = longPreferencesKey("USER_TOTAL_USED_VOTE")
     }
 
     suspend fun storeUserInfo(
@@ -38,7 +35,7 @@ class UserInfoManager(
         userMail: String,
         userProfileImage: String,
         userCreatedAt: String,
-        userTotalUsedVote: Int
+        userTotalUsedVote: Long
     ) {
         dataStore.edit {
             it[FAVORITE_STAR_ID] = favoriteStarId
@@ -59,6 +56,15 @@ class UserInfoManager(
     ) {
         dataStore.edit {
             it[USER_PROFILE_IMAGE] = userProfileImage
+        }
+    }
+
+
+    suspend fun updateUserTotalUsedVote(
+        userTotalUsedVote: Long
+    ) {
+        dataStore.edit {
+            it[USER_TOTAL_USED_VOTE] = userTotalUsedVote
         }
     }
 
@@ -93,7 +99,7 @@ class UserInfoManager(
         it[USER_CREATED_AT]
     }
 
-    val userTotalUsedVoteFlow: Flow<Int?> = dataStore.data.map {
+    val userTotalUsedVoteFlow: Flow<Long?> = dataStore.data.map {
         it[USER_TOTAL_USED_VOTE]
     }
 

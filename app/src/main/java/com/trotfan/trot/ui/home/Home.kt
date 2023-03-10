@@ -20,7 +20,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -29,7 +28,6 @@ import androidx.navigation.compose.composable
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
 import com.trotfan.trot.datastore.dateManager
-import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.home.charge.ChargeHome
@@ -42,6 +40,7 @@ import com.trotfan.trot.ui.home.viewmodel.HomeViewModel
 import com.trotfan.trot.ui.home.vote.VoteHome
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.dpToSp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -50,7 +49,7 @@ enum class HomeSections(
     val title: String,
     val route: String
 ) {
-    Vote(title = "일일투표", route = "home/vote"),
+    Vote(title = "일일 투표", route = "home/vote"),
     Ranking(title = "순위", route = "home/ranking"),
     Charge(title = "충전", route = "home/charge"),
     MyPage(title = "마이페이지", route = "home/mypage")
@@ -111,7 +110,8 @@ fun TrotBottomBar(
                     coroutineScope.launch {
                         context.dateManager.data.collect { date ->
                             viewModel.rollingState.value =
-                                date.rollingDate != LocalDate.now().toString() && mainPopups?.layers.isNullOrEmpty().not()
+                                date.rollingDate != LocalDate.now()
+                                    .toString() && mainPopups?.layers.isNullOrEmpty().not()
                         }
                     }
                     viewModel.feverStatus.value = mainPopups?.is_rewarded == true
@@ -140,14 +140,6 @@ fun TrotBottomBar(
 
     if (rollingState) {
         mainPopups?.layers?.let { it ->
-            LaunchedEffect(mainPopups?.layers) {
-                context.dateManager.data.collect {
-                    if (it.rollingDate == LocalDate.now().toString()) {
-                        viewModel.rollingState.emit(false)
-                    }
-                }
-            }
-
             RollingDialog(
                 layers = it,
                 onDismiss = {
@@ -235,7 +227,7 @@ fun TrotBottomBar(
                         content = {
                             Text(
                                 text = sections.title,
-                                fontSize = 15.sp,
+                                fontSize = dpToSp(dp = 16.dp),
                                 color = if (currentRoute.title == sections.title) Primary500 else Gray500,
                                 style = FanwooriTypography.body2,
                                 maxLines = 1
@@ -259,7 +251,7 @@ fun NavGraphBuilder.addHomeGraph(
     onItemSelected: (Long, NavBackStackEntry) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     modifier: Modifier = Modifier,
-    onVotingClick: (vote_id: Int, vote_ticket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel) -> Unit,
+    onVotingClick: (vote_id: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel) -> Unit,
     navController: NavController,
     lazyListState: HashMap<String, LazyListState>?,
     purchaseHelper: PurchaseHelper
@@ -271,8 +263,16 @@ fun NavGraphBuilder.addHomeGraph(
             },
             navController = navController,
             modifier = modifier,
-            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, voteViewModel: VoteHomeViewModel ->
-                onVotingClick(voteId, voteTicket, star, voteViewModel)
+            onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel ->
+                onVotingClick(
+                    voteId,
+                    unlimitedTickets,
+                    todayTickets,
+                    star,
+                    isMyStar,
+                    isMission,
+                    voteViewModel
+                )
             },
             lazyListState = lazyListState?.get(HomeSections.Vote.route),
             purchaseHelper = purchaseHelper

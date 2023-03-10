@@ -31,10 +31,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
-import com.trotfan.trot.model.Ticket
+import com.trotfan.trot.model.TicketItem
 import com.trotfan.trot.ui.components.chip.ChipTab
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
-import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
 import java.text.DecimalFormat
@@ -50,16 +49,15 @@ fun MyVoteHistory(
     purchaseHelper: PurchaseHelper?
 ) {
     val decimal = DecimalFormat("#,###")
-    val historyItems: LazyPagingItems<Ticket>? =
+    val historyItems: LazyPagingItems<TicketItem>? =
         viewModel.userTicketHistory.value?.collectAsLazyPagingItems()
     val lazyState = rememberLazyListState()
     val tabs = listOf("전체", "미션보상", "구매", "사용", "소멸", "기타")
     var selectTab by remember {
         mutableStateOf(tabs[0])
     }
-//    val unlimitedTicket by viewModel.unlimitedTicket.collectAsState()
-//    val todayTicket by viewModel.todayTicket.collectAsState()
-    val ticket by purchaseHelper?.tickets!!.collectAsState()
+    val unLimitedTickets by viewModel.userTicketManager.expiredUnlimited.collectAsState(initial = 0)
+    val todayTickets by viewModel.userTicketManager.expiredToday.collectAsState(initial = 0)
     var appBarColor by remember {
         mutableStateOf(Gray100)
     }
@@ -130,7 +128,7 @@ fun MyVoteHistory(
                             }
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = decimal.format(ticket.unlimited + ticket.today),
+                                text = decimal.format(unLimitedTickets?.plus(todayTickets?: 0)),
                                 style = FanwooriTypography.h1,
                                 color = Gray900,
                                 modifier = Modifier.padding(start = 24.dp)
@@ -168,13 +166,13 @@ fun MyVoteHistory(
                                     horizontalAlignment = End
                                 ) {
                                     Text(
-                                        text = decimal.format(ticket.unlimited),
+                                        text = decimal.format(unLimitedTickets),
                                         style = FanwooriTypography.button1,
                                         color = Gray800
                                     )
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Text(
-                                        text = decimal.format(ticket.today),
+                                        text = decimal.format(todayTickets),
                                         style = FanwooriTypography.button1,
                                         color = Gray800
                                     )
@@ -289,7 +287,7 @@ fun HistoryDateItem(date: String) {
 }
 
 @Composable
-fun HistoryItem(item: Ticket, position: Int, beforeItem: Ticket?) {
+fun HistoryItem(item: TicketItem, position: Int, beforeItem: TicketItem?) {
     val decimal = DecimalFormat("#,###")
     val isPlus = item.quantity > 0
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
@@ -383,7 +381,7 @@ fun EmptyHistory(modifier: Modifier, navController: NavController?, onChargeClic
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "무료 충전소에서 미션을 수행하고\n" +
+            text = "무료충전소에서 미션을 수행하고\n" +
                     "투표권을 모아보세요!", style = FanwooriTypography.body5, color = Gray700,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(CenterHorizontally)
@@ -412,7 +410,7 @@ fun EmptyHistory(modifier: Modifier, navController: NavController?, onChargeClic
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-                text = "충전 하러가기",
+                text = "충전하러 가기",
                 style = FanwooriTypography.button1,
                 color = Secondary800,
                 modifier = Modifier.align(CenterVertically)

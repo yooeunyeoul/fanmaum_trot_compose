@@ -23,15 +23,14 @@ import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray900
 
 @Composable
-fun BoxScope.ChipCapsuleImg() {
+fun BoxScope.ChipCapsuleImg(modifier: Modifier) {
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ranking_arrow))
     Surface(
         shape = RoundedCornerShape(20.dp),
         color = Gray900,
         elevation = 3.dp,
-        modifier = Modifier
+        modifier = modifier
             .align(Alignment.BottomCenter)
-            .padding(bottom = BottomNavHeight.plus(32.dp))
             .zIndex(2f)
     ) {
         Row(

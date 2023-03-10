@@ -40,7 +40,6 @@ fun RankingDailyRankerItem(star: StarRankingDaily?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
     ) {
         Spacer(modifier = Modifier.width(24.dp))
 
@@ -81,6 +80,7 @@ fun RankingDailyRankerItem(star: StarRankingDaily?) {
             modifier = Modifier
                 .align(CenterVertically)
                 .weight(1f)
+                .padding(top = 8.dp, bottom = 8.dp)
         ) {
             Text(
                 text = star?.name.toString(),
@@ -102,7 +102,6 @@ fun RankingDailyDefaultItem(star: StarRankingDaily?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
     ) {
 
         Spacer(modifier = Modifier.width(24.dp))
@@ -144,6 +143,7 @@ fun RankingDailyDefaultItem(star: StarRankingDaily?) {
             modifier = Modifier
                 .align(CenterVertically)
                 .weight(1f)
+                .padding(top = 8.dp, bottom = 8.dp)
         ) {
             Text(
                 text = star?.name.toString(),

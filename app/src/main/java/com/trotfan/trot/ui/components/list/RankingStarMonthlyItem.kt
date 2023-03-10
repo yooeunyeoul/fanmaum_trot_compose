@@ -45,7 +45,6 @@ fun RankingMonthlyRankerItem(star: StarRanking, onItemClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
             .clickable {
                 onItemClick()
             }
@@ -88,6 +87,7 @@ fun RankingMonthlyRankerItem(star: StarRanking, onItemClick: () -> Unit) {
             modifier = Modifier
                 .align(CenterVertically)
                 .weight(1f)
+                .padding(top = 8.dp, bottom = 8.dp)
         ) {
             Text(
                 text = star.name,
@@ -121,10 +121,10 @@ fun RankingMonthlyDefaultItem(star: StarRanking, onItemClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
             .clickable {
                 onItemClick()
             }
+            .padding(top = 8.dp, bottom = 8.dp)
     ) {
 
         Spacer(modifier = Modifier.width(24.dp))

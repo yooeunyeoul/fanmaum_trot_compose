@@ -1,9 +1,12 @@
 package com.trotfan.trot.ui
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.protobuf.Api
+import com.lyft.kronos.KronosClock
+import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.UserId
 import com.trotfan.trot.UserTokenValue
 import com.trotfan.trot.datastore.userIdStore
@@ -20,7 +23,6 @@ open class BaseViewModel constructor(
     private val context = getApplication<Application>()
     var userLocalToken = MutableStateFlow<UserTokenValue?>(null)
     var userLocalId = MutableStateFlow<Long?>(null)
-    var apiStatus = MutableStateFlow<ApiResult<Any>>(ApiResult.Loading)
 
     init {
         viewModelScope.launch {
@@ -35,5 +37,6 @@ open class BaseViewModel constructor(
                 }
             }
         }
+
     }
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.UserInfoDataStore
 import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.model.*
@@ -19,11 +20,12 @@ import javax.inject.Inject
 @HiltViewModel
 class RankingHistoryViewModel @Inject constructor(
     private val repository: RankingHistoryRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : AndroidViewModel(application) {
     private val calender: Calendar = Calendar.getInstance()
-    val monthlyYear = MutableStateFlow(2022)
-    val monthlyMonth = MutableStateFlow(12)
+    val monthlyYear = MutableStateFlow(calender.get(Calendar.YEAR))
+    val monthlyMonth = MutableStateFlow(calender.get(Calendar.MONTH))
     val dailyYear = MutableStateFlow(calender.get(Calendar.YEAR))
     val dailyMonth = MutableStateFlow(calender.get(Calendar.MONTH) + 1)
     val dailyDay = MutableStateFlow(calender.get(Calendar.DAY_OF_MONTH))
@@ -47,6 +49,9 @@ class RankingHistoryViewModel @Inject constructor(
     val monthlyGender = MutableStateFlow(Gender.MEN)
     val dailyGender = MutableStateFlow(Gender.MEN)
 
+    val monthlyDataEmpty = MutableStateFlow(false)
+    val dailyDataEmpty = MutableStateFlow(false)
+
     init {
         getDatePickerRange()
         getBannerList()
@@ -65,18 +70,22 @@ class RankingHistoryViewModel @Inject constructor(
 
     fun getBannerList() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getBanners("last", "aos")
             }.onSuccess {
                 banners.emit(it.data)
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("RankingHistoryViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getMonthlyStarRankingList() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getMonthlyStarList(
                     monthlyYear.value.toString(),
@@ -89,14 +98,17 @@ class RankingHistoryViewModel @Inject constructor(
                 it.data?.women?.let { womans ->
                     monthlyWomanList.emit(womans)
                 }
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("RankingHistoryViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getDailyStarRankingList() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getDailyStarList(
                     dailyYear.value.toString(),
@@ -110,33 +122,42 @@ class RankingHistoryViewModel @Inject constructor(
                 it.data?.women?.let { womans ->
                     dailyWomanList.emit(womans)
                 }
+                loadingHelper.hideProgress()
             }.onFailure {
-
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getDatePickerRange() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             kotlin.runCatching {
                 repository.getDatePickerRange()
             }.onSuccess {
-                it.data?.let { data ->
-                    datePickerRange.emit(data)
-                    startYear.emit(data.started_at.split("-")[0].toInt())
-                    val calendar = Calendar.getInstance()
-                    calendar.add(Calendar.MONTH, -1)
-                    endedAt.emit("${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}")
-                    monthlyYear.emit(calendar.get(Calendar.YEAR))
-                    monthlyMonth.emit(calendar.get(Calendar.MONTH) + 1)
-                    val tempDate = data.ended_at.split("-")
-                    dailyYear.emit(tempDate[0].toInt())
-                    dailyMonth.emit(tempDate[1].toInt())
-                    dailyDay.emit(tempDate[2].toInt())
-                    getDailyStarRankingList()
+                if (it.result.code == 2) {
+                    monthlyDataEmpty.emit(true)
+                    dailyDataEmpty.emit(true)
+                } else {
+                    it.data?.let { data ->
+                        datePickerRange.emit(data)
+                        startYear.emit(data.started_at.split("-")[0].toInt())
+                        val calendar = Calendar.getInstance()
+                        calendar.add(Calendar.MONTH, -1)
+                        endedAt.emit("${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}")
+                        monthlyYear.emit(calendar.get(Calendar.YEAR))
+                        monthlyMonth.emit(calendar.get(Calendar.MONTH) + 1)
+                        val tempDate = data.ended_at.split("-")
+                        dailyYear.emit(tempDate[0].toInt())
+                        dailyMonth.emit(tempDate[1].toInt())
+                        dailyDay.emit(tempDate[2].toInt())
+                        getDailyStarRankingList()
+                    }
                 }
+                loadingHelper.hideProgress()
             }.onFailure {
                 Log.d("RankingHistoryViewModel", it.message.toString())
+                loadingHelper.hideProgress()
             }
         }
     }

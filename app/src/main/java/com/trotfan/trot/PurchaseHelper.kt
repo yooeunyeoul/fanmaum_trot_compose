@@ -7,7 +7,7 @@ import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
-import com.trotfan.trot.model.Expired
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.ChargeRepository
 import com.trotfan.trot.ui.MainActivity
@@ -29,7 +29,7 @@ enum class InAppProduct(
 ) {
     Votes_6000(
         id = "votes_6000",
-        productName = "6,000투표권",
+        productName = "6,000 투표권",
         price = "1,500원",
         image = R.drawable.charge6000,
         votes = "5,500",
@@ -38,7 +38,7 @@ enum class InAppProduct(
     ),
     Votes_22000(
         "votes_22000",
-        productName = "22,000투표권",
+        productName = "22,000 투표권",
         price = "4,400원",
         image = R.drawable.charge22000,
         votes = "20,000",
@@ -46,7 +46,7 @@ enum class InAppProduct(
     ),
     Votes_63000(
         "votes_63000",
-        productName = "63,000투표권",
+        productName = "63,000 투표권",
         price = "9,900원",
         image = R.drawable.charge63000,
         votes = "55,000",
@@ -54,7 +54,7 @@ enum class InAppProduct(
     ),
     Votes_160000(
         "votes_160000",
-        productName = "160,000투표권",
+        productName = "160,000 투표권",
         price = "19,000원",
         image = R.drawable.charge160000,
         votes = "135,000",
@@ -62,7 +62,7 @@ enum class InAppProduct(
     ),
     Votes_450000(
         "votes_450000",
-        productName = "450,000투표권",
+        productName = "450,000 투표권",
         price = "50,000원",
         image = R.drawable.charge450000,
         votes = "360,000",
@@ -84,12 +84,13 @@ enum class BillingResponse(val message: String) {
 
 class PurchaseHelper @Inject constructor(
     @ActivityContext private val context: Context,
-    val repository: ChargeRepository
+    val repository: ChargeRepository,
+    private val loadingHelper: LoadingHelper
 ) {
 
     private lateinit var mListener: (BillingResponse) -> Unit
     private lateinit var mSelectedProductId: String
-    private var activity: MainActivity
+    private var activity: MainActivity = (context as MainActivity)
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private lateinit var billingClient: BillingClient
@@ -98,11 +99,6 @@ class PurchaseHelper @Inject constructor(
 
     private val _productName = MutableStateFlow("Searching...")
     val productName = _productName.asStateFlow()
-
-    val tickets: StateFlow<Expired>
-        get() = _tickets
-    private val _tickets =
-        MutableStateFlow(Expired())
 
     private val _refreshState = MutableStateFlow(RefreshTicket.Need)
     val refreshState = _refreshState.asStateFlow()
@@ -114,7 +110,6 @@ class PurchaseHelper @Inject constructor(
 
 
     init {
-        activity = (context as MainActivity)
         billingSetup()
     }
 
@@ -131,6 +126,7 @@ class PurchaseHelper @Inject constructor(
                             //서버에 구매성공 요청 날리기
 
                             coroutineScope.launch {
+                                loadingHelper.showProgress()
                                 context.userIdStore.data.collect {
                                     kotlin.runCatching {
                                         val userToken = context.userTokenStore.data.map {
@@ -181,6 +177,7 @@ class PurchaseHelper @Inject constructor(
                                                 completePurchase(purchase)
                                             }
                                         }
+                                        loadingHelper.hideProgress()
                                     }.onFailure {
                                         Log.e("Api Fail", "Api Fail")
                                         coroutineScope.launch {
@@ -191,6 +188,7 @@ class PurchaseHelper @Inject constructor(
                                             )
                                         }
                                         completePurchase(purchase)
+                                        loadingHelper.hideProgress()
                                     }
                                 }
                             }
@@ -205,6 +203,7 @@ class PurchaseHelper @Inject constructor(
                                         "User Cancelled"
                             )
                         }
+                        loadingHelper.hideProgress()
                     }
                     // 에러
                     else -> {
@@ -215,6 +214,7 @@ class PurchaseHelper @Inject constructor(
                                         "Purchase Error"
                             )
                         }
+                        loadingHelper.hideProgress()
                     }
                 }
             }
@@ -421,9 +421,6 @@ class PurchaseHelper @Inject constructor(
         }
     }
 
-    fun refreshTickets(tickets: Expired) {
-        _tickets.value = tickets
-    }
 
 
 }

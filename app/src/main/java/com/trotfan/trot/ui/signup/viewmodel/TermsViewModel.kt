@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.datastore.userTokenStore
+import com.trotfan.trot.model.Alarm
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.BaseViewModel
 import com.trotfan.trot.ui.home.mypage.setting.AlarmType
@@ -25,11 +26,11 @@ class TermsViewModel @Inject constructor(
 
     private val context = getApplication<Application>()
     private var userId: Long? = null
-    private var userUpdateResult by mutableStateOf(false)
-    private var dayPushUpdateResult by mutableStateOf(false)
-    private var nightPushUpdateResult by mutableStateOf(false)
-    var apiResultState = MutableStateFlow(
-        userUpdateResult && dayPushUpdateResult && nightPushUpdateResult
+    var apiUserUpdateResultState = MutableStateFlow(
+        false
+    )
+    var apiPushResultState = MutableStateFlow(
+        false
     )
 
     init {
@@ -49,46 +50,29 @@ class TermsViewModel @Inject constructor(
                     token = userLocalToken.value?.token ?: ""
                 )
             }.onSuccess {
-                userUpdateResult = true
-                if (userUpdateResult && dayPushUpdateResult && nightPushUpdateResult) {
-                    apiResultState.emit(true)
-                }
+                apiUserUpdateResultState.emit(true)
             }.onFailure {
 
             }
         }
     }
 
-    fun patchPushSettingNight() {
+    fun patchPushSetting(night: Boolean, day: Boolean) {
         viewModelScope.launch {
             kotlin.runCatching {
                 repository.patchPushSetting(
                     token = userLocalToken.value?.token ?: "",
                     id = userId ?: 0,
-                    type = AlarmType.night_alarm
+                    alarm = Alarm(
+                        dayAlarm = day,
+                        freeTicketsGone = false,
+                        newVotes = false,
+                        nightAlarm = night,
+                        timeEvent = false
+                    )
                 )
             }.onSuccess {
-                nightPushUpdateResult = true
-                if (userUpdateResult && dayPushUpdateResult && nightPushUpdateResult) {
-                    apiResultState.emit(true)
-                }
-            }
-        }
-    }
-
-    fun patchPushSettingDay() {
-        viewModelScope.launch {
-            kotlin.runCatching {
-                repository.patchPushSetting(
-                    token = userLocalToken.value?.token ?: "",
-                    id = userId ?: 0,
-                    type = AlarmType.day_alarm
-                )
-            }.onSuccess {
-                dayPushUpdateResult = true
-                if (userUpdateResult && dayPushUpdateResult && nightPushUpdateResult) {
-                    apiResultState.emit(true)
-                }
+                apiPushResultState.emit(true)
             }
         }
     }

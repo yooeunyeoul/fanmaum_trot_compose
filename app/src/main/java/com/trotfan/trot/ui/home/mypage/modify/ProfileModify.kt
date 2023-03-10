@@ -30,7 +30,9 @@ import com.trotfan.trot.ui.home.mypage.modify.component.ProfileInfo
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Primary500
+import com.trotfan.trot.ui.utils.clearDataStore
 import com.trotfan.trot.ui.utils.clickable
+import com.zoyi.channel.plugin.android.ChannelIO
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -108,9 +110,8 @@ fun ProfileModify(
                     onPositive = {
                         viewModel.postLogout(result = {
                             coroutineScope.launch {
-                                context.userTokenStore.updateData {
-                                    it.toBuilder().setToken("").build()
-                                }
+                                clearDataStore(context, coroutineScope)
+                                ChannelIO.shutdown()
                                 when (viewModel.userIdp.value) {
                                     //Google 로그아웃
                                     1 -> {

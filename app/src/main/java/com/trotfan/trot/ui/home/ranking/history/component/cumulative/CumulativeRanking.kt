@@ -37,7 +37,7 @@ fun CumulativeRanking(
     }
 
     Column {
-        CustomTopAppBar(title = "$starName 일간누적순위", icon = R.drawable.icon_back) {
+        CustomTopAppBar(title = "$starName 일간 누적 순위", icon = R.drawable.icon_back) {
             navController?.popBackStack()
         }
 

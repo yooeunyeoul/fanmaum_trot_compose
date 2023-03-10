@@ -1,8 +1,11 @@
 package com.trotfan.trot.ui.utils
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.compiler.plugins.kotlin.ComposeFqNames.remember
 import androidx.compose.foundation.LocalIndication
@@ -10,27 +13,42 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.edit
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
+import com.trotfan.trot.BaseApplication
+import com.trotfan.trot.datastore.*
+import com.trotfan.trot.ui.home.vote.voteTopShareText
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -76,20 +94,21 @@ fun addDynamicLink(
     titleText: String,
     uri: String,
     descriptionText: String,
-    packageName: String,
     onSuccess: (ShortDynamicLink) -> Unit
 ) {
     Firebase.dynamicLinks.shortLinkAsync {
         link = Uri.parse(uri)
-        domainUriPrefix = "https://fanwoori.page.link"
-        androidParameters(packageName) {}
-        iosParameters("com.trotfan.trotDev") {}
+        domainUriPrefix = "https://fanmaum.page.link"
+        androidParameters("com.trotfan.trot") {}
+        iosParameters("com.trotfan.trot") {}
         socialMetaTagParameters {
             title = titleText
             description = descriptionText
         }
     }.addOnSuccessListener {
         onSuccess(it)
+    }.addOnFailureListener {
+        Timber.d(it.message.toString())
     }
 }
 
@@ -156,7 +175,8 @@ fun getTime(
     targetDay: Int? = null,
     targetSecond: Int? = null,
     targetHour: Int = 23,
-    targetMinute: Int = 30
+    targetMinute: Int = 30,
+    application: BaseApplication
 
 ): Int {
     val cal = Calendar.getInstance()
@@ -171,14 +191,22 @@ fun getTime(
     }
     cal.set(Calendar.HOUR_OF_DAY, targetHour)
     cal.set(Calendar.MINUTE, targetMinute)
-    val diff = abs(cal.timeInMillis - System.currentTimeMillis()) / 1000;
+    val diff = abs(
+        cal.timeInMillis.minus(
+            application.kronosClock.getCurrentNtpTimeMs() ?: 0
+        )
+    ) / 1000;
     return diff.toInt()
 }
 
 fun getTime(
-    targetMilliSecond: Long?
+    targetMilliSecond: Long?,
+    application: BaseApplication
 ): Int {
-    val diff = abs((targetMilliSecond ?: 0)).minus(System.currentTimeMillis()) / 1000;
+    val diff = abs(
+        (targetMilliSecond
+            ?: 0).minus(application.kronosClock.getCurrentNtpTimeMs() ?: 0) / 1000
+    )
     return diff.toInt()
 }
 
@@ -190,6 +218,15 @@ fun convertStringToTime(date: String): Long {
         0
     }
 }
+
+fun Modifier.textBrush(brush: Brush) = this
+    .graphicsLayer(alpha = 0.99f)
+    .drawWithCache {
+        onDrawWithContent {
+            drawContent()
+            drawRect(brush, blendMode = BlendMode.SrcAtop)
+        }
+    }
 
 val CHO = listOf(
     "ㄱ",
@@ -224,6 +261,20 @@ fun getShareChar(char: Char): String {
     }
 }
 
+fun clearDataStore(context: Context, coroutineScope: CoroutineScope) {
+    coroutineScope.launch {
+        context.run {
+            AppVersionManager.edit { it.clear() }
+            RankMainDataStore.edit { it.clear() }
+            UserInfoDataStore.edit { it.clear() }
+            VoteMainDataStore.edit { it.clear() }
+            dateManager.updateData { it.toBuilder().clear().build() }
+            userIdStore.updateData { it.toBuilder().clear().build() }
+            userTokenStore.updateData { it.toBuilder().clear().build() }
+        }
+    }
+}
+
 internal interface MultipleEventsCutter {
     fun processEvent(event: () -> Unit)
 
@@ -250,3 +301,35 @@ private class MultipleEventsCutterImpl : MultipleEventsCutter {
 object NumberComma {
     val decimalFormat = DecimalFormat("#,###")
 }
+
+@Composable
+fun getActivity() = LocalContext.current as ComponentActivity
+
+@Composable
+inline fun <reified VM : ViewModel> composableActivityViewModel(
+    key: String? = null,
+    factory: ViewModelProvider.Factory? = null
+): VM = viewModel(
+    VM::class.java,
+    getActivity(),
+    key,
+    factory
+)
+
+@Composable
+fun Lifecycle.observeAsState(): State<Lifecycle.Event> {
+    val state = remember { mutableStateOf(Lifecycle.Event.ON_ANY) }
+    DisposableEffect(this) {
+        val observer = LifecycleEventObserver { _, event ->
+            state.value = event
+        }
+        this@observeAsState.addObserver(observer)
+        onDispose {
+            this@observeAsState.removeObserver(observer)
+        }
+    }
+    return state
+}
+
+@Composable
+fun dpToSp(dp: Dp) = with(LocalDensity.current) { dp.toSp() }

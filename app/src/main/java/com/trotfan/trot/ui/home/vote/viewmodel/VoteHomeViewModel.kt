@@ -4,10 +4,12 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.trotfan.trot.BaseApplication
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.datastore.*
-import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.FavoriteStarInfo
+import com.trotfan.trot.model.Tickets
 import com.trotfan.trot.model.VoteData
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.network.ResultCodeStatus
@@ -38,16 +40,17 @@ enum class Gender {
 @HiltViewModel
 class VoteHomeViewModel @Inject constructor(
     private val repository: VoteRepository,
-    application: Application
+    application: Application,
+    private val loadingHelper: LoadingHelper
 ) : BaseViewModel(application) {
 
 
     lateinit var mBoardSocket: Socket
     lateinit var mRankSocket: Socket
 
-    var userInfoManager: UserInfoManager
-    var voteMainManager: VoteMainManager
-    var userTicketManager: UserTicketManager
+    lateinit var userInfoManager: UserInfoManager
+    lateinit var voteMainManager: VoteMainManager
+    lateinit var userTicketManager: UserTicketManager
 
     private val context = getApplication<Application>()
 
@@ -89,6 +92,10 @@ class VoteHomeViewModel @Inject constructor(
         MutableStateFlow(0)
     val ticks = _ticks.asStateFlow()
 
+//    private val _tickets =
+//        MutableStateFlow<Tickets?>(null)
+//    val tickets = _tickets.asStateFlow()
+
     private val dummyData = VoteData(quantity = -1, star_name = "null", user_name = "null")
 
     val gender: StateFlow<Gender>
@@ -100,19 +107,21 @@ class VoteHomeViewModel @Inject constructor(
 
     var today = 1000L
 
-    var socketUrl = "http://3.34.129.230:3000"
+    var socketUrl = "https://socket.fanmaum.com"
 
 
     init {
-        getVoteList()
-        userInfoManager = UserInfoManager(context.UserInfoDataStore)
-        voteMainManager = VoteMainManager(context.VoteMainDataStore)
-        userTicketManager = UserTicketManager(context.UserTicketStore)
-        connectBoardSocket()
-        connectRankSocket()
-        getStarRank()
-        tickRemainingTime()
-        observeGender()
+        viewModelScope.launch {
+            getVoteList()
+            userInfoManager = UserInfoManager(context.UserInfoDataStore)
+            voteMainManager = VoteMainManager(context.VoteMainDataStore)
+            userTicketManager = UserTicketManager(context.UserTicketStore)
+            connectBoardSocket()
+            connectRankSocket()
+            getStarRank()
+            tickRemainingTime()
+            observeGender()
+        }
     }
 
     private fun observeGender() {
@@ -125,6 +134,7 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun getVoteList() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             val response = repository.getVote()
             val voteMainStars = response?.data?.voteMainStars
             val menHashMap =
@@ -134,11 +144,13 @@ class VoteHomeViewModel @Inject constructor(
             _voteId.emit(response.data.id)
             _menHashMap.emit(menHashMap)
             _womenHashMap.emit(womenHashMap)
+            loadingHelper.hideProgress()
         }
     }
 
     private fun getStarRank() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             userInfoManager?.favoriteStarIdFlow?.collectLatest {
                 val response = repository.getStarRank(it ?: 2)
                 when (response.result.code) {
@@ -149,12 +161,14 @@ class VoteHomeViewModel @Inject constructor(
                         _favoriteStar.emit(response.data ?: FavoriteStarInfo())
                     }
                 }
+                loadingHelper.hideProgress()
             }
         }
     }
 
     fun getVoteTickets(purchaseHelper: PurchaseHelper) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     repository.getVoteTickets(
@@ -166,17 +180,19 @@ class VoteHomeViewModel @Inject constructor(
                     when (response.result.code) {
                         ResultCodeStatus.SuccessWithData.code -> {
                             userTicketManager.storeUserTicket(
-                                response.data?.expired?.unlimited ?: 0,
-                                response.data?.expired?.today ?: 0
+                                response.data?.unlimited ?: 0,
+                                response.data?.limited ?: 0
                             )
-                            purchaseHelper.refreshTickets(response.data?.expired ?: Expired())
+//                            _tickets.emit(response.data)
                             purchaseHelper.closeApiCall()
                         }
                         ResultCodeStatus.Fail.code -> {
                             Log.e("VoteHomeViewModel", response.result.message.toString())
                         }
                     }
+                    loadingHelper.hideProgress()
                 }.onFailure {
+                    loadingHelper.hideProgress()
                     Log.e("VoteHomeViewModel", it.message.toString())
                 }
             }
@@ -386,12 +402,13 @@ class VoteHomeViewModel @Inject constructor(
 
     private fun tickRemainingTime() {
         viewModelScope.launch(Dispatchers.IO) {
-            _ticks.value = getTime(targetSecond = 0)
+            _ticks.value = getTime(targetSecond = 0, application = context as BaseApplication)
             while (true) {
                 delay(1000)
                 val tick = _ticks.value.minus(1)
                 if (tick < 0) {
-                    _ticks.value = getTime(targetSecond = 0)
+                    _ticks.value =
+                        getTime(targetSecond = 0, application = context as BaseApplication)
                 } else {
                     _ticks.value = tick
                 }

@@ -1,11 +1,10 @@
 package com.trotfan.trot.network.impl
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.response.CommonResponse
+import com.trotfan.trot.ui.signup.viewmodel.FlavorStatus
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -19,13 +18,15 @@ import javax.inject.Inject
 class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) : SignUpService {
     @OptIn(InternalAPI::class)
     override suspend fun requestCertificationCode(
-        phoneNumber: String
+        phoneNumber: String,
+        version: FlavorStatus
     ): CommonResponse<SmsAuth> {
         return httpClient.post {
             url(HttpRoutes.SMS)
             contentType(ContentType.Application.Json)
             val json = JSONObject()
             json.put("to", phoneNumber)
+            json.put("version", version)
             body = (json.toString())
         }.body()
     }
@@ -51,7 +52,6 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
         nickName: String?,
         starId: Int?,
         phoneNumber: String?,
-        redeemCode: String?,
         agrees_terms: Boolean?,
         token: String
     ): CommonResponse<Unit> {
@@ -71,13 +71,28 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
             if (phoneNumber != null) {
                 json.put("phone_number", phoneNumber)
             }
-            if (redeemCode != null) {
-                json.put("redeem_code", redeemCode)
-            }
 
             agrees_terms?.let {
                 json.put("agrees_terms", it)
             }
+            body = (json.toString())
+        }.body()
+    }
+
+    @OptIn(InternalAPI::class)
+    override suspend fun postUserRedeemCode(
+        userId: Long,
+        redeemCode: String?,
+        token: String
+    ): CommonResponse<Unit> {
+        return httpClient.post(HttpRoutes.USERS + "/${userId}/code") {
+            contentType(ContentType.Application.Json)
+            header(
+                "Authorization",
+                "Bearer $token"
+            )
+            val json = JSONObject()
+            json.put("code", redeemCode)
             body = (json.toString())
         }.body()
     }

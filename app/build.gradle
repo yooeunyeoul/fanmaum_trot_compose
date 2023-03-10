@@ -7,6 +7,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'kotlinx-serialization'
     id "com.google.protobuf" version "0.8.17"
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 android {
@@ -14,9 +15,9 @@ android {
 
     defaultConfig {
         applicationId "com.trotfan.trot"
-        minSdk 24
+        minSdk 26
         targetSdk 33
-        versionCode 55
+        versionCode 57
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -39,9 +40,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            debuggable true
         }
     }
 
@@ -61,7 +64,7 @@ android {
         }
         create("product") {
             manifestPlaceholders["appLabel"] = "팬마음"
-            manifestPlaceholders["kakaoKey"] = "kakaoa85178977eed8c1ed9dae2e47d89a254"
+            manifestPlaceholders["kakaoKey"] = "kakao662e4ff94a4caa7b7dabbf3be586f10a"
         }
     }
 
@@ -78,8 +81,8 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerVersion "1.7.0"
-        kotlinCompilerExtensionVersion "1.2.0"
+        kotlinCompilerVersion "$compose_compiler_version"
+        kotlinCompilerExtensionVersion "$compose_compiler_extension_version"
     }
 
 }
@@ -89,7 +92,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     //firebase
@@ -124,12 +127,9 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
 
-    //Compose
-    def compose_version = "1.4.0-alpha04"
-
     implementation "androidx.navigation:navigation-compose:2.5.3"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
-    implementation "androidx.compose.material3:material3:1.1.0-alpha04"
+    implementation "androidx.compose.material3:material3:$compose_material_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
@@ -143,7 +143,7 @@ dependencies {
 
     //로그인
     implementation "com.kakao.sdk:v2-user:2.11.0"
-    implementation 'com.google.android.gms:play-services-auth:20.4.0'
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
 
     //Datastore
     implementation "androidx.datastore:datastore:1.0.0"
@@ -176,6 +176,43 @@ dependencies {
     implementation "com.airbnb.android:lottie-compose:5.2.0"
 
     implementation "com.android.billingclient:billing:5.1.0"
+
+    implementation project(path: ':roullete')
+
+    //광고
+    implementation 'com.ironsource.sdk:mediationsdk:7.2.7'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.google.android.gms:play-services-appset:16.0.2'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+    implementation 'com.google.android.gms:play-services-basement:18.1.0'
+    implementation 'com.ironsource.adapters:adcolonyadapter:4.3.13'
+    implementation 'com.adcolony:sdk:4.8.0'
+    implementation 'com.google.android.gms:play-services-ads:21.5.0'
+    implementation 'com.ironsource.adapters:admobadapter:4.3.34'
+    implementation 'com.ironsource.adapters:applovinadapter:4.3.36'
+    implementation 'com.applovin:applovin-sdk:11.6.1'
+    implementation 'com.ironsource.adapters:facebookadapter:4.3.38'
+    implementation 'com.facebook.android:audience-network-sdk:6.12.0'
+    implementation 'com.ironsource.adapters:pangleadapter:4.3.16'
+    implementation 'com.pangle.global:ads-sdk:4.7.0.9'
+    implementation 'com.ironsource.adapters:tapjoyadapter:4.1.23'
+    implementation 'com.tapjoy:tapjoy-android-sdk:12.11.1'
+    implementation 'com.ironsource.adapters:unityadsadapter:4.3.24'
+    implementation 'com.unity3d.ads:unity-ads:4.4.1'
+    implementation 'com.ironsource.adapters:vungleadapter:4.3.19'
+    implementation 'com.vungle:publisher-sdk-android:6.12.1'
+
+    //채널톡
+    implementation 'io.channel:plugin-android:10.0.7'
+
+    implementation "com.lyft.kronos:kronos-android:0.0.1-alpha11"
+
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    implementation "com.jakewharton.timber:timber:4.7.1"
+
+    // 문자 인증 자동입력
+    implementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
+
 
 }
 

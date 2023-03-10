@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TicketsHistory(
-    val tickets: List<Ticket>,
+    val tickets: List<TicketItem>,
     val meta: Meta
 )
 
 @Serializable
-data class Ticket(
+data class TicketItem(
     @SerializedName("quantity")
     val quantity: Int,
     @SerializedName("created_at")

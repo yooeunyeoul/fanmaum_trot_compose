@@ -52,8 +52,10 @@ import com.trotfan.trot.ui.components.chip.ChipCapsuleImg
 import com.trotfan.trot.ui.home.vote.tabData
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.clickableSingle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.seconds
 
@@ -93,9 +95,19 @@ fun RankHome(
 
         if (isShowingScrollToolTip) {
             val offset = lazyListState?.firstVisibleItemScrollOffset ?: 0
-            if (offset > 150) {
-                viewModel.saveScrollTooltipState(false)
+            when (rankStatus) {
+                RankStatus.Available->{
+                    if (offset > 100) {
+                        viewModel.saveScrollTooltipState(false)
+                    }
+                }
+                RankStatus.UnAvailable->{
+                    if (offset > 0) {
+                        viewModel.saveScrollTooltipState(false)
+                    }
+                }
             }
+
             Log.e("OFFSE", offset.toString())
         }
     })
@@ -106,7 +118,10 @@ fun RankHome(
 
 //        Log.e("screenWidth", screenWidth.toString())
         if (isShowingScrollToolTip) {
-            ChipCapsuleImg()
+            ChipCapsuleImg(
+                modifier = Modifier
+                    .padding(bottom = BottomNavHeight.plus(32.dp))
+            )
         }
         Column(
             Modifier
@@ -136,7 +151,7 @@ fun RankHome(
                             .fillMaxWidth()
                             .background(Color.White)
                     ) {
-                        HorizontalImagePager(scrollState, banners)
+                        HorizontalImagePager(navController, scrollState, banners)
                         LastRankView(navController)
                     }
 
@@ -384,7 +399,7 @@ fun LazyItemScope.NoRankHistory(onNavigateClick: (HomeSections) -> Unit, height:
         )
         Spacer(modifier = Modifier.height(19.dp))
         Text(
-            text = "팬마음 첫 투표 진행중!",
+            text = "팬마음 첫 투표 진행 중!",
             style = FanwooriTypography.subtitle1,
             color = Gray800
         )
@@ -414,7 +429,7 @@ fun LazyItemScope.NoRankHistory(onNavigateClick: (HomeSections) -> Unit, height:
         )
         Spacer(modifier = Modifier.height(32.dp))
         BtnOutlineSecondaryLeftIcon(
-            text = "투표 하러가기",
+            text = "투표하러 가기",
             onClick = { onNavigateClick.invoke(HomeSections.Vote) },
             icon = R.drawable.icon_vote,
             isCircle = false
@@ -426,6 +441,7 @@ fun LazyItemScope.NoRankHistory(onNavigateClick: (HomeSections) -> Unit, height:
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HorizontalImagePager(
+    navigationController: NavController,
     scrollState: ScrollState,
     banners: List<Banner>
 ) {
@@ -490,6 +506,17 @@ fun HorizontalImagePager(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()
+                        .clickableSingle {
+                            if (banners[currentPage].path?.isNotEmpty() == true) {
+                                navigationController.navigate(
+                                    "${Route.WebView.route}/${
+                                        URLEncoder.encode(
+                                            banners[currentPage].path
+                                        )
+                                    }"
+                                )
+                            }
+                        }
                 )
             }
 

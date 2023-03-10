@@ -3,6 +3,7 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 enum class InviteCodeCheckStatus(val code: String) {
     None(""),
-    FirstCharacterError("초대코드는 #으로 시작해요."),
+    FirstCharacterError("초대 코드는 #으로 시작해요."),
     SpecialCharacterEmpty("#을 제외한 특수문자와 공백은 입력할 수 없어요."),
     InvalidCodeError("유효하지 않는 코드에요.")
 }
@@ -25,6 +26,7 @@ enum class InviteCodeCheckStatus(val code: String) {
 @HiltViewModel
 class InvitationViewModel @Inject constructor(
     private val repository: SignUpRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -67,9 +69,10 @@ class InvitationViewModel @Inject constructor(
 
     fun postInviteCode() {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
-                    repository.updateUser(
+                    repository.postUserRedeemCode(
                         userid = it.userId,
                         redeemCode = _inviteCode.value,
                         token = userLocalToken.value?.token ?: ""
@@ -84,6 +87,9 @@ class InvitationViewModel @Inject constructor(
                             else _skipStatus.emit(true)
                         }
                     }
+                    loadingHelper.hideProgress()
+                }.onFailure {
+                    loadingHelper.hideProgress()
                 }
             }
         }

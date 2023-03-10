@@ -22,4 +22,29 @@ class ChargeRepository @Inject constructor(
         packageName: String
     ): CommonResponse<Unit> =
         chargeService.certificationCharge(userToken, userId, productId, purchaseToken, packageName)
+
+    suspend fun checkRoulette(
+        userToken: String,
+        userId: Int,
+    ): CommonResponse<GetLuckyTicket> = chargeService.checkRoulette(userToken, userId)
+
+    suspend fun rewardRoulette(
+        userToken: String,
+        userId: Int,
+    ): CommonResponse<PostLuckyTicket> = chargeService.rewardRoulette(userToken, userId)
+
+    suspend fun getMissions(userToken: String): CommonResponse<MissionState> =
+        chargeService.getMissions(userToken)
+
+    suspend fun postRewardVideo(userToken: String): CommonResponse<RewardTickets> =
+        chargeService.postRewardVideo(userToken = userToken)
+
+    suspend fun postAttendance(userToken: String): CommonResponse<Tickets> =
+        chargeService.postAttendance(userToken = userToken)
+
+    suspend fun postShareStar(userToken: String): CommonResponse<Unit> =
+        chargeService.postShareStar(userToken = userToken)
+
+    suspend fun postMission(userToken: String): CommonResponse<Tickets> =
+        chargeService.postMission(userToken = userToken)
 }

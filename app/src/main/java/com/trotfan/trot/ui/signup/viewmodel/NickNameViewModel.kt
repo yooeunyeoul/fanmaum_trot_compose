@@ -3,6 +3,7 @@ package com.trotfan.trot.ui.signup.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
@@ -25,6 +26,7 @@ enum class NickNameCheckStatus(val message: String) {
 @HiltViewModel
 class NickNameViewModel @Inject constructor(
     private val repository: SignUpRepository,
+    private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -61,6 +63,7 @@ class NickNameViewModel @Inject constructor(
 
     fun checkNickNameApi(nickName: String) {
         viewModelScope.launch {
+            loadingHelper.showProgress()
             context.userIdStore.data.collect {
                 kotlin.runCatching {
                     val response = repository.updateUser(
@@ -80,6 +83,7 @@ class NickNameViewModel @Inject constructor(
                             _nickNameCheckStatus.emit(NickNameCheckStatus.AuthSuccess)
                         }
                     }
+                    loadingHelper.hideProgress()
                 }
             }
         }

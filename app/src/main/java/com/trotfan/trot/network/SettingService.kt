@@ -13,6 +13,6 @@ interface SettingService {
     suspend fun setPushSetting(
         userToken: String,
         userId: Long,
-        alarmType: AlarmType
+        alarm: Alarm
     ): CommonResponse<Unit>
 }

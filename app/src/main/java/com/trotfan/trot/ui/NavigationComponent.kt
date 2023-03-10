@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,15 +14,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.trotfan.trot.PurchaseHelper
-import com.trotfan.trot.model.Expired
 import com.trotfan.trot.model.VoteMainStar
 import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.addHomeGraph
+import com.trotfan.trot.ui.home.charge.mission.AttendanceCheck
+import com.trotfan.trot.ui.home.charge.mission.TodayMission
+import com.trotfan.trot.ui.home.charge.mission.VideoAd
+import com.trotfan.trot.ui.home.charge.mission.luckyRoulette
+import com.trotfan.trot.ui.home.mypage.invite.FriendInvite
 import com.trotfan.trot.ui.home.mypage.modify.ProfileModify
-import com.trotfan.trot.ui.home.mypage.setting.Setting
-import com.trotfan.trot.ui.home.mypage.setting.SettingAccount
-import com.trotfan.trot.ui.home.mypage.setting.SettingPush
-import com.trotfan.trot.ui.home.mypage.setting.SettingSecession
+import com.trotfan.trot.ui.home.mypage.setting.*
 import com.trotfan.trot.ui.home.mypage.votehistory.MyVoteHistory
 import com.trotfan.trot.ui.home.ranking.history.RankingHistory
 import com.trotfan.trot.ui.home.ranking.history.component.cumulative.CumulativeRanking
@@ -31,7 +31,6 @@ import com.trotfan.trot.ui.home.vote.benefits.VoteBenefits
 import com.trotfan.trot.ui.home.vote.viewmodel.VoteHomeViewModel
 import com.trotfan.trot.ui.login.LoginScreen
 import com.trotfan.trot.ui.permission.PermissionAgreement
-import com.trotfan.trot.ui.signup.TermsAgreement
 import com.trotfan.trot.ui.signup.*
 import com.trotfan.trot.ui.webview.PublicWebView
 
@@ -56,14 +55,20 @@ enum class Route(
     Setting(route = "setting"),
     SettingAccount(route = "settingAccount"),
     SettingPush(route = "settingPush"),
-    SettingSecession(route = "SettingSecession")
+    SettingSecession(route = "SettingSecession"),
+    TodayMission(route = "TodayMission"),
+    AttendanceCheck(route = "AttendanceCheck"),
+    VideoAd(route = "VideoAd"),
+    LuckyRoulette(route = "luckyRoulette"),
+    FriendInvite(route = "FriendInvite"),
+    AppInfo(route = "AppInfo")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationComponent(
     navController: NavHostController,
-    onVotingClick: (vote_id: Int, voteTicket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel) -> Unit,
+    onVotingClick: (vote_id: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel) -> Unit,
     onNavigateBottomBar: (HomeSections) -> Unit,
     lazyListStates: HashMap<String, LazyListState>,
     purchaseHelper: PurchaseHelper
@@ -85,8 +90,8 @@ fun NavigationComponent(
             onNavigateBottomBar = {
                 onNavigateBottomBar.invoke(it)
             },
-            onVotingClick = { voteId: Int, voteTicket: Expired, star: VoteMainStar?, viewModel: VoteHomeViewModel ->
-                onVotingClick(voteId, voteTicket, star, viewModel)
+            onVotingClick = { voteId: Int, unlimitedTickets: Long, todayTickets: Long, star: VoteMainStar?, isMyStar: Boolean, isMission: Boolean, voteViewModel: VoteHomeViewModel ->
+                onVotingClick(voteId, unlimitedTickets, todayTickets, star, isMyStar, isMission, voteViewModel)
             },
             navController = navController,
             lazyListState = lazyListStates,
@@ -129,12 +134,10 @@ fun NavigationComponent(
             )
         }
         composable(Route.RankingHistory.route) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                RankingHistory(
-                    navController = navController,
-                    onVotingClick = { onNavigateBottomBar.invoke(HomeSections.Vote) }
-                )
-            }
+            RankingHistory(
+                navController = navController,
+                onVotingClick = { onNavigateBottomBar.invoke(HomeSections.Vote) }
+            )
         }
         composable("${Route.WebView.route}/{uri}", arguments = listOf(
             navArgument(name = "uri") {
@@ -175,7 +178,7 @@ fun NavigationComponent(
             MyVoteHistory(
                 navController = navController,
                 onChargeClick = { onNavigateBottomBar.invoke(HomeSections.Charge) },
-                purchaseHelper= purchaseHelper
+                purchaseHelper = purchaseHelper
             )
         }
         composable(Route.Setting.route) {
@@ -200,16 +203,16 @@ fun NavigationComponent(
             )
         }
         composable(
-            "${Route.PermissionAgreement.route}/{terms}",
+            "${Route.PermissionAgreement.route}/{step}",
             arguments = listOf(
-                navArgument(name = "terms") {
-                    type = NavType.BoolType
+                navArgument(name = "step") {
+                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             PermissionAgreement(
                 navController = navController,
-                backStackEntry.arguments?.getBoolean("terms")
+                backStackEntry.arguments?.getString("step")
             )
         }
         composable(Route.TermsAgreement.route) {
@@ -223,6 +226,39 @@ fun NavigationComponent(
                     }
                 }
             )
+        }
+        composable(Route.TodayMission.route) {
+            TodayMission(
+                navController = navController
+            )
+        }
+        composable(Route.AttendanceCheck.route) {
+            AttendanceCheck(
+                navController = navController
+            )
+        }
+        composable("${Route.VideoAd.route}/{count}", arguments = listOf(
+            navArgument(name = "count") {
+                type = NavType.IntType
+            }
+        )) { backStackEntry ->
+            VideoAd(
+                navController = navController,
+                backStackEntry.arguments?.getInt("count")
+            )
+        }
+        composable(Route.LuckyRoulette.route) {
+            luckyRoulette(
+                navController = navController
+            )
+        }
+        composable(Route.FriendInvite.route) {
+            FriendInvite(
+                navController = navController
+            )
+        }
+        composable(Route.AppInfo.route) {
+            AppInfo(navController = navController)
         }
     }
 }

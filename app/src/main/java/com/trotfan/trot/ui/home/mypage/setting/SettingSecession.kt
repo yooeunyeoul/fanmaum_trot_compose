@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -39,8 +38,10 @@ import com.trotfan.trot.ui.components.dialog.HorizontalDialog
 import com.trotfan.trot.ui.components.dialog.VerticalDialog
 import com.trotfan.trot.ui.components.navigation.AppbarMLeftIcon
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.clearDataStore
 import com.trotfan.trot.ui.utils.clickable
 import com.trotfan.trot.ui.utils.clickableSingle
+import com.zoyi.channel.plugin.android.ChannelIO
 import kotlinx.coroutines.launch
 
 @Composable
@@ -196,23 +197,23 @@ fun SettingSecession(
                         modifier = Modifier.padding(start = 24.dp)
                     )
                     Spacer(modifier = Modifier.height(32.dp))
-                    SecessionCheckText(
-                        number = "1.",
+                    HyphenText(
+                        first = "1.",
                         text = "탈퇴일로부터 90일 동안 동일한 계정, 닉네임, 인증된 번호로 재가입할 수 없어요."
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    SecessionCheckText(
-                        number = "2.",
+                    HyphenText(
+                        first = "2.",
                         text = "탈퇴 후 90일이 지나고 동일한 계정으로 재가입하더라도 탈퇴 전에 사용하던 모든 정보는 복구할 수 없어요."
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    SecessionCheckText(
-                        number = "3.",
+                    HyphenText(
+                        first = "3.",
                         text = "탈퇴 후 삭제되는 정보 : 90일이 지나면 개인정보, 보유 중인 재화내역은 완전히 삭제돼요."
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    SecessionCheckText(
-                        number = "4.",
+                    HyphenText(
+                        first = "4.",
                         text = "탈퇴 후 남아있는 정보 : 투표 참여 내역은 삭제되지 않아요."
                     )
                     Spacer(modifier = Modifier.height(32.dp))
@@ -223,13 +224,13 @@ fun SettingSecession(
                         modifier = Modifier.padding(start = 24.dp)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    SecessionCheckText(
-                        number = "-",
+                    HyphenText(
+                        first = "-",
                         text = "유료 결제를 통해 충전한 재화는 탈퇴 시 복구나 환불이 어렵습니다."
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    SecessionCheckText(
-                        number = "-",
+                    HyphenText(
+                        first = "-",
                         text = "개인정보처리 방침 제 5조(개인정보 및 이용기간)에 따라 3개월 분리 보관 후 파기하며, 이외 용도로 이용하지 않습니다."
                     )
                     Spacer(modifier = Modifier.height(32.dp))
@@ -360,17 +361,9 @@ fun SettingSecession(
 //                                secessionConfirmDialogState = false
                             }
                         }
-                        context.userIdStore.updateData {
-                            it.toBuilder().setUserId(0).build()
-                        }
-                        context.userTokenStore.updateData {
-                            it.toBuilder().setToken("").build()
-                        }
+                        clearDataStore(context, coroutineScope)
+                        ChannelIO.shutdown()
                         signOutClick.invoke()
-//                        settingViewModel.signOut(
-//                            reason = if (isEtc) 1 else selectedNumber,
-//                            etc = if (isEtc) etcText else null
-//                        )
                     }
                 }
             )
@@ -379,21 +372,21 @@ fun SettingSecession(
 }
 
 @Composable
-fun SecessionCheckText(number: String, text: String) {
+fun HyphenText(first: String, text: String, color: Color? = null) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp)
     ) {
         Text(
-            text = number,
+            text = first,
             style = FanwooriTypography.caption1,
-            color = Gray800,
+            color = color ?: Gray800,
             modifier = Modifier.width(16.dp),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = text, style = FanwooriTypography.caption1, color = Gray800)
+        Text(text = text, style = FanwooriTypography.caption1, color = color ?: Gray800)
     }
 }
 

@@ -70,8 +70,7 @@ fun HeaderVoteState(
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(72.dp)
-                .padding(start = 24.dp, end = 24.dp),
+                .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -80,7 +79,7 @@ fun HeaderVoteState(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "일일순위",
+                    text = "일일 순위",
                     style = FanwooriTypography.body5,
                     color = Gray900,
                     fontSize = 17.sp,
@@ -109,7 +108,7 @@ fun HeaderVoteState(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "${month}월 현재순위",
+                    text = "${month}월 현재 순위",
                     style = FanwooriTypography.body5,
                     color = Gray900,
                     fontSize = 17.sp,

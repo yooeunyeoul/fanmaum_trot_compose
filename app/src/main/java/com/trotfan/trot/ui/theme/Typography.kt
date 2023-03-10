@@ -14,10 +14,12 @@ class Typography internal constructor(
     val h1: TextStyle,
     val h2: TextStyle,
     val h3: TextStyle,
+    val h4: TextStyle,
     val subtitle1: TextStyle,
     val subtitle2: TextStyle,
     val subtitle3: TextStyle,
     val subtitle4: TextStyle,
+    val subtitle5: TextStyle,
     val body1: TextStyle,
     val body2: TextStyle,
     val body3: TextStyle,
@@ -46,6 +48,11 @@ class Typography internal constructor(
             fontSize = 30.sp,
             letterSpacing = (-1).sp
         ),
+        h4: TextStyle = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 35.sp,
+            letterSpacing = (-1).sp
+        ),
         subtitle1: TextStyle = TextStyle(
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
@@ -65,6 +72,11 @@ class Typography internal constructor(
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             letterSpacing = (-0.25).sp
+        ),
+        subtitle5: TextStyle = TextStyle(
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 26.sp,
+            letterSpacing = (-0.7).sp
         ),
         body1: TextStyle = TextStyle(
             fontWeight = FontWeight.Normal,
@@ -120,10 +132,12 @@ class Typography internal constructor(
         h1 = h1.withDefaultFontFamily(defaultFontFamily),
         h2 = h2.withDefaultFontFamily(defaultFontFamily),
         h3 = h3.withDefaultFontFamily(defaultFontFamily),
+        h4 = h4.withDefaultFontFamily(defaultFontFamily),
         subtitle1 = subtitle1.withDefaultFontFamily(defaultFontFamily),
         subtitle2 = subtitle2.withDefaultFontFamily(defaultFontFamily),
         subtitle3 = subtitle3.withDefaultFontFamily(defaultFontFamily),
         subtitle4 = subtitle4.withDefaultFontFamily(defaultFontFamily),
+        subtitle5 = subtitle5.withDefaultFontFamily(defaultFontFamily),
         body1 = body1.withDefaultFontFamily(defaultFontFamily),
         body2 = body2.withDefaultFontFamily(defaultFontFamily),
         body3 = body3.withDefaultFontFamily(defaultFontFamily),

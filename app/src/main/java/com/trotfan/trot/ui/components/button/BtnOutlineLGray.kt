@@ -1,5 +1,6 @@
 package com.trotfan.trot.ui.components.button
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.trotfan.trot.ui.theme.*
 
@@ -34,6 +36,7 @@ fun BtnOutlineLGray(
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(28.dp))
+            .background(Color.White)
             .border(
                 1.dp, if (enabled) {
                     if (isPressed) Gray500 else Gray300

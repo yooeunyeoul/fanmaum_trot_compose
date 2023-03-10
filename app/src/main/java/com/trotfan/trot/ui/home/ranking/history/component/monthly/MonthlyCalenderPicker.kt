@@ -30,7 +30,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MonthlyCalenderPicker(
@@ -130,7 +129,6 @@ fun MonthlyCalenderPicker(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun NumberPickerComponent(
     context: Context,
@@ -176,7 +174,6 @@ fun PickerChip(text: String) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
