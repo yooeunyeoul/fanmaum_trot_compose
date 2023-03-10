@@ -13,9 +13,9 @@ class SignUpRepository @Inject constructor(
 ) {
     suspend fun requestSmsCertification(
         phoneNumber: String,
-        version: FlavorStatus
+        hashKey: String
     ): CommonResponse<SmsAuth> =
-        service.requestCertificationCode(phoneNumber,version)
+        service.requestCertificationCode(phoneNumber, hashKey)
 
     suspend fun updateUser(
         userid: Long,

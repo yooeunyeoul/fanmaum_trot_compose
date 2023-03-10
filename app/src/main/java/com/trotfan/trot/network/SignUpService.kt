@@ -7,7 +7,7 @@ import com.trotfan.trot.ui.signup.viewmodel.FlavorStatus
 interface SignUpService {
     suspend fun requestCertificationCode(
         phoneNumber: String,
-        version: FlavorStatus
+        hashKey: String
     ): CommonResponse<SmsAuth>
 
     suspend fun getStarList(

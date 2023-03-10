@@ -4,7 +4,6 @@ import com.trotfan.trot.model.*
 import com.trotfan.trot.network.HttpRoutes
 import com.trotfan.trot.network.SignUpService
 import com.trotfan.trot.network.response.CommonResponse
-import com.trotfan.trot.ui.signup.viewmodel.FlavorStatus
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -19,14 +18,14 @@ class SignUpServiceImpl @Inject constructor(private val httpClient: HttpClient) 
     @OptIn(InternalAPI::class)
     override suspend fun requestCertificationCode(
         phoneNumber: String,
-        version: FlavorStatus
+        hashKey: String
     ): CommonResponse<SmsAuth> {
         return httpClient.post {
             url(HttpRoutes.SMS)
             contentType(ContentType.Application.Json)
             val json = JSONObject()
             json.put("to", phoneNumber)
-            json.put("version", version)
+            json.put("hash_key", hashKey)
             body = (json.toString())
         }.body()
     }

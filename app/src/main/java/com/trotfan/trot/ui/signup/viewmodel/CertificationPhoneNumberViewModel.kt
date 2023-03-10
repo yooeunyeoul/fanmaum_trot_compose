@@ -1,16 +1,15 @@
 package com.trotfan.trot.ui.signup.viewmodel
 
+import AppSignatureHelper
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.phone.SmsRetriever
-import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.BaseViewModel
-import com.trotfan.trot.ui.FanwooriApp
 import com.trotfan.trot.ui.utils.SmsReceiver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -59,17 +58,13 @@ enum class CertificationNumberCheckStatus(
 
 }
 
-enum class FlavorStatus {
-    PLAYSTORE, DEBUG, QA, RELEASE
-}
-
-
 @HiltViewModel
 class CertificationPhoneNumberViewModel @Inject constructor(
     private val repository: SignUpRepository,
     private val loadingHelper: LoadingHelper,
     application: Application
 ) : BaseViewModel(application) {
+
 
     private val context = getApplication<Application>()
 
@@ -134,20 +129,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
             try {
                 val response = repository.requestSmsCertification(
                     phoneNumber = phoneNumber,
-                    version = when (BuildConfig.FLAVOR) {
-                        "dev" -> {
-                            FlavorStatus.DEBUG
-                        }
-                        "qa" -> {
-                            FlavorStatus.QA
-                        }
-                        "product" -> {
-                            FlavorStatus.PLAYSTORE
-                        }
-                        else -> {
-                            FlavorStatus.PLAYSTORE
-                        }
-                    }
+                    hashKey = AppSignatureHelper(context).appSignatures.toString()
                 )
                 when (response.result.code) {
                     ResultCodeStatus.SuccessWithData.code -> {
