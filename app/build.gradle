@@ -17,7 +17,7 @@ android {
         applicationId "com.trotfan.trot"
         minSdk 26
         targetSdk 33
-        versionCode 58
+        versionCode 61
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

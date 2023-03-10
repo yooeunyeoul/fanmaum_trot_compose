@@ -1,5 +1,6 @@
 package com.trotfan.trot.model
 
+import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,6 +23,7 @@ data class Star(
     val gender: Int
 )
 
+@Keep
 @Serializable
 data class VoteMainStar(
     val id: Int? = null,

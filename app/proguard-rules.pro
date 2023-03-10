@@ -87,3 +87,8 @@
 
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+
+
+-keep class com.google.gson.examples.android.model.** { <fields>; }
+#-keep class com.trotfan.trot.model.VoteData { <fields>; }
+
