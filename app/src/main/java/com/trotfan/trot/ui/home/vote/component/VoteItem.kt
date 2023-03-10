@@ -65,13 +65,13 @@ fun VoteItem(
             .padding(
                 top = if (beforeRank || !isTop3) 12.dp else 16.dp,
                 bottom = if (beforeRank || !isTop3) 12.dp else 16.dp,
-                start = 25.dp,
+                start = 8.dp,
                 end = 24.dp
             )
     ) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(
-                Modifier.width(24.dp),
+                Modifier.width(56.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (!beforeRank) {
@@ -109,7 +109,7 @@ fun VoteItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .padding(start = 23.5.dp, end = 12.dp)
+                    .padding(end = 12.dp)
                     .size(if (isMyStar) 88.dp else if (beforeRank || !isTop3) 64.dp else 88.dp)
                     .clip(CircleShape)
                     .border(
