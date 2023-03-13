@@ -59,6 +59,14 @@ class UserInfoManager(
         }
     }
 
+    suspend fun setUserNickname(
+        nickname: String
+    ) {
+        dataStore.edit {
+            it[USER_NAME] = nickname
+        }
+    }
+
 
     suspend fun updateUserTotalUsedVote(
         userTotalUsedVote: Long

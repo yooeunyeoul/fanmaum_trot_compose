@@ -244,13 +244,12 @@ fun FriendInvite(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(82.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(Gray50),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f).padding(top = 16.dp, bottom = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = "초대한 친구", style = FanwooriTypography.body3, color = Gray700)
@@ -272,7 +271,7 @@ fun FriendInvite(
                     )
 
                     Column(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f).padding(top = 16.dp, bottom = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = "총 적립 투표권", style = FanwooriTypography.body3, color = Gray700)
