@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -13,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.trotfan.trot.datastore.UserInfoDataStore
+import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
@@ -24,6 +27,7 @@ import com.trotfan.trot.ui.theme.FanwooriTypography
 import com.trotfan.trot.ui.theme.Gray500
 import com.trotfan.trot.ui.theme.Gray700
 import com.trotfan.trot.ui.theme.Gray900
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -35,6 +39,9 @@ fun SettingNicknameScreen(
     val nickCheckState by viewModel.nickNameCheckStatus.collectAsState()
     val inputNickname by viewModel.inputNickName.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
+    val userInfoManager = UserInfoManager(context.UserInfoDataStore)
+    val coroutineScope = rememberCoroutineScope()
 
 
     Column(
@@ -66,7 +73,6 @@ fun SettingNicknameScreen(
                 errorStatus = (nickCheckState != NickNameCheckStatus.None && nickCheckState != NickNameCheckStatus.AuthSuccess),
                 positiveStatus = nickCheckState == NickNameCheckStatus.AuthSuccess,
                 onValueChange = {
-//                    inputText = it
                     viewModel.checkNickNameLocal(it)
                 },
                 errorMessage = nickCheckState.message,
@@ -112,9 +118,12 @@ fun SettingNicknameScreen(
             enabled = nickCheckState == NickNameCheckStatus.AuthSuccess,
             modifier = Modifier.weight(1f)
         ) {
-            navController.navigate(Route.CertificationPhoneNumber.route) {
-                popUpTo(Route.SettingNickname.route) {
-                    inclusive = true
+            coroutineScope.launch {
+                userInfoManager.setUserNickname(inputNickname)
+                navController.navigate(Route.CertificationPhoneNumber.route) {
+                    popUpTo(Route.SettingNickname.route) {
+                        inclusive = true
+                    }
                 }
             }
         }

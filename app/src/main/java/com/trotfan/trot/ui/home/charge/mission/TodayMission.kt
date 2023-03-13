@@ -171,7 +171,8 @@ fun TodayMission(
                     Box(
                         modifier = Modifier
                             .width(296.dp)
-                            .clip(RoundedCornerShape(28.dp))
+                            .height(59.dp)
+                            .clip(RoundedCornerShape(29.5.dp))
                             .alpha(0.93f)
                             .background(
                                 if (rewardedState == MissionRewardState.Rewarded) Gray300 else Color.White

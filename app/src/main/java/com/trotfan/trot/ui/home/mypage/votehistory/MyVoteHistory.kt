@@ -309,7 +309,6 @@ fun HistoryItem(item: TicketItem, position: Int, beforeItem: TicketItem?) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(72.dp)
                 .background(Color.White)
                 .padding(start = 24.dp, end = 24.dp)
         ) {
@@ -344,6 +343,7 @@ fun HistoryItem(item: TicketItem, position: Int, beforeItem: TicketItem?) {
             Column(
                 modifier = Modifier
                     .align(CenterVertically)
+                    .padding(top = 16.dp, bottom = 16.dp)
             ) {
                 Text(
                     text = if (isPlus) "+${decimal.format(item.quantity)}" else decimal.format(
