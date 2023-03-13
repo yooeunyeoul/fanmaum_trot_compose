@@ -93,15 +93,16 @@ fun RankHome(
 
     LaunchedEffect(key1 = lazyListState?.isScrollInProgress, block = {
 
-        if (isShowingScrollToolTip) {
+
+        if (isShowingScrollToolTip && rankStatus == RankStatus.Available) {
             val offset = lazyListState?.firstVisibleItemScrollOffset ?: 0
             when (rankStatus) {
-                RankStatus.Available->{
+                RankStatus.Available -> {
                     if (offset > 100) {
                         viewModel.saveScrollTooltipState(false)
                     }
                 }
-                RankStatus.UnAvailable->{
+                RankStatus.UnAvailable -> {
                     if (offset > 0) {
                         viewModel.saveScrollTooltipState(false)
                     }
@@ -117,12 +118,13 @@ fun RankHome(
         val screenWidth = maxWidth
 
 //        Log.e("screenWidth", screenWidth.toString())
-        if (isShowingScrollToolTip) {
+        if (isShowingScrollToolTip && rankStatus == RankStatus.Available) {
             ChipCapsuleImg(
                 modifier = Modifier
                     .padding(bottom = BottomNavHeight.plus(32.dp))
             )
         }
+
         Column(
             Modifier
                 .fillMaxSize()
@@ -412,7 +414,7 @@ fun LazyItemScope.NoRankHistory(onNavigateClick: (HomeSections) -> Unit, height:
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "매월 2일부터 공개",
+                text = "다음 날부터 공개",
                 style = FanwooriTypography.button1,
                 color = Primary500
             )
