@@ -114,7 +114,7 @@ fun VoteItem(
                     .clip(CircleShape)
                     .border(
                         width = if (beforeRank || !isTop3) 1.dp else 4.dp,
-                        brush = if (isTop3) gradient01 else if (isMyStar) Brush.linearGradient(
+                        brush = if (isTop3 && star?.votes != 0) gradient01 else if (isMyStar) Brush.linearGradient(
                             1f to Color(
                                 0xFFFDEAEB
                             ), 1f to Color(0xFFFDEAEB)

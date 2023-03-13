@@ -75,7 +75,7 @@ fun NavigationComponent(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Route.CertificationPhoneNumber.route
+        startDestination = Route.Login.route
     ) {
         composable(Route.Login.route) {
             LoginScreen(
