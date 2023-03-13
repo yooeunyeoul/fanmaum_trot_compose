@@ -19,9 +19,14 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.dpToSp
 
 @Composable
 fun InputTextField(
@@ -56,7 +61,7 @@ fun InputTextField(
                 if (it.length <= maxLength) value = it
                 onValueChange(value)
             },
-            placeholder = { Text(text = placeHolder) },
+            placeholder = { Text(text = placeHolder, fontSize = dpToSp(dp = 17.dp)) },
             shape = RoundedCornerShape(12.dp),
             keyboardActions = KeyboardActions {
                 focusManager.clearFocus()
@@ -88,8 +93,12 @@ fun InputTextField(
                 textColor = Gray900
             ),
             keyboardOptions = keyboardOptions ?: KeyboardOptions(),
-
+            textStyle = TextStyle(
+                fontSize = dpToSp(dp = 17.dp),
+                fontFamily = pretendard,
+                fontWeight = FontWeight.Medium
             )
+        )
 
         if (errorStatus || positiveStatus) {
             Text(
@@ -98,7 +107,7 @@ fun InputTextField(
                     .width(236.dp),
                 text = if (errorStatus) errorMessage ?: "" else successMessage ?: "",
                 color = if (errorStatus) SemanticNegative500 else SemanticPositive500,
-                style = FanwooriTypography.caption1
+                style = FanwooriTypography.caption1,
             )
         }
     }
