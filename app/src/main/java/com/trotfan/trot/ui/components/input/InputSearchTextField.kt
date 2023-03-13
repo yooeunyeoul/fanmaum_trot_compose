@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.trotfan.trot.R
 import com.trotfan.trot.ui.theme.*
 import com.trotfan.trot.ui.utils.clickable
+import com.trotfan.trot.ui.utils.dpToSp
 
 enum class SearchStatus {
     TrySearch, NoResult, SearchResult, Loading
@@ -93,7 +94,7 @@ fun SearchTextField(
                 style = FanwooriTypography.body3,
                 color = Gray600,
                 maxLines = 1,
-                fontSize = 17.sp,
+                fontSize = dpToSp(dp = 18.dp),
                 letterSpacing = (-0.25).sp,
                 textAlign = TextAlign.Start,
 

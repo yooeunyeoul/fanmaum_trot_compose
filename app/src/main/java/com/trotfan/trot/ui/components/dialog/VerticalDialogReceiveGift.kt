@@ -32,6 +32,7 @@ import com.trotfan.trot.ui.components.button.BtnOutlineLPrimary
 import com.trotfan.trot.ui.components.button.BtnFilledMBlackIcon
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.dpToSp
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -97,7 +98,8 @@ fun VerticalDialogReceiveGift(
                         text = contentText,
                         textAlign = TextAlign.Center,
                         style = FanwooriTypography.subtitle1,
-                        color = Gray800
+                        color = Gray800,
+                        fontSize = dpToSp(dp = 20.dp)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -108,8 +110,8 @@ fun VerticalDialogReceiveGift(
                         Text(
                             text = gradientText,
                             style = TextStyle(
-                                brush = gradient04, fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
+                                brush = gradient04, fontWeight = FontWeight.SemiBold,
+                                fontSize = dpToSp(dp = 20.dp),
                                 letterSpacing = (-0.25).sp
                             )
                         )
