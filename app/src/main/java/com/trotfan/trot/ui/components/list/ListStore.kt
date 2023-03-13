@@ -29,7 +29,7 @@ import com.trotfan.trot.ui.theme.*
 @Composable
 fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
     val strokeWidth = LocalDensity.current.run { 1.dp.toPx() }
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp, bottom = 16.dp)
@@ -45,74 +45,76 @@ fun StoreItem(onItemClick: (InAppProduct) -> Unit, product: InAppProduct) {
             }
 
     ) {
-
-        Box(
-            modifier = Modifier
-                .size(64.dp)
-                .align(CenterVertically)
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(product.image)
-                    .crossfade(true).build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
+        Row() {
+            Box(
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .clip(RectangleShape)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Column(
-            modifier = Modifier
-                .align(CenterVertically)
-                .weight(1f)
-        ) {
-            Text(
-                text = product.productName,
-                color = Gray800,
-                style = FanwooriTypography.body6
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(
-                verticalAlignment = CenterVertically,
-                modifier = Modifier.background(color = Color.White)
+                    .size(64.dp)
+                    .align(CenterVertically)
             ) {
-                Text(
-                    text = product.votes,
-                    color = Gray700,
-                    style = FanwooriTypography.body2
-                )
-                Spacer(modifier = Modifier.width(2.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_add),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(product.image)
+                        .crossfade(true).build(),
                     contentDescription = null,
-                    tint = Primary500
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_vote_iconcolored),
-                    contentDescription = null,
-                    tint = Primary500
-                )
-                Spacer(modifier = Modifier.width(2.dp))
-                Text(
-                    text = product.bonus,
-                    color = Primary500,
-                    style = FanwooriTypography.body2
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .clip(RectangleShape)
                 )
             }
-        }
 
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Column(
+                modifier = Modifier
+                    .align(CenterVertically)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = product.productName,
+                    color = Gray800,
+                    style = FanwooriTypography.body6
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row(
+                    verticalAlignment = CenterVertically,
+                    modifier = Modifier.background(color = Color.White)
+                ) {
+                    Text(
+                        text = product.votes,
+                        color = Gray700,
+                        style = FanwooriTypography.body2
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_add),
+                        contentDescription = null,
+                        tint = Primary500
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_vote_iconcolored),
+                        contentDescription = null,
+                        tint = Primary500
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        text = product.bonus,
+                        color = Primary500,
+                        style = FanwooriTypography.body2
+                    )
+                }
+            }
+        }
         BtnFilledMPrimary(
             text = product.price, modifier = Modifier
-                .align(CenterVertically)
+                .padding(bottom = 16.dp)
+                .align(Alignment.End)
 
         ) {
             onItemClick.invoke(product)
         }
+
 
     }
 
