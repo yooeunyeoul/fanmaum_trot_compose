@@ -51,7 +51,7 @@ fun SettingNicknameScreen(
         )
 
         Text(
-            text = "언제든지 변경할 수 있어요!",
+            text = "설정한 닉네임은 변경할 수 없어요!",
             color = Gray700,
             modifier = Modifier.padding(top = 8.dp),
             style = FanwooriTypography.caption1
