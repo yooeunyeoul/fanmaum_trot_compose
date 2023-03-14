@@ -36,7 +36,7 @@ class SmsReceiver : BroadcastReceiver() {
                     Timber.e(message)
                     message = message.replace("<#> ", "")
                     message = message.split("\n".toRegex())[1]
-                    val regex = """인증번호는 (\d+) 입니다.""".toRegex()
+                    val regex = """팬마음 서비스 인증번호는 (\d+) 입니다.""".toRegex()
                     val matchResult = regex.find(message)
                     matchResult?.destructured?.let {
                         val (authCode) = it
