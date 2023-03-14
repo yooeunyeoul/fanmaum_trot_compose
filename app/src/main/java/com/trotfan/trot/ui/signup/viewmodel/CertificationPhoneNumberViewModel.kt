@@ -5,6 +5,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.phone.SmsRetriever
+import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.network.ResultCodeStatus
@@ -129,7 +130,13 @@ class CertificationPhoneNumberViewModel @Inject constructor(
             try {
                 val response = repository.requestSmsCertification(
                     phoneNumber = phoneNumber,
-                    hashKey = AppSignatureHelper(context).appSignatures.toString()
+                    hashKey = when (BuildConfig.FLAVOR) {
+                        "dev", "qa" -> AppSignatureHelper(context).appSignatures.toString()
+                        "product" -> "OTjtr1Nnk2u"
+                        else -> {
+                            "OTjtr1Nnk2u"
+                        }
+                    }
                 )
                 when (response.result.code) {
                     ResultCodeStatus.SuccessWithData.code -> {
@@ -148,6 +155,8 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                 loadingHelper.hideProgress()
             }
         }
+
+
     }
 
 
