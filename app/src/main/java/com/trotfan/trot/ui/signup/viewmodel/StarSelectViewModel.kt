@@ -2,11 +2,14 @@ package com.trotfan.trot.ui.signup.viewmodel
 
 import android.app.Application
 import android.util.Log
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.trotfan.trot.datasource.GetStarDataSource
+import com.trotfan.trot.datastore.UserInfoDataStore
+import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.network.ResultCodeStatus
@@ -33,6 +36,8 @@ class StarSelectViewModel @Inject constructor(
     val starListState =
         Pager(PagingConfig(pageSize = 15)) { dataSource }.flow.cachedIn(viewModelScope)
 
+    var userInfoManager: UserInfoManager = UserInfoManager(context.UserInfoDataStore)
+
     fun selectStar(selectedItem: FavoriteStar?) {
         viewModelScope.launch {
             context.userIdStore.data.collect {
@@ -42,9 +47,10 @@ class StarSelectViewModel @Inject constructor(
                     token = userLocalToken.value?.token ?: ""
                 )
                 if (response.result.code == ResultCodeStatus.SuccessWithNoData.code) {
+                    userInfoManager.setFavoriteStar(selectedItem?.id ?: 0)
                     _onComplete.emit(true)
                 } else {
-                    Log.e("Return Error", "Message:"+response.result.message)
+                    Log.e("Return Error", "Message:" + response.result.message)
                 }
             }
         }

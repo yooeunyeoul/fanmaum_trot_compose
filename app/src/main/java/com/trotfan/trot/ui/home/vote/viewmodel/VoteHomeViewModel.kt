@@ -152,7 +152,7 @@ class VoteHomeViewModel @Inject constructor(
         viewModelScope.launch {
             loadingHelper.showProgress()
             userInfoManager?.favoriteStarIdFlow?.collectLatest {
-                val response = repository.getStarRank(it ?: 2)
+                val response = repository.getStarRank(it ?: 0)
                 when (response.result.code) {
                     ResultCodeStatus.SuccessWithNoData.code -> {
                         _favoriteStar.emit(FavoriteStarInfo())

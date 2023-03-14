@@ -67,6 +67,14 @@ class UserInfoManager(
         }
     }
 
+    suspend fun setFavoriteStar(
+        starId: Int
+    ) {
+        dataStore.edit {
+            it[FAVORITE_STAR_ID] = starId
+        }
+    }
+
 
     suspend fun updateUserTotalUsedVote(
         userTotalUsedVote: Long
