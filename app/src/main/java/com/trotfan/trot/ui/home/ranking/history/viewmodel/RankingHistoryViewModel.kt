@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -55,7 +56,6 @@ class RankingHistoryViewModel @Inject constructor(
     init {
         getDatePickerRange()
         getBannerList()
-        getMonthlyStarRankingList()
         observeGender()
     }
 
@@ -152,6 +152,14 @@ class RankingHistoryViewModel @Inject constructor(
                         dailyMonth.emit(tempDate[1].toInt())
                         dailyDay.emit(tempDate[2].toInt())
                         getDailyStarRankingList()
+                        Timber.e(
+                            "${data.started_at.split("-")[1].toInt()} // ${Calendar.MONTH + 1}"
+                        )
+                        if (data.started_at.split("-")[1].toInt() == Calendar.MONTH + 1) {
+                            monthlyDataEmpty.emit(true)
+                        } else {
+                            getMonthlyStarRankingList()
+                        }
                     }
                 }
                 loadingHelper.hideProgress()

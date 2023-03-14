@@ -42,69 +42,72 @@ fun RankingHistoryBanner(
 ) {
     val pagerState = rememberPagerState()
     val banners = viewModel.banners.collectAsState(initial = listOf()).value
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp)
-    ) {
-        HorizontalPager(
-            count = banners?.size ?: 0,
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 20.dp),
-            state = pagerState
-        ) { page ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(start = 4.dp, end = 4.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickableSingle {
-                        navController?.navigate(
-                            "${Route.WebView.route}/${
-                                URLEncoder.encode("${banners?.get(page)?.path}")
-                            }"
-                        )
-                    }
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(banners?.get(page)?.image)
-                        .crossfade(true).build(),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentDescription = null
-                )
+
+    if ((banners?.size ?: 0) > 0) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+        ) {
+            HorizontalPager(
+                count = banners?.size ?: 0,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 20.dp),
+                state = pagerState
+            ) { page ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(start = 4.dp, end = 4.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickableSingle {
+                            navController?.navigate(
+                                "${Route.WebView.route}/${
+                                    URLEncoder.encode("${banners?.get(page)?.path}")
+                                }"
+                            )
+                        }
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(banners?.get(page)?.image)
+                            .crossfade(true).build(),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentDescription = null
+                    )
+                }
             }
-        }
 
-        banners?.size?.let {
-            Box(
-                modifier = Modifier
-                    .padding(end = 40.dp, bottom = 8.dp)
-                    .width(44.dp)
-                    .height(26.dp)
-                    .align(Alignment.BottomEnd)
-                    .clip(RoundedCornerShape(16.dp))
-                    .alpha(0.3f)
-                    .background(Color.Black)
-            )
-
-            Box(
-                modifier = Modifier
-                    .padding(end = 40.dp, bottom = 6.dp)
-                    .width(44.dp)
-                    .height(26.dp)
-                    .align(Alignment.BottomEnd)
-            ) {
-                Text(
-                    text = "${pagerState.currentPage.plus(1)}/${banners.size}",
-                    letterSpacing = 2.sp,
-                    color = Color.White,
-                    style = FanwooriTypography.body2,
-                    modifier = Modifier.fillMaxSize(),
-                    textAlign = TextAlign.Center
+            banners?.size?.let {
+                Box(
+                    modifier = Modifier
+                        .padding(end = 40.dp, bottom = 8.dp)
+                        .width(44.dp)
+                        .height(26.dp)
+                        .align(Alignment.BottomEnd)
+                        .clip(RoundedCornerShape(16.dp))
+                        .alpha(0.3f)
+                        .background(Color.Black)
                 )
+
+                Box(
+                    modifier = Modifier
+                        .padding(end = 40.dp, bottom = 6.dp)
+                        .width(44.dp)
+                        .height(26.dp)
+                        .align(Alignment.BottomEnd)
+                ) {
+                    Text(
+                        text = "${pagerState.currentPage.plus(1)}/${banners.size}",
+                        letterSpacing = 2.sp,
+                        color = Color.White,
+                        style = FanwooriTypography.body2,
+                        modifier = Modifier.fillMaxSize(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
