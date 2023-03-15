@@ -122,7 +122,7 @@ fun RollingDialog(
                         }
                 ) {
                     Text(
-                        text = "오늘은 하루 보지 않기",
+                        text = "오늘 하루 보지 않기",
                         color = Color.White,
                         style = FanwooriTypography.button2,
                         textAlign = TextAlign.Center,
