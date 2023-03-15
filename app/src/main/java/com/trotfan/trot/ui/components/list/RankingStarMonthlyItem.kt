@@ -135,8 +135,9 @@ fun RankingMonthlyDefaultItem(star: StarRanking, onItemClick: () -> Unit) {
             color = Gray700,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .size(24.dp)
+                .height(32.dp)
                 .align(CenterVertically)
+                .padding(start = 6.dp, end = 6.dp)
         )
 
         Spacer(modifier = Modifier.width(12.dp))
