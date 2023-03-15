@@ -300,7 +300,8 @@ fun VoteHome(
                                         myStarName = favoriteStar.name ?: "-",
                                         dayRank = favoriteStar.rank?.daily ?: -1,
                                         monthRank = favoriteStar.rank?.monthly ?: -1,
-                                        month = LocalDate.now().month.value
+                                        month = LocalDate.now().month.value,
+                                        votes = favoriteStar.votes?:0
                                     ) {
                                         onVotingClick(
                                             voteId,
