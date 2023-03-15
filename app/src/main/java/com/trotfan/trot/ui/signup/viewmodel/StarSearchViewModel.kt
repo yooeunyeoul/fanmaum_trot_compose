@@ -12,8 +12,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.datasource.GetStarDataSource
-import com.trotfan.trot.datastore.UserInfoDataStore
-import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.userIdStore
 import com.trotfan.trot.model.FavoriteStar
 import com.trotfan.trot.network.ResultCodeStatus
@@ -52,8 +50,6 @@ class StarSearchViewModel @Inject constructor(
     private val _onComplete = MutableStateFlow(false)
     val onComplete: StateFlow<Boolean>
         get() = _onComplete
-
-    var userInfoManager: UserInfoManager = UserInfoManager(context.UserInfoDataStore)
 
 
     fun searchStar(keyword: String) {
@@ -100,7 +96,6 @@ class StarSearchViewModel @Inject constructor(
                     token = userLocalToken.value?.token ?: ""
                 )
                 if (response.result.code == ResultCodeStatus.SuccessWithNoData.code) {
-                    userInfoManager.setFavoriteStar(selectedItem?.id ?: 0)
                     _onComplete.emit(true)
                 }
             }

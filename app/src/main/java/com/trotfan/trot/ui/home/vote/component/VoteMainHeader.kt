@@ -22,6 +22,7 @@ fun HeaderVoteState(
     dayRank: Int,
     monthRank: Int,
     month: Int,
+    votes: Int,
     onVotingClick: () -> Unit
 ) {
     Column(Modifier.fillMaxWidth()) {
@@ -86,7 +87,7 @@ fun HeaderVoteState(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = if (dayRank == 0) "-" else "${dayRank}위",
+                    text = if (dayRank == 0 || votes == 0) "-" else "${dayRank}위",
                     style = FanwooriTypography.h2,
                     color = Gray800,
                     fontSize = 22.sp,
