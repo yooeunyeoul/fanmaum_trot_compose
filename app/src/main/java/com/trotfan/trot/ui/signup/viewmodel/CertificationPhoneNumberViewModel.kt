@@ -7,8 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.trotfan.trot.BuildConfig
 import com.trotfan.trot.LoadingHelper
+import com.trotfan.trot.datastore.UserInfoDataStore
+import com.trotfan.trot.datastore.UserInfoManager
 import com.trotfan.trot.datastore.userIdStore
+import com.trotfan.trot.datastore.userTokenStore
+import com.trotfan.trot.model.UserInfo
 import com.trotfan.trot.network.ResultCodeStatus
+import com.trotfan.trot.repository.AuthRepository
 import com.trotfan.trot.repository.SignUpRepository
 import com.trotfan.trot.ui.BaseViewModel
 import com.trotfan.trot.ui.utils.SmsReceiver
@@ -17,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -63,6 +69,7 @@ enum class CertificationNumberCheckStatus(
 class CertificationPhoneNumberViewModel @Inject constructor(
     private val repository: SignUpRepository,
     private val loadingHelper: LoadingHelper,
+    private val authRepository: AuthRepository,
     application: Application
 ) : BaseViewModel(application) {
 
@@ -80,9 +87,12 @@ class CertificationPhoneNumberViewModel @Inject constructor(
     private val _certificationNumber = MutableStateFlow<String>("")
     val certificationNumber = _certificationNumber
 
+    var userInfoManager: UserInfoManager = UserInfoManager(context.UserInfoDataStore)
+
 
     init {
         startSmsRetriever()
+        getUserInfo()
     }
 
     fun startSmsRetriever() {
@@ -211,6 +221,45 @@ class CertificationPhoneNumberViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getUserInfo() {
+        viewModelScope.launch {
+            loadingHelper.showProgress()
+            kotlin.runCatching {
+                authRepository.getUserInfo(context.userTokenStore.data.first().token)
+            }.onSuccess {
+                val userInfo = it.data
+                saveUserInfo(userInfo)
+                loadingHelper.hideProgress()
+            }.onFailure {
+                Log.d("AuthViewModel", it.message.toString())
+                loadingHelper.hideProgress()
+            }
+        }
+    }
+
+    private fun saveUserInfo(userInfo: UserInfo?) {
+        viewModelScope.launch {
+            userInfo?.star?.let {
+                userInfoManager.storeUserInfo(
+                    favoriteStarId = it.id,
+                    favoriteGender = it.gender,
+                    favoriteStarName = it.name,
+                    favoriteStarImage = it.image,
+                    userName = userInfo.name ?: "",
+                    userIdp = userInfo.idp,
+                    userMail = userInfo.email ?: "",
+                    userProfileImage = userInfo.image ?: "",
+                    userCreatedAt = userInfo.created_at,
+                    userTotalUsedVote = userInfo.total_used_votes
+                )
+
+            }
+        }
+
+    }
+
+
 
 
 }
