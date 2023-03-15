@@ -184,6 +184,7 @@ fun TodayMission(
                                 Text(
                                     text = "미션 완료하고  3,200 투표권 받기",
                                     style = FanwooriTypography.subtitle4,
+                                    fontSize = dpToSp(dp = 20.dp),
                                     modifier = Modifier
                                         .textBrush(
                                             gradient01
@@ -204,6 +205,7 @@ fun TodayMission(
                                     Text(
                                         text = "눌러서",
                                         style = FanwooriTypography.subtitle4,
+                                        fontSize = dpToSp(dp = 20.dp),
                                         color = Primary500
                                     )
                                     Image(
@@ -214,6 +216,7 @@ fun TodayMission(
                                     Text(
                                         text = "3,200 투표권 받기",
                                         style = FanwooriTypography.subtitle4,
+                                        fontSize = dpToSp(dp = 20.dp),
                                         modifier = Modifier
                                             .textBrush(
                                                 gradient04
@@ -226,6 +229,7 @@ fun TodayMission(
                                 Text(
                                     text = "일일 미션 보상완료",
                                     style = FanwooriTypography.subtitle4,
+                                    fontSize = dpToSp(dp = 20.dp),
                                     color = Gray650,
                                     modifier = Modifier
                                         .padding(top = 17.5.dp, bottom = 17.5.dp)
