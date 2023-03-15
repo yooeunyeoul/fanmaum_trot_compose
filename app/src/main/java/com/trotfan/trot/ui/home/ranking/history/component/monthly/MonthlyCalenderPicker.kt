@@ -141,11 +141,14 @@ fun NumberPickerComponent(
         maxValue = max
         minValue = min
         value = start
-        textSize = 60f
-        textColor = Gray900.toArgb()
-        selectionDividerHeight = 0
         setOnValueChangedListener(onValueChangeListener)
     }
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+        numberPicker.textColor = Gray900.toArgb()
+        numberPicker.textSize = 60f
+        numberPicker.selectionDividerHeight = 0
+    }
+
     AndroidView(factory = {
         numberPicker
     }, modifier = Modifier.width(70.dp)) {

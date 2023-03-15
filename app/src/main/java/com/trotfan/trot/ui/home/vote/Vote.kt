@@ -621,7 +621,11 @@ fun VoteHome(
             }
 
             if (appGuideStatue) {
-                FullscreenDialog(modifier = Modifier, title = "팬마음 투표 안내", R.drawable.vote_guide) {
+                FullscreenDialog(
+                    modifier = Modifier,
+                    title = "팬마음 투표 안내",
+                    listOf(R.drawable.vote_guide1, R.drawable.vote_guide2)
+                ) {
                     appGuideStatue = false
                 }
             }
@@ -630,7 +634,8 @@ fun VoteHome(
                 FullscreenDialog(
                     modifier = Modifier,
                     title = "최종 순위 선정 방법",
-                    R.drawable.ranking_guide
+                    listOf(R.drawable.ranking_guide)
+
                 ) {
                     rankGuideStatue = false
                 }
