@@ -469,6 +469,10 @@ fun StoreView(
                                     showSuccessDialog = true
                                     dialogMessage = BillingResponse.Fail.message
                                 }
+                                BillingResponse.ChargeFail -> {
+                                    showSuccessDialog = true
+                                    dialogMessage = BillingResponse.ChargeFail.message
+                                }
                             }
                         })
                 }, product = InAppProduct.values()[index]

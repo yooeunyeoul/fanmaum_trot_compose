@@ -79,6 +79,11 @@ enum class BillingResponse(val message: String) {
     Fail(
         "결제실패\n" +
                 "처음부터 다시 시도해주세요."
+    ),
+    ChargeFail(
+        "충전 실패\n" +
+                "충전이 정상적으로 진행되지 않았습니다.\n" +
+                "마이페이지 > 문의하기를 통해 문의 남겨주세요"
     )
 }
 
@@ -174,7 +179,8 @@ class PurchaseHelper @Inject constructor(
                                                                 "Server Auth Fail"
                                                     )
                                                 }
-                                                completePurchase(purchase)
+//                                                completePurchase(purchase)
+                                                mListener.invoke(BillingResponse.Fail)
                                             }
                                         }
                                         loadingHelper.hideProgress()
@@ -187,7 +193,7 @@ class PurchaseHelper @Inject constructor(
                                                         "reason : ${it.message}"
                                             )
                                         }
-                                        completePurchase(purchase)
+                                        mListener.invoke(BillingResponse.ChargeFail)
                                         loadingHelper.hideProgress()
                                     }
                                 }
@@ -317,6 +323,29 @@ class PurchaseHelper @Inject constructor(
         }
     }
 
+    private fun completeFailPurchase(item: Purchase) {
+        purchasedItem = item
+        if (purchasedItem.purchaseState == Purchase.PurchaseState.PURCHASED) {
+            Log.e("Purchase Complete", "Purchase Complete")
+            coroutineScope.launch {
+                _statusText.emit(
+                    _statusText.value + "\n" +
+                            "Purchase Complete"
+                )
+            }
+            if (mBillingType == BillingClient.ProductType.INAPP) {
+                coroutineScope.launch {
+                    _statusText.emit(
+                        _statusText.value + "\n" +
+                                "소비 처리 하기"
+                    )
+                }
+                consumePurchase(isLastIndex = true)
+                mListener.invoke(BillingResponse.ChargeFail)
+            }
+        }
+    }
+
     //소비성 상품인 경우에는 소비 처리를 해주어야 상품을 다시 구매 할 수 있다.
     fun consumePurchase(isLastIndex: Boolean) {
         val consumeParams =
@@ -420,7 +449,6 @@ class PurchaseHelper @Inject constructor(
             }
         }
     }
-
 
 
 }
