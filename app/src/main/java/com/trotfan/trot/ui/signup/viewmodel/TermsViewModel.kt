@@ -65,10 +65,10 @@ class TermsViewModel @Inject constructor(
                     id = userId ?: 0,
                     alarm = Alarm(
                         dayAlarm = day,
-                        freeTicketsGone = false,
-                        newVotes = false,
+                        timeEvent = day,
                         nightAlarm = night,
-                        timeEvent = false
+                        freeTicketsGone = night,
+                        newVotes = night
                     )
                 )
             }.onSuccess {
