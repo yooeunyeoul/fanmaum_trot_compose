@@ -38,8 +38,7 @@
 
                 <data
                     android:host="fanmaum.page.link"
-                    android:scheme="https"
-                    android:path="/invite"/>
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
 

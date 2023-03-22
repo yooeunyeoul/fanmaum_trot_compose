@@ -112,8 +112,8 @@ class MainActivity : ComponentActivity() {
                     lifecycleScope.launch {
                         deepLink = it.link
                         deepLink?.let { deepLink ->
-                            if (deepLink.getBooleanQueryParameter("code", false)) {
-                                val code = deepLink?.getQueryParameters("code")
+                            if (deepLink.getBooleanQueryParameter("insertFriendCode", false)) {
+                                val code = deepLink?.getQueryParameters("insertFriendCode")
                                 code?.let { codeList ->
                                     if (codeList.isNotEmpty()) {
                                         invitationCode = codeList[0].toString()

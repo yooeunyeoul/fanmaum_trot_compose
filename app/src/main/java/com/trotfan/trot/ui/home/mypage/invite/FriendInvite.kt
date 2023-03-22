@@ -162,10 +162,10 @@ fun FriendInvite(
                                 .clickable {
                                     addDynamicLink(
                                         titleText = "친구 초대",
-                                        uri = "https://fanmaum.page.link/invite",
+                                        uri = "https://fanmaum.page.link",
                                         queryParameters = listOf(
                                             Pair(
-                                                "code",
+                                                "insertFriendCode",
                                                 "${inviteInfo?.code}"
                                             )
                                         ),
