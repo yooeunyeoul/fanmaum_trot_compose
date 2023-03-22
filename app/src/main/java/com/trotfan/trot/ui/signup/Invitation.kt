@@ -25,6 +25,7 @@ import com.trotfan.trot.ui.signup.components.VerticalDialogInvitationComplete
 import com.trotfan.trot.ui.signup.viewmodel.InvitationViewModel
 import com.trotfan.trot.ui.signup.viewmodel.InviteCodeCheckStatus
 import com.trotfan.trot.ui.theme.*
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -32,7 +33,8 @@ fun InvitationScreen(
     modifier: Modifier = Modifier,
     linkText: String = "",
     navController: NavController,
-    viewModel: InvitationViewModel = hiltViewModel()
+    viewModel: InvitationViewModel =
+        composableActivityViewModel(key = "InvitationViewModel")
 ) {
     val context = LocalContext.current
     var skipDialogState by remember { mutableStateOf(false) }

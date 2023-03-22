@@ -94,4 +94,10 @@ class InvitationViewModel @Inject constructor(
             }
         }
     }
+
+    fun setInvitationCode(code: String) {
+        viewModelScope.launch {
+            _inviteCode.value = code
+        }
+    }
 }
