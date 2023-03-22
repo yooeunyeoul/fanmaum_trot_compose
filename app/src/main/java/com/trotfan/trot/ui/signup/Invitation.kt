@@ -116,10 +116,10 @@ fun InvitationScreen(
 
         if (completeDialogState) {
             VerticalDialogInvitationComplete(
-                contentText = "타임투표권 2,500표 받았어요!",
+                contentText = "2,500표 받았어요!",
                 buttonOneText = "확인",
                 onDismiss = {
-                    navController.navigate(HomeSections.Vote.route) {
+                    navController.navigate(Route.Tutorial.route) {
                         popUpTo(Route.InvitationCode.route) {
                             inclusive = true
                         }
@@ -130,7 +130,7 @@ fun InvitationScreen(
 
         LaunchedEffect(skipState) {
             if (skipState) {
-                navController.navigate(HomeSections.Vote.route) {
+                navController.navigate(Route.Tutorial.route) {
                     popUpTo(Route.InvitationCode.route) {
                         inclusive = true
                     }

@@ -46,6 +46,7 @@ enum class Route(
     CertificationPhoneNumber(route = "certificationPhoneNumber"),
     SettingNickname(route = "settingNickName"),
     InvitationCode(route = "invitationCode"),
+    Tutorial(route = "tutorial"),
     VoteBenefits(route = "voteBenefits"),
     RankingHistory(route = "rankingHistory"),
     RankingHistoryCumulative(route = "rankingHistoryCumulative"),
@@ -259,6 +260,9 @@ fun NavigationComponent(
         }
         composable(Route.AppInfo.route) {
             AppInfo(navController = navController)
+        }
+        composable(Route.Tutorial.route) {
+            Tutorial(navController = navController)
         }
     }
 }

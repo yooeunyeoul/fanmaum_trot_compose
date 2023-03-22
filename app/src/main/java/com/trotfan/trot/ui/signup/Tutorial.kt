@@ -1,12 +1,7 @@
 package com.trotfan.trot.ui.signup
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,9 +22,11 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.Route
 import com.trotfan.trot.ui.components.button.BtnFilledLPrimary
 import com.trotfan.trot.ui.components.button.BtnOutlineLGray
 import com.trotfan.trot.ui.components.button.BtnOutlineLWhite
+import com.trotfan.trot.ui.home.HomeSections
 import com.trotfan.trot.ui.home.dialog.DotsIndicator
 import com.trotfan.trot.ui.theme.FanwooriTheme
 import com.trotfan.trot.ui.theme.FanwooriTypography
@@ -63,27 +60,27 @@ fun Tutorial(
                 when (it) {
                     0 -> TutorialComponent(
                         text = "내 스타의 순위를\n실시간으로 확인하기",
-                        image = R.drawable.tutorial_test,
+                        image = R.drawable.walkthrough01,
                         topMargin = 58
                     )
 
                     1 -> TutorialComponent(
                         text = "내 스타에게 투표하기",
-                        image = R.drawable.tutorial_test,
+                        image = R.drawable.walkthrough02,
                         topMargin = 87
                     )
 
                     2 -> TutorialComponent(
                         text = "다양한 방법으로\n" +
                                 "투표권 충전하기",
-                        image = R.drawable.tutorial_test,
+                        image = R.drawable.walkthrough03,
                         topMargin = 58
                     )
 
                     3 -> TutorialComponent(
                         text = "투표를 통하여\n" +
                                 "내 스타에게 광고를 선물하세요!",
-                        image = R.drawable.tutorial_test,
+                        image = R.drawable.walkthrough04,
                         topMargin = 58
                     )
                 }
@@ -105,7 +102,11 @@ fun Tutorial(
             }
         } else {
             BtnFilledLPrimary(text = "팬마음 시작하기", modifier = Modifier.padding(32.dp)) {
-
+                navController?.navigate(HomeSections.Vote.route) {
+                    popUpTo(Route.Tutorial.route) {
+                        inclusive = true
+                    }
+                }
             }
         }
     }
@@ -116,7 +117,7 @@ fun TutorialComponent(text: String, image: Int, topMargin: Int) {
     Column(
         modifier = Modifier
             .padding(top = topMargin.dp, bottom = 18.dp)
-            .fillMaxWidth(),
+            .widthIn(0.dp, 500.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
