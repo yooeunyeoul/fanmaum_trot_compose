@@ -162,7 +162,13 @@ fun FriendInvite(
                                 .clickable {
                                     addDynamicLink(
                                         titleText = "친구 초대",
-                                        uri = "https://play.google.com/store/apps/details?id=com.trotfan.trot",
+                                        uri = "https://fanmaum.page.link/invite",
+                                        queryParameters = listOf(
+                                            Pair(
+                                                "code",
+                                                "${inviteInfo?.code}"
+                                            )
+                                        ),
                                         descriptionText = "친구 초대"
                                     ) {
                                         Intent().apply {
@@ -249,7 +255,9 @@ fun FriendInvite(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(
-                        modifier = Modifier.weight(1f).padding(top = 16.dp, bottom = 16.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 16.dp, bottom = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = "초대한 친구", style = FanwooriTypography.body3, color = Gray700)
@@ -271,7 +279,9 @@ fun FriendInvite(
                     )
 
                     Column(
-                        modifier = Modifier.weight(1f).padding(top = 16.dp, bottom = 16.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 16.dp, bottom = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = "총 적립 투표권", style = FanwooriTypography.body3, color = Gray700)

@@ -37,8 +37,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="fanwoori.com"
-                    android:scheme="https" />
+                    android:host="fanmaum.page.link"
+                    android:scheme="https"
+                    android:path="/invite"/>
             </intent-filter>
         </activity>
 

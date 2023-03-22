@@ -1,6 +1,5 @@
 package com.trotfan.trot.ui
 
-import AppSignatureHelper
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -33,8 +32,11 @@ import com.ironsource.mediationsdk.integration.IntegrationHelper
 import com.trotfan.trot.LoadingHelper
 import com.trotfan.trot.PurchaseHelper
 import com.trotfan.trot.R
+import com.trotfan.trot.ui.signup.viewmodel.InvitationViewModel
+import com.trotfan.trot.ui.utils.composableActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -46,6 +48,8 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var loadingHelper: LoadingHelper
+
+    private var invitationCode: String = ""
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +66,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isProgressVisible by loadingHelper.progressbar.collectAsState()
             val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading_spinner))
+            val invitationViewModel: InvitationViewModel =
+                composableActivityViewModel(key = "InvitationViewModel")
+            if (!invitationCode.isNullOrEmpty()) {
+                invitationViewModel.setInvitationCode(invitationCode)
+                invitationCode = ""
+            }
 
             Box() {
                 if (isProgressVisible) {
@@ -101,9 +111,16 @@ class MainActivity : ComponentActivity() {
                 if (it != null) {
                     lifecycleScope.launch {
                         deepLink = it.link
-                        val code = deepLink?.getQueryParameters("invite_code")
-                        code?.get(0)?.let { c ->
-//                            invitationViewModel.setInviteCode(code = c)
+                        deepLink?.let { deepLink ->
+                            if (deepLink.getBooleanQueryParameter("code", false)) {
+                                val code = deepLink?.getQueryParameters("code")
+                                code?.let { codeList ->
+                                    if (codeList.isNotEmpty()) {
+                                        invitationCode = codeList[0].toString()
+                                    }
+                                }
+                                Timber.e(deepLink.toString())
+                            }
                         }
                     }
                 }

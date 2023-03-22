@@ -1,13 +1,10 @@
 package com.trotfan.trot.ui.utils
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
-import androidx.compose.compiler.plugins.kotlin.ComposeFqNames.remember
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -44,8 +41,6 @@ import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import com.trotfan.trot.BaseApplication
 import com.trotfan.trot.datastore.*
-import com.trotfan.trot.ui.home.vote.voteTopShareText
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -94,17 +89,33 @@ fun addDynamicLink(
     titleText: String,
     uri: String,
     descriptionText: String,
+    queryParameters: List<Pair<String, String>>? = null,
     onSuccess: (ShortDynamicLink) -> Unit
 ) {
+
+    var parsedUri = Uri.parse(uri)
+    if (queryParameters != null) {
+        val buildUponUri = parsedUri.buildUpon()
+        queryParameters.forEach {
+            buildUponUri.appendQueryParameter(it.first, it.second)
+        }
+        val addedParameterUri = buildUponUri.build()
+        parsedUri = addedParameterUri
+    }
     Firebase.dynamicLinks.shortLinkAsync {
-        link = Uri.parse(uri)
+        link = parsedUri
         domainUriPrefix = "https://fanmaum.page.link"
-        androidParameters("com.trotfan.trot") {}
-        iosParameters("com.trotfan.trot") {}
+        androidParameters("com.trotfan.trot") {
+
+        }
+        iosParameters("com.trotfan.trot") {
+            appStoreId = "1640391567"
+        }
         socialMetaTagParameters {
             title = titleText
             description = descriptionText
         }
+
     }.addOnSuccessListener {
         onSuccess(it)
     }.addOnFailureListener {
