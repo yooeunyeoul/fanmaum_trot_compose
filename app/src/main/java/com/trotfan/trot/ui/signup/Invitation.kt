@@ -111,6 +111,7 @@ fun InvitationScreen(
                 negativeText = "취소",
                 onDismiss = { skipDialogState = false },
                 onPositive = {
+                    viewModel.setInvitationCode(code = "")
                     viewModel.postInviteCode()
                 }
             )

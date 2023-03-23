@@ -164,8 +164,8 @@ fun RankHome(
                             Column(
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 24.dp, bottom = 16.dp)
                                     .background(color = Color.White)
+                                    .padding(top = 24.dp, bottom = 16.dp)
 //                                    .clickable {
 //                                        viewModel.changeTime()
 //                                    }
