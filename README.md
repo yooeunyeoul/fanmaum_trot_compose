@@ -1,10 +1,2 @@
 # trot-android
-![Screenshot_20230329_143801](https://user-images.githubusercontent.com/25385379/228437382-e9768d3a-accb-4542-b529-624fc50f180e.jpg)
-![Screenshot_20230329_143814](https://user-images.githubusercontent.com/25385379/228437401-ed1e6f6d-c8aa-4c32-aff3-0a76c6de49fa.jpg)
-![Screenshot_20230329_143825](https://user-images.githubusercontent.com/25385379/228437411-9dd5247d-3674-4c99-add3-c56ab8e98da8.jpg)
-![Screenshot_20230329_143838](https://user-images.githubusercontent.com/25385379/228437418-39cc3ac9-7677-4cc9-bea2-a8067836fd7d.jpg)
-![Screenshot_20230329_143843](https://user-images.githubusercontent.com/25385379/228437419-d7bd5ec3-77ec-4239-908b-9dcc4871e489.jpg)
-![Screenshot_20230329_143852](https://user-images.githubusercontent.com/25385379/228437425-11c0a542-8681-4a2f-a5b7-e99263e55fff.jpg)
-![Screenshot_20230329_143901](https://user-images.githubusercontent.com/25385379/228437426-76c463eb-ca5b-4b8f-9d95-fd68bd1aa17b.jpg)
-![Screenshot_20230329_143924](https://user-images.githubusercontent.com/25385379/228437428-bbee4e71-c697-4788-9973-849f8e41a66e.jpg)
-![Screenshot_20230329_143943](https://user-images.githubusercontent.com/25385379/228437431-cf2dd2c8-f8a3-4a68-ac5f-124322a32555.jpg)
+<img src="https://user-images.githubusercontent.com/25385379/228437382-e9768d3a-accb-4542-b529-624fc50f180e.jpg" width="200" height="400"/>
