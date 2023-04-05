@@ -78,7 +78,7 @@ class InvitationViewModel @Inject constructor(
                         token = userLocalToken.value?.token ?: ""
                     )
                 }.onSuccess {
-                    when (it.result.code) {
+                    when (it.result?.code) {
                         ResultCodeStatus.InvalidCode.code -> _inviteCodeCheckStatus.emit(
                             InvalidCodeError
                         )

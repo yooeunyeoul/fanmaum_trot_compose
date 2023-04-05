@@ -135,7 +135,7 @@ class RankingHistoryViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.getDatePickerRange()
             }.onSuccess {
-                if (it.result.code == 2) {
+                if (it.result?.code == 2) {
                     monthlyDataEmpty.emit(true)
                     dailyDataEmpty.emit(true)
                 } else {

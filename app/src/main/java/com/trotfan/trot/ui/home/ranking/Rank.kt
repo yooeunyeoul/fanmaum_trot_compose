@@ -502,7 +502,7 @@ fun HorizontalImagePager(
                         .crossfade(true).build(),
                     contentDescription = null,
                     error = painterResource(id = com.google.android.material.R.drawable.mtrl_ic_error),
-                    contentScale = ContentScale.FillWidth,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()

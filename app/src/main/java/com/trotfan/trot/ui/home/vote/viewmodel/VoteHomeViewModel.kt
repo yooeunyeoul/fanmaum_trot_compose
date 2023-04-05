@@ -136,15 +136,17 @@ class VoteHomeViewModel @Inject constructor(
         viewModelScope.launch {
             loadingHelper.showProgress()
             val response = repository.getVote()
-            val voteMainStars = response?.data?.voteMainStars
-            val menHashMap =
-                voteMainStars?.men?.associate { it.id to it } as LinkedHashMap
-            val womenHashMap =
-                voteMainStars?.women?.associate { it.id to it } as LinkedHashMap
-            _voteId.emit(response.data.id)
-            _menHashMap.emit(menHashMap)
-            _womenHashMap.emit(womenHashMap)
-            loadingHelper.hideProgress()
+            response?.data?.voteMainStars?.let { voteMainStars ->
+                val menHashMap =
+                    voteMainStars?.men?.associate { it.id to it } as LinkedHashMap
+                val womenHashMap =
+                    voteMainStars?.women?.associate { it.id to it } as LinkedHashMap
+                _voteId.emit(response.data.id)
+                _menHashMap.emit(menHashMap)
+                _womenHashMap.emit(womenHashMap)
+                loadingHelper.hideProgress()
+            }
+
         }
     }
 
@@ -153,7 +155,7 @@ class VoteHomeViewModel @Inject constructor(
             loadingHelper.showProgress()
             userInfoManager?.favoriteStarIdFlow?.collectLatest {
                 val response = repository.getStarRank(it ?: 2)
-                when (response.result.code) {
+                when (response.result?.code) {
                     ResultCodeStatus.SuccessWithNoData.code -> {
                         _favoriteStar.emit(FavoriteStarInfo())
                     }
@@ -177,7 +179,7 @@ class VoteHomeViewModel @Inject constructor(
                     )
 
                 }.onSuccess { response ->
-                    when (response.result.code) {
+                    when (response.result?.code) {
                         ResultCodeStatus.SuccessWithData.code -> {
                             userTicketManager.storeUserTicket(
                                 response.data?.unlimited ?: 0,

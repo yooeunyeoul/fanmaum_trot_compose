@@ -80,7 +80,7 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 handleGoogleLogin.let { repository.postGoogleLogin(GoogleToken(it)) }
             }.onSuccess {
-                if (it.result.code == 444) {
+                if (it.result?.code == 444) {
                     secessionUserState.emit(true)
                 } else {
                     val userToken = it.data
@@ -104,7 +104,7 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.postAppleLogin(token)
             }.onSuccess {
-                if (it.result.code == 444) {
+                if (it.result?.code == 444) {
                     secessionUserState.emit(true)
                 } else {
                     val userToken = it.data
@@ -128,7 +128,7 @@ class AuthViewModel @Inject constructor(
             kotlin.runCatching {
                 repository.postKakaoLogin(kakaoTokens)
             }.onSuccess {
-                if (it.result.code == 444) {
+                if (it.result?.code == 444) {
                     secessionUserState.emit(true)
                 } else {
                     val userToken = it.data

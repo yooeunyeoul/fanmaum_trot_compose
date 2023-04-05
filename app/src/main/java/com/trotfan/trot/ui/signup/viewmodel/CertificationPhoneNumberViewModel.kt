@@ -149,7 +149,7 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                         }
                     }
                 )
-                when (response.result.code) {
+                when (response.result?.code) {
                     ResultCodeStatus.SuccessWithData.code -> {
                         _certificationNumber.value = response.data?.code.toString()
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.RequestSuccess)
@@ -209,11 +209,11 @@ class CertificationPhoneNumberViewModel @Inject constructor(
                             phoneNumber = phoneNum,
                             token = userLocalToken.value?.token ?: ""
                         )
-                    if (response.result.code == ResultCodeStatus.SuccessWithNoData.code) {
+                    if (response.result?.code == ResultCodeStatus.SuccessWithNoData.code) {
 //                        _onComplete.emit(true)
                         _certificationNumberStatus.emit(CertificationNumberCheckStatus.AuthSuccess)
                     } else {
-                        Log.e("Error", response.result.message)
+                        Log.e("Error", response.result?.message?:"")
                     }
                     loadingHelper.hideProgress()
                 }

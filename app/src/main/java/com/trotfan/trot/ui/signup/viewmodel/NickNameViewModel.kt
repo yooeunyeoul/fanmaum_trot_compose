@@ -72,7 +72,7 @@ class NickNameViewModel @Inject constructor(
                         token = userLocalToken.value?.token ?: ""
                     )
 
-                    when (response.result.code) {
+                    when (response.result?.code) {
                         ResultCodeStatus.UnAcceptableName.code -> {
                             _nickNameCheckStatus.emit(NickNameCheckStatus.NotAuth)
                         }

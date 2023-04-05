@@ -224,7 +224,7 @@ class RankHomeViewModel @Inject constructor(
                 null,
                 null
             )
-            when (response.result.code) {
+            when (response.result?.code) {
                 ResultCodeStatus.SuccessWithNoData.code -> {
                     _rankStatus.emit(RankStatus.UnAvailable)
                 }

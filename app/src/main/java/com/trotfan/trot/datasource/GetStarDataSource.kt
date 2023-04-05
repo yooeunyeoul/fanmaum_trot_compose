@@ -32,7 +32,7 @@ class GetStarDataSource @Inject constructor(
             val data = service.getStarList(params.key ?: "", search = starName).data
             val result = service.getStarList(params.key ?: "", search = starName).result
 
-            when (result.code) {
+            when (result?.code) {
                 ResultCodeStatus.SuccessWithData.code -> {
                     Log.e("cursor", "nextCursor::::" + params.key.toString())
                     val starList = data?.stars

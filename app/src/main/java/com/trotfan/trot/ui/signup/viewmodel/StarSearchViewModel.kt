@@ -95,7 +95,7 @@ class StarSearchViewModel @Inject constructor(
                     starId = selectedItem?.id,
                     token = userLocalToken.value?.token ?: ""
                 )
-                if (response.result.code == ResultCodeStatus.SuccessWithNoData.code) {
+                if (response.result?.code == ResultCodeStatus.SuccessWithNoData.code) {
                     _onComplete.emit(true)
                 }
             }

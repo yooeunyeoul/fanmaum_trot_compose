@@ -93,7 +93,7 @@ class SettingViewModel @Inject constructor(
                     userToken = userToken
                 )
             }.onSuccess {
-                when (it.result.code) {
+                when (it.result?.code) {
                     ResultCodeStatus.SuccessWithData.code -> {
                         it.data?.run {
                             _dayEvent.emit(dayAlarm)

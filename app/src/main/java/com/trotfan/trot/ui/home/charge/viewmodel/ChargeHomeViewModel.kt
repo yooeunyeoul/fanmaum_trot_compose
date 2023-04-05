@@ -164,7 +164,7 @@ class ChargeHomeViewModel @Inject constructor(
                     )
 
                 }.onSuccess { response ->
-                    when (response.result.code) {
+                    when (response.result?.code) {
                         ResultCodeStatus.SuccessWithData.code -> {
                             userTicketManager.storeUserTicket(
                                 response.data?.unlimited ?: 0,
@@ -174,7 +174,7 @@ class ChargeHomeViewModel @Inject constructor(
                         }
 
                         ResultCodeStatus.Fail.code -> {
-                            Log.e("ChargeHomeViewModel", response.result.message)
+                            Log.e("ChargeHomeViewModel", response.result?.message?:"")
                         }
                     }
 //                    loadingHelper.hideProgress()

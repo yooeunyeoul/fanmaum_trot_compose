@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CommonResponse<T>(
     val `data`: T? = null,
-    val result: Result
+    val result: Result? = null
 )
